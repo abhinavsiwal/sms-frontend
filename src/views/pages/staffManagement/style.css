@@ -1,0 +1,204 @@
+.RFS-StepButton.active {
+  background-image: linear-gradient(87deg, #f5365c 0, #f56036 100%) !important;
+}
+.RFS-StepButton.completed {
+  background-image: linear-gradient(87deg, #2dce89 0, #2dcecc 100%) !important;
+}
+.css-1s2u09g-control {
+  min-height: 45px !important;
+}
+
+@media only screen and (max-width: 600px) {
+  .Step_Header {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.stateInput{
+  width: 100%;
+  height: 60%;
+}
+
+.inputError{
+  color: red;
+}
+
+.datePicker{
+  border: 0.5px solid rgb(207, 201, 201) !important ;
+  border-radius: 2px;
+  /* background-color: rgb(245, 245, 245); */
+  width: 100% !important; 
+  height: 2.9rem !important;
+  background: white;
+  z-index: 10000 !important;
+}
+
+.buttons-head{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+small{
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.attendance-icons {
+  text-align: center;
+}
+.attendance-icons > p {
+  font-size: 2rem;
+  border-radius: 15px;
+  margin: 10px;
+}
+
+@media only screen and (max-width: 600px) {
+  .attendance-icons > h1 {
+    margin: 5px;
+  }
+}
+
+
+
+.attendance-icons > span {
+  font-size: 1.2rem;
+}
+
+.tags {
+}
+
+.custom-modal-style {
+  height: fit-content !important;
+}
+
+.start-end {
+  float: left;
+}
+
+.attendance-button {
+  float: right;
+}
+
+@media only screen and (max-width: 600px) {
+  .start-end,
+  .attendance-button {
+    float: none;
+    text-align: center;
+  }
+}
+
+/* .studentAttendance {
+  text-align: center;
+} */
+
+/* .studentAttendance > p {
+  font-size: 2rem;
+  font-weight: 500;
+  border-radius: 15px;
+  margin: 5px;
+}
+
+.studentAttendance > span {
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin: 5px;
+} */
+.icons_list {
+  display: flex;
+  width: 100%;
+  height: 45px;
+  justify-content: center;
+}
+
+.icons_div {
+  display: flex;
+}
+
+.icons_div .tags {
+  padding: 10px;
+}
+
+#attendance_icons {
+  flex: 1;
+  justify-content: center;
+  margin-bottom: 0 !important;
+}
+
+.Student-Attendance-Icons > p {
+  font-size: 2rem;
+  font-weight: 500;
+  border-radius: 15px;
+  margin: 5px;
+}
+
+@media only screen and (max-width: 600px) {
+  .Student-Attendance-Icons > p {
+    font-size: 1rem;
+  }
+}
+
+.Student-Attendance-Icons > span {
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin: 5px;
+}
+
+@media only screen and (max-width: 600px) {
+  .Student-Attendance-Icons > span {
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+  }
+}
+
+table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+table thead th {
+  text-align: center;
+  padding: 10px;
+  background-color: #11cdef;
+}
+
+table tbody tr {
+  text-align: center;
+  border-bottom: 0.1px solid rgb(169, 169, 169, 0.2);
+}
+
+table tbody tr td {
+  padding: 10px;
+  border-right: 0.1px solid rgb(169, 169, 169, 0.2);
+  text-size-adjust: inherit;
+}
+
+.model_table_main {
+  width: 99%;
+  overflow: scroll;
+}
+
+.model_table {
+  width: auto;
+  min-width: 100%;
+}
+
+.attendance_main_div {
+  width: 99%;
+  overflow: scroll;
+}
+
+.buttons {
+  display: flex;
+}
+
+#capture_div{
+  margin: 0 !important;
+}
+
+.react-html5-camera-photo  video{
+  width: 100%;
+  height: 50%;
+}

@@ -1,0 +1,22 @@
+version : 0.2
+phases:
+  pre_build:
+    commands:
+    - echo "Installing dependencies.."
+    - npm install
+  build:
+    commands:
+      - echo "Building React project.."
+      - npm run build
+
+  post_build:
+    commands:
+      - echo "Updating files in s3 bucket.."
+      - aws s3 sync build/ s3://dev-frontend-main --delete
+
+
+# artifacts:
+#   files: 
+#     - "**/*"
+#   discard-paths: no
+#   base-directory: build

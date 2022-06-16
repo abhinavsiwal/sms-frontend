@@ -1,0 +1,37 @@
+.class-teacher-container{
+	/* margin-top: 2rem; */
+	padding: 10px;
+}
+
+.class-teacher-header{
+	font-size: 28px;
+	text-align: center;
+	font-weight: 700;
+	padding-bottom: 10px;
+}
+
+.teacher-table-row{
+	padding: 0px 10px;
+}
+
+.teacher-table-class{
+	display: flex;
+	align-items: center;
+	height: 100%;
+	font-weight: 500;
+	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.my-table{
+	border-collapse: unset;
+	border-radius: 10px !important;
+	padding: 0px 10px;
+}
+
+.teacher-table-row:hover{
+	background-color: #f1f3f5;
+}
+
+.antClass{
+	overflow-x: none;
+}

@@ -1,0 +1,173 @@
+.Period-Time {
+  width: 65%;
+  border: 1px solid silver;
+  border-radius: 5px;
+  padding: 12px;
+}
+
+/* thead, tbody { display: block; } */
+
+tbody {
+  /* width: 400px; */
+  overflow-y: auto; /* Trigger vertical scroll    */
+  overflow-x: hidden; /* Hide the horizontal scroll */
+}
+
+.next_button {
+  text-align: right;
+}
+
+.table_main {
+  width: 100%;
+  overflow: scroll;
+}
+
+.table_main table thead {
+  background-color: #11cdef;
+}
+.table_main table thead th {
+  padding: 15px;
+  justify-content: center;
+  text-align: center;
+  
+}
+
+.table_main table tbody tr  {
+  border-bottom: .1px solid rgb(169, 169, 169,0.2);
+  
+}
+.table_main table tbody tr td {
+  padding: 30px;
+  border-right: .1px solid rgb(169, 169, 169,0.2);
+
+}
+
+.table_main .period_name {
+  background-color: aliceblue;
+  justify-content: center;
+  padding: 80px;
+  white-space: pre;
+}
+
+.table_main table {
+  table-layout: fixed;
+  width: 1800px;
+}
+
+.video_meet{
+  text-align: center !important;
+}
+#video_icon{
+  font-size: 22px;
+  padding: 3px;
+  color: #11cdef;
+}
+
+:root {
+  --input-color: #99a3ba;
+  --input-border: #cdd9ed;
+  --input-background: #fff;
+  --input-placeholder: #cbd1dc;
+  --input-border-focus: #275efe;
+  --group-color: var(--input-color);
+  --group-border: var(--input-border);
+  --group-background: #eef4ff;
+  --group-color-focus: #fff;
+  --group-border-focus: var(--input-border-focus);
+  --group-background-focus: #678efe;
+}
+
+#select_teacher {
+  border-radius: 5px;
+}
+
+.form-field {
+  display: block;
+  width: 100%;
+  padding: 8px 16px;
+  line-height: 25px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  border-radius: 6px;
+  -webkit-appearance: none;
+  color: var(--input-color);
+  border: 1px solid var(--input-border);
+  background: var(--input-background);
+  transition: border 0.3s ease;
+}
+.form-field::-moz-placeholder {
+  color: var(--input-placeholder);
+}
+.form-field:-ms-input-placeholder {
+  color: var(--input-placeholder);
+}
+.form-field::placeholder {
+  color: var(--input-placeholder);
+}
+.form-field:focus {
+  outline: none;
+  border-color: var(--input-border-focus);
+}
+
+.form-group {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+.form-group > span,
+.form-group .form-field {
+  white-space: nowrap;
+  display: block;
+}
+.form-group > span:not(:first-child):not(:last-child),
+.form-group .form-field:not(:first-child):not(:last-child) {
+  border-radius: 0;
+}
+.form-group > span:first-child,
+.form-group .form-field:first-child {
+  border-radius: 6px 0 0 6px;
+}
+.form-group > span:last-child,
+.form-group .form-field:last-child {
+  border-radius: 0 6px 6px 0;
+}
+.form-group > span:not(:first-child),
+.form-group .form-field:not(:first-child) {
+  margin-left: -1px;
+}
+.form-group .form-field {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  width: 1%;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.form-group > span {
+  text-align: center;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 25px;
+  color: var(--group-color);
+  background: var(--group-background);
+  border: 1px solid var(--group-border);
+  transition: background 0.3s ease, border 0.3s ease, color 0.3s ease;
+}
+.form-group:focus-within > span {
+  color: var(--group-color-focus);
+  background: var(--group-background-focus);
+  border-color: var(--group-border-focus);
+}
+
+
+.lunch_row{
+  text-align: center;
+  font-size: 32px;
+}
+
+
+.main_table_div_session{
+  width: 99%;
+  overflow: scroll;
+}

@@ -1,0 +1,11 @@
+
+.datePicker{
+    border: 0.5px solid rgb(207, 201, 201) !important ;
+    border-radius: 2px;
+    /* background-color: rgb(245, 245, 245); */
+    width: 100% !important; 
+    height: 2.9rem !important;
+    background: white;
+    z-index: 10000 !important;
+  }
+  

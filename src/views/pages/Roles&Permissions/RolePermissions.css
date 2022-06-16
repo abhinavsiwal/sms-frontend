@@ -1,0 +1,12 @@
+.Role-Permissions > p {
+  font-weight: 600;
+}
+
+.custom-modal-style {
+  height: 600px;
+}
+
+#mainApplicationDiv{
+  height: 25rem;
+  overflow: scroll;
+}
