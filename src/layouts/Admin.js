@@ -52,7 +52,7 @@ function Admin() {
       (route) => key.toString() === route.module.toString()
     );
     // let permitted = adminRoutes
-    console.log(permitted);
+    // console.log(permitted);
 
     if (permitted && permitted.views) {
       // console.log(permitted.views);

@@ -18,7 +18,7 @@ export const addClass = (userId, token, data = {}) => {
 };
 
 export const allClass = (userId, schoolID, token) => {
-  const url = `${process.env.REACT_APP_API_URL}/api/school/class/all/${schoolID}`;
+  const url = `${process.env.REACT_APP_API_URL}/api/school/class/all/${schoolID}/${userId}`;
   return fetch(url, {
     method: "GET",
     headers: { Authorization: "Bearer " + token, Accept: "application/json" },
