@@ -45,7 +45,7 @@ const StudentAllocation = () => {
   const [studentLoading, setStudentLoading] = useState(false);
   const [students, setStudents] = useState([]);
   const [allBooks, setAllBooks] = useState([]);
-  const [selectedBook, setSelectedBook] = useState({});
+  const [selectedBook, setSelectedBook] = useState([]);
   const [allStaff, setAllStaff] = useState([]);
   const [checked, setChecked] = useState(false);
   const [typeView, setTypeView] = useState(0);

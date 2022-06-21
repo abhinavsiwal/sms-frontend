@@ -19,6 +19,7 @@ import { isAuthenticated } from "api/auth";
 import { toast, ToastContainer } from "react-toastify";
 import { getStaffByDepartment, allStaffs } from "api/staff";
 import { getDepartment } from "api/department";
+import { getAllBuildingsList,getAllRooms,allocateRoom } from "api/hostelManagement";
 import { getAllBooks, allocateBook } from "../../../api/libraryManagement";
 const StaffAllocation = () => {
   const { user, token } = isAuthenticated();
@@ -40,7 +41,7 @@ const StaffAllocation = () => {
   const [allStaff, setAllStaff] = useState([]);
   const [filterStaff, setFilterStaff] = useState([]);
   const [checked, setChecked] = useState(false);
-  const [selectedBook, setSelectedBook] = useState({});
+  const [selectedBook, setSelectedBook] = useState([]);
   const [allBooks, setAllBooks] = useState([]);
   const [typeView, setTypeView] = useState(0);
   const getAllDepartment = async () => {
@@ -59,10 +60,10 @@ const StaffAllocation = () => {
       setLoading(false);
     }
   };
-  const getAllBooksHandler = async () => {
+  const getAllBuildingHandler = async () => {
     try {
       setLoading(true);
-      const data = await getAllBooks(user.school, user._id);
+      const data = await getAllBuildingsList(user.school, user._id);
       console.log(data);
       setAllBooks(data);
       setLoading(false);
@@ -89,8 +90,25 @@ const StaffAllocation = () => {
   useEffect(() => {
     getAllDepartment();
     getAllStaffs();
-    getAllBooksHandler();
+    getAllBuildingHandler();
   }, [checked]);
+  
+  const getAllRoomsHandler=async(buildingId)=>{
+    console.log(buildingId);
+    const formData = new FormData();
+    formData.set("building_id",buildingId);
+    try {
+      setLoading(true);
+      const data = await getAllRooms(user._id,user.school,formData);
+      console.log(data);
+      setSelectedBook(data)
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      toast.error("Fetching Students Failed");
+      setLoading(false);
+    }
+  }
   const handleChange = (name) => async (event) => {
     setAllocationData({ ...allocationData, [name]: event.target.value });
     console.log(name, event.target.value);
@@ -99,11 +117,7 @@ const StaffAllocation = () => {
       filterStaffHandler(event.target.value);
     }
     if (name === "bookName") {
-      let selectedBook = allBooks.find(
-        (item) => item._id.toString() === event.target.value.toString()
-      );
-      console.log(selectedBook);
-      setSelectedBook(selectedBook);
+      getAllRoomsHandler(event.target.value)
     }
     if (name === "allocationType") {
       if (event.target.value === "Read Here") {
@@ -134,8 +148,8 @@ const StaffAllocation = () => {
   const allocateBookHandler = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.set("book", allocationData.bookName);
-    formData.set("bookID", allocationData.bookId);
+    formData.set("building", allocationData.bookName);
+    formData.set("room_number", allocationData.bookId);
     formData.set("staff", allocationData.staff);
     formData.set("allocationDate", allocationDate);
     formData.set("duration", allocationData.duration);
@@ -149,7 +163,7 @@ const StaffAllocation = () => {
     }
     try {
       setLoading(true);
-      const data = await allocateBook(user._id, formData);
+      const data = await allocateRoom(user._id,user.school,formData);
       console.log(data);
       if (data.err) {
         setLoading(false);
@@ -157,7 +171,7 @@ const StaffAllocation = () => {
       }
       setChecked(!checked);
 
-      toast.success("Book Allocated Successfully");
+      toast.success("Room Allocated Successfully");
       setAllocationData({
         department: "",
         staff: "",
@@ -250,7 +264,7 @@ const StaffAllocation = () => {
                 className="form-control-label"
                 htmlFor="example4cols2Input"
               >
-                Book Name
+                Building Name
               </Label>
               <Input
                 id="example4cols2Input"
@@ -261,7 +275,7 @@ const StaffAllocation = () => {
                 value={allocationData.bookName}
                 required
               >
-                <option value="">Select Book</option>
+                <option value="">Select Building</option>
                 {allBooks &&
                   allBooks.map((book) => (
                     <option key={book._id} value={book._id}>
@@ -275,7 +289,7 @@ const StaffAllocation = () => {
                 className="form-control-label"
                 htmlFor="example4cols2Input"
               >
-                Book Id
+                Room No
               </Label>
               <Input
                 id="example4cols2Input"
@@ -286,9 +300,9 @@ const StaffAllocation = () => {
                 value={allocationData.bookId}
                 required
               >
-                <option value="">Select Book Id</option>
-                {selectedBook.bookID &&
-                  selectedBook.bookID.map((id) => (
+                <option value="">Select Room No</option>
+                {selectedBook &&
+                  selectedBook.map((id) => (
                     <option key={id} value={id}>
                       {id}
                     </option>
@@ -318,24 +332,8 @@ const StaffAllocation = () => {
                 minDate={new Date()}
               />
             </Col>
-            <Col md="6">
-              <Label
-                className="form-control-label"
-                htmlFor="example-date-input"
-              >
-                Duration
-              </Label>
-              <Input
-                id="example-date-input"
-                type="number"
-                onChange={handleChange("duration")}
-                value={allocationData.duration}
-                required
-                placeholder="Duration"
-              />
-            </Col>
-          </Row>
-          <Row>
+          
+        
             <Col md="6">
               <Label
                 className="form-control-label"
@@ -361,46 +359,9 @@ const StaffAllocation = () => {
                   ))}
               </Input>
             </Col>
-            <Col md="6">
-              <Label
-                className="form-control-label"
-                htmlFor="example-date-input"
-              >
-                Allocation Type
-              </Label>
-              <Input
-                id="example-date-input"
-                type="select"
-                onChange={handleChange("allocationType")}
-                value={allocationData.allocationType}
-                required
-              >
-                <option value="">Select Type</option>
-                <option value="Read Here">Read Here</option>
-                <option value="Rent">Rent</option>
-              </Input>
-            </Col>
+        
           </Row>
-          <Row>
-            {typeView === 2 && (
-              <Col md="6">
-                <Label
-                  className="form-control-label"
-                  htmlFor="example-date-input"
-                >
-                  Rent
-                </Label>
-                <Input
-                  id="example-date-input"
-                  type="number"
-                  placeholder="Rent"
-                  onChange={handleChange("rent")}
-                  value={allocationData.rent}
-                  required
-                />
-              </Col>
-            )}
-          </Row>
+ 
           <Row className="mt-4">
             <Col
               style={{
@@ -410,7 +371,7 @@ const StaffAllocation = () => {
               }}
             >
               <Button color="primary" type="submit">
-                Allocate Book
+                Allocate Room
               </Button>
             </Col>
           </Row>
