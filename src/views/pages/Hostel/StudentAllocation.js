@@ -23,6 +23,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./style.css";
 import { toast, ToastContainer } from "react-toastify";
 import { allClass } from "api/class";
+import { getAllBuildingsList,getAllRooms,allocateRoom } from "api/hostelManagement";
 const StudentAllocation = () => {
   const { user, token } = isAuthenticated();
   const [allocationDate, setAllocationDate] = useState(new Date());
@@ -65,10 +66,10 @@ const StudentAllocation = () => {
       toast.error("Fetching Classes Failed");
     }
   };
-  const getAllBooksHandler = async () => {
+  const getAllBuildingHandler = async () => {
     try {
       setLoading(true);
-      const data = await getAllBooks(user.school, user._id);
+      const data = await getAllBuildingsList(user.school, user._id);
       console.log(data);
       setAllBooks(data);
       setLoading(false);
@@ -94,7 +95,7 @@ const StudentAllocation = () => {
   };
   useEffect(() => {
     getAllClasses();
-    getAllBooksHandler();
+    getAllBuildingHandler();
     getAllStaffs();
   }, [checked]);
 
@@ -114,11 +115,8 @@ const StudentAllocation = () => {
       filterStudentHandler(event.target.value);
     }
     if (name === "bookName") {
-      let selectedBook = allBooks.find(
-        (item) => item._id.toString() === event.target.value.toString()
-      );
-      console.log(selectedBook);
-      setSelectedBook(selectedBook);
+      getAllRoomsHandler(event.target.value)
+     
     }
     if (name === "allocationType") {
       if (event.target.value === "Read Here") {
@@ -128,6 +126,23 @@ const StudentAllocation = () => {
       }
     }
   };
+
+  const getAllRoomsHandler=async(buildingId)=>{
+    console.log(buildingId);
+    const formData = new FormData();
+    formData.set("building_id",buildingId);
+    try {
+      setLoading(true);
+      const data = await getAllRooms(user._id,user.school,formData);
+      console.log(data);
+      setSelectedBook(data)
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      toast.error("Fetching Students Failed");
+      setLoading(false);
+    }
+  }
 
   const filterStudentHandler = async (id) => {
     console.log(allocationData);
@@ -151,8 +166,8 @@ const StudentAllocation = () => {
   const allocateBookHandler = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.set("book", allocationData.bookName);
-    formData.set("bookID", allocationData.bookId);
+    formData.set("building", allocationData.bookName);
+    formData.set("room_number", allocationData.bookId);
     formData.set("student", allocationData.student);
     formData.set("allocationDate", allocationDate);
     formData.set("duration", allocationData.duration);
@@ -167,7 +182,7 @@ const StudentAllocation = () => {
     }
     try {
       setLoading(true);
-      const data = await allocateBook(user._id, formData);
+      const data = await allocateRoom(user._id,user.school, formData);
       console.log(data);
       if (data.err) {
         setLoading(false);
@@ -175,7 +190,7 @@ const StudentAllocation = () => {
       }
       setChecked(!checked);
 
-      toast.success("Book Allocated Successfully");
+      toast.success("Room Allocated Successfully");
       setAllocationData({
         class: "",
         section: "",
@@ -316,7 +331,7 @@ const StudentAllocation = () => {
                 value={allocationData.bookName}
                 required
               >
-                <option value="">Select Book</option>
+                <option value="">Select Building</option>
                 {allBooks &&
                   allBooks.map((book) => (
                     <option key={book._id} value={book._id}>
@@ -343,9 +358,9 @@ const StudentAllocation = () => {
                 value={allocationData.bookId}
                 required
               >
-                <option value="">Select Book Id</option>
-                {selectedBook.bookID &&
-                  selectedBook.bookID.map((id) => (
+                <option value="">Select Room no</option>
+                {selectedBook &&
+                  selectedBook.map((id) => (
                     <option key={id} value={id}>
                       {id}
                     </option>

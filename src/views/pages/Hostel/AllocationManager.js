@@ -26,7 +26,7 @@ import StaffAllocation from "./StaffAllocation";
 import StudentReturn from "./StudentReturn";
 import StaffReturn from "./StaffReturn";
 
-const AllocationManager = () => {
+const HostelAllocation = () => {
   const { user, token } = isAuthenticated();
   const [allocateRole, setAllocateRole] = useState("");
   const [allocateState, setAllocateState] = useState(0);
@@ -83,14 +83,14 @@ const AllocationManager = () => {
         pauseOnHover
         theme="colored"
       />
-      <SimpleHeader name="Allocation Manager" parentName="Library Management" />
+      <SimpleHeader name="Allocation Manager" parentName="Hostel Management" />
       <Container className="mt--6" fluid>
         <Row>
           <Col lg="6">
             <div className="card-wrapper">
               <Card>
                 <CardHeader>
-                  <h3>Allocate Book</h3>
+                  <h3>Allocate Room</h3>
                 </CardHeader>
                 <CardBody>
                   <Row>
@@ -150,4 +150,4 @@ const AllocationManager = () => {
   );
 };
 
-export default AllocationManager;
+export default HostelAllocation;

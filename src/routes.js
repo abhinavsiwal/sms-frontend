@@ -59,11 +59,11 @@ import StudentCredentials from "views/pages/credentials/StudentCredentials";
 import StaffAttendance from "views/pages/staffManagement/StaffAttendance";
 import FeesMaster from "views/pages/FeesManagement/feesmaster";
 import PenaltyMaster from "views/pages/FeesManagement/penalty";
-import AddShelf from 'views/pages/Hostel/AddBuildingFloor';
-// import AddShelf from 'views/pages/Library/AddShelf';
+import AddBuilding from 'views/pages/Hostel/AddBuildingFloor';
+import AddShelf from 'views/pages/Library/AddShelf';
 import AddBooks from 'views/pages/Library/AddBooks';
 import AllocationManager from 'views/pages/Library/AllocationManager';
-import AllocationManagerHostel from 'views/pages/Hostel/AllocationManager';
+import HostelAllocation from 'views/pages/Hostel/AllocationManager';
 import ViewAllocations from 'views/pages/Library/ViewAllocations';
 import ApplyLeave from "./views/pages/LeaveManagement/ApplyLeave";
 import ViewAllLeaves from "./views/pages/LeaveManagement/ViewAllLeaves";
@@ -459,7 +459,7 @@ export const adminRoutes = [
         path: "/add-building-floor",
         name: "Add Building and Floor",
         miniName: "ABF",
-        component: AddBooks,
+        component: AddBuilding,
         layout: "/admin",
         permission: "add",
       },
@@ -475,7 +475,7 @@ export const adminRoutes = [
         path: "/hostel-allocations",
         name: "Allocations",
         miniName: "V",
-        component: AllocationManagerHostel,
+        component: HostelAllocation,
         layout: "/admin",
         permission: "add",
       },
@@ -905,6 +905,47 @@ const routes = [
         miniName: "V",
         component: ViewAllocations,
         layout: "/admin",
+      },
+    ],
+  },
+  {
+    collapse: true,
+    name: "Hostel Management",
+    icon: "ni ni-bag-17 text-pink",
+    state: "HostelCollapse",
+    module: "Hostel Management",
+    views: [
+      {
+        path: "/add-building-floor",
+        name: "Add Building and Floor",
+        miniName: "ABF",
+        component: AddBuilding,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/add-books",
+        name: "Add Books",
+        miniName: "V",
+        component: AddBooks,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/hostel-allocations",
+        name: "Allocations",
+        miniName: "V",
+        component: HostelAllocation,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/view-allocations",
+        name: "View Allocations",
+        miniName: "V",
+        component: ViewAllocations,
+        layout: "/admin",
+        permission: "view",
       },
     ],
   },
