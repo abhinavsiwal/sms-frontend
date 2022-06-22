@@ -119,7 +119,7 @@ const HostelAllocation = () => {
             <div className="card-wrapper">
               <Card>
                 <CardHeader>
-                  <h3>Return Book</h3>
+                  <h3>Vacant Room</h3>
                 </CardHeader>
                 <CardBody>
                   <Row>

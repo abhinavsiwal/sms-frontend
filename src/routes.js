@@ -463,14 +463,7 @@ export const adminRoutes = [
         layout: "/admin",
         permission: "add",
       },
-      {
-        path: "/add-books",
-        name: "Add Books",
-        miniName: "V",
-        component: AddBooks,
-        layout: "/admin",
-        permission: "add",
-      },
+    
       {
         path: "/hostel-allocations",
         name: "Allocations",
@@ -923,14 +916,7 @@ const routes = [
         layout: "/admin",
         permission: "add",
       },
-      {
-        path: "/add-books",
-        name: "Add Books",
-        miniName: "V",
-        component: AddBooks,
-        layout: "/admin",
-        permission: "add",
-      },
+    
       {
         path: "/hostel-allocations",
         name: "Allocations",

@@ -22,6 +22,7 @@ import { allStaffs } from "api/staff";
 import "./style.css";
 import { toast, ToastContainer } from "react-toastify";
 import { allClass } from "api/class";
+import { getAllBuildingsList,getAllRooms,vacantRoom } from "api/hostelManagement";
 const StudentReturn = () => {
   const { user, token } = isAuthenticated();
   const [returnData, setReturnData] = useState({
