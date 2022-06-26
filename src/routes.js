@@ -482,6 +482,55 @@ export const adminRoutes = [
       },
     ],
   },
+  // {
+  //   path: "/collectionmaster",
+  //   name: "Collection Master",
+  //   icon: "ni ni-shop text-primary",
+  //   component: CollectionMaster,
+  //   layout: "/admin",
+  //   module:"collectionMaster"
+  // },
+  {
+    collapse: true,
+    name: "Fees Management",
+    icon: "ni ni-single-02 text-orange",
+    state: "feesCollapse",
+    module:"feesManagement",
+    views: [
+      {
+        path: "/feesmaster",
+        name: "Fees Master",
+        miniName: "FM",
+        component: FeesMaster,
+        layout: "/admin",
+        permission:"view"
+      },
+      // {
+      //   path: "/viewfees",
+      //   name: "View Fees",
+      //   miniName: "VF",
+      //   component: ViewFees,
+      //   layout: "/admin",
+      //   permission:"view"
+      // },
+      // {
+      //   path: "/Penaltymaster",
+      //   name: "Penalty Master",
+      //   miniName: "PM",
+      //   component: PenaltyMaster,
+      //   layout: "/admin",
+      //   permission:"view"
+      // },
+      // {
+      //   path: "/siblingmaster",
+      //   name: "Sibling Master",
+      //   miniName: "SM",
+      //   component: SiblingMaster,
+      //   layout: "/admin",
+      //   permission:"view"
+      // },
+    ],
+  },
   {
     collapse: true,
     name: "Leave Management",
@@ -528,49 +577,49 @@ const routes = [
     component: Dashboard,
     layout: "/admin",
   },
-  // {
-  //   path: "/collectionmaster",
-  //   name: "Collection Master",
-  //   icon: "ni ni-shop text-primary",
-  //   component: CollectionMaster,
-  //   layout: "/admin",
-  // },
-  // {
-  //   collapse: true,
-  //   name: "Fees Management",
-  //   icon: "ni ni-single-02 text-orange",
-  //   state: "feesCollapse",
-  //   views: [
-  //     {
-  //       path: "/feesmaster",
-  //       name: "Fees Master",
-  //       miniName: "FM",
-  //       component: FeesMaster,
-  //       layout: "/admin",
-  //     },
-  //     {
-  //       path: "/viewfees",
-  //       name: "View Fees",
-  //       miniName: "VF",
-  //       component: ViewFees,
-  //       layout: "/admin",
-  //     },
-  //     {
-  //       path: "/Penaltymaster",
-  //       name: "Penalty Master",
-  //       miniName: "PM",
-  //       component: PenaltyMaster,
-  //       layout: "/admin",
-  //     },
-  //     {
-  //       path: "/siblingmaster",
-  //       name: "Sibling Master",
-  //       miniName: "SM",
-  //       component: SiblingMaster,
-  //       layout: "/admin",
-  //     },
-  //   ],
-  // },
+  {
+    path: "/collectionmaster",
+    name: "Collection Master",
+    icon: "ni ni-shop text-primary",
+    component: CollectionMaster,
+    layout: "/admin",
+  },
+  {
+    collapse: true,
+    name: "Fees Management",
+    icon: "ni ni-single-02 text-orange",
+    state: "feesCollapse",
+    views: [
+      {
+        path: "/feesmaster",
+        name: "Fees Master",
+        miniName: "FM",
+        component: FeesMaster,
+        layout: "/admin",
+      },
+      {
+        path: "/viewfees",
+        name: "View Fees",
+        miniName: "VF",
+        component: ViewFees,
+        layout: "/admin",
+      },
+      {
+        path: "/Penaltymaster",
+        name: "Penalty Master",
+        miniName: "PM",
+        component: PenaltyMaster,
+        layout: "/admin",
+      },
+      {
+        path: "/siblingmaster",
+        name: "Sibling Master",
+        miniName: "SM",
+        component: SiblingMaster,
+        layout: "/admin",
+      },
+    ],
+  },
   {
     collapse: true,
     name: "Staff Management",

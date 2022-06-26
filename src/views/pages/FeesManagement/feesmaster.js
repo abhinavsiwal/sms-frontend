@@ -247,7 +247,7 @@ const FeesMaster = () => {
   };
 
   const handleSubmitFees = async (e) => {
-    setShowLoad(true);
+    // setShowLoad(true);
     e.preventDefault();
     let formdata = new FormData();
     const { user, token } = isAuthenticated();
@@ -257,18 +257,19 @@ const FeesMaster = () => {
     formdata.set("session", sessionID._id);
     formdata.set("fees_type", fees_type);
     try {
-      var createFeesAPI = await createFees(user._id, token, formdata);
-      console.log(createFeesAPI);
-      if (createFeesAPI && createFeesAPI.err) {
-        setShowLoad(false);
-        toast.error(createFeesAPI.err);
-      } else {
-        setShowLoad(false);
-        toast.success("OneTime Fees Added Successfully");
-        setTimeout(() => {
-          window.location.reload(1);
-        }, 1000);
-      }
+      // var createFeesAPI = await createFees(user._id, token, formdata);
+      // console.log(createFeesAPI);
+      // if (createFeesAPI && createFeesAPI.err) {
+      //   setShowLoad(false);
+      //   toast.error(createFeesAPI.err);
+      // } else {
+      //   setShowLoad(false);
+      //   toast.success("OneTime Fees Added Successfully");
+      //   setTimeout(() => {
+      //     window.location.reload(1);
+      //   }, 1000);
+      // }
+      console.log(feesData)
     } catch (error) {
       toast.error("Something Went Wrong!");
     }

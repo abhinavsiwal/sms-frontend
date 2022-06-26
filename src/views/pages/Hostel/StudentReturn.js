@@ -22,7 +22,12 @@ import { allStaffs } from "api/staff";
 import "./style.css";
 import { toast, ToastContainer } from "react-toastify";
 import { allClass } from "api/class";
-import { getAllBuildingsList,getAllRooms,vacantRoom } from "api/hostelManagement";
+import {
+  getAllBuildingsList,
+  getAllRooms,
+  vacantRoom,
+  allocatedRoomList,
+} from "api/hostelManagement";
 const StudentReturn = () => {
   const { user, token } = isAuthenticated();
   const [returnData, setReturnData] = useState({
@@ -33,6 +38,7 @@ const StudentReturn = () => {
     bookId: "",
     collectionDate: "",
     collectedBy: "",
+    building: "",
   });
   const [loading, setLoading] = useState(false);
   const [returnDate, setReturnDate] = useState(new Date());
@@ -61,19 +67,7 @@ const StudentReturn = () => {
       toast.error("Fetching Classes Failed");
     }
   };
-  const getAllBooksHandler = async () => {
-    try {
-      setLoading(true);
-      const data = await getAllBooks(user.school, user._id);
-      console.log(data);
-      setAllBooks(data);
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-      toast.error("Fetching Books Failed");
-      setLoading(false);
-    }
-  };
+
   const getAllStaffs = async () => {
     try {
       setLoading(true);
@@ -90,7 +84,7 @@ const StudentReturn = () => {
   };
   useEffect(() => {
     getAllClasses();
-    getAllBooksHandler();
+    getAllBuildingHandler();
     getAllStaffs();
   }, []);
   const handleChange = (name) => async (event) => {
@@ -118,11 +112,47 @@ const StudentReturn = () => {
       }
       let selectedStudent1 = students.find(
         (item) => item._id.toString() === event.target.value.toString()
-      );
-      console.log(selectedStudent1);
-      setSelectedStudent(selectedStudent1);
+        );
+        console.log(selectedStudent1);
+        setSelectedStudent(selectedStudent1);
+        allocatedRoomsHandler(selectedStudent1);
     }
   };
+
+  const allocatedRoomsHandler = async (student) => {
+    const formData = new FormData();
+    formData.set("building", returnData.building);
+    formData.set("class", returnData.class);
+    formData.set("section", returnData.section);
+    formData.set("student", student._id);
+    formData.set("role", student.SID.slice(3, 6));
+
+    try {
+      setLoading(true);
+      const data = await allocatedRoomList(user._id,user.school,formData);
+      console.log(data);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      console.log(err);
+    }
+
+  };
+
+  const getAllBuildingHandler = async () => {
+    try {
+      setLoading(true);
+      const data = await getAllBuildingsList(user.school, user._id);
+      console.log(data);
+      setAllBooks(data);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      toast.error("Fetching Books Failed");
+      setLoading(false);
+    }
+  };
+
   const filterStudentHandler = async (id) => {
     const formData = {
       section: id,
@@ -251,6 +281,30 @@ const StudentReturn = () => {
             </Col>
           </Row>
           <Row>
+          <Col md="6">
+              <Label
+                className="form-control-label"
+                htmlFor="example4cols2Input"
+              >
+                Building
+              </Label>
+              <Input
+                id="exampleFormControlSelect3"
+                type="select"
+                required
+                value={returnData.building}
+                onChange={handleChange("building")}
+                name="building"
+              >
+                <option value="">Select Building</option>
+                {allBooks &&
+                  allBooks.map((book) => (
+                    <option key={book._id} value={book._id}>
+                      {book.name}
+                    </option>
+                  ))}
+              </Input>
+            </Col>
             <Col md="6">
               <Label
                 className="form-control-label"
@@ -276,12 +330,13 @@ const StudentReturn = () => {
                   ))}
               </Input>
             </Col>
+          
             <Col md="6">
               <Label
                 className="form-control-label"
                 htmlFor="example4cols2Input"
               >
-                Issued Book
+                Allocated Rooms
               </Label>
               <Input
                 id="exampleFormControlSelect3"
@@ -308,8 +363,7 @@ const StudentReturn = () => {
                   })}
               </Input>
             </Col>
-          </Row>
-          <Row>
+
             <Col md="6">
               <Label
                 className="form-control-label"
