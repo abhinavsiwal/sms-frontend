@@ -10,6 +10,8 @@ import {
   Input,
   Button,
   CardHeader,
+  Modal,
+  ModalBody,
 } from "reactstrap";
 import Loader from "components/Loader/Loader";
 import "react-datepicker/dist/react-datepicker.css";
@@ -17,11 +19,18 @@ import { isAuthenticated } from "api/auth";
 import "./style.css";
 import SimpleHeader from "components/Headers/SimpleHeader.js";
 import { toast, ToastContainer } from "react-toastify";
+import AntTable from "../tables/AntTable";
 import {
   addBuilding,
   getAllBuildingsList,
   addBuildingFloor,
+  getBuildingFloors,
+  editBuilding,
+  editFloor,
+  deleteBuilding,
+  deleteFloor,
 } from "../../../api/hostelManagement";
+import { Popconfirm } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 const AddBuilding = () => {
   const [buildingName, setBuildingName] = useState("");
@@ -37,6 +46,21 @@ const AddBuilding = () => {
   const [sharingType, setSharingType] = useState("single");
   const [floorAbbr, setFloorAbbr] = useState("");
   const [checked, setChecked] = useState(false);
+  const [selectedBuildingId, setSelectedBuildingId] = useState("empty");
+  const [isData, setIsData] = useState(false);
+  const [allFloors, setallFloors] = useState([]);
+  const [selectedFloors, setSelectedFloors] = useState([]);
+  const [buildingEditing, setBuildingEditing] = useState(false);
+  const [editLoading, setEditLoading] = useState(false);
+  const [buildingEditName, setBuildingEditName] = useState("");
+  const [buildingEditAbbv, setBuildingEditAbbv] = useState("");
+  const [floorEditing, setFloorEditing] = useState(false);
+  const [floorEditNoFloors, setFloorEditNoFloors] = useState("");
+  const [floorEditAbbv, setFloorEditAbbv] = useState("");
+  const [floorEditfloorsRoom, setFloorEditFloorsRoom] = useState("");
+  const [floorEditsharingType, setFloorEditSharingType] = useState("");
+  const [floorEditId, setFloorEditId] = useState("");
+  const [loading, setLoading] = useState(false);
   const columns = [
     {
       title: "S No.",
@@ -44,10 +68,10 @@ const AddBuilding = () => {
       align: "left",
     },
     {
-      title: "Building Name",
+      title: "No. of Floors",
       align: "left",
-      dataIndex: "shelf_name",
-      sorter: (a, b) => a.shelf_name > b.shelf_name,
+      dataIndex: "noOfFloors",
+      sorter: (a, b) => a.noOfFloors > b.noOfFloors,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
           <>
@@ -70,14 +94,14 @@ const AddBuilding = () => {
         return <SearchOutlined />;
       },
       onFilter: (value, record) => {
-        return record.shelf_name.toLowerCase().includes(value.toLowerCase());
+        return record.noOfFloors.toLowerCase().includes(value.toLowerCase());
       },
     },
     {
-      title: "Shelf Abbreviation ",
-      dataIndex: "shelf_abv",
+      title: "Abbreviation ",
+      dataIndex: "abv",
       align: "left",
-      sorter: (a, b) => a.shelf_abv > b.shelf_abv,
+      sorter: (a, b) => a.abv > b.abv,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
           <>
@@ -100,7 +124,67 @@ const AddBuilding = () => {
         return <SearchOutlined />;
       },
       onFilter: (value, record) => {
-        return record.shelf_abv.toLowerCase().includes(value.toLowerCase());
+        return record.abv.toLowerCase().includes(value.toLowerCase());
+      },
+    },
+    {
+      title: "Rooms per Floor ",
+      dataIndex: "roomsPerFloor",
+      align: "left",
+      sorter: (a, b) => a.roomsPerFloor > b.roomsPerFloor,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+        return (
+          <>
+            <Input
+              autoFocus
+              placeholder="Type text here"
+              value={selectedKeys[0]}
+              onChange={(e) => {
+                setSelectedKeys(e.target.value ? [e.target.value] : []);
+                confirm({ closeDropdown: false });
+              }}
+              onBlur={() => {
+                confirm();
+              }}
+            ></Input>
+          </>
+        );
+      },
+      filterIcon: () => {
+        return <SearchOutlined />;
+      },
+      onFilter: (value, record) => {
+        return record.roomsPerFloor.toLowerCase().includes(value.toLowerCase());
+      },
+    },
+    {
+      title: "Sharing Type",
+      dataIndex: "sharingType",
+      align: "left",
+      sorter: (a, b) => a.sharingType > b.sharingType,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+        return (
+          <>
+            <Input
+              autoFocus
+              placeholder="Type text here"
+              value={selectedKeys[0]}
+              onChange={(e) => {
+                setSelectedKeys(e.target.value ? [e.target.value] : []);
+                confirm({ closeDropdown: false });
+              }}
+              onBlur={() => {
+                confirm();
+              }}
+            ></Input>
+          </>
+        );
+      },
+      filterIcon: () => {
+        return <SearchOutlined />;
+      },
+      onFilter: (value, record) => {
+        return record.sharingType.toLowerCase().includes(value.toLowerCase());
       },
     },
     {
@@ -111,83 +195,10 @@ const AddBuilding = () => {
       fixed: "right",
     },
   ];
-  const columns1 = [
-    {
-      title: "S No.",
-      dataIndex: "s_no",
-      align: "left",
-    },
-    {
-      title: "Section Name",
-      dataIndex: "section_name",
-      align: "left",
-      sorter: (a, b) => a.section_name > b.section_name,
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
-        return (
-          <>
-            <Input
-              autoFocus
-              placeholder="Type text here"
-              value={selectedKeys[0]}
-              onChange={(e) => {
-                setSelectedKeys(e.target.value ? [e.target.value] : []);
-                confirm({ closeDropdown: false });
-              }}
-              onBlur={() => {
-                confirm();
-              }}
-            ></Input>
-          </>
-        );
-      },
-      filterIcon: () => {
-        return <SearchOutlined />;
-      },
-      onFilter: (value, record) => {
-        return record.section_name.toLowerCase().includes(value.toLowerCase());
-      },
-    },
-    {
-      title: "Abbreviation",
-      dataIndex: "abbreviation",
-      align: "left",
-      sorter: (a, b) => a.abbreviation > b.abbreviation,
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
-        return (
-          <>
-            <Input
-              autoFocus
-              placeholder="Type text here"
-              value={selectedKeys[0]}
-              onChange={(e) => {
-                setSelectedKeys(e.target.value ? [e.target.value] : []);
-                confirm({ closeDropdown: false });
-              }}
-              onBlur={() => {
-                confirm();
-              }}
-            ></Input>
-          </>
-        );
-      },
-      filterIcon: () => {
-        return <SearchOutlined />;
-      },
-      onFilter: (value, record) => {
-        return record.abbreviation.toLowerCase().includes(value.toLowerCase());
-      },
-    },
 
-    {
-      title: "Action",
-      align: "left",
-      key: "action",
-      dataIndex: "action",
-      fixed: "right",
-    },
-  ];
   useEffect(() => {
     getAllBuildingsData();
+    getFloorsHandler();
   }, [checked]);
   const getAllBuildingsData = async () => {
     try {
@@ -225,7 +236,19 @@ const AddBuilding = () => {
       toast.error("Problem in adding building. Please try again.");
     }
   };
-
+  const getFloorsHandler = async () => {
+    try {
+      setAddLoading(true);
+      const data = await getBuildingFloors(user.school, user._id);
+      console.log(data);
+      setallFloors(data);
+      setAddLoading(false);
+    } catch (err) {
+      console.log(err);
+      setAddLoading(false);
+      toast.error("Error in getting Sections");
+    }
+  };
   const addFloorHandler = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -256,6 +279,183 @@ const AddBuilding = () => {
       toast.error("Shelf Added Failed");
     }
   };
+
+  const editBuildingHandler = async () => {
+    let building = allBuildings.find(
+      (building) => building._id === selectedBuildingId
+    );
+    console.log(building);
+    setBuildingEditName(building.name);
+    setBuildingEditAbbv(building.abbreviation);
+    setBuildingEditing(true);
+  };
+
+  const editBuildingSubmit = async () => {
+    const formData = new FormData();
+    formData.set("name", buildingEditName);
+    formData.set("abbreviation", buildingEditAbbv);
+    formData.set("building_id", selectedBuildingId);
+    try {
+      setEditLoading(true);
+      const data = await editBuilding(user._id, formData);
+      console.log(data);
+      toast.success("Building editied successfully");
+      setEditLoading(false);
+      setBuildingEditing(false);
+      setChecked(!checked);
+    } catch (err) {
+      console.log(err);
+      setEditLoading(false);
+      toast.error("Error in editing building");
+    }
+  };
+  const editFloorSubmit = async () => {
+    const formData = new FormData();
+    formData.set("no_of_floors", floorEditNoFloors);
+    formData.set("abbreviation", floorEditAbbv);
+    formData.set("sharing_type", floorEditsharingType);
+    formData.set("floor_id", floorEditId);
+    formData.set("rooms_per_floor", floorEditfloorsRoom);
+    formData.set("building", selectedBuildingId);
+    try {
+      setEditLoading(true);
+      const data = await editFloor(user._id, formData);
+      console.log(data);
+      if(data.err){
+        setEditLoading(false);
+        return toast.error(data.err)
+      }
+      toast.success("Building editied successfully");
+      setEditLoading(false);
+      setFloorEditing(false);
+      setChecked(!checked);
+      setSelectedBuildingId("empty");
+    } catch (err) {
+      console.log(err);
+      setEditLoading(false);
+      toast.error("Error in editing building");
+    }
+  };
+
+  const deleteBuildingHandler = async () => {
+    const formData = new FormData();
+    formData.set("id", selectedBuildingId);
+    try {
+      setLoading(false);
+      const data = await deleteBuilding(user._id, formData);
+      console.log(data);
+      if(data.err){
+        setLoading(false);
+        return toast.error(data.err)
+      }
+      toast.success("Building Deleted Successfully");
+      setLoading(false);
+      setSelectedBuildingId("empty");
+      setChecked(!checked);
+    } catch (err) {
+      console.log(err);
+      toast.error("Delete Building Failed");
+      setLoading(false);
+    }
+  };
+  const deleteFloorHandler = async (id) => {
+    console.log(id);
+    const formData = new FormData();
+    formData.set("floor_id", id);
+    formData.set("building_id", selectedBuildingId);
+    try {
+      setLoading(false);
+      const data = await deleteFloor(user._id, formData);
+      console.log(data);
+      if(data.err){
+        setLoading(false);
+        return toast.error(data.err)
+      }
+      toast.success("Floor Deleted Successfully");
+      setLoading(false);
+      setSelectedBuildingId("empty");
+      setChecked(!checked);
+    } catch (err) {
+      console.log(err);
+      toast.error("Delete Floor Failed");
+      setLoading(false);
+    }
+  };
+
+  const tableData = async () => {
+    if (selectedBuildingId === undefined) {
+      return;
+    }
+    if (selectedBuildingId === "empty") {
+      // console.log("empty");
+      setIsData(false);
+      // setShowDeleteButton(false);
+      return;
+    }
+    let selectedBuilding = await allFloors.filter(
+      (floor) => floor.building._id === selectedBuildingId
+    );
+    console.log(selectedBuilding);
+    const data = [];
+    if (selectedBuilding.length === 0) {
+      setIsData(false);
+      return;
+    }
+    setIsData(true);
+    for (let i = 0; i < selectedBuilding.length; i++) {
+      data.push({
+        key: i,
+        s_no: i + 1,
+        noOfFloors: selectedBuilding[i].no_of_floors,
+        abv: selectedBuilding[i].abbreviation,
+        roomsPerFloor: selectedBuilding[i].rooms_per_floor,
+        sharingType: selectedBuilding[i].sharing_type,
+        action: (
+          <h5 key={1} className="mb-0">
+            {/* {permission1 && permission1.includes("edit") && ( */}
+            <Button
+              className="btn-sm pull-right"
+              color="primary"
+              type="button"
+              key={"edit" + 1}
+              onClick={() => {
+                setFloorEditing(true);
+                setFloorEditAbbv(selectedBuilding[i].abbreviation);
+                setFloorEditFloorsRoom(selectedBuilding[i].rooms_per_floor);
+                setFloorEditNoFloors(selectedBuilding[i].no_of_floors);
+                setFloorEditSharingType(selectedBuilding[i].sharing_type);
+                setFloorEditId(selectedBuilding[i]._id);
+              }}
+            >
+              <i className="fas fa-user-edit" />
+            </Button>
+            {/* )} */}
+            {/* {permission1 && permission1.includes("delete") && ( */}
+            <Button
+              className="btn-sm pull-right"
+              color="danger"
+              type="button"
+              key={"delete" + 1}
+            >
+              <Popconfirm
+                title="Sure to delete?"
+                onConfirm={() => deleteFloorHandler(selectedBuilding[i]._id)}
+              >
+                <i className="fas fa-trash" />
+              </Popconfirm>
+            </Button>
+            {/* )} */}
+          </h5>
+        ),
+      });
+    }
+    setSelectedFloors(data);
+  };
+  useEffect(() => {
+    if (selectedBuildingId) {
+      tableData();
+    }
+  }, [selectedBuildingId, checked]);
 
   return (
     <>
@@ -474,9 +674,256 @@ const AddBuilding = () => {
                 </div>
               </Col>
             </Row>
+            <Container
+              className="mt--6 shadow-lg"
+              fluid
+              style={{ marginTop: "4rem" }}
+            >
+              <Card>
+                <CardHeader>
+                  <h3>View Building</h3>
+                  <Row
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Col>
+                      <Input
+                        id="exampleFormControlSelect3"
+                        type="select"
+                        onChange={(e) => setSelectedBuildingId(e.target.value)}
+                        value={selectedBuildingId}
+                        required
+                        style={{ maxWidth: "10rem" }}
+                      >
+                        <option value="empty">Select Building</option>
+                        {allBuildings &&
+                          allBuildings.map((building) => {
+                            return (
+                              <option key={building._id} value={building._id}>
+                                {building.name}
+                              </option>
+                            );
+                          })}
+                      </Input>
+                    </Col>
+                    {isData && (
+                      <Col>
+                        <Button color="warning" onClick={deleteBuildingHandler}>
+                          Delete Building
+                        </Button>
+                        <Button color="success" onClick={editBuildingHandler}>
+                          Edit Building
+                        </Button>
+                      </Col>
+                    )}
+                  </Row>
+                </CardHeader>
+                {loading ? (
+                  <Loader />
+                ) : (
+                  <CardBody>
+                    {isData ? (
+                      <>
+                        <h3>View Floors</h3>
+                        <AntTable
+                          columns={columns}
+                          data={selectedFloors}
+                          pagination={true}
+                          exportFileName="StudentDetails"
+                        />
+                      </>
+                    ) : (
+                      <h3>No Floors Found</h3>
+                    )}
+                  </CardBody>
+                )}
+              </Card>
+            </Container>
           </>
         )}
       </Container>
+      <Modal
+        className="modal-dialog-centered"
+        isOpen={buildingEditing}
+        toggle={() => setBuildingEditing(false)}
+        size="sm"
+      >
+        <div className="modal-header">
+          <h2 className="modal-title" id="modal-title-default">
+            Edit Building
+          </h2>
+          <button
+            aria-label="Close"
+            className="close"
+            data-dismiss="modal"
+            type="button"
+            onClick={() => setBuildingEditing(false)}
+          >
+            <span aria-hidden={true}>×</span>
+          </button>
+        </div>
+        {editLoading ? (
+          <Loader />
+        ) : (
+          <ModalBody>
+            <Form className="mb-4" onSubmit={editBuildingSubmit}>
+              <Row>
+                <Col>
+                  <Label
+                    className="form-control-label"
+                    htmlFor="example4cols2Input"
+                  >
+                    Building Name
+                  </Label>
+                  <Input
+                    id="example4cols2Input"
+                    placeholder="Name"
+                    type="text"
+                    onChange={(e) => setBuildingEditName(e.target.value)}
+                    value={buildingEditName}
+                    required
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Label
+                    className="form-control-label"
+                    htmlFor="example4cols2Input"
+                  >
+                    Building Abbreviation
+                  </Label>
+                  <Input
+                    id="example4cols2Input"
+                    placeholder="Name"
+                    type="text"
+                    onChange={(e) => setBuildingEditAbbv(e.target.value)}
+                    value={buildingEditAbbv}
+                    required
+                  />
+                </Col>
+              </Row>
+              <Row className="mt-4 float-right">
+                <Col>
+                  <Button color="primary" type="submit">
+                    Save Changes
+                  </Button>
+                </Col>
+              </Row>
+            </Form>
+          </ModalBody>
+        )}
+      </Modal>
+      <Modal
+        className="modal-dialog-centered"
+        isOpen={floorEditing}
+        toggle={() => setFloorEditing(false)}
+        size="md"
+      >
+        <div className="modal-header">
+          <h2 className="modal-title" id="modal-title-default">
+            Edit Floor
+          </h2>
+          <button
+            aria-label="Close"
+            className="close"
+            data-dismiss="modal"
+            type="button"
+            onClick={() => setFloorEditing(false)}
+          >
+            <span aria-hidden={true}>×</span>
+          </button>
+        </div>
+        {editLoading ? (
+          <Loader />
+        ) : (
+          <ModalBody>
+            <Form className="mb-4" onSubmit={editFloorSubmit}>
+              <Row>
+                <Col>
+                  <Label
+                    className="form-control-label"
+                    htmlFor="example4cols2Input"
+                  >
+                    No. of Floors
+                  </Label>
+                  <Input
+                    id="example4cols2Input"
+                    placeholder="Name"
+                    type="number"
+                    onChange={(e) => setFloorEditNoFloors(e.target.value)}
+                    value={floorEditNoFloors}
+                    required
+                  />
+                </Col>
+
+                <Col>
+                  <Label
+                    className="form-control-label"
+                    htmlFor="example4cols2Input"
+                  >
+                    Floor Abbreviation
+                  </Label>
+                  <Input
+                    id="example4cols2Input"
+                    placeholder="Name"
+                    type="text"
+                    onChange={(e) => setFloorEditAbbv(e.target.value)}
+                    value={floorEditAbbv}
+                    required
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Label
+                    className="form-control-label"
+                    htmlFor="example4cols2Input"
+                  >
+                    Rooms per Floor
+                  </Label>
+                  <Input
+                    id="example4cols2Input"
+                    placeholder="Name"
+                    type="number"
+                    onChange={(e) => setFloorEditFloorsRoom(e.target.value)}
+                    value={floorEditfloorsRoom}
+                    required
+                  />
+                </Col>
+                <Col>
+                  <Label
+                    className="form-control-label"
+                    htmlFor="exampleFormControlSelect3"
+                  >
+                    Sharing Type
+                  </Label>
+                  <Input
+                    id="exampleFormControlSelect3"
+                    type="select"
+                    onChange={(e) => setFloorEditSharingType(e.target.value)}
+                    value={floorEditsharingType}
+                    required
+                  >
+                    <option value="single">Single</option>
+                    <option value="double">Double</option>
+                    <option value="triple">Triple</option>
+                  </Input>
+                </Col>
+              </Row>
+              <Row className="mt-4 float-right">
+                <Col>
+                  <Button color="primary" type="submit">
+                    Save Changes
+                  </Button>
+                </Col>
+              </Row>
+            </Form>
+          </ModalBody>
+        )}
+      </Modal>
     </>
   );
 };

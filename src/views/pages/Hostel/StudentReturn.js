@@ -192,8 +192,8 @@ const StudentReturn = () => {
     formData.set("student", returnData.student);
     formData.set("school", user.school);
     formData.set("room_number",returnData.bookName)
-    formData.set("allocatedBy", returnData.collectedBy);
-    formData.set("allocationDate", returnDate);
+    formData.set("vacantBy", returnData.collectedBy);
+    formData.set("vacantDate", returnDate);
     
     try {
       setLoading(true);
@@ -204,7 +204,7 @@ const StudentReturn = () => {
         return toast.error(data.err);
       }
       setLoading(false);
-      toast.success("Book Returned Successfully");
+      toast.success("Room vacant Successfully");
       setReturnData({
         class: "",
         section: "",
@@ -216,7 +216,7 @@ const StudentReturn = () => {
       });
     } catch (err) {
       console.log(err);
-      toast.error("Book Return Failed");
+      toast.error("Room Vacant Failed");
       setLoading(false);
     }
   };

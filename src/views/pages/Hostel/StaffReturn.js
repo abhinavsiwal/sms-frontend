@@ -11,6 +11,12 @@ import {
   Button,
   CardHeader,
 } from "reactstrap";
+import {
+  getAllBuildingsList,
+  getAllRooms,
+  vacantRoom,
+  allocatedRoomList,
+} from "api/hostelManagement";
 import Loader from "components/Loader/Loader";
 import { isAuthenticated } from "api/auth";
 import { toast, ToastContainer } from "react-toastify";
@@ -30,6 +36,7 @@ const StaffReturn = () => {
     bookId: "",
     collectionDate: "",
     collectedBy: "",
+    building:"",
   });
   const [returnDate, setReturnDate] = useState(new Date());
   const [allDepartments, setAllDepartments] = useState([]);
@@ -37,6 +44,8 @@ const StaffReturn = () => {
   const [filterStaff, setFilterStaff] = useState([]);
   const [checked, setChecked] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState({});
+  const [allocattedRooms, setAllocattedRooms] = useState([]);
+  const [allBooks, setAllBooks] = useState([]);
   const getAllDepartment = async () => {
     try {
       setLoading(true);
@@ -71,6 +80,7 @@ const StaffReturn = () => {
   useEffect(() => {
     getAllDepartment();
     getAllStaffs();
+    getAllBuildingHandler();
   }, [checked]);
   const handleChange = (name) => async (event) => {
     setReturnData({ ...returnData, [name]: event.target.value });
@@ -91,6 +101,7 @@ const StaffReturn = () => {
       );
       console.log(selectedStaff1);
       setSelectedStaff(selectedStaff1);
+      allocatedRoomsHandler(selectedStaff1);
     }
   };
   const filterStaffHandler = async (id) => {
@@ -111,6 +122,41 @@ const StaffReturn = () => {
     }
   };
 
+  const allocatedRoomsHandler = async (student) => {
+    const formData = new FormData();
+    formData.set("building", returnData.building);
+    formData.set("department", returnData.department);
+    formData.set("staff", student._id);
+    formData.set("role", student.SID.slice(3, 6));
+
+    try {
+      setLoading(true);
+      const data = await allocatedRoomList(user._id,user.school,formData);
+      console.log(data);
+      setAllocattedRooms(data);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      console.log(err);
+    }
+
+  };
+
+  const getAllBuildingHandler = async () => {
+    try {
+      setLoading(true);
+      const data = await getAllBuildingsList(user.school, user._id);
+      console.log(data);
+      setAllBooks(data);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      toast.error("Fetching Books Failed");
+      setLoading(false);
+    }
+  };
+
+
   const returnHandler = async (e) => {
     console.log(returnData);
     let bookId = returnData.bookName.slice(0, 8);
@@ -124,26 +170,23 @@ const StaffReturn = () => {
 
     e.preventDefault();
     const formData = new FormData();
-    formData.set("status", "Return");
-    formData.set("book", bookName);
-    formData.set("bookID", bookId);
+    formData.set("department", returnData.department);
+    formData.set("room_number", returnData.bookName);
     formData.set("staff", returnData.staff);
     formData.set("school", user.school);
-    formData.set("returned", true);
-    formData.set("collectedBy", returnData.collectedBy);
-    formData.set("collectionDate", returnDate);
-    formData.set("allocationId", allocationId);
+    formData.set("vacantBy", returnData.collectedBy);
+    formData.set("vacantDate", returnDate);
     formData.set("department", returnData.department);
     try {
       setLoading(true);
-      const data = await returnBook(user._id, formData);
+      const data = await vacantRoom(user._id,user.school, formData);
       console.log(data);
       if (data.err) {
         setLoading(false);
         return toast.error(data.err);
       }
       setLoading(false);
-      toast.success("Book Returned Successfully");
+      toast.success("Room Vacant Successfully");
       setReturnData({
         department: "",
         staff: "",
@@ -154,7 +197,7 @@ const StaffReturn = () => {
       });
     } catch (err) {
       console.log(err);
-      toast.error("Book Return Failed");
+      toast.error("Room vacant Failed");
       setLoading(false);
     }
   };
@@ -207,6 +250,30 @@ const StaffReturn = () => {
                 className="form-control-label"
                 htmlFor="example4cols2Input"
               >
+                Building
+              </Label>
+              <Input
+                id="exampleFormControlSelect3"
+                type="select"
+                required
+                value={returnData.building}
+                onChange={handleChange("building")}
+                name="building"
+              >
+                <option value="">Select Building</option>
+                {allBooks &&
+                  allBooks.map((book) => (
+                    <option key={book._id} value={book._id}>
+                      {book.name}
+                    </option>
+                  ))}
+              </Input>
+            </Col>
+            <Col md="6">
+              <Label
+                className="form-control-label"
+                htmlFor="example4cols2Input"
+              >
                 Staff
               </Label>
               <Input
@@ -227,14 +294,13 @@ const StaffReturn = () => {
                   ))}
               </Input>
             </Col>
-          </Row>
-          <Row>
+         
             <Col md="6">
               <Label
                 className="form-control-label"
                 htmlFor="example4cols2Input"
               >
-                Issued Book
+                Allocated Rooms
               </Label>
               <Input
                 id="exampleFormControlSelect3"
@@ -244,18 +310,18 @@ const StaffReturn = () => {
                 onChange={handleChange("bookName")}
                 name="section"
               >
-                <option value="">Select Book</option>
-                {selectedStaff.issuedBooks &&
-                  selectedStaff.issuedBooks.map((book) => {
-                    console.log(book);
+                <option value="">Select Room</option>
+                {allocattedRooms &&
+                  allocattedRooms.map((book) => {
+                    // console.log(book);
                     return (
                       <option
                         value={
-                          book.bookID + "-" + book.book._id + "-" + book._id
+                          book.room_number
                         }
                         key={book._id}
                       >
-                        {book.book.name} - {book.bookID}
+                        {book.room_number}
                       </option>
                     );
                   })}
@@ -282,8 +348,7 @@ const StaffReturn = () => {
                 minDate={new Date()}
               />
             </Col>
-          </Row>
-          <Row>
+         
             <Col md="6">
               <Label
                 className="form-control-label"
@@ -319,7 +384,7 @@ const StaffReturn = () => {
               }}
             >
               <Button color="primary" type="submit">
-                Return Book
+                Vacant Room
               </Button>
             </Col>
           </Row>

@@ -118,4 +118,63 @@ export const allocationHistory = async (userId, schoolId, formData) => {
   }
 };
 
-
+export const getBuildingFloors = async (userId, schoolId) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/hostel/get_all_building_floors/${userId}/${schoolId}`
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw new err();
+  }
+};
+export const editBuilding = async (userId,formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/hostel/create_building/${userId}`,formData,"POST"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw new err();
+  }
+};
+export const editFloor = async (userId,formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/hostel/create_building_floor/${userId}`,formData,"POST"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw new err();
+  }
+};
+export const deleteBuilding = async (userId,formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/hostel/delete_building/${userId}`,formData,"POST"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw new err();
+  }
+};
+export const deleteFloor = async (userId,formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/hostel/delete_building_floor/${userId}`,formData,"POST"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw new err();
+  }
+};
