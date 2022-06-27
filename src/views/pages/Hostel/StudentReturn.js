@@ -186,18 +186,18 @@ const StudentReturn = () => {
 
     e.preventDefault();
     const formData = new FormData();
-    formData.set("status", "Return");
-    formData.set("book", bookName);
-    formData.set("bookID", bookId);
+    formData.set("building",returnData.building );
+    formData.set("class", returnData.class);
+    formData.set("section", returnData.section);
     formData.set("student", returnData.student);
     formData.set("school", user.school);
-    formData.set("returned", true);
-    formData.set("collectedBy", returnData.collectedBy);
-    formData.set("collectionDate", returnDate);
-    formData.set("allocationId", allocationId);
+    formData.set("room_number",returnData.bookName)
+    formData.set("allocatedBy", returnData.collectedBy);
+    formData.set("allocationDate", returnDate);
+    
     try {
       setLoading(true);
-      const data = await returnBook(user._id, formData);
+      const data = await vacantRoom(user._id,user.school, formData);
       console.log(data);
       if (data.err) {
         setLoading(false);
@@ -355,7 +355,7 @@ const StudentReturn = () => {
                     return (
                       <option
                         value={
-                          book._id
+                          book.room_number
                         }
                         key={book._id}
                       >
@@ -422,7 +422,7 @@ const StudentReturn = () => {
               }}
             >
               <Button color="primary" type="submit">
-                Return Book
+               Vacant Room
               </Button>
             </Col>
           </Row>
