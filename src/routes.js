@@ -118,6 +118,31 @@ export const adminRoutes = [
     ],
   },
   {
+    collapse: true,
+    name: "Credential Master",
+    icon: "ni ni-settings-gear-65 text-red",
+    state: "credentialCollapse",
+    module:"Credentials Master",
+    views: [
+      {
+        path: "/student-credentials",
+        name: "Student",
+        miniName: "A",
+        component: StudentCredentials,
+        layout: "/admin",
+        permission:"view"
+      },
+      {
+        path: "/staff-credentials",
+        name: "Staff",
+        miniName: "S",
+        component: StaffCredentials,
+        layout: "/admin",
+        permission:"view"
+      },
+    ],
+  },
+  {
     path: "/profile",
     name: "Profile",
     icon: "ni ni-shop text-primary",
@@ -513,14 +538,14 @@ export const adminRoutes = [
       //   layout: "/admin",
       //   permission:"view"
       // },
-      // {
-      //   path: "/Penaltymaster",
-      //   name: "Penalty Master",
-      //   miniName: "PM",
-      //   component: PenaltyMaster,
-      //   layout: "/admin",
-      //   permission:"view"
-      // },
+      {
+        path: "/Penaltymaster",
+        name: "Penalty Master",
+        miniName: "PM",
+        component: PenaltyMaster,
+        layout: "/admin",
+        permission:"view"
+      },
       // {
       //   path: "/siblingmaster",
       //   name: "Sibling Master",

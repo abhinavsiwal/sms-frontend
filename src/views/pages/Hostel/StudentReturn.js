@@ -50,6 +50,7 @@ const StudentReturn = () => {
   const [allBooks, setAllBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState({});
   const [selectedStudent, setSelectedStudent] = useState({});
+  const [allocattedRooms, setAllocattedRooms] = useState([]);
   const getAllClasses = async () => {
     try {
       setLoading(true);
@@ -131,6 +132,7 @@ const StudentReturn = () => {
       setLoading(true);
       const data = await allocatedRoomList(user._id,user.school,formData);
       console.log(data);
+      setAllocattedRooms(data);
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -346,18 +348,18 @@ const StudentReturn = () => {
                 onChange={handleChange("bookName")}
                 name="section"
               >
-                <option value="">Select Book</option>
-                {selectedStudent.issuedBooks &&
-                  selectedStudent.issuedBooks.map((book) => {
+                <option value="">Select Room</option>
+                {allocattedRooms &&
+                  allocattedRooms.map((book) => {
                     // console.log(book);
                     return (
                       <option
                         value={
-                          book.bookID + "-" + book.book._id + "-" + book._id
+                          book._id
                         }
                         key={book._id}
                       >
-                        {book.book.name} - {book.bookID}
+                        {book.room_number}
                       </option>
                     );
                   })}
