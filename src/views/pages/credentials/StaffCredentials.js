@@ -25,8 +25,8 @@ import { toast, ToastContainer } from "react-toastify";
 import { allSessions } from "api/session";
 import {
   allStudentCredentials,
-  studentPasswordEdit,
-  parentPasswordEdit,
+  staffPasswordEdit,
+  
 } from "api/credentials";
 import { getStaffByDepartment } from "api/staff";
 import { SearchOutlined } from "@ant-design/icons";
@@ -52,10 +52,9 @@ const StaffCredentials = () => {
   const [view, setView] = useState(0);
   const [editing, setEditing] = useState(false);
   const [credentials, setCredentials] = useState([]);
-  const [editStudentSID, setEditStudentSID] = useState("");
-  const [editStudentPassword, setEditStudentPassword] = useState("");
-  const [editParentSID, setEditParentSID] = useState("");
-  const [editParentPassword, setEditParentPassword] = useState("");
+  const [editStaffSID, setEditStaffSID] = useState("");
+  const [editStaffPassword, setEditStaffPassword] = useState("");
+
   const [viewCredentials, setViewCredentials] = useState(false);
 
   useEffect(() => {
@@ -82,6 +81,7 @@ const StaffCredentials = () => {
     {
       title: "Staff SID",
       dataIndex: "sid",
+      align: "left",
       sorter: (a, b) => a.sid > b.sid,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -140,67 +140,6 @@ const StaffCredentials = () => {
     },
 
     {
-      title: "Parent SID",
-      dataIndex: "parentId",
-      sorter: (a, b) => a.parentId > b.parentId,
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
-        return (
-          <>
-            <Input
-              autoFocus
-              placeholder="Type text here"
-              value={selectedKeys[0]}
-              onChange={(e) => {
-                setSelectedKeys(e.target.value ? [e.target.value] : []);
-                confirm({ closeDropdown: false });
-              }}
-              onBlur={() => {
-                confirm();
-              }}
-            ></Input>
-          </>
-        );
-      },
-      filterIcon: () => {
-        return <SearchOutlined />;
-      },
-      onFilter: (value, record) => {
-        return record.parentId.toLowerCase().includes(value.toLowerCase());
-      },
-    },
-    {
-      title: "Parent Password",
-      dataIndex: "parentPassword",
-      sorter: (a, b) => a.parentPassword > b.parentPassword,
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
-        return (
-          <>
-            <Input
-              autoFocus
-              placeholder="Type text here"
-              value={selectedKeys[0]}
-              onChange={(e) => {
-                setSelectedKeys(e.target.value ? [e.target.value] : []);
-                confirm({ closeDropdown: false });
-              }}
-              onBlur={() => {
-                confirm();
-              }}
-            ></Input>
-          </>
-        );
-      },
-      filterIcon: () => {
-        return <SearchOutlined />;
-      },
-      onFilter: (value, record) => {
-        return record.parentPassword
-          .toLowerCase()
-          .includes(value.toLowerCase());
-      },
-      render: (value) => <PasswordField value={value} />,
-    },
-    {
       title: "Action",
       key: "action",
       dataIndex: "action",
@@ -209,13 +148,81 @@ const StaffCredentials = () => {
   ];
   const searchHandler = async () => {
     const formData = {
-      department: selectedDepartment,
+      departmentId: selectedDepartment,
     };
+    try {
+      setViewLoading(true);
+      const data = await getStaffByDepartment(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        setViewLoading(false);
+        toast.error(data.err);
+        return;
+      }
+      let tableData = [];
+      for (let i = 0; i < data.length; i++) {
+        tableData.push({
+          key: i,
+          sid: data[i].SID,
+          password: data[i].temp,
 
+          action: (
+            <h5 key={i + 1} className="mb-0">
+              <Button
+                className="btn-sm pull-right"
+                color="primary"
+                type="button"
+                onClick={() => {
+                  setEditing(true);
+                  setEditStaffPassword(data[i].temp);
+                  setEditStaffSID(data[i].SID);
+                }}
+                key={"edit" + i + 1}
+              >
+                <i className="fas fa-user-edit" />
+              </Button>
+              <Button
+                className="btn-sm pull-right"
+                color="success"
+                type="button"
+                key={"email" + i + 1}
+              >
+                Send Email
+              </Button>
+            </h5>
+          ),
+        });
+      }
+      setStaffs(tableData);
+      setViewCredentials(true);
+      setViewLoading(false);
+    } catch (err) {
+      console.log(err);
+      setViewLoading(false);
+      toast.err("Error in getting Staff");
+    }
     try {
     } catch (error) {}
   };
-
+  const handleEdit = async()=>{
+    const formData = new FormData();
+    formData.set("SID", editStaffSID);
+    formData.set("password", editStaffPassword);
+    try {
+      setEditLoading(true);
+      const data = await staffPasswordEdit(user._id, formData);
+      console.log(data);
+      searchHandler();
+      toast.success("Staff Password Updated");
+      setEditLoading(false);
+      setEditing(false);
+    } catch (err) {
+      setEditLoading(false);
+      console.log(err);
+      toast.error("Staff Password Update Failed");
+      setEditing(false);
+    }
+  }
   return (
     <>
       <SimpleHeader name="Add Student" parentName="Student Management" />
@@ -268,10 +275,7 @@ const StaffCredentials = () => {
                 </Col>
 
                 <Col className="mt-4">
-                  <Button
-                    color="primary"
-                    //    onClick={searchHandler}
-                  >
+                  <Button color="primary" onClick={searchHandler}>
                     Search
                   </Button>
                 </Col>
@@ -280,6 +284,72 @@ const StaffCredentials = () => {
           </Card>
         )}
       </Container>
+      <Container className="mt--0 shadow-lg table-responsive" fluid>
+        {viewCredentials &&
+          (viewLoading ? (
+            <Loader />
+          ) : (
+            <Card className="mb-4">
+              <CardHeader></CardHeader>
+              <CardBody>
+                <AntTable
+                  columns={columns}
+                  data={staffs}
+                  pagination={true}
+                  exportFileName="credentials"
+                />
+              </CardBody>
+            </Card>
+          ))}
+      </Container>
+      <Modal
+        className="modal-dialog-centered"
+        isOpen={editing}
+        toggle={() => setEditing(false)}
+        size="sm"
+      >
+        <div className="modal-header">
+          <h2 className="modal-title" id="modal-title-default">
+            Change Password
+          </h2>
+          <button
+            aria-label="Close"
+            className="close"
+            data-dismiss="modal"
+            type="button"
+            onClick={() => setEditing(false)}
+          >
+            <span aria-hidden={true}>×</span>
+          </button>
+        </div>
+        {editLoading ? (
+          <Loader />
+        ) : (
+          <>
+            <ModalBody>
+              <Row>
+                <Col>
+                  <label className="form-control-label">Password</label>
+                  <Input
+                    id="form-abbreviation-name"
+                    value={editStaffPassword}
+                    onChange={(e) => setEditStaffPassword(e.target.value)}
+                    placeholder="Password"
+                    type="text"
+                  />
+                </Col>
+              </Row>
+            </ModalBody>
+            <ModalFooter>
+              
+                <Button color="success" type="button" onClick={handleEdit} > 
+                  Save Password
+                </Button>
+             
+            </ModalFooter>
+          </>
+        )}
+      </Modal>
     </>
   );
 };

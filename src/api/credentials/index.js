@@ -35,3 +35,16 @@ export const parentPasswordEdit = async (userId, formData) => {
     throw new err();
   }
 };
+
+
+export const staffPasswordEdit = async (userId, formData) => {
+  const url = `${process.env.REACT_APP_API_URL}/api/school/staff/password/${userId}`;
+  try {
+    const { data } = await sendRequest(url, formData, "PUT");
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw new err();
+  }
+};
