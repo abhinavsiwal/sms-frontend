@@ -21,10 +21,9 @@ import Loader from "components/Loader/Loader";
 import { Popconfirm } from "antd";
 import AntTable from "../tables/AntTable";
 import {
-  getAllHistory,
   getHistoryByType,
-} from "../../../api/libraryManagement";
-const ViewAllocations = () => {
+} from "../../../api/hostelManagement";
+const ViewHostelAllocations = () => {
   const { user } = isAuthenticated();
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState("empty");
@@ -189,10 +188,10 @@ const ViewAllocations = () => {
       },
     },
     {
-      title: "Book Name",
-      dataIndex: "book_name",
+      title: "Building",
+      dataIndex: "building",
       align:"left",
-      sorter: (a, b) => a.book_name > b.book_name,
+      sorter: (a, b) => a.building > b.building,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
           <>
@@ -215,14 +214,14 @@ const ViewAllocations = () => {
         return <SearchOutlined />;
       },
       onFilter: (value, record) => {
-        return record.book_name.toLowerCase().includes(value.toLowerCase());
+        return record.building.toLowerCase().includes(value.toLowerCase());
       },
     },
     {
-      title: "Book Id",
-      dataIndex: "book_id",
+      title: "Room Number",
+      dataIndex: "room_no",
       align:"left",
-      sorter: (a, b) => a.book_id > b.book_id,
+      sorter: (a, b) => a.room_no > b.room_no,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
           <>
@@ -245,7 +244,7 @@ const ViewAllocations = () => {
         return <SearchOutlined />;
       },
       onFilter: (value, record) => {
-        return record.book_id.toLowerCase().includes(value.toLowerCase());
+        return record.room_no.toLowerCase().includes(value.toLowerCase());
       },
     },
     {
@@ -465,10 +464,10 @@ const ViewAllocations = () => {
       },
     },
     {
-      title: "Book Name",
-      dataIndex: "book_name",
+      title: "Building",
+      dataIndex: "building",
       align:"left",
-      sorter: (a, b) => a.book_name > b.book_name,
+      sorter: (a, b) => a.building > b.building,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
           <>
@@ -491,14 +490,14 @@ const ViewAllocations = () => {
         return <SearchOutlined />;
       },
       onFilter: (value, record) => {
-        return record.book_name.toLowerCase().includes(value.toLowerCase());
+        return record.building.toLowerCase().includes(value.toLowerCase());
       },
     },
     {
-      title: "Book Id",
-      dataIndex: "book_id",
+      title: "Room Number",
+      dataIndex: "room_no",
       align:"left",
-      sorter: (a, b) => a.book_id > b.book_id,
+      sorter: (a, b) => a.room_no > b.room_no,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
           <>
@@ -521,7 +520,7 @@ const ViewAllocations = () => {
         return <SearchOutlined />;
       },
       onFilter: (value, record) => {
-        return record.book_id.toLowerCase().includes(value.toLowerCase());
+        return record.room_no.toLowerCase().includes(value.toLowerCase());
       },
     },
     {
@@ -557,7 +556,7 @@ const ViewAllocations = () => {
       },
     },
     {
-      title: "Collected By",
+      title: "Vacant By",
       dataIndex: "collected_by",
       align:"left",
       sorter: (a, b) => a.collected_by > b.collected_by,
@@ -680,10 +679,10 @@ const ViewAllocations = () => {
       },
     },
     {
-      title: "Book Name",
-      dataIndex: "book_name",
+      title: "Building",
+      dataIndex: "building",
       align:"left",
-      sorter: (a, b) => a.book_name > b.book_name,
+      sorter: (a, b) => a.building > b.building,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
           <>
@@ -706,14 +705,14 @@ const ViewAllocations = () => {
         return <SearchOutlined />;
       },
       onFilter: (value, record) => {
-        return record.book_name.toLowerCase().includes(value.toLowerCase());
+        return record.building.toLowerCase().includes(value.toLowerCase());
       },
     },
     {
-      title: "Book Id",
-      dataIndex: "book_id",
+      title: "Room Number",
+      dataIndex: "room_no",
       align:"left",
-      sorter: (a, b) => a.book_id > b.book_id,
+      sorter: (a, b) => a.room_no > b.room_no,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
           <>
@@ -736,7 +735,7 @@ const ViewAllocations = () => {
         return <SearchOutlined />;
       },
       onFilter: (value, record) => {
-        return record.book_id.toLowerCase().includes(value.toLowerCase());
+        return record.room_no.toLowerCase().includes(value.toLowerCase());
       },
     },
     {
@@ -895,10 +894,10 @@ const ViewAllocations = () => {
       },
     },
     {
-      title: "Book Name",
-      dataIndex: "book_name",
+      title: "Building",
+      dataIndex: "building",
       align:"left",
-      sorter: (a, b) => a.book_name > b.book_name,
+      sorter: (a, b) => a.building > b.building,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
           <>
@@ -921,14 +920,14 @@ const ViewAllocations = () => {
         return <SearchOutlined />;
       },
       onFilter: (value, record) => {
-        return record.book_name.toLowerCase().includes(value.toLowerCase());
+        return record.building.toLowerCase().includes(value.toLowerCase());
       },
     },
     {
-      title: "Book Id",
-      dataIndex: "book_id",
+      title: "Room Number",
+      dataIndex: "room_no",
       align:"left",
-      sorter: (a, b) => a.book_id > b.book_id,
+      sorter: (a, b) => a.room_no > b.room_no,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
           <>
@@ -951,7 +950,7 @@ const ViewAllocations = () => {
         return <SearchOutlined />;
       },
       onFilter: (value, record) => {
-        return record.book_id.toLowerCase().includes(value.toLowerCase());
+        return record.room_no.toLowerCase().includes(value.toLowerCase());
       },
     },
     {
@@ -987,7 +986,7 @@ const ViewAllocations = () => {
       },
     },
     {
-      title: "Collected By",
+      title: "Vacant By",
       dataIndex: "collected_by",
       align:"left",
       sorter: (a, b) => a.collected_by > b.collected_by,
@@ -1034,9 +1033,10 @@ const ViewAllocations = () => {
     return day + "/" + month + "/" + year;
   }
   const getHistoryByTypeHandler = async () => {
+    console.log("here");
     try {
       setLoading(true);
-      const data = await getHistoryByType(user.school, user._id);
+      const data = await getHistoryByType(user._id, user.school);
       console.log(data);
       if (data.err) {
         toast.error(data.err);
@@ -1054,8 +1054,8 @@ const ViewAllocations = () => {
           student_roll: data.student && data.student.roll_number,
           student_class: data.class && data.class.name,
           student_section: data.section && data.section.name,
-          book_name: data.book && data.book.name,
-          book_id: data.book && data.bookID,
+          building: data.building && data.building.name,
+          room_no: data.room_number && data.room_number,
           allocation_date: getFormattedDate(data.allocationDate),
           allocated_by:
             data.allocatedBy &&
@@ -1072,8 +1072,8 @@ const ViewAllocations = () => {
             data.staff && data.staff.firstname + " " + data.staff.lastname,
           staff_sid: data.staff && data.staff.SID,
           department: data.department && data.department.name,
-          book_name: data.book && data.book.name,
-          book_id: data.book && data.bookID,
+          building: data.building && data.building.name,
+          room_no: data.room_number && data.room_number,
           allocation_date:getFormattedDate(data.allocationDate),
           allocated_by:
             data.allocatedBy &&
@@ -1083,7 +1083,7 @@ const ViewAllocations = () => {
       setStaffAllocations(staffAllocationData);
 
       let studentReturnsData = [];
-      data.studentReturns.forEach((data, index) => {
+      data.studentVacants.forEach((data, index) => {
         studentReturnsData.push({
           key: index,
           student_name:
@@ -1093,30 +1093,30 @@ const ViewAllocations = () => {
           student_roll: data.student && data.student.roll_number,
           student_class: data.class && data.class.name,
           student_section: data.section && data.section.name,
-          book_name: data.book && data.book.name,
-          book_id: data.book && data.bookID,
-          collection_date: getFormattedDate(data.collectionDate),
+          building: data.building && data.building.name,
+          room_no: data.room_number && data.room_number,
+          collection_date: getFormattedDate(data.vacantDate),
           collected_by:
-            data.collectedBy &&
-            data.collectedBy.firstname + " " + data.collectedBy.lastname,
+          data.vacantBy &&
+          data.vacantBy.firstname + " " + data.vacantBy.lastname,
         });
       });
-      setStudentReturns(studentReturnsData);
+      setStudentReturns(studentReturnsData); 
 
       let staffReturnsData = [];
-      data.staffReturns.forEach((data, index) => {
+      data.staffVacants.forEach((data, index) => {
         staffReturnsData.push({
           key: index,
           staff_name:
             data.staff && data.staff.firstname + " " + data.staff.lastname,
           staff_sid: data.staff && data.staff.SID,
           department: data.department && data.department.name,
-          book_name: data.book && data.book.name,
-          book_id: data.book && data.bookID,
-          collection_date: getFormattedDate(data.collectionDate),
+          building: data.building && data.building.name,
+          room_no: data.room_number && data.room_number,
+          collection_date: getFormattedDate(data.vacantDate),
           collected_by:
-            data.collectedBy &&
-            data.collectedBy.firstname + " " + data.collectedBy.lastname,
+            data.vacantBy &&
+            data.vacantBy.firstname + " " + data.vacantBy.lastname,
         });
       }); 
       setStaffReturns(staffReturnsData);
@@ -1252,4 +1252,4 @@ const ViewAllocations = () => {
   );
 };
 
-export default ViewAllocations;
+export default ViewHostelAllocations;

@@ -65,6 +65,7 @@ import AddBooks from 'views/pages/Library/AddBooks';
 import AllocationManager from 'views/pages/Library/AllocationManager';
 import HostelAllocation from 'views/pages/Hostel/AllocationManager';
 import ViewAllocations from 'views/pages/Library/ViewAllocations';
+import ViewHostelAllocations  from 'views/pages/Hostel/ViewAllocations';
 import ApplyLeave from "./views/pages/LeaveManagement/ApplyLeave";
 import ViewAllLeaves from "./views/pages/LeaveManagement/ViewAllLeaves";
 import ViewLeaves from "./views/pages/LeaveManagement/ViewLeaves";
@@ -498,10 +499,10 @@ export const adminRoutes = [
         permission: "add",
       },
       {
-        path: "/view-allocations",
+        path: "/view-hostel-allocations",
         name: "View Allocations",
         miniName: "V",
-        component: ViewAllocations,
+        component: ViewHostelAllocations,
         layout: "/admin",
         permission: "view",
       },
@@ -1000,10 +1001,10 @@ const routes = [
         permission: "add",
       },
       {
-        path: "/view-allocations",
+        path: "/view-hostel-allocations",
         name: "View Allocations",
         miniName: "V",
-        component: ViewAllocations,
+        component: ViewHostelAllocations,
         layout: "/admin",
         permission: "view",
       },
