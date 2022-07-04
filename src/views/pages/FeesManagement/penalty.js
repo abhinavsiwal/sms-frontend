@@ -134,6 +134,7 @@ const PenaltyMaster = () => {
           JSON.stringify(temp)
         );
         setPenaltydata(searchAPI);
+        setType(2)
         if (searchAPI2 && searchAPI2.penalty) {
           setType(2);
           setViewFeesData(searchAPI2);
@@ -148,7 +149,7 @@ const PenaltyMaster = () => {
           setFeesNumber(searchAPI2.penalty);
           setShowLoad(false);
         } else {
-          setType(1);
+          setType(2);
           setViewFeesData(searchAPI);
           setFeesNumber(searchAPI);
           setShowLoad(false);
@@ -156,6 +157,7 @@ const PenaltyMaster = () => {
       } else {
         toast.error("Class Fees is not added please add that first");
         setShowLoad(false);
+        setType(2);
       }
     }
   };

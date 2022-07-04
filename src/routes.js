@@ -547,14 +547,14 @@ export const adminRoutes = [
         layout: "/admin",
         permission:"view"
       },
-      // {
-      //   path: "/siblingmaster",
-      //   name: "Sibling Master",
-      //   miniName: "SM",
-      //   component: SiblingMaster,
-      //   layout: "/admin",
-      //   permission:"view"
-      // },
+      {
+        path: "/siblingmaster",
+        name: "Sibling Master",
+        miniName: "SM",
+        component: SiblingMaster,
+        layout: "/admin",
+        permission:"view"
+      },
     ],
   },
   {
