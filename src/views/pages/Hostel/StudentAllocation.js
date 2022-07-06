@@ -23,7 +23,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./style.css";
 import { toast, ToastContainer } from "react-toastify";
 import { allClass } from "api/class";
-import { getAllBuildingsList,getAllRooms,allocateRoom } from "api/hostelManagement";
+import { getAllBuildingsList,getAllRooms,allocateRoom,hostelStudentList } from "api/hostelManagement";
 const StudentAllocation = () => {
   const { user, token } = isAuthenticated();
   const [allocationDate, setAllocationDate] = useState(new Date());
@@ -146,13 +146,16 @@ const StudentAllocation = () => {
 
   const filterStudentHandler = async (id) => {
     console.log(allocationData);
-    const formData = {
+    const frmData = {
       section: id,
       class: allocationData.class,
     };
+    const formData = new FormData();
+    formData.set("section", id);
+    formData.set("class", allocationData.class);
     try {
       setLoading(true);
-      const data = await filterStudent(user.school, user._id, formData);
+      const data = await hostelStudentList(user._id, user.school, formData);
       console.log(data);
       setStudents(data);
       setLoading(false);

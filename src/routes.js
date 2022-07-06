@@ -74,6 +74,8 @@ import ViewFees from "./views/pages/FeesManagement/view";
 import CollectionMaster from "./views/pages/CollectionMaster";
 import AllProducts from "./views/pages/Ecommerce/AllProducts";
 import StaffCredentials from "views/pages/credentials/StaffCredentials";
+import PenaltyMaster1 from "views/pages/FeesManagement/Penalty1";
+import FeesMaster1 from "views/pages/FeesManagement/FeesMaster1";
 
 export const adminRoutes = [
   {
@@ -523,6 +525,7 @@ export const adminRoutes = [
     state: "feesCollapse",
     module:"feesManagement",
     views: [
+    
       {
         path: "/feesmaster",
         name: "Fees Master",
@@ -531,6 +534,7 @@ export const adminRoutes = [
         layout: "/admin",
         permission:"view"
       },
+    
       // {
       //   path: "/viewfees",
       //   name: "View Fees",
@@ -547,6 +551,7 @@ export const adminRoutes = [
         layout: "/admin",
         permission:"view"
       },
+    
       {
         path: "/siblingmaster",
         name: "Sibling Master",

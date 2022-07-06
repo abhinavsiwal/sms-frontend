@@ -19,7 +19,7 @@ import { isAuthenticated } from "api/auth";
 import { toast, ToastContainer } from "react-toastify";
 import { getStaffByDepartment, allStaffs } from "api/staff";
 import { getDepartment } from "api/department";
-import { getAllBuildingsList,getAllRooms,allocateRoom } from "api/hostelManagement";
+import { getAllBuildingsList,getAllRooms,allocateRoom,hostelStaffList } from "api/hostelManagement";
 import { getAllBooks, allocateBook } from "../../../api/libraryManagement";
 const StaffAllocation = () => {
   const { user, token } = isAuthenticated();
@@ -128,12 +128,12 @@ const StaffAllocation = () => {
     }
   };
   const filterStaffHandler = async (id) => {
-    const formData = {
-      departmentId: id,
-    };
+    
+    const formData = new FormData();
+    formData.set("department_id", id);
     try {
       setLoading(true);
-      const data = await getStaffByDepartment(user.school, user._id, formData);
+      const data = await hostelStaffList(user._id, user.school, formData);
       console.log(data);
       setFilterStaff(data);
 
