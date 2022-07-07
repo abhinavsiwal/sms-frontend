@@ -19,21 +19,11 @@ import { Table } from "ant-table-extensions";
 import { isAuthenticated } from "api/auth";
 
 import "./fees_style.css";
-
 import { toast, ToastContainer } from "react-toastify";
-import { createFees } from "api/FeesManagement";
 import { allSessions } from "api/session";
 import { allClass } from "api/class";
-import { getFeesCustome } from "api/FeesManagement";
-import { deleteFees } from "api/FeesManagement";
-import { updateFees } from "api/FeesManagement";
-import {
-  createPenalty,
-  deletePenalty,
-  getFeesObject,
-  getFeesPenalty,
-  updatePenalty,
-} from "../../../api/FeesManagement/penalty";
+import { getFeesTypeList } from "api/Fees";
+import { updatePenalty } from "api/Fees";
 
 const PenaltyMaster = () => {
   const [sessions, setSessions] = useState("");
@@ -44,21 +34,25 @@ const PenaltyMaster = () => {
   const [type, setType] = useState(0);
   const [feesNumber, setFeesNumber] = useState([]);
   const [feesData, setFeesData] = useState([]);
-  const [viewFeesData, setViewFeesData] = useState("");
+  const [viewFeesData, setViewFeesData] = useState(false);
   const [penaltydata, setPenaltydata] = useState("");
   const [viewDataOnly, setViewDataOnly] = useState("");
-
+  const { user, token } = isAuthenticated();
+  const [feesType, setFeesType] = useState("");
   const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
-
+  const [selectedFees, setSelectedFees] = useState({});
+  const [viewPenalty, setViewPenalty] = useState(false);
+  const [penaltyCharges, setPenaltyCharges] = useState("");
+  const [penaltyType, setPenaltyType] = useState("");
+  const [applicableDate, setApplicableDate] = useState("");
   useEffect(async () => {
     setShowLoad(true);
-    await getAllClasses();
-    await getSession();
+    getAllClasses();
+    getSession();
     setShowLoad(false);
   }, []);
 
   const getSession = async () => {
-    const { user, token } = isAuthenticated();
     try {
       const session = await allSessions(user._id, user.school, token);
       if (session.err) {
@@ -73,7 +67,6 @@ const PenaltyMaster = () => {
   };
 
   const getAllClasses = async () => {
-    const { user, token } = isAuthenticated();
     try {
       const classs = await allClass(user._id, user.school, token);
       if (classs.err) {
@@ -103,277 +96,71 @@ const PenaltyMaster = () => {
     } else {
       setType(0);
 
-      setClassID(JSON.parse(e.target.value));
+      setClassID(e.target.value);
     }
   };
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    setShowLoad(true);
-    const { user, token } = isAuthenticated();
-    if (classID === "" && sessionID === "") {
+    const formData = new FormData();
+    formData.set("class", classID);
+    formData.set("session", sessionID._id);
+    try {
+      setShowLoad(true);
+      const data = await getFeesTypeList(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        setShowLoad(false);
+        return toast.error(data.err);
+      }
+      setPenaltydata(data);
+      setViewFeesData(true);
       setShowLoad(false);
-      toast.error("Please Select Data First");
-    } else {
-      let temp = {
-        class: classID._id,
-        session: sessionID._id,
-      };
-      var searchAPI = await getFeesObject(
-        user.school,
-        user._id,
-        token,
-        JSON.stringify(temp)
-      );
-      console.log(searchAPI);
-      if (searchAPI && searchAPI.length > 0) {
-        var searchAPI2 = await getFeesPenalty(
-          user.school,
-          user._id,
-          token,
-          JSON.stringify(temp)
-        );
-        setPenaltydata(searchAPI);
-        setType(2)
-        if (searchAPI2 && searchAPI2.penalty) {
-          setType(2);
-          setViewFeesData(searchAPI2);
-          var temp_data = searchAPI2.penalty.map((data, index) => {
-            return {
-              name: data["name"],
-              amount: data["amount"],
-              penalty_type: data["penalty_type"],
-            };
-          });
-          setViewDataOnly(temp_data);
-          setFeesNumber(searchAPI2.penalty);
-          setShowLoad(false);
-        } else {
-          setType(2);
-          setViewFeesData(searchAPI);
-          setFeesNumber(searchAPI);
-          setShowLoad(false);
-        }
-      } else {
-        toast.error("Class Fees is not added please add that first");
-        setShowLoad(false);
-        setType(2);
-      }
+    } catch (err) {
+      setShowLoad(false);
+      console.log(err);
+      toast.error("Getting Fees Type List Failed!");
     }
   };
 
-  const handleChange = (name, data, index) => (e) => {
-    let temp = feesData;
-    temp[index] = { ...feesData[index], name: data, [name]: e.target.value };
-    setFeesData(temp);
-    console.log(feesData);
-  };
-
-  const handleDate = (name, data, index) => (e) => {
-    if (e.target.value === "") {
-      let temp = feesData;
-      temp[index] = { ...feesData[index], name: data, [name]: "" };
-      setFeesData(temp);
-    } else {
-      let temp = feesData;
-      temp[index] = { ...feesData[index], name: data, [name]: e.target.value };
-      setFeesData(temp);
+  useEffect(() => {
+    if (feesType === "") {
+      setViewPenalty(false);
+      return;
     }
-  };
+    const selectedFees1 = penaltydata.find((item) => item._id === feesType);
+    setSelectedFees(selectedFees1);
+    console.log(selectedFees1);
+    setViewPenalty(true);
+  }, [feesType]);
 
-  const handleChangeEdit = (name, data, index) => (e) => {
-    let temp = feesNumber;
-    temp[index] = { ...feesNumber[index], name: data, [name]: e.target.value };
-    setFeesNumber(temp);
-    forceUpdate();
-    console.log(feesNumber);
-  };
-
-  const handleDateEdit = (name, data, index) => (e) => {
-    if (e.target.value === "") {
-      let temp = feesNumber;
-      temp[index] = { ...feesNumber[index], name: data, [name]: "" };
-      setFeesNumber(temp);
-      forceUpdate();
-    } else {
-      let temp = feesNumber;
-      temp[index] = {
-        ...feesNumber[index],
-        name: data,
-        [name]: e.target.value,
-      };
-      setFeesNumber(temp);
-      forceUpdate();
-    }
-  };
-
-  const handleSubmitFees = async (e) => {
-    setShowLoad(true);
+  const submitFees =async (e)=>{
     e.preventDefault();
-    let formdata = new FormData();
-    const { user, token } = isAuthenticated();
-    formdata.set("class", classID._id);
-    formdata.set("school", user.school);
-    formdata.set("penalty", JSON.stringify(feesData));
-    formdata.set("session", sessionID._id);
+    const formData = new FormData();
+    formData.set("sub_fees_management_id",selectedFees.fees_management_id)
+    formData.set("sub_fees_management_id",JSON.stringify([selectedFees.fees_management_id]))
+    formData.set("penalty_charges",penaltyCharges);
+    formData.set("applicable_date",applicableDate);
+    formData.set("penalty_rate",penaltyType);
+
     try {
-      var createFeesAPI = await createPenalty(user._id, token, formdata);
-      console.log(createFeesAPI);
-      if (createFeesAPI && createFeesAPI.err) {
+      setShowLoad(true);
+      const data = await updatePenalty(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
         setShowLoad(false);
-        toast.error(createFeesAPI.err);
-      } else {
-        setShowLoad(false);
-        toast.success("Penalty Added Successfully");
-        setTimeout(() => {
-          window.location.reload(1);
-        }, 1000);
+        return toast.error(data.err);
       }
-    } catch (error) {
-      toast.error("Something Went Wrong!");
-    }
-  };
-  const handleSubmitFeesEdit = async (e) => {
-    setShowLoad(true);
-    e.preventDefault();
-    let formdata = new FormData();
-    const { user, token } = isAuthenticated();
-    formdata.set("penalty", JSON.stringify(feesNumber));
-    try {
-      var editFeesAPI = await updatePenalty(
-        viewFeesData._id,
-        user._id,
-        token,
-        formdata
-      );
-      console.log(editFeesAPI);
-      if (editFeesAPI && editFeesAPI.err) {
-        setShowLoad(false);
-        toast.error(editFeesAPI.err);
-      } else {
-        setShowLoad(false);
-        toast.success("Penalty Updated Successfully");
-        setTimeout(() => {
-          window.location.reload(1);
-        }, 1000);
-      }
-    } catch (error) {
-      toast.error("Something Went Wrong!");
-    }
-  };
-
-  const handleEditSelect = (e) => {
-    e.preventDefault();
-    setShowLoad(true);
-    setType(3);
-    setShowLoad(false);
-  };
-
-  const handleDeleteSelect = async (e) => {
-    e.preventDefault();
-    setShowLoad(true);
-    const { user, token } = isAuthenticated();
-    try {
-      var deleteAPI = await deletePenalty(viewFeesData._id, user._id, token);
-      if (deleteAPI && deleteAPI.err) {
-        setShowLoad(false);
-        toast.error(deleteAPI.err);
-      } else {
-        setShowLoad(false);
-        toast.success("Penalty Delete Successfully");
-        setTimeout(() => {
-          window.location.reload(1);
-        }, 1000);
-      }
-    } catch (error) {
+      setShowLoad(false);
+      toast.success("Penalty Updated Successfully!");
+      setViewPenalty(false)
+    } catch (err) {
+      console.log(err);
+      toast.error("Updating Penalty Failed!");
       setShowLoad(false);
     }
-  };
 
-  const column = [
-    {
-      key: "name",
-      title: "Name",
-      dataIndex: "name",
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
-        return (
-          <>
-            <Row>
-              <Col>
-                <Input
-                  autoFocus
-                  id="search_bar_table"
-                  placeholder="Type text here"
-                  value={selectedKeys[0]}
-                  onChange={(e) => {
-                    setSelectedKeys(e.target.value ? [e.target.value] : []);
-                    confirm({ closeDropdown: false });
-                  }}
-                  onBlur={() => {
-                    confirm();
-                  }}
-                />
-              </Col>
-            </Row>
-          </>
-        );
-      },
-      filterIcon: () => {
-        return <SearchOutlined />;
-      },
-      onFilter: (value, record) => {
-        return record.name.toLowerCase().includes(value.toLowerCase());
-      },
-      sorter: (record1, record2) => {
-        return record1.name > record2.name;
-      },
-    },
-    {
-      key: "amount",
-      title: "Amount",
-      dataIndex: "amount",
-      sorter: (record1, record2) => {
-        return record1.amount > record2.amount;
-      },
-    },
-    {
-      key: "penalty_type",
-      title: "Penalty Type",
-      dataIndex: "penalty_type",
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
-        return (
-          <>
-            <Row>
-              <Col>
-                <Input
-                  autoFocus
-                  id="search_bar_table"
-                  placeholder="Type text here"
-                  value={selectedKeys[0]}
-                  onChange={(e) => {
-                    setSelectedKeys(e.target.value ? [e.target.value] : []);
-                    confirm({ closeDropdown: false });
-                  }}
-                  onBlur={() => {
-                    confirm();
-                  }}
-                />
-              </Col>
-            </Row>
-          </>
-        );
-      },
-      filterIcon: () => {
-        return <SearchOutlined />;
-      },
-      onFilter: (value, record) => {
-        return record.penalty_type.toLowerCase().includes(value.toLowerCase());
-      },
-      sorter: (record1, record2) => {
-        return record1.penalty_type > record2.penalty_type;
-      },
-    },
-  ];
+  }
 
   return (
     <>
@@ -400,7 +187,7 @@ const PenaltyMaster = () => {
       <Container fluid className="mt--6">
         <Card>
           <CardHeader>
-            <h2>Penalty</h2>
+            <h2>Penalty Master</h2>
           </CardHeader>
           <CardBody>
             <Form onSubmit={handleSearch}>
@@ -425,7 +212,7 @@ const PenaltyMaster = () => {
                       classs !== "" &&
                       classs.map((clas) => {
                         return (
-                          <option key={clas._id} value={JSON.stringify(clas)}>
+                          <option key={clas._id} value={clas._id}>
                             {clas.name}
                           </option>
                         );
@@ -469,226 +256,125 @@ const PenaltyMaster = () => {
           </CardBody>
         </Card>
       </Container>
-      {type === 1 && (
-        <Container fluid>
-          <Card>
-            <CardHeader>
-              <h2>Set Penalty Fees</h2>
-              <p>Class : {classID.name}</p>
-              <p>Session : {sessionID.name}</p>
-            </CardHeader>
-            <form onSubmit={handleSubmitFees}>
-              <CardBody>
-                <div className="table_div_fees">
-                  <table className="fees_table">
-                    <thead>
-                      <th>Name</th>
-                      <th>Amount</th>
-                      <th>Penalty Type</th>
-                    </thead>
-                    <tbody>
-                      {feesNumber.map((data, index) => {
+      {viewFeesData && (
+        <Card>
+          <CardHeader>
+            <h2>Select Fees Type</h2>
+          </CardHeader>
+          <CardBody>
+            <Form>
+              <Row className="feesMainRow" fluid>
+                <Col md="4">
+                  <label
+                    className="form-control-label"
+                    htmlFor="exampleFormControlSelect3"
+                  >
+                    Select Fees Type
+                  </label>
+                  <Input
+                    id="example4cols3Input"
+                    type="select"
+                    onChange={(e) => setFeesType(e.target.value)}
+                    required
+                  >
+                    <option value="" selected>
+                      Select Fees Type
+                    </option>
+                    {penaltydata &&
+                      penaltydata.map((penalty) => {
                         return (
-                          <tr>
-                            <td>{data}</td>
-                            <td>
-                              <Input
-                                id="exampleFormControlTextarea1"
-                                type="number"
-                                required
-                                placeholder="Amount"
-                                onChange={handleChange("amount", data, index)}
-                              />
-                            </td>
-                            <td>
-                              <select
-                                required
-                                className="form-control"
-                                onChange={handleChange(
-                                  "penalty_type",
-                                  data,
-                                  index
-                                )}
-                              >
-                                <option value="" selected disabled>
-                                  Select Penalty Type
-                                </option>
-                                <option value="flat">Flat</option>
-                                <option value="percentage">% Percentage</option>
-                              </select>
-                            </td>
-                          </tr>
+                          <option key={penalty._id} value={penalty._id}>
+                            {penalty.name}
+                          </option>
                         );
                       })}
-                    </tbody>
-                  </table>
-                </div>
+                  </Input>
+                </Col>
+              </Row>
+            </Form>
+            {viewPenalty && (
+              <form onSubmit={submitFees} >
+                <Row className=" feesMainRow " fluid>
+                  <Col>
+                    <label
+                      className="form-control-label"
+                      htmlFor="exampleFormControlSelect3"
+                    >
+                      Total Fees Amount
+                    </label>
+                    <Input
+                      id="example4cols3Input"
+                      type="number"
+                      disabled
+                      required
+                      value={selectedFees.total_amount}
+                    />
+                  </Col>
+                  <Col>
+                    <label
+                      className="form-control-label"
+                      htmlFor="exampleFormControlSelect3"
+                    >
+                      Penalty Charges
+                    </label>
+                    <Input
+                      id="example4cols3Input"
+                      type="number"
+                      required
+                      value={penaltyCharges}
+                      placeholder="Enter Penalty Charges"
+                      onChange={(e) => setPenaltyCharges(e.target.value)}
+                    />
+                  </Col>
+                  <Col>
+                    <label
+                      className="form-control-label"
+                      htmlFor="exampleFormControlSelect3"
+                    >
+                      Penalty Type
+                    </label>
+                    <Input
+                      id="example4cols3Input"
+                      type="select"
+                      value={penaltyType}
+                      required
+                      onChange={(e) => setPenaltyType(e.target.value)}
+                    >
+                      <option value="" disabled selected>
+                        Select Penalty Type
+                      </option>
+                      <option value="flat_rate">Flat Rate</option>
+                      <option value="percentage">Percentage</option>
+                    </Input>
+                  </Col>
+                  <Col>
+                    <label
+                      className="form-control-label"
+                      htmlFor="exampleFormControlSelect3"
+                    >
+                      Penalty Type
+                    </label>
+                    <Input
+                      id="example4cols3Input"
+                      type="date"
+                      required
+                      value={applicableDate}
+                      onChange={(e) => setApplicableDate(e.target.value)}
+                    />
+                  </Col>
+                </Row>
                 <br />
                 <Row className="left_button">
                   <Col>
-                    <Button type="submit" color="primary">
+                    <Button color="primary" type="submit">
                       Submit
                     </Button>
                   </Col>
                 </Row>
-              </CardBody>
-            </form>
-          </Card>
-        </Container>
-      )}
-      {type === 2 && (
-        <Container fluid>
-          <Card>
-            <CardHeader>
-              <h2>View Penalty Fees</h2>
-              <p>
-                Class :{" "}
-                {viewFeesData && viewFeesData.class && viewFeesData.class.name}
-              </p>
-              <p>
-                Session :{" "}
-                {viewFeesData &&
-                  viewFeesData.session &&
-                  viewFeesData.session.name}
-              </p>
-              <Button onClick={handleEditSelect} size="sm" color="primary">
-                Edit Penalty
-              </Button>
-              <Button size="sm" color="danger">
-                <Popconfirm
-                  title="Are You Sure to Delete?"
-                  onConfirm={handleDeleteSelect}
-                >
-                  Delete Entire Penalty
-                </Popconfirm>
-              </Button>
-            </CardHeader>
-            <form onSubmit={handleSubmitFees}>
-              <CardBody>
-                <div className="table_div_fees">
-                  <Table
-                    style={{ whiteSpace: "pre" }}
-                    loading={showLoad}
-                    exportableProps={{
-                      fileName: "Penalty Fees",
-                      showColumnPicker: true,
-                    }}
-                    pagination={{
-                      pageSizeOptions: ["5", "10", "30", "60", "100", "1000"],
-                      showSizeChanger: true,
-                    }}
-                    columns={column}
-                    dataSource={viewDataOnly}
-                  />
-                  {/* <table className="fees_table">
-                    <thead>
-                      <th>Name</th>
-                      <th>Amount</th>
-                      <th>Penalty Type</th>
-                    </thead>
-                    <tbody>
-                      {feesNumber.map((data, index) => {
-                        return (
-                          <tr>
-                            <td>{data["name"]}</td>
-                            <td>{data["amount"]}</td>
-                            <td>{data["penalty_type"]}</td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table> */}
-                </div>
-                <br />
-              </CardBody>
-            </form>
-          </Card>
-        </Container>
-      )}
-      {type === 3 && (
-        <Container fluid>
-          <Card>
-            <CardHeader>
-              <h2>Edit Penalty Fees</h2>
-              <p>
-                Class :{" "}
-                {viewFeesData && viewFeesData.class && viewFeesData.class.name}
-              </p>
-              <p>
-                Session :{" "}
-                {viewFeesData &&
-                  viewFeesData.session &&
-                  viewFeesData.session.name}
-              </p>
-            </CardHeader>
-            <form onSubmit={handleSubmitFeesEdit}>
-              <CardBody>
-                <div className="table_div_fees">
-                  <table className="fees_table">
-                    <thead>
-                      <th>Name</th>
-                      <th>Amount</th>
-                      <th>Penalty Type</th>
-                    </thead>
-                    <tbody>
-                      {penaltydata.map((data, index) => {
-                        return (
-                          <tr>
-                            <td>{data}</td>
-                            <td>
-                              <Input
-                                id="exampleFormControlTextarea1"
-                                type="number"
-                                required
-                                placeholder="Amount"
-                                value={
-                                  feesNumber[index] &&
-                                  feesNumber[index]["amount"]
-                                }
-                                onChange={handleChangeEdit(
-                                  "amount",
-                                  data,
-                                  index
-                                )}
-                              />
-                            </td>
-                            <td>
-                              <select
-                                required
-                                className="form-control"
-                                value={
-                                  feesNumber[index] &&
-                                  feesNumber[index]["penalty_type"]
-                                }
-                                onChange={handleChangeEdit(
-                                  "penalty_type",
-                                  data,
-                                  index
-                                )}
-                              >
-                                <option value="">Select Penalty Type</option>
-                                <option value="flat">Flat</option>
-                                <option value="percentage">% Percentage</option>
-                              </select>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-                <br />
-                <Row className="left_button">
-                  <Col>
-                    <Button type="submit" color="primary">
-                      Submit
-                    </Button>
-                  </Col>
-                </Row>
-              </CardBody>
-            </form>
-          </Card>
-        </Container>
+              </form>
+            )}
+          </CardBody>
+        </Card>
       )}
     </>
   );
