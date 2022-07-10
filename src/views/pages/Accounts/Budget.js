@@ -12,16 +12,16 @@ import {
 } from "reactstrap";
 import { Popconfirm } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { allSessions } from "api/session";
 import { Table } from "ant-table-extensions";
 
 import SimpleHeader from "components/Headers/SimpleHeader";
 import LoadingScreen from "react-loading-screen";
 
-import { isAuthenticated } from "api/auth";
 import { toast, ToastContainer } from "react-toastify";
+import { allSessions } from "api/session";
 import { getStaffByDepartment, allStaffs } from "api/staff";
 import { getDepartment } from "api/department";
+import { isAuthenticated } from "api/auth";
 import { addStaffBudget } from "api/Budget";
 
 const BudgetMaster = () => {
@@ -38,7 +38,6 @@ const BudgetMaster = () => {
   });
 
   const [allDepartments, setAllDepartments] = useState([]);
-  const [allStaff, setAllStaff] = useState([]);
   const [filterStaff, setFilterStaff] = useState([]);
   const [checked, setChecked] = useState(false);
 

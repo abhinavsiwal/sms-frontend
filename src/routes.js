@@ -78,6 +78,7 @@ import PenaltyMaster1 from "views/pages/FeesManagement/Penalty1";
 import FeesMaster1 from "views/pages/FeesManagement/FeesMaster1";
 import BudgetMaster from "./views/pages/Accounts/Budget";
 import DeptBudgetMaster from "views/pages/Accounts/DeptBudget";
+import BudgetUsesDetails from "views/pages/Accounts/BudgetUsesDetails";
 
 export const adminRoutes = [
   {
@@ -615,6 +616,14 @@ export const adminRoutes = [
         name: "Dept Budget Allocations",
         miniName: "DBA",
         component: DeptBudgetMaster,
+        layout: "/admin",
+        permission: "edit",
+      },
+      {
+        path: "/budget-uses--details ",
+        name: "Budget Uses Details",
+        miniName: "BUD",
+        component: BudgetUsesDetails,
         layout: "/admin",
         permission: "edit",
       },
