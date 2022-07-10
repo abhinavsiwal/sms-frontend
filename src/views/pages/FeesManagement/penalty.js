@@ -45,6 +45,7 @@ const PenaltyMaster = () => {
   const [penaltyCharges, setPenaltyCharges] = useState("");
   const [penaltyType, setPenaltyType] = useState("");
   const [applicableDate, setApplicableDate] = useState("");
+  const [fees, setFees] = useState([]);
   useEffect(async () => {
     setShowLoad(true);
     getAllClasses();
@@ -134,14 +135,17 @@ const PenaltyMaster = () => {
     setViewPenalty(true);
   }, [feesType]);
 
-  const submitFees =async (e)=>{
+  const submitFees = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.set("sub_fees_management_id",selectedFees.fees_management_id)
-    formData.set("sub_fees_management_id",JSON.stringify([selectedFees.fees_management_id]))
-    formData.set("penalty_charges",penaltyCharges);
-    formData.set("applicable_date",applicableDate);
-    formData.set("penalty_rate",penaltyType);
+    formData.set("sub_fees_management_id", selectedFees.fees_management_id);
+    formData.set(
+      "sub_fees_management_id",
+      JSON.stringify(fees)
+    );
+    formData.set("penalty_charges", penaltyCharges);
+    formData.set("applicable_date", applicableDate);
+    formData.set("penalty_rate", penaltyType);
 
     try {
       setShowLoad(true);
@@ -153,14 +157,25 @@ const PenaltyMaster = () => {
       }
       setShowLoad(false);
       toast.success("Penalty Updated Successfully!");
-      setViewPenalty(false)
+      setViewPenalty(false);
+      setViewFeesData(false)
     } catch (err) {
       console.log(err);
       toast.error("Updating Penalty Failed!");
       setShowLoad(false);
     }
+  };
 
-  }
+  const handleFees = (event) => {
+    console.log(event.target.value);
+    let updatedFees=[...fees];
+    if (event.target.checked) {
+      updatedFees=[...fees, event.target.value];
+    } else {
+      updatedFees.splice(fees.indexOf(event.target.value), 1);
+    }
+    setFees(updatedFees);
+  };
 
   return (
     <>
@@ -262,117 +277,95 @@ const PenaltyMaster = () => {
             <h2>Select Fees Type</h2>
           </CardHeader>
           <CardBody>
-            <Form>
-              <Row className="feesMainRow" fluid>
-                <Col md="4">
+            <form onSubmit={submitFees} >
+              <Row>
+                {penaltydata &&
+                  penaltydata.map((penalty, index) => {
+                    return (
+                      <Col key={index} md={4}>
+                        <div className="custom-control custom-checkbox mb-3">
+                          <Input
+                            className="custom-control-input"
+                            id={`customCheck${index}`}
+                            type="checkbox"
+                            onChange={handleFees}
+                            value={penalty._id}
+                          />
+                          <label
+                            className="custom-control-label"
+                            htmlFor={`customCheck${index}`}
+                          >
+                            {penalty.name}
+                          </label>
+                        </div>
+                      </Col>
+                    );
+                  })}
+              </Row>
+            
+              <Row className=" feesMainRow " fluid>
+                <Col>
                   <label
                     className="form-control-label"
                     htmlFor="exampleFormControlSelect3"
                   >
-                    Select Fees Type
+                    Penalty Charges
+                  </label>
+                  <Input
+                    id="example4cols3Input"
+                    type="number"
+                    required
+                    value={penaltyCharges}
+                    placeholder="Enter Penalty Charges"
+                    onChange={(e) => setPenaltyCharges(e.target.value)}
+                  />
+                </Col>
+                <Col>
+                  <label
+                    className="form-control-label"
+                    htmlFor="exampleFormControlSelect3"
+                  >
+                    Penalty Type
                   </label>
                   <Input
                     id="example4cols3Input"
                     type="select"
-                    onChange={(e) => setFeesType(e.target.value)}
+                    value={penaltyType}
                     required
+                    onChange={(e) => setPenaltyType(e.target.value)}
                   >
-                    <option value="" selected>
-                      Select Fees Type
+                    <option value="" disabled selected>
+                      Select Penalty Type
                     </option>
-                    {penaltydata &&
-                      penaltydata.map((penalty) => {
-                        return (
-                          <option key={penalty._id} value={penalty._id}>
-                            {penalty.name}
-                          </option>
-                        );
-                      })}
+                    <option value="flat_rate">Flat Rate</option>
+                    <option value="percentage">Percentage</option>
                   </Input>
                 </Col>
+                <Col>
+                  <label
+                    className="form-control-label"
+                    htmlFor="exampleFormControlSelect3"
+                  >
+                    Penalty Type
+                  </label>
+                  <Input
+                    id="example4cols3Input"
+                    type="date"
+                    required
+                    value={applicableDate}
+                    onChange={(e) => setApplicableDate(e.target.value)}
+                  />
+                </Col>
               </Row>
-            </Form>
-            {viewPenalty && (
-              <form onSubmit={submitFees} >
-                <Row className=" feesMainRow " fluid>
-                  <Col>
-                    <label
-                      className="form-control-label"
-                      htmlFor="exampleFormControlSelect3"
-                    >
-                      Total Fees Amount
-                    </label>
-                    <Input
-                      id="example4cols3Input"
-                      type="number"
-                      disabled
-                      required
-                      value={selectedFees.total_amount}
-                    />
-                  </Col>
-                  <Col>
-                    <label
-                      className="form-control-label"
-                      htmlFor="exampleFormControlSelect3"
-                    >
-                      Penalty Charges
-                    </label>
-                    <Input
-                      id="example4cols3Input"
-                      type="number"
-                      required
-                      value={penaltyCharges}
-                      placeholder="Enter Penalty Charges"
-                      onChange={(e) => setPenaltyCharges(e.target.value)}
-                    />
-                  </Col>
-                  <Col>
-                    <label
-                      className="form-control-label"
-                      htmlFor="exampleFormControlSelect3"
-                    >
-                      Penalty Type
-                    </label>
-                    <Input
-                      id="example4cols3Input"
-                      type="select"
-                      value={penaltyType}
-                      required
-                      onChange={(e) => setPenaltyType(e.target.value)}
-                    >
-                      <option value="" disabled selected>
-                        Select Penalty Type
-                      </option>
-                      <option value="flat_rate">Flat Rate</option>
-                      <option value="percentage">Percentage</option>
-                    </Input>
-                  </Col>
-                  <Col>
-                    <label
-                      className="form-control-label"
-                      htmlFor="exampleFormControlSelect3"
-                    >
-                      Penalty Type
-                    </label>
-                    <Input
-                      id="example4cols3Input"
-                      type="date"
-                      required
-                      value={applicableDate}
-                      onChange={(e) => setApplicableDate(e.target.value)}
-                    />
-                  </Col>
-                </Row>
-                <br />
-                <Row className="left_button">
-                  <Col>
-                    <Button color="primary" type="submit">
-                      Submit
-                    </Button>
-                  </Col>
-                </Row>
-              </form>
-            )}
+              <br />
+              <Row className="left_button">
+                <Col>
+                  <Button color="primary" type="submit">
+                    Submit
+                  </Button>
+                </Col>
+              </Row>
+            </form>
           </CardBody>
         </Card>
       )}

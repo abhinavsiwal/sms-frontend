@@ -151,7 +151,7 @@ function Admin() {
           sidenavOpen={sidenavOpen}
           brandText={getBrandText(location.pathname)}
         />
-        <Switch>{getRoutes(routes)}</Switch>
+        <Switch>{getRoutes(adminRoutes)}</Switch>
         <AdminFooter />
       </div>
       {sidenavOpen ? (

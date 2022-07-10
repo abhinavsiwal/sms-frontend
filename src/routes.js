@@ -59,13 +59,13 @@ import StudentCredentials from "views/pages/credentials/StudentCredentials";
 import StaffAttendance from "views/pages/staffManagement/StaffAttendance";
 import FeesMaster from "views/pages/FeesManagement/feesmaster";
 import PenaltyMaster from "views/pages/FeesManagement/penalty";
-import AddBuilding from 'views/pages/Hostel/AddBuildingFloor';
-import AddShelf from 'views/pages/Library/AddShelf';
-import AddBooks from 'views/pages/Library/AddBooks';
-import AllocationManager from 'views/pages/Library/AllocationManager';
-import HostelAllocation from 'views/pages/Hostel/AllocationManager';
-import ViewAllocations from 'views/pages/Library/ViewAllocations';
-import ViewHostelAllocations  from 'views/pages/Hostel/ViewAllocations';
+import AddBuilding from "views/pages/Hostel/AddBuildingFloor";
+import AddShelf from "views/pages/Library/AddShelf";
+import AddBooks from "views/pages/Library/AddBooks";
+import AllocationManager from "views/pages/Library/AllocationManager";
+import HostelAllocation from "views/pages/Hostel/AllocationManager";
+import ViewAllocations from "views/pages/Library/ViewAllocations";
+import ViewHostelAllocations from "views/pages/Hostel/ViewAllocations";
 import ApplyLeave from "./views/pages/LeaveManagement/ApplyLeave";
 import ViewAllLeaves from "./views/pages/LeaveManagement/ViewAllLeaves";
 import ViewLeaves from "./views/pages/LeaveManagement/ViewLeaves";
@@ -76,6 +76,7 @@ import AllProducts from "./views/pages/Ecommerce/AllProducts";
 import StaffCredentials from "views/pages/credentials/StaffCredentials";
 import PenaltyMaster1 from "views/pages/FeesManagement/Penalty1";
 import FeesMaster1 from "views/pages/FeesManagement/FeesMaster1";
+import BudgetMaster from "./views/pages/Accounts/Budget";
 
 export const adminRoutes = [
   {
@@ -115,9 +116,8 @@ export const adminRoutes = [
         miniName: "S",
         component: StaffAttendance,
         layout: "/admin",
-        permission:"add",
+        permission: "add",
       },
-    
     ],
   },
   {
@@ -125,7 +125,7 @@ export const adminRoutes = [
     name: "Credential Master",
     icon: "ni ni-settings-gear-65 text-red",
     state: "credentialCollapse",
-    module:"Credentials Master",
+    module: "Credentials Master",
     views: [
       {
         path: "/student-credentials",
@@ -133,7 +133,7 @@ export const adminRoutes = [
         miniName: "A",
         component: StudentCredentials,
         layout: "/admin",
-        permission:"view"
+        permission: "view",
       },
       {
         path: "/staff-credentials",
@@ -141,7 +141,7 @@ export const adminRoutes = [
         miniName: "S",
         component: StaffCredentials,
         layout: "/admin",
-        permission:"view"
+        permission: "view",
       },
     ],
   },
@@ -491,7 +491,7 @@ export const adminRoutes = [
         layout: "/admin",
         permission: "add",
       },
-    
+
       {
         path: "/hostel-allocations",
         name: "Allocations",
@@ -523,18 +523,17 @@ export const adminRoutes = [
     name: "Fees Management",
     icon: "ni ni-single-02 text-orange",
     state: "feesCollapse",
-    module:"feesManagement",
+    module: "feesManagement",
     views: [
-    
       {
         path: "/feesmaster",
         name: "Fees Master",
         miniName: "FM",
         component: FeesMaster,
         layout: "/admin",
-        permission:"view"
+        permission: "view",
       },
-    
+
       // {
       //   path: "/viewfees",
       //   name: "View Fees",
@@ -549,16 +548,16 @@ export const adminRoutes = [
         miniName: "PM",
         component: PenaltyMaster,
         layout: "/admin",
-        permission:"view"
+        permission: "view",
       },
-    
+
       {
         path: "/siblingmaster",
         name: "Sibling Master",
         miniName: "SM",
         component: SiblingMaster,
         layout: "/admin",
-        permission:"view"
+        permission: "view",
       },
     ],
   },
@@ -593,12 +592,26 @@ export const adminRoutes = [
         layout: "/admin",
         permission: "edit",
       },
-    
+    ],
+  },
+  {
+    collapse: true,
+    name: "Accounts Management",
+    icon: "ni ni-bag-17",
+    state: "accountsCollapse",
+    module: "Accounts Management",
+    views: [
+      {
+        path: "/budget-allocations ",
+        name: "Budget Allocations",
+        miniName: "BA",
+        component: BudgetMaster,
+        layout: "/admin",
+        permission: "edit",
+      },
     ],
   },
 ];
-
-
 
 const routes = [
   {
@@ -678,7 +691,6 @@ const routes = [
         component: StaffAttendance,
         layout: "/admin",
       },
-    
     ],
   },
   {
@@ -955,7 +967,7 @@ const routes = [
         path: "/add-shelf",
         name: "Add Section and Shelf",
         miniName: "A",
-        component: AddShelf, 
+        component: AddShelf,
         layout: "/admin",
       },
       {
@@ -996,7 +1008,7 @@ const routes = [
         layout: "/admin",
         permission: "add",
       },
-    
+
       {
         path: "/hostel-allocations",
         name: "Allocations",
@@ -1042,7 +1054,6 @@ const routes = [
         component: ViewAllLeaves,
         layout: "/admin",
       },
-    
     ],
   },
 ];
