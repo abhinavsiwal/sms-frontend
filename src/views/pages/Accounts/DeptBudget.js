@@ -30,7 +30,6 @@ const DeptBudgetMaster = () => {
   const [sessions, setSessions] = useState("");
   const [allocationData, setAllocationData] = useState({
     department: "",
-    staff: "",
     session: "",
     used: "",
     status: "",
@@ -38,8 +37,7 @@ const DeptBudgetMaster = () => {
   });
 
   const [allDepartments, setAllDepartments] = useState([]);
-  const [allStaff, setAllStaff] = useState([]);
-  const [filterStaff, setFilterStaff] = useState([]);
+
   const [checked, setChecked] = useState(false);
 
   const getAllDepartment = async () => {
@@ -83,46 +81,22 @@ const DeptBudgetMaster = () => {
 
   const handleChange = (name) => async (event) => {
     setAllocationData({ ...allocationData, [name]: event.target.value });
-    if (name === "department") {
-      filterStaffHandler(event.target.value);
-    }
-  };
-  const filterStaffHandler = async (id) => {
-    const formData = {
-      departmentId: id,
-    };
-    try {
-      setLoading(true);
-      const data = await getStaffByDepartment(user.school, user._id, formData);
-      console.log(data);
-      if (data.err) {
-        setLoading(false);
-        return toast.error(data.err);
-      }
-      setFilterStaff(data);
-
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-      toast.error("Error fetching staff");
-      setLoading(false);
-    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.set("staff", allocationData.staff);
+    formData.set("department", allocationData.department);
     formData.set("session", allocationData.session);
     formData.set("allocated", allocationData.allocated);
     try {
       setLoading(true);
-      const data = await addStaffBudget(user.school, user._id, formData);
-      console.log(data);
-      if (data.err) {
-        setLoading(false);
-        return toast.error(data.err);
-      }
+      //   const data = await addStaffBudget(user.school, user._id, formData);
+      //   console.log(data);
+      //   if (data.err) {
+      //     setLoading(false);
+      //     return toast.error(data.err);
+      //   }
       setLoading(false);
       toast.success("Budget Added Successfully");
     } catch (err) {
@@ -135,7 +109,7 @@ const DeptBudgetMaster = () => {
   return (
     <>
       <SimpleHeader
-        name="Budget Allocations"
+        name="Department Budget Allocations"
         parentName="Accounts Management"
       />
       <ToastContainer
@@ -160,7 +134,7 @@ const DeptBudgetMaster = () => {
       <Container fluid className="mt--6">
         <Card>
           <CardHeader>
-            <h2>Budget Allocations</h2>
+            <h2> Department Budget Allocations</h2>
           </CardHeader>
           <CardBody>
             <form onSubmit={handleSubmit}>
@@ -189,30 +163,7 @@ const DeptBudgetMaster = () => {
                     ))}
                   </Input>
                 </Col>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="example4cols2Input"
-                  >
-                    Staff
-                  </label>
-                  <Input
-                    id="example4cols2Input"
-                    type="select"
-                    onChange={handleChange("staff")}
-                    required
-                    value={allocationData.staff}
-                  >
-                    <option value="" selected>
-                      Select Staff
-                    </option>
-                    {filterStaff?.map((staff, index) => (
-                      <option key={index} value={staff._id}>
-                        {staff.firstname + " " + staff.lastname}
-                      </option>
-                    ))}
-                  </Input>
-                </Col>
+
                 <Col>
                   <label
                     className="form-control-label"

@@ -135,7 +135,7 @@ const BudgetMaster = () => {
   return (
     <>
       <SimpleHeader
-        name="Budget Allocations"
+        name="Staff Budget Allocations"
         parentName="Accounts Management"
       />
       <ToastContainer
@@ -160,7 +160,7 @@ const BudgetMaster = () => {
       <Container fluid className="mt--6">
         <Card>
           <CardHeader>
-            <h2>Budget Allocations</h2>
+            <h2>Staff Budget Allocations</h2>
           </CardHeader>
           <CardBody>
             <form onSubmit={handleSubmit}>

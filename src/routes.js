@@ -77,6 +77,7 @@ import StaffCredentials from "views/pages/credentials/StaffCredentials";
 import PenaltyMaster1 from "views/pages/FeesManagement/Penalty1";
 import FeesMaster1 from "views/pages/FeesManagement/FeesMaster1";
 import BudgetMaster from "./views/pages/Accounts/Budget";
+import DeptBudgetMaster from "views/pages/Accounts/DeptBudget";
 
 export const adminRoutes = [
   {
@@ -604,8 +605,16 @@ export const adminRoutes = [
       {
         path: "/staff-budget-allocations ",
         name: "Staff Budget Allocations",
-        miniName: "BA",
+        miniName: "SBA",
         component: BudgetMaster,
+        layout: "/admin",
+        permission: "edit",
+      },
+      {
+        path: "/dept-budget-allocations ",
+        name: "Dept Budget Allocations",
+        miniName: "DBA",
+        component: DeptBudgetMaster,
         layout: "/admin",
         permission: "edit",
       },
