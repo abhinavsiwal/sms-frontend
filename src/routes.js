@@ -602,8 +602,8 @@ export const adminRoutes = [
     module: "Accounts Management",
     views: [
       {
-        path: "/budget-allocations ",
-        name: "Budget Allocations",
+        path: "/staff-budget-allocations ",
+        name: "Staff Budget Allocations",
         miniName: "BA",
         component: BudgetMaster,
         layout: "/admin",

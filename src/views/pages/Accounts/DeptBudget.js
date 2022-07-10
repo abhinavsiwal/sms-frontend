@@ -24,7 +24,7 @@ import { getStaffByDepartment, allStaffs } from "api/staff";
 import { getDepartment } from "api/department";
 import { addStaffBudget } from "api/Budget";
 
-const BudgetMaster = () => {
+const DeptBudgetMaster = () => {
   const [loading, setLoading] = useState(false);
   const { user, token } = isAuthenticated();
   const [sessions, setSessions] = useState("");
@@ -310,4 +310,4 @@ const BudgetMaster = () => {
   );
 };
 
-export default BudgetMaster;
+export default DeptBudgetMaster;
