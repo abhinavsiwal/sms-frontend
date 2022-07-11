@@ -8,7 +8,7 @@ import {
   Row,
   Col,
   Button,
-  Form,
+ 
 } from "reactstrap";
 import { Popconfirm } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
@@ -271,28 +271,6 @@ const BudgetMaster = () => {
                     value={allocationData.used}
                   />
                 </Col>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="example4cols2Input"
-                  >
-                    Status
-                  </label>
-                  <Input
-                    id="example4cols2Input"
-                    type="select"
-                    onChange={handleChange("status")}
-                    // required
-                    value={allocationData.status}
-                  >
-                    <option value="Yes" selected>
-                      Yes
-                    </option>
-                    <option value="No" selected>
-                      No
-                    </option>
-                  </Input>
-                </Col>
               </Row>
               <Row className="mt-4 float-right">
                 <Col>
@@ -305,6 +283,7 @@ const BudgetMaster = () => {
           </CardBody>
         </Card>
       </Container>
+   
     </>
   );
 };

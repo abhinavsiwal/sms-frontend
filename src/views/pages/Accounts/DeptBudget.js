@@ -189,8 +189,7 @@ const DeptBudgetMaster = () => {
                       })}
                   </select>
                 </Col>
-              </Row>
-              <Row>
+            
                 <Col>
                   <label
                     className="form-control-label"
@@ -223,33 +222,12 @@ const DeptBudgetMaster = () => {
                     value={allocationData.used}
                   />
                 </Col>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="example4cols2Input"
-                  >
-                    Status
-                  </label>
-                  <Input
-                    id="example4cols2Input"
-                    type="select"
-                    onChange={handleChange("status")}
-                    // required
-                    value={allocationData.status}
-                  >
-                    <option value="Yes" selected>
-                      Yes
-                    </option>
-                    <option value="No" selected>
-                      No
-                    </option>
-                  </Input>
-                </Col>
+                
               </Row>
               <Row className="mt-4 float-right">
                 <Col>
                   <Button color="primary" type="submit">
-                    Submit
+                    Add
                   </Button>
                 </Col>
               </Row>

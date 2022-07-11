@@ -79,6 +79,7 @@ import FeesMaster1 from "views/pages/FeesManagement/FeesMaster1";
 import BudgetMaster from "./views/pages/Accounts/Budget";
 import DeptBudgetMaster from "views/pages/Accounts/DeptBudget";
 import BudgetUsesDetails from "views/pages/Accounts/BudgetUsesDetails";
+import SalaryBreakup from "views/pages/Accounts/SalaryBreakup";
 
 export const adminRoutes = [
   {
@@ -624,6 +625,14 @@ export const adminRoutes = [
         name: "Budget Uses Details",
         miniName: "BUD",
         component: BudgetUsesDetails,
+        layout: "/admin",
+        permission: "edit",
+      },
+      {
+        path: "/salary-breakup",
+        name: "Salary Breakup",
+        miniName: "SB",
+        component: SalaryBreakup,
         layout: "/admin",
         permission: "edit",
       },

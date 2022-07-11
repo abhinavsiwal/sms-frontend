@@ -18,7 +18,7 @@ import SimpleHeader from "components/Headers/SimpleHeader";
 import LoadingScreen from "react-loading-screen";
 import { isAuthenticated } from "api/auth";
 import { toast, ToastContainer } from "react-toastify";
-import { allSessions } from "api/session";
+
 import { getStaffByDepartment, allStaffs } from "api/staff";
 import { getDepartment } from "api/department";
 const BudgetUsesDetails = () => {
@@ -36,8 +36,8 @@ const BudgetUsesDetails = () => {
     bill: "",
     reimburse: "",
     reimburseType: "",
-    advance: 0,
-    usedAmount: 0,
+    advance: "",
+    usedAmount: "",
     paidAmount: 0,
     amountCollected: 0,
   });
