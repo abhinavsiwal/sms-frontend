@@ -36,16 +36,18 @@ const BudgetUsesDetails = () => {
     bill: "",
     reimburse: "",
     reimburseType: "",
-    advance: "",
-    usedBy: "",
-    usedAmount: "",
-    paidAmount: "",
-    amountCollected: "",
+    advance: 0,
+    usedAmount: 0,
+    paidAmount: 0,
+    amountCollected: 0,
   });
+  const [allStaff, setAllStaff] = useState([]);
   const [showBillType, setShowBillType] = useState(false);
   const [allDepartments, setAllDepartments] = useState([]);
   const [filterStaff, setFilterStaff] = useState([]);
   const [checked, setChecked] = useState(false);
+  const [underBudget, setUnderBudget] = useState(true);
+
   const [showReimburseType, setShowReimburseType] = useState(false);
   const getAllDepartment = async () => {
     try {
@@ -65,8 +67,22 @@ const BudgetUsesDetails = () => {
   };
   useEffect(() => {
     getAllDepartment();
+    getAllStaffs();
   }, [checked]);
-
+  const getAllStaffs = async () => {
+    try {
+      setLoading(true);
+      const { data } = await allStaffs(user.school, user._id);
+      console.log(data);
+      //   let canteenStaff = data.find((staff) => staff.assign_role === "library");
+      setAllStaff(data);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      toast.error("Fetching Staffs Failed");
+      setLoading(false);
+    }
+  };
   const handleChange = (name) => async (event) => {
     setBudgetData({ ...budgetData, [name]: event.target.value });
     console.log(name, event.target.value);
@@ -89,6 +105,29 @@ const BudgetUsesDetails = () => {
       }
     }
   };
+
+  const usedAmountBlur = () => {
+    console.log("advance",budgetData.advance);
+    console.log("usedAmount",budgetData.usedAmount);
+    if (budgetData.usedAmount > budgetData.advance) {
+      setUnderBudget(false);
+      let leftAmount = budgetData.usedAmount - budgetData.advance;
+      setBudgetData({
+        ...budgetData,
+        paidAmount: "",
+        amountCollected: leftAmount,
+      });
+    } else {
+      setUnderBudget(true);
+      let leftAmount = budgetData.advance - budgetData.usedAmount;
+      setBudgetData({
+        ...budgetData,
+        amountCollected: "",
+        paidAmount: leftAmount,
+      });
+    }
+  };
+
   const filterStaffHandler = async (id) => {
     const formData = {
       departmentId: id,
@@ -150,13 +189,14 @@ const BudgetUsesDetails = () => {
                     className="form-control-label"
                     htmlFor="example4cols2Input"
                   >
-                    Short Description
+                    Event Name
                   </label>
                   <Input
                     id="example4cols2Input"
-                    type="textarea"
+                    type="text"
                     onChange={handleChange("shortDescription")}
                     required
+                    placeholder="Event Name"
                     value={budgetData.shortDescription}
                   />
                 </Col>
@@ -173,6 +213,7 @@ const BudgetUsesDetails = () => {
                     onChange={handleChange("amount")}
                     required
                     value={budgetData.amount}
+                    placeholder="Enter Amount"
                   />
                 </Col>
                 <Col>
@@ -237,6 +278,7 @@ const BudgetUsesDetails = () => {
                     type="textarea"
                     onChange={handleChange("longDescription")}
                     required
+                    placeholder="Enter Description"
                     value={budgetData.longDescription}
                   />
                 </Col>
@@ -249,11 +291,22 @@ const BudgetUsesDetails = () => {
                   </label>
                   <Input
                     id="example4cols2Input"
-                    type="text"
+                    type="select"
                     onChange={handleChange("usedBy")}
                     required
                     value={budgetData.usedBy}
-                  />
+                  >
+                    <option value="" selected>
+                      Select Staff
+                    </option>
+                    {allStaff?.map((staff, index) => {
+                      return (
+                        <option key={index} value={staff._id}>
+                          {staff.firstname + " " + staff.lastname}
+                        </option>
+                      );
+                    })}
+                  </Input>
                 </Col>
                 <Col>
                   <label
@@ -267,6 +320,7 @@ const BudgetUsesDetails = () => {
                     type="number"
                     onChange={handleChange("confirmBy")}
                     required
+                    placeholder="Enter Confirm By"
                     value={budgetData.confirmBy}
                   />
                 </Col>
@@ -368,7 +422,7 @@ const BudgetUsesDetails = () => {
                 )}
               </Row>
               <Row className="mt-2">
-              <Col>
+                <Col>
                   <label
                     className="form-control-label"
                     htmlFor="example4cols2Input"
@@ -384,23 +438,8 @@ const BudgetUsesDetails = () => {
                     placeholder="Enter Advance Amount"
                   />
                 </Col>
-              <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="example4cols2Input"
-                  >
-                    Allocation use by
-                  </label>
-                  <Input
-                    id="example4cols2Input"
-                    type="text"
-                    onChange={handleChange("usedBy")}
-                    required
-                    value={budgetData.usedBy}
-                    placeholder="Enter Allocation use by"
-                  />
-                </Col>
-              <Col>
+
+                <Col>
                   <label
                     className="form-control-label"
                     htmlFor="example4cols2Input"
@@ -414,9 +453,10 @@ const BudgetUsesDetails = () => {
                     required
                     value={budgetData.usedAmount}
                     placeholder="Enter Used Amount"
-/>
+                    onBlur={usedAmountBlur}
+                  />
                 </Col>
-              <Col>
+                <Col>
                   <label
                     className="form-control-label"
                     htmlFor="example4cols2Input"
@@ -428,11 +468,12 @@ const BudgetUsesDetails = () => {
                     type="number"
                     onChange={handleChange("paidAmount")}
                     required
+                    disabled
                     value={budgetData.paidAmount}
                     placeholder="Enter Amount to be Paid"
                   />
                 </Col>
-              <Col>
+                <Col>
                   <label
                     className="form-control-label"
                     htmlFor="example4cols2Input"
@@ -444,6 +485,7 @@ const BudgetUsesDetails = () => {
                     type="number"
                     onChange={handleChange("amountCollected")}
                     required
+                    disabled
                     value={budgetData.amountCollected}
                     placeholder="Enter Amount Collected"
                   />
