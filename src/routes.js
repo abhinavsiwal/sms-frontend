@@ -80,6 +80,8 @@ import BudgetMaster from "./views/pages/Accounts/Budget";
 import DeptBudgetMaster from "views/pages/Accounts/DeptBudget";
 import BudgetUsesDetails from "views/pages/Accounts/BudgetUsesDetails";
 import SalaryBreakup from "views/pages/Accounts/SalaryBreakup";
+import ApplySalaryAdvance from "views/pages/Accounts/ApplySalaryAdvance";
+import SalaryAdvanceApprover from "views/pages/Accounts/SalaryAdvanceApprover";
 
 export const adminRoutes = [
   {
@@ -633,6 +635,22 @@ export const adminRoutes = [
         name: "Salary Breakup",
         miniName: "SB",
         component: SalaryBreakup,
+        layout: "/admin",
+        permission: "edit",
+      },
+      {
+        path: "/apply-salary-advance",
+        name: "Apply Salary Advance",
+        miniName: "ASA",
+        component: ApplySalaryAdvance,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/salary-advance-approver",
+        name: "Salary Advance Approver",
+        miniName: "SAA",
+        component: SalaryAdvanceApprover,
         layout: "/admin",
         permission: "edit",
       },
