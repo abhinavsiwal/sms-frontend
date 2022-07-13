@@ -275,7 +275,7 @@ const PaySalary = () => {
     </div>
   </Container>
  
-</>;
+</>; 
 };
 
 export default PaySalary;

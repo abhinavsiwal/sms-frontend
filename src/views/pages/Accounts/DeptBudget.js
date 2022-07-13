@@ -218,6 +218,7 @@ const DeptBudgetMaster = () => {
                     type="number"
                     onChange={handleChange("used")}
                     // required
+                    disabled
                     placeholder="Enter Used Amount"
                     value={allocationData.used}
                   />

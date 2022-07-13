@@ -200,7 +200,7 @@ const BudgetUsesDetails = () => {
                     value={budgetData.shortDescription}
                   />
                 </Col>
-                <Col>
+                {/* <Col>
                   <label
                     className="form-control-label"
                     htmlFor="example4cols2Input"
@@ -212,10 +212,11 @@ const BudgetUsesDetails = () => {
                     type="number"
                     onChange={handleChange("amount")}
                     required
+                    disabled
                     value={budgetData.amount}
                     placeholder="Enter Amount"
                   />
-                </Col>
+                </Col> */}
                 <Col>
                   <label
                     className="form-control-label"
@@ -393,7 +394,7 @@ const BudgetUsesDetails = () => {
                     </option>
                   </Input>
                 </Col>
-                {showReimburseType && (
+                {/* {showReimburseType && (
                   <Col>
                     <label
                       className="form-control-label"
@@ -419,7 +420,7 @@ const BudgetUsesDetails = () => {
                       </option>
                     </Input>
                   </Col>
-                )}
+                )} */}
               </Row>
               <Row className="mt-2">
                 <Col>
