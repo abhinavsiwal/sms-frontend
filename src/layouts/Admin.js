@@ -131,7 +131,7 @@ function Admin() {
       ? "dark"
       : "light";
   };
-
+console.log(user);
   return ( 
     <>
       <Sidebar

@@ -1,0 +1,17 @@
+.left_button{
+    text-align: right;
+}
+.table_div_fees{
+    width: 99%;
+    overflow: scroll;
+}
+
+.fees_table{
+    width: 100% !important;
+    white-space: pre;
+}
+
+.feesMainRow{
+    flex-wrap: wrap !important;
+    
+}

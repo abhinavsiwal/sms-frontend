@@ -43,7 +43,7 @@ const amountBlur = ()=>{
   return (
     <>
       <SimpleHeader
-        name="Department Budget Allocations"
+        name="Apply Salary Advance"
         parentName="Accounts Management"
       />
       <ToastContainer

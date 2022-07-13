@@ -82,6 +82,8 @@ import BudgetUsesDetails from "views/pages/Accounts/BudgetUsesDetails";
 import SalaryBreakup from "views/pages/Accounts/SalaryBreakup";
 import ApplySalaryAdvance from "views/pages/Accounts/ApplySalaryAdvance";
 import SalaryAdvanceApprover from "views/pages/Accounts/SalaryAdvanceApprover";
+import LinkStudent from "views/pages/Accounts/LinkStudent";
+import PaySalary from "views/pages/Accounts/PaySalary";
 
 export const adminRoutes = [
   {
@@ -653,6 +655,22 @@ export const adminRoutes = [
         component: SalaryAdvanceApprover,
         layout: "/admin",
         permission: "edit",
+      },
+      {
+        path: "/link-student",
+        name: "Link Student With Salary",
+        miniName: "LS",
+        component: LinkStudent,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/pay-salary",
+        name: "Pay Salary",
+        miniName: "PS",
+        component: PaySalary,
+        layout: "/admin",
+        permission: "add",
       },
     ],
   },
