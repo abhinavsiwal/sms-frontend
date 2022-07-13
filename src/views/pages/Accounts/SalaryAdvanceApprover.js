@@ -231,7 +231,7 @@ getSalaryHandler();
   return (
     <>
       <SimpleHeader
-        name="Department Budget Allocations"
+        name="Salary Advance Approver"
         parentName="Accounts Management"
       />
       <ToastContainer
