@@ -44,3 +44,18 @@ export const addUsedBudget = async (schoolId, userId, formData) => {
     throw new err();
   }
 }
+
+export const applyAdvanceSalary = async (schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/staff/apply_advance_salary/${schoolId}/${userId}`,
+      formData,
+      "PUT"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw new err();
+  }
+} 
