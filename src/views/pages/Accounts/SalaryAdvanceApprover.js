@@ -24,6 +24,8 @@ import AntTable from "../tables/AntTable";
 import Loader from "components/Loader/Loader";
 import { Popconfirm } from "antd";
 import { toast, ToastContainer } from "react-toastify";
+import { allAdvanceRequest } from "api/Budget";
+import { changeAdvanceRequest } from "api/Budget";
 
 const SalaryAdvanceApprover = () => {
   const { user } = isAuthenticated();
@@ -195,39 +197,82 @@ const SalaryAdvanceApprover = () => {
     },
   ];
 
-useEffect(() => {
-  
-getSalaryHandler();
-  
-}, [checked])
-
+  useEffect(() => {
+    getSalaryHandler();
+  }, [checked]);
 
   const getSalaryHandler = async () => {
-    let data = [];
-    data.push({
-      name: "John Doe",
-      department: "IT",
-      salary: "100000",
-      amount: "30000",
-      status: "Pending",
-      action: (
-        <Button
-          className="btn-sm pull-right"
-          color="primary"
-          type="button"
-          key={"edit" + 1}
-          onClick={() => {
-            setEditing(true);
-            // setEditSalaryId(leave._id);
-          }}
-        >
-          <i className="fas fa-user-edit" />
-        </Button>
-      ),
-    });
-    setTableData(data);
+    try {
+      setLoading(true);
+      const data = await allAdvanceRequest(user.school, user._id);
+      console.log(data);
+      if (data.err) {
+        toast.error(data.err);
+        setLoading(false);
+        return;
+      }
+      let data1 = [];
+      for (let i = 0; i < data.length; i++) {
+        data1.push({
+          key: i,
+          name: data[i].staff.firstname + " " + data[i].staff.lastname,
+          department: "null",
+          salary: data[i].total_salary,
+          amount: data[i].amount,
+          status: data[i].status,
+          _id: data[i]._id,
+          action: (
+            <Button
+              className="btn-sm pull-right"
+              color="primary"
+              type="button"
+              key={"edit" + i + 1}
+              onClick={() => {
+                setEditing(true);
+                setEditSalaryId(data[i]._id);
+                setEditStatus(data[i].status);
+              }}
+            >
+              <i className="fas fa-user-edit" />
+            </Button>
+          ),
+        });
+      }
+      setTableData(data1);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      toast.error("Something went wrong");
+      console.log(err);
+    }
   };
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.set("_id", editSalaryId);
+    formData.set("status", editStatus);
+    try {
+      setLoading(true);
+      const data = await changeAdvanceRequest(user.school,user._id,formData);
+      console.log(data);
+      if (data.err) {
+        toast.error(data.err);
+        setLoading(false);
+        return;
+      }
+      setEditing(false);
+      setEditSalaryId("");
+      setEditStatus("");
+      setChecked(!checked);
+      setLoading(false);
+      toast.success("Status changed successfully");
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error("Something went wrong");
+      
+    }
+  };
   return (
     <>
       <SimpleHeader
@@ -271,58 +316,60 @@ getSalaryHandler();
         </div>
       </Container>
       <Modal
-          className="modal-dialog-centered"
-          isOpen={editing}
-          toggle={() => setEditing(false)}
-          size="sm"
-        >
-          <div className="modal-header">
+        className="modal-dialog-centered"
+        isOpen={editing}
+        toggle={() => setEditing(false)}
+        size="sm"
+      >
+        <div className="modal-header">
           <h2 className="modal-title" id="modal-title-default">
-              Edit Status
-            </h2>
-            <button
-              aria-label="Close"
-              className="close"
-              data-dismiss="modal"
-              type="button"
-              onClick={() => setEditing(false)}
-            >
-              <span aria-hidden={true}>×</span>
-            </button>
-          </div>
-          <ModalBody>
-            <Row>
-              <Col>
+            Edit Status
+          </h2>
+          <button
+            aria-label="Close"
+            className="close"
+            data-dismiss="modal"
+            type="button"
+            onClick={() => setEditing(false)}
+          >
+            <span aria-hidden={true}>×</span>
+          </button>
+        </div>
+        <ModalBody>
+          <Row>
+            <Col>
               <label className="form-control-label">Status</label>
               <Input
-                    id="form-class-name"
-                    // value={editStatus}
-                    // onChange={(e) => setEditStatus(e.target.value)}
-                    placeholder="Class Name"
-                    type="select"
-                  >
-                    <option value="">Select Status</option>
-                    <option value="Awaiting">Awaiting</option>
-                    <option value="Approved">Approved</option>
-                    <option value="Declined">Declined</option>
-                    <option value="Cancelled">Cancelled</option>
-                  </Input>
-              </Col>
-            </Row>
-            <Row>
-                <Col>
-                  <Button
-                    color="primary"
-                    type="button"
-                    className="mt-2 float-right"
-                    // onClick={handleEdit}
-                  >
-                    Save changes
-                  </Button>
-                </Col>
-              </Row>
-          </ModalBody>
-        </Modal>
+                id="form-class-name"
+                value={editStatus}
+                onChange={(e) => setEditStatus(e.target.value)}
+                placeholder="Class Name"
+                type="select"
+              >
+                <option value="" disabled>
+                  Select Status
+                </option>
+
+                <option value="approved">Approved</option>
+                <option value="declined">Declined</option>
+                <option value="awaiting">Awaiting</option>
+              </Input>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Button
+                color="primary"
+                type="button"
+                className="mt-2 float-right"
+                onClick={handleSubmit}
+              >
+                Save changes
+              </Button>
+            </Col>
+          </Row>
+        </ModalBody>
+      </Modal>
     </>
   );
 };

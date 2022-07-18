@@ -49,7 +49,7 @@ function StaffProfile() {
           <Col lg="4">
             <div className="card-wrapper">
               <Card>
-                <CardImg alt="..." src={user.Data.tempPhoto} top className="p-4" />
+                <CardImg alt="..." src={user.Data.tempPhoto && user.Data.tempPhoto} top className="p-4" />
                 <CardBody>
                   <Row>
                     <Col align="center">
