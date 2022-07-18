@@ -13,7 +13,7 @@ import {
 import { Popconfirm } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { Table } from "ant-table-extensions";
-
+import { allSessions } from "api/session";
 import SimpleHeader from "components/Headers/SimpleHeader";
 import LoadingScreen from "react-loading-screen";
 import { isAuthenticated } from "api/auth";
@@ -21,19 +21,21 @@ import { toast, ToastContainer } from "react-toastify";
 
 import { getStaffByDepartment, allStaffs } from "api/staff";
 import { getDepartment } from "api/department";
+import { addUsedBudget } from "api/Budget";
 const BudgetUsesDetails = () => {
   const [loading, setLoading] = useState(false);
   const { user, token } = isAuthenticated();
+  const [sessions, setSessions] = useState("");
   const [budgetData, setBudgetData] = useState({
     shortDescription: "",
     amount: "",
     staff: "",
     department: "",
+    session: "",
     longDescription: "",
     usedBy: "",
     confirmBy: "",
     type: "",
-    bill: "",
     reimburse: "",
     reimburseType: "",
     advance: "",
@@ -47,8 +49,22 @@ const BudgetUsesDetails = () => {
   const [filterStaff, setFilterStaff] = useState([]);
   const [checked, setChecked] = useState(false);
   const [underBudget, setUnderBudget] = useState(true);
-
+  const [image, setImage] = useState();
+  const [imagePreview, setImagePreview] = useState();
   const [showReimburseType, setShowReimburseType] = useState(false);
+  const imageChangeHandler = (e) => {
+    // setImage(e.target.files[0]);
+    // console.log(e.target);
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (reader.readyState === 2) {
+        setImagePreview(reader.result);
+        setImage(reader.result);
+      }
+    };
+    reader.readAsDataURL(e.target.files[0]);
+  };
+
   const getAllDepartment = async () => {
     try {
       setLoading(true);
@@ -68,6 +84,7 @@ const BudgetUsesDetails = () => {
   useEffect(() => {
     getAllDepartment();
     getAllStaffs();
+    getSession();
   }, [checked]);
   const getAllStaffs = async () => {
     try {
@@ -85,7 +102,7 @@ const BudgetUsesDetails = () => {
   };
   const handleChange = (name) => async (event) => {
     setBudgetData({ ...budgetData, [name]: event.target.value });
-    console.log(name, event.target.value);
+
     if (name === "department") {
       filterStaffHandler(event.target.value);
     }
@@ -105,16 +122,33 @@ const BudgetUsesDetails = () => {
       }
     }
   };
+  const getSession = async () => {
+    try {
+      setLoading(true);
+      const session = await allSessions(user._id, user.school, token);
+      if (session.err) {
+        setLoading(false);
+        return toast.error(session.err);
+      } else {
+        setSessions(session);
+        return;
+      }
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      toast.error("Something Went Wrong!");
+    }
+  };
 
   const usedAmountBlur = () => {
-    console.log("advance",budgetData.advance);
-    console.log("usedAmount",budgetData.usedAmount);
-    if (budgetData.usedAmount > budgetData.advance) {
+    console.log("advance", budgetData.advance);
+    console.log("usedAmount", budgetData.usedAmount);
+    if (Number(budgetData.usedAmount) > Number(budgetData.advance)) {
       setUnderBudget(false);
       let leftAmount = budgetData.usedAmount - budgetData.advance;
       setBudgetData({
         ...budgetData,
-        paidAmount: "",
+        paidAmount: 0,
         amountCollected: leftAmount,
       });
     } else {
@@ -122,7 +156,7 @@ const BudgetUsesDetails = () => {
       let leftAmount = budgetData.advance - budgetData.usedAmount;
       setBudgetData({
         ...budgetData,
-        amountCollected: "",
+        amountCollected: 0,
         paidAmount: leftAmount,
       });
     }
@@ -146,6 +180,62 @@ const BudgetUsesDetails = () => {
     } catch (err) {
       console.log(err);
       toast.error("Error fetching staff");
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.set("department", budgetData.department);
+    formData.set("staff", budgetData.staff);
+    formData.set("session", budgetData.session);
+    formData.set("event_name", budgetData.shortDescription);
+    formData.set("description", budgetData.longDescription);
+    formData.set("used_by", budgetData.usedBy);
+    formData.set("confirm_by", budgetData.confirmBy);
+    formData.set("bill_type", budgetData.type);
+    formData.set("used_amount", budgetData.usedAmount);
+    formData.set("advance", budgetData.advance);
+    formData.set("amount_paid", budgetData.paidAmount);
+    formData.set("amount_collected", budgetData.amountCollected);
+    if (budgetData.type === "yes") {
+      {
+        image && formData.set("bill", image);
+      }
+    }
+    formData.set("reimburse", budgetData.reimburse);
+
+    try {
+      setLoading(true);
+      const data = await addUsedBudget(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        return toast.error(data.err);
+      }
+      toast.success("Used Budget Created");
+      setLoading(false);
+      setBudgetData({
+        ...budgetData,
+        shortDescription: "",
+        longDescription: "",
+        usedBy: "",
+        confirmBy: "",
+        type: "",
+        usedAmount: "",
+        advance: "",
+        paidAmount: "",
+        amountCollected: "",
+        department: "",
+        staff: "",
+        session: "",
+        reimburse: "",
+      });
+    } catch (err) {
+      console.log(err);
+      toast.error("Error creating budget");
       setLoading(false);
     }
   };
@@ -182,7 +272,7 @@ const BudgetUsesDetails = () => {
             <h2>Budget Uses Details</h2>
           </CardHeader>
           <CardBody>
-            <form>
+            <form onSubmit={handleSubmit}>
               <Row>
                 <Col>
                   <label
@@ -265,6 +355,31 @@ const BudgetUsesDetails = () => {
                     ))}
                   </Input>
                 </Col>
+                <Col>
+                  <label
+                    className="form-control-label"
+                    htmlFor="example4cols2Input"
+                  >
+                    Select Session
+                  </label>
+
+                  <select
+                    required
+                    className="form-control"
+                    onChange={handleChange("session")}
+                    value={budgetData.session}
+                  >
+                    <option value="">Select Session</option>
+                    {sessions &&
+                      sessions.map((data) => {
+                        return (
+                          <option key={data._id} value={data._id}>
+                            {data.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                </Col>
               </Row>
               <Row className="mt-2">
                 <Col>
@@ -272,7 +387,7 @@ const BudgetUsesDetails = () => {
                     className="form-control-label"
                     htmlFor="example4cols2Input"
                   >
-                    Long Description
+                    Description
                   </label>
                   <Input
                     id="example4cols2Input"
@@ -318,12 +433,23 @@ const BudgetUsesDetails = () => {
                   </label>
                   <Input
                     id="example4cols2Input"
-                    type="number"
+                    type="select"
                     onChange={handleChange("confirmBy")}
                     required
                     placeholder="Enter Confirm By"
                     value={budgetData.confirmBy}
-                  />
+                  >
+                    <option value="" selected>
+                      Select Staff
+                    </option>
+                    {allStaff?.map((staff, index) => {
+                      return (
+                        <option key={index} value={staff._id}>
+                          {staff.firstname + " " + staff.lastname}
+                        </option>
+                      );
+                    })}
+                  </Input>
                 </Col>
               </Row>
               <Row className="mt-2">
@@ -363,7 +489,7 @@ const BudgetUsesDetails = () => {
                     <Input
                       id="example4cols2Input"
                       type="file"
-                      // onChange={handleChange("type")}
+                      onChange={imageChangeHandler}
                       required
                       // value={budgetData.type}
                     />
