@@ -22,7 +22,7 @@ import { isAuthenticated } from "api/auth";
 import { toast, ToastContainer } from "react-toastify";
 import { getStaffByDepartment, allStaffs } from "api/staff";
 import { getDepartment } from "api/department";
-import { addStaffBudget } from "api/Budget";
+import { addDeptBudget } from "api/Budget";
 
 const DeptBudgetMaster = () => {
   const [loading, setLoading] = useState(false);
@@ -91,14 +91,22 @@ const DeptBudgetMaster = () => {
     formData.set("allocated", allocationData.allocated);
     try {
       setLoading(true);
-      //   const data = await addStaffBudget(user.school, user._id, formData);
-      //   console.log(data);
-      //   if (data.err) {
-      //     setLoading(false);
-      //     return toast.error(data.err);
-      //   }
+        const data = await addDeptBudget(user.school, user._id, formData);
+        console.log(data);
+        if (data.err) {
+          setLoading(false);
+          return toast.error(data.err);
+        }
       setLoading(false);
       toast.success("Budget Added Successfully");
+      setAllocationData({
+        department: "",
+        session: "",
+        used: "",
+        status: "",
+        allocated: "",
+        
+      })
     } catch (err) {
       console.log(err);
       toast.error("Error fetching staff");
