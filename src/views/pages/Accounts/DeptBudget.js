@@ -214,27 +214,10 @@ const DeptBudgetMaster = () => {
                     placeholder="Enter Allocated Amount"
                   />
                 </Col>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="example4cols2Input"
-                  >
-                    Used
-                  </label>
-                  <Input
-                    id="example4cols2Input"
-                    type="number"
-                    onChange={handleChange("used")}
-                    // required
-                    disabled
-                    placeholder="Enter Used Amount"
-                    value={allocationData.used}
-                  />
-                </Col>
                 
-              </Row>
-              <Row className="mt-4 float-right">
-                <Col>
+                
+        
+                <Col  >
                   <Button color="primary" type="submit">
                     Add
                   </Button>

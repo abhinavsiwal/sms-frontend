@@ -23,6 +23,8 @@ import AntTable from "../tables/AntTable";
 import { Popconfirm } from "antd";
 import { toast, ToastContainer } from "react-toastify";
 import LoadingScreen from "react-loading-screen";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import SalarySlip from "./SalarySlip";
 
 const PaySalary = () => {
   const { user } = isAuthenticated();
@@ -198,84 +200,94 @@ const PaySalary = () => {
   ];
 
   useEffect(() => {
-  
     getSalaryHandler();
-      
-    }, [checked])
-    
-    
-      const getSalaryHandler = async () => {
-        let data = [];
-        data.push({
-          SNo: 1,
-          name: "John Doe",
-          department: "IT",
-          month: "January",
-          amount: "30000",
-          status: "Due",
-          action: (
-            <Button
-              className="btn-sm pull-right"
-              color="primary"
-              type="button"
-              key={"edit" + 1}
-              onClick={() => {
-                setEditing(true);
-                // setEditSalaryId(leave._id);
-              }}
-            >
-              {/* <i className="fas fa-user-edit" /> */}
-              Reshare
-            </Button>
-          ),
-        });
-        setTableData(data);
-      };
-    
+  }, [checked]);
 
-  return   <>
-  <SimpleHeader
-    name="Salary Advance Approver"
-    parentName="Accounts Management"
-  />
-  <ToastContainer
-    position="bottom-right"
-    autoClose={5000}
-    hideProgressBar={false}
-    newestOnTop={false}
-    closeOnClick
-    rtl={false}
-    pauseOnFocusLoss
-    draggable
-    pauseOnHover
-    theme="colored"
-  />
-  <LoadingScreen
-    loading={loading}
-    bgColor="#f1f1f1"
-    spinnerColor="#9ee5f8"
-    textColor="#676767"
-    text="Please Wait..."
-  ></LoadingScreen>
-  <Container className="mt--6" fluid>
-    <div className="card-wrapper">
-      <Card className="mb-4">
-        <CardHeader>
-          <h2>Pay Sallary</h2>
-        </CardHeader>
-        <CardBody>
-          <AntTable
-            columns={columns}
-            data={tableData}
-            pagination={true}
-            exportFileName="Salary Request"
-          />
-        </CardBody>
-      </Card>
-    </div>
-  </Container>
- 
-</>; 
+  const getSalaryHandler = async () => {
+    let data = [];
+    data.push({
+      SNo: 1,
+      name: "John Doe",
+      department: "IT",
+      month: "January",
+      amount: "30000",
+      status: "Due",
+      action: (
+        // <Button
+        //   className="btn-sm pull-right"
+        //   color="primary"
+        //   type="button"
+        //   key={"edit" + 1}
+        //   onClick={slipGenerator}
+        // >
+        //   {/* <i className="fas fa-user-edit" /> */}
+        //   Reshare
+        // </Button>
+        <PDFDownloadLink document={<SalarySlip />} fileName="SalarySlip.pdf">
+          {({ blob, url, loading, error }) =>
+            loading ? (
+              "Loading document..."
+            ) : (
+              <Button
+                className="btn-sm pull-right"
+                color="primary"
+                type="button"
+                key={"edit" + 1}
+              >
+                Reshare
+              </Button>
+            )
+          }
+        </PDFDownloadLink>
+      ),
+    });
+    setTableData(data);
+  };
+
+  return (
+    <>
+      <SimpleHeader
+        name="Salary Advance Approver"
+        parentName="Accounts Management"
+      />
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+      <LoadingScreen
+        loading={loading}
+        bgColor="#f1f1f1"
+        spinnerColor="#9ee5f8"
+        textColor="#676767"
+        text="Please Wait..."
+      ></LoadingScreen>
+      <Container className="mt--6" fluid>
+        <div className="card-wrapper">
+          <Card className="mb-4">
+            <CardHeader>
+              <h2>Pay Sallary</h2>
+            </CardHeader>
+            <CardBody>
+              <AntTable
+                columns={columns}
+                data={tableData}
+                pagination={true}
+                exportFileName="Salary Request"
+              />
+            </CardBody>
+          </Card>
+        </div>
+      </Container>
+    </>
+  );
 };
 
 export default PaySalary;

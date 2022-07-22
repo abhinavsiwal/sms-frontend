@@ -147,13 +147,13 @@ const LinkStudent = () => {
             <form>
               <div className="table_div_fees">
                 <table className="fees_table">
-                  <thead>
-                    <th>Class</th>
-                    <th>Section</th>
-                    <th>Student</th>
-                    <th>Fees List</th>
-                    <th>Add</th>
-                    <th>Remove</th>
+                  <thead style={{backgroundColor:"#c0c0c0"}} >
+                    <th style={{backgroundColor:"#c0c0c0"}} >Class</th>
+                    <th style={{backgroundColor:"#c0c0c0"}} >Section</th>
+                    <th style={{backgroundColor:"#c0c0c0"}}>Student</th>
+                    <th style={{backgroundColor:"#c0c0c0"}}>Fees List</th>
+                    <th style={{backgroundColor:"#c0c0c0"}}>Add</th>
+                    <th style={{backgroundColor:"#c0c0c0"}}>Remove</th>
                   </thead>
                   <tbody>
                     {inputFields?.map((inputfield, index) => {
