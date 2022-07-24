@@ -84,6 +84,7 @@ import ApplySalaryAdvance from "views/pages/Accounts/ApplySalaryAdvance";
 import SalaryAdvanceApprover from "views/pages/Accounts/SalaryAdvanceApprover";
 import LinkStudent from "views/pages/Accounts/LinkStudent";
 import PaySalary from "views/pages/Accounts/PaySalary";
+import CouponMaster from "views/pages/FeesManagement/CouponMaster";
 
 export const adminRoutes = [
   {
@@ -555,7 +556,7 @@ export const adminRoutes = [
         miniName: "PM",
         component: PenaltyMaster,
         layout: "/admin",
-        permission: "view",
+        permission: "add",
       },
 
       {
@@ -564,7 +565,15 @@ export const adminRoutes = [
         miniName: "SM",
         component: SiblingMaster,
         layout: "/admin",
-        permission: "view",
+        permission: "add",
+      },
+      {
+        path: "/coupon-master",
+        name: "Coupon Master",
+        miniName: "CM",
+        component: CouponMaster,
+        layout: "/admin",
+        permission: "add",
       },
     ],
   },

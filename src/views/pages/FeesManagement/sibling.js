@@ -34,6 +34,133 @@ const SiblingMaster = () => {
   const [fourModal, setFourModal] = useState(false);
   const [fiveModal, setFiveModal] = useState(false);
 
+  const [twoSiblingData, setTwoSiblingData] = useState({
+    firstClass: "",
+    selectedFirstClass: {},
+    firstSection: "",
+    firstStudentList: [],
+    firstName: "",
+    firstRate: "",
+    firstType: "",
+    secondClass: "",
+    selectedSecondClass: {},
+    secondSection: "",
+    secondStudentList: [],
+    secondName: "",
+    secondRate: "",
+    secondType: "",
+  });
+  const [threeSiblingData, setThreeSiblingData] = useState({
+    firstClass: "",
+    selectedFirstClass: {},
+    firstSection: "",
+    firstStudentList: [],
+    firstName: "",
+    firstRate: "",
+    firstType: "",
+    secondClass: "",
+    selectedSecondClass: {},
+    secondSection: "",
+    secondStudentList: [],
+    secondName: "",
+
+    secondRate: "",
+    secondType: "",
+    thirdClass: "",
+    selectedThirdClass: {},
+    thirdSection: "",
+    thirdStudentList: [],
+    thirdName: "",
+    thirdRate: "",
+    thirdType: "",
+  });
+  const [fourSiblingData, setFourSiblingData] = useState({
+    firstClass: "",
+    selectedFirstClass: {},
+    firstSection: "",
+    firstStudentList: [],
+    firstName: "",
+    firstRate: "",
+    firstType: "",
+    secondClass: "",
+    selectedSecondClass: {},
+    secondSection: "",
+    secondStudentList: [],
+    secondName: "",
+    secondRate: "",
+    secondType: "",
+    thirdClass: "",
+    selectedThirdClass: {},
+    thirdSection: "",
+    thirdStudentList: [],
+    thirdName: "",
+    thirdRate: "",
+    thirdType: "",
+    fourClass: "",
+    selectedFourClass: {},
+    fourSection: "",
+    fourStudentList: [],
+    fourName: "",
+    fourRate: "",
+    fourType: "",
+  });
+  const [fiveSiblingData, setFiveSiblingData] = useState({
+    firstClass: "",
+    selectedFirstClass: {},
+    firstSection: "",
+    firstStudentList: [],
+    firstName: "",
+    firstRate: "",
+    firstType: "",
+    secondClass: "",
+    selectedSecondClass: {},
+    secondSection: "",
+    secondStudentList: [],
+    secondName: "",
+    secondRate: "",
+    secondType: "",
+    thirdClass: "",
+    selectedThirdClass: {},
+    thirdSection: "",
+    thirdStudentList: [],
+    thirdName: "",
+    thirdRate: "",
+    thirdType: "",
+    fourClass: "",
+    selectedFourClass: {},
+    fourSection: "",
+    fourStudentList: [],
+    fourName: "",
+    fourRate: "",
+    fourType: "",
+    fiveClass: "",
+    selectedFiveClass: {},
+    fiveSection: "",
+    fiveStudentList: [],
+    fiveName: "",
+    fiveRate: "",
+    fiveType: "",
+  });
+
+  const filterStudentHandler = async (section, classs) => {
+    const formData = {
+      section: section,
+      class: classs,
+    };
+
+    try {
+      setLoading(true);
+      const data = await filterStudent(user.school, user._id, formData);
+      console.log(data);
+      setLoading(false);
+      return data;
+    } catch (err) {
+      console.log(err);
+      toast.error("Fetching Students Failed");
+      setLoading(false);
+    }
+  };
+
   const getSession = async () => {
     try {
       const session = await allSessions(user._id, user.school, token);
@@ -69,7 +196,51 @@ const SiblingMaster = () => {
     getAllClasses();
     getSession();
   }, [checked]);
-
+  const handleTwoChange = (name) => async (event) => {
+    setTwoSiblingData({ ...twoSiblingData, [name]: event.target.value });
+    console.log(name, event.target.value);
+    if (name === "firstClass") {
+      let selctedClass = classList.find(
+        (clas) => clas._id === event.target.value
+      );
+      setTwoSiblingData({
+        ...twoSiblingData,
+        selectedFirstClass: selctedClass,
+      });
+    }
+    if (name === "firstSection") {
+      const students = await filterStudentHandler(
+        event.target.value,
+        twoSiblingData.firstClass
+      );
+      setTwoSiblingData({ ...twoSiblingData, firstStudentList: students });
+    }
+    if (name === "secondClass") {
+      let selctedClass = classList.find(
+        (clas) => clas._id === event.target.value
+      );
+      setTwoSiblingData({
+        ...twoSiblingData,
+        selectedSecondClass: selctedClass,
+      });
+    }
+    if (name === "secondSection") {
+      const students = await filterStudentHandler(
+        event.target.value,
+        twoSiblingData.secondClass
+      );
+      setTwoSiblingData({ ...twoSiblingData, secondStudentList: students });
+    }
+  };
+  const handleThreeChange = (name) => async (event) => {
+    setThreeSiblingData({ ...threeSiblingData, [name]: event.target.value });
+  };
+  const handleFourChange = (name) => async (event) => {
+    setFourSiblingData({ ...fourSiblingData, [name]: event.target.value });
+  };
+  const handleFiveChange = (name) => async (event) => {
+    setFiveSiblingData({ ...fiveSiblingData, [name]: event.target.value });
+  };
   return (
     <>
       <SimpleHeader name="Sibling Master" parentName="Fees Management" />
@@ -119,6 +290,7 @@ const SiblingMaster = () => {
                         <option value="">Select Session</option>
                         {sessions &&
                           sessions.map((data) => {
+                            console.log(data);
                             return (
                               <option key={data._id} value={data._id}>
                                 {data.name}
@@ -128,9 +300,14 @@ const SiblingMaster = () => {
                       </select>
                     </td>
                     <td>
-                      <button className="btn btn-primary" onClick={()=>{
-                        setTwoModal(true)
-                      }} >Add</button>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => {
+                          setTwoModal(true);
+                        }}
+                      >
+                        Add
+                      </button>
                     </td>
                   </tr>
                   <tr>
@@ -154,7 +331,14 @@ const SiblingMaster = () => {
                       </select>
                     </td>
                     <td>
-                      <button className="btn btn-primary">Add</button>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => {
+                          setThreeModal(true);
+                        }}
+                      >
+                        Add
+                      </button>
                     </td>
                   </tr>
                   <tr>
@@ -178,7 +362,14 @@ const SiblingMaster = () => {
                       </select>
                     </td>
                     <td>
-                      <button className="btn btn-primary">Add</button>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => {
+                          setFourModal(true);
+                        }}
+                      >
+                        Add
+                      </button>
                     </td>
                   </tr>
                   <tr>
@@ -202,7 +393,14 @@ const SiblingMaster = () => {
                       </select>
                     </td>
                     <td>
-                      <button className="btn btn-primary">Add</button>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => {
+                          setFiveModal(true);
+                        }}
+                      >
+                        Add
+                      </button>
                     </td>
                   </tr>
                 </tbody>
@@ -221,7 +419,163 @@ const SiblingMaster = () => {
           <div className="table_div_fees">
             <table className="fees_table">
               <thead>
-                <th>SNo</th> 
+                <th  >SNo</th>
+                <th>Class</th>
+                <th>Section</th>
+                <th>Name</th>
+                <th>Rate/Amount</th>
+                <th>Type</th>
+              </thead>
+              <tr>
+                <td>1</td>
+                <td>
+                  <Input
+                    id="exampleFormControlTextarea1"
+                    type="select"
+                    required
+                    onChange={handleTwoChange("firstClass")}
+                    value={twoSiblingData.firstClass}
+                    name="firstClass"
+                  >
+                    <option value="">Select Class</option>
+                    {classList?.map((classs) => {
+                      return (
+                        <option value={classs._id} key={classs._id}>
+                          {classs.name}
+                        </option>
+                      );
+                    })}
+                  </Input>
+                </td>
+                <td>
+                  <Input
+                    id="exampleFormControlTextarea1"
+                    type="select"
+                    required
+                    onChange={handleTwoChange("firstSection")}
+                    value={twoSiblingData.firstSection}
+                    name="firstSection"
+                  >
+                    <option value="" selected>
+                      Select Section
+                    </option>
+                    {twoSiblingData.selectedFirstClass?.section?.map(
+                      (section) => {
+                        return (
+                          <option value={section._id} key={section._id}>
+                            {section.name}
+                          </option>
+                        );
+                      }
+                    )}
+                  </Input>
+                </td>
+                <td>
+                  <Input
+                    id="exampleFormControlTextarea1"
+                    type="select"
+                    required
+                    onChange={handleTwoChange("firstName")}
+                    value={twoSiblingData.firstName}
+                    name="firstName"
+                  >
+                    <option value="" selected>
+                      Select Student
+                    </option>
+                    {twoSiblingData.firstStudentList?.map((student) => {
+                      console.log(student);
+                      return (
+                        <option value={student._id} key={student._id}>
+                          {student.firstname + " " + student.lastname}
+                        </option>
+                      );
+                    })}
+                  </Input>
+                </td>
+                <td>
+                  <Input
+                    id="exampleFormControlTextarea1"
+                    type="number"
+                    required
+                    onChange={handleTwoChange("firstRate")}
+                    value={twoSiblingData.firstRate}
+                    name="firstRate"
+                  />
+                </td>
+                <td>
+                  <Input
+                    id="exampleFormControlTextarea1"
+                    type="select"
+                    required
+                    onChange={handleTwoChange("firstType")}
+                    value={twoSiblingData.firstType}
+                    name="firstType"
+                  >
+                    <option value="" selected>
+                      Select Student
+                    </option>
+                    <option value="percentage">Percentage</option>
+                    <option value="flat_rate">Flat Rate</option>
+                  </Input>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </ModalBody>
+      </Modal>
+      <Modal
+        className="modal-dialog-centered"
+        isOpen={threeModal}
+        toggle={() => setThreeModal(false)}
+        size="lg"
+      >
+        <ModalBody>
+          <div className="table_div_fees">
+            <table className="fees_table">
+              <thead>
+                <th>SNo</th>
+                <th>Class</th>
+                <th>Section</th>
+                <th>Name</th>
+                <th>Rate/Amount</th>
+                <th>Type</th>
+              </thead>
+            </table>
+          </div>
+        </ModalBody>
+      </Modal>
+      <Modal
+        className="modal-dialog-centered"
+        isOpen={fourModal}
+        toggle={() => setFourModal(false)}
+        size="lg"
+      >
+        <ModalBody>
+          <div className="table_div_fees">
+            <table className="fees_table">
+              <thead>
+                <th>SNo</th>
+                <th>Class</th>
+                <th>Section</th>
+                <th>Name</th>
+                <th>Rate/Amount</th>
+                <th>Type</th>
+              </thead>
+            </table>
+          </div>
+        </ModalBody>
+      </Modal>
+      <Modal
+        className="modal-dialog-centered"
+        isOpen={fiveModal}
+        toggle={() => setFiveModal(false)}
+        size="lg"
+      >
+        <ModalBody>
+          <div className="table_div_fees">
+            <table className="fees_table">
+              <thead>
+                <th>SNo</th>
                 <th>Class</th>
                 <th>Section</th>
                 <th>Name</th>
