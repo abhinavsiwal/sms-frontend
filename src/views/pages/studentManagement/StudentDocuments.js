@@ -19,19 +19,21 @@ import SimpleHeader from "components/Headers/SimpleHeader";
 import LoadingScreen from "react-loading-screen";
 import { isAuthenticated } from "api/auth";
 import { toast, ToastContainer } from "react-toastify";
-import { getStaffByDepartment, allStaffs } from "api/staff";
-import { getDepartment } from "api/department";
+
+import { allStudents, filterStudent } from "api/student";
+import { allClass } from "api/class";
 
 const StudentDocuments = () => {
   const [loading, setLoading] = useState(false);
   const { user, token } = isAuthenticated();
 
-  const [allDepartments, setAllDepartments] = useState([]);
-  const [filterStaff, setFilterStaff] = useState([]);
   const [checked, setChecked] = useState(false);
-  const [selectedDepartment, setSelectedDepartment] = useState("");
-  const [staff, setStaff] = useState("");
-
+  const [classList, setClassList] = useState([]);
+  const [selectedClassId, setSelectedClassId] = useState("");
+  const [selectedClass, setSelectedClass] = useState({});
+  const [section, setSection] = useState("");
+  const [student, setStudent] = useState("");
+  const [students, setStudents] = useState([]);
   const [inputFields, setInputFields] = useState([
     {
       name: "",
@@ -78,57 +80,61 @@ const StudentDocuments = () => {
     setInputFields(values);
   };
 
-  const getAllDepartment = async () => {
+  const getAllClasses = async () => {
     try {
       setLoading(true);
-      const dept = await getDepartment(user.school, user._id, token);
-      if (dept.err) {
-        return toast.error(dept.err);
+      const classess = await allClass(user._id, user.school, token);
+      console.log("classes", classess);
+      if (classess.err) {
+        setLoading(false);
+        return toast.error(classess.err);
       }
-      console.log(dept);
-      setAllDepartments(dept);
+      setClassList(classess);
+      setLoading(false);
+      // toast.success(fetchingClassSuccess)
       setLoading(false);
     } catch (err) {
-      console.log(err);
-      // toast.error("Error fetching departments");
-      setLoading(false);
+      toast.error("Fetching Classes Failed");
     }
   };
-
   useEffect(() => {
-    getAllDepartment();
+    getAllClasses();
   }, []);
-  useEffect(() => {
-    if (selectedDepartment !== "") {
-      filterStaffHandler(selectedDepartment);
-    }
-  }, [selectedDepartment]);
-
-  const filterStaffHandler = async (id) => {
+  const filterStudentHandler = async (clas, section) => {
     const formData = {
-      departmentId: id,
+      section: section,
+      class: clas,
     };
     try {
       setLoading(true);
-      const data = await getStaffByDepartment(user.school, user._id, formData);
+      const data = await filterStudent(user.school, user._id, formData);
       console.log(data);
-      if (data.err) {
-        setLoading(false);
-        return toast.error(data.err);
-      }
-      setFilterStaff(data);
-
+      setStudents(data);
       setLoading(false);
     } catch (err) {
       console.log(err);
-      toast.error("Error fetching staff");
+      toast.error("Fetching Students Failed");
       setLoading(false);
     }
   };
-
   const handleSubmit = async () => {
     console.log(inputFields);
   };
+
+  useEffect(() => {
+    if (selectedClassId !== "") {
+      const selectedClass1 = classList.find(
+        (clas) => clas._id === selectedClassId
+      );
+      setSelectedClass(selectedClass1);
+    }
+  }, [selectedClassId]);
+
+  useEffect(() => {
+    if (section !== "") {
+      filterStudentHandler(selectedClassId, section);
+    }
+  }, [section]);
 
   return (
     <>
@@ -165,21 +171,21 @@ const StudentDocuments = () => {
                   className="form-control-label"
                   htmlFor="example4cols2Input"
                 >
-                  Department
+                  Class
                 </label>
                 <Input
                   id="example4cols2Input"
                   type="select"
-                  onChange={(e) => setSelectedDepartment(e.target.value)}
+                  onChange={(e) => setSelectedClassId(e.target.value)}
                   required
-                  value={selectedDepartment}
+                  value={selectedClassId}
                 >
-                  <option value="" selected>
-                    Select Department
+                  <option value="" selected disabled>
+                    Select Class
                   </option>
-                  {allDepartments?.map((dept, index) => (
-                    <option key={index} value={dept._id}>
-                      {dept.name}
+                  {classList?.map((clas, index) => (
+                    <option key={index} value={clas._id}>
+                      {clas.name}
                     </option>
                   ))}
                 </Input>
@@ -187,27 +193,55 @@ const StudentDocuments = () => {
               <Col>
                 <label
                   className="form-control-label"
-                  htmlFor="example4cols2Input"
+                  htmlFor="exampleFormControlSelect3"
                 >
-                  Staff
+                  Section
                 </label>
                 <Input
-                  id="example4cols2Input"
+                  id="exampleFormControlSelect3"
                   type="select"
-                  onChange={(e) => setStaff(e.target.value)}
                   required
-                  value={staff}
+                  value={section}
+                  onChange={(e) => setSection(e.target.value)}
+                  name="section"
                 >
-                  <option value="" selected>
-                    Select Staff
-                  </option>
-                  {filterStaff?.map((staff, index) => (
-                    <option key={index} value={staff._id}>
-                      {staff.firstname + " " + staff.lastname}
-                    </option>
-                  ))}
+                  <option value="">Select Section</option>
+                  {selectedClass.section &&
+                    selectedClass.section.map((section) => {
+                      // console.log(section.name);
+                      return (
+                        <option value={section._id} key={section._id} selected>
+                          {section.name}
+                        </option>
+                      );
+                    })}
                 </Input>
               </Col>
+              <Col>
+              <label
+                className="form-control-label"
+                htmlFor="example4cols2Input"
+              >
+                Student
+              </label>
+              <Input
+                id="example4cols2Input"
+                placeholder="Student Name"
+                type="select"
+                name="class"
+                onChange={(e) => setStudent(e.target.value)}
+                value={student}
+                required
+              >
+                <option value="">Select Student</option>
+                {students &&
+                  students.map((student) => (
+                    <option key={student._id} value={student._id}>
+                      {student.firstname} {student.lastname}
+                    </option>
+                  ))}
+              </Input>
+            </Col>
             </Row>
           </CardHeader>
           <CardBody>
@@ -215,7 +249,7 @@ const StudentDocuments = () => {
             {inputFields?.map((field, index) => {
               return (
                 <>
-                  <Row key={index} className="mt-4" > 
+                  <Row key={index} className="mt-4">
                     <Col>
                       <label
                         className="form-control-label"
@@ -306,12 +340,12 @@ const StudentDocuments = () => {
                       />
                     </Col>
                   </Row>
-                  <Row className="mt-4" >
-                    <Col >
+                  <Row className="mt-4">
+                    <Col>
                       <Button color="primary" onClick={handleAddFields}>
                         Add
                       </Button>
-                   
+
                       <Button
                         color="danger"
                         onClick={() => handleRemoveFields(index)}
