@@ -85,6 +85,8 @@ import SalaryAdvanceApprover from "views/pages/Accounts/SalaryAdvanceApprover";
 import LinkStudent from "views/pages/Accounts/LinkStudent";
 import PaySalary from "views/pages/Accounts/PaySalary";
 import CouponMaster from "views/pages/FeesManagement/CouponMaster";
+import StaffDocuments from "views/pages/staffManagement/StaffDocuments";
+import StudentDocuments from "views/pages/studentManagement/StudentDocuments";
 
 export const adminRoutes = [
   {
@@ -123,6 +125,14 @@ export const adminRoutes = [
         name: "Staff Attendance",
         miniName: "S",
         component: StaffAttendance,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/staff-documents",
+        name: "Staff Documents",
+        miniName: "S",
+        component: StaffDocuments,
         layout: "/admin",
         permission: "add",
       },
@@ -263,6 +273,14 @@ export const adminRoutes = [
         name: "Attendance",
         miniName: "A",
         component: Attendance,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/student-documents",
+        name: "Student Documents",
+        miniName: "SD",
+        component: StudentDocuments,
         layout: "/admin",
         permission: "add",
       },
