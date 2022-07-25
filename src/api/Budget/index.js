@@ -44,7 +44,20 @@ export const addDeptBudget = async (schoolId, userId, formData) => {
     throw new err();
   }
 };
-
+export const getDeptBudget = async (schoolId, userId) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/budget/department_budget_list/${schoolId}/${userId}`,
+      null,
+      "POST"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw new err();
+  }
+}
 export const addUsedBudget = async (schoolId, userId, formData) => {
   try {
     const { data } = await sendRequest(

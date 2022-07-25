@@ -342,70 +342,70 @@ const BudgetMaster = () => {
     },
   ];
 
-  const getBudgetHandler = async () => {
-    try {
-      setLoading(true);
-      const data = await getStaffBudget(user.school, user._id);
-      console.log(data);
-      if (data.err) {
-        setLoading(false);
-        return toast.error(data.err);
-      }
-      let data1 = [];
-      for (let i = 0; i < data.length; i++) {
-        data1.push({
-          key: i,
-          name: data[i].staff.firstname + " " + data[i].staff.lastname,
-          dept: "null",
-          session: data[i].session,
-          allocated: data[i].allocated,
-          used: "null",
-          status: "Under Budget",
-          action: (
-            <>
-              <Button
-                className="btn-sm pull-right"
-                color="primary"
-                type="button"
-                onClick={() => {
-                  setEditing(true);
-                  setEditData({
-                    id: data[i]._id,
-                    department: "",
-                    staff: data[i].staff._id,
-                    session: data[i].session,
-                    allocated: data[i].allocated,
-                  });
-                }}
-                key={"edit" + 1}
-              >
-                <i className="fas fa-user-edit" />
-              </Button>
-              <Button
-                className="btn-sm pull-right"
-                color="danger"
-                type="button"
-                key={"delete" + 1}
-              >
-                <Popconfirm
-                  title="Sure to delete?"
-                  // onConfirm={() => deleteCanteenHandler()}
+    const getBudgetHandler = async () => {
+      try {
+        setLoading(true);
+        const data = await getStaffBudget(user.school, user._id);
+        console.log(data);
+        if (data.err) {
+          setLoading(false);
+          return toast.error(data.err);
+        }
+        let data1 = [];
+        for (let i = 0; i < data.length; i++) {
+          data1.push({
+            key: i,
+            name: data[i].staff.firstname + " " + data[i].staff.lastname,
+            dept: "null",
+            session: data[i].session,
+            allocated: data[i].allocated,
+            used: "null",
+            status: "Under Budget",
+            action: (
+              <>
+                <Button
+                  className="btn-sm pull-right"
+                  color="primary"
+                  type="button"
+                  onClick={() => {
+                    setEditing(true);
+                    setEditData({
+                      id: data[i]._id,
+                      department: "",
+                      staff: data[i].staff._id,
+                      session: data[i].session,
+                      allocated: data[i].allocated,
+                    });
+                  }}
+                  key={"edit" + 1}
                 >
-                  <i className="fas fa-trash" />
-                </Popconfirm>
-              </Button>
-            </>
-          ),
-        });
+                  <i className="fas fa-user-edit" />
+                </Button>
+                <Button
+                  className="btn-sm pull-right"
+                  color="danger"
+                  type="button"
+                  key={"delete" + 1}
+                >
+                  <Popconfirm
+                    title="Sure to delete?"
+                    // onConfirm={() => deleteCanteenHandler()}
+                  >
+                    <i className="fas fa-trash" />
+                  </Popconfirm>
+                </Button>
+              </>
+            ),
+          });
+        }
+        setTableData(data1);
+        setLoading(false);
+      } catch (err) {
+        setLoading(false);
+        toast.error("Error getting staff budget");
+        console.log(err);
       }
-      setTableData(data1);
-      setLoading(false);
-    } catch (err) {
-      setLoading(false);
-      toast.error("Error getting staff budget");
-      console.log(err);
-    }
-  };
+    };
 
   return (
     <>
