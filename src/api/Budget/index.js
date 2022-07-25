@@ -15,6 +15,21 @@ export const addStaffBudget = async (schoolId, userId, formData) => {
   }
 };
 
+export const getStaffBudget = async (schoolId, userId) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/budget/allocation_list/${schoolId}/${userId}`,
+      null,
+      "POST"
+    );
+    // console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw new err();
+  }
+}
+
 export const addDeptBudget = async (schoolId, userId, formData) => {
   try {
     const { data } = await sendRequest(

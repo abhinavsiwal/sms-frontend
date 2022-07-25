@@ -32,7 +32,8 @@ const LinkStudent = () => {
       class: "",
       section: "",
       student: "",
-      feesList: "",
+      oneTime:"",
+      recurring:"",
       selectedClass: {},
       studentList: [],
     },
@@ -151,7 +152,8 @@ const LinkStudent = () => {
                     <th style={{backgroundColor:"#c0c0c0"}} >Class</th>
                     <th style={{backgroundColor:"#c0c0c0"}} >Section</th>
                     <th style={{backgroundColor:"#c0c0c0"}}>Student</th>
-                    <th style={{backgroundColor:"#c0c0c0"}}>Fees List</th>
+                    <th style={{backgroundColor:"#c0c0c0"}}>One Time</th>
+                    <th style={{backgroundColor:"#c0c0c0"}}>Recurring</th>
                     <th style={{backgroundColor:"#c0c0c0"}}>Add</th>
                     <th style={{backgroundColor:"#c0c0c0"}}>Remove</th>
                   </thead>
@@ -228,15 +230,27 @@ const LinkStudent = () => {
                           </td>
                           <td>
                             <Input
-                              id="exampleFormControlTextarea1"
-                              type="text"
-                              required
-                              onChange={(e) => handleChange(index, e)}
-                              value={inputfield.feesList}
-                              name="feesList"
-                              placeholder="Availed Fees list"
+                              // className="custom-control-input"
+                              type="checkbox"
+                              
+                              // onChange={(e) => handleChange(index, e)}
+                              value={inputfield.oneTime}
+                              name="oneTime"
+                          
                             />
                           </td>
+                          <td>
+                            <Input
+                              className="form-check-input"
+                              type="checkbox"
+                              
+                              // onChange={(e) => handleChange(index, e)}
+                              value="yes"
+                              name="recurring"
+                          
+                            />
+                          </td>
+                          
                           <td>
                             <Button color="primary" onClick={handleAddFields}>
                               Add
