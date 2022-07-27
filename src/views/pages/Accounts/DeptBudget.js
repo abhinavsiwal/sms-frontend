@@ -135,7 +135,7 @@ const DeptBudgetMaster = () => {
     e.preventDefault();
     const formData = new FormData();
     formData.set("department", editData.department);
-    formData.set("session",editData.session);
+    formData.set("session", editData.session);
     formData.set("allocated", editData.allocated);
     formData.set("id", editData.id);
     try {
@@ -155,8 +155,8 @@ const DeptBudgetMaster = () => {
         status: "",
         allocated: "",
       });
-setEditing(false);
-setChecked(!checked);
+      setEditing(false);
+      setChecked(!checked);
     } catch (err) {
       console.log(err);
       toast.error("Error fetching staff");
@@ -532,7 +532,7 @@ setChecked(!checked);
           </button>
         </div>
         <ModalBody>
-          <form onSubmit={handleEditSubmit} >
+          <form onSubmit={handleEditSubmit}>
             <Row>
               <Col>
                 <label

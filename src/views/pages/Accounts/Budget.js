@@ -342,70 +342,106 @@ const BudgetMaster = () => {
     },
   ];
 
-    const getBudgetHandler = async () => {
-      try {
-        setLoading(true);
-        const data = await getStaffBudget(user.school, user._id);
-        console.log(data);
-        if (data.err) {
-          setLoading(false);
-          return toast.error(data.err);
-        }
-        let data1 = [];
-        for (let i = 0; i < data.length; i++) {
-          data1.push({
-            key: i,
-            name: data[i].staff.firstname + " " + data[i].staff.lastname,
-            dept: "null",
-            session: data[i].session,
-            allocated: data[i].allocated,
-            used: "null",
-            status: "Under Budget",
-            action: (
-              <>
-                <Button
-                  className="btn-sm pull-right"
-                  color="primary"
-                  type="button"
-                  onClick={() => {
-                    setEditing(true);
-                    setEditData({
-                      id: data[i]._id,
-                      department: "",
-                      staff: data[i].staff._id,
-                      session: data[i].session,
-                      allocated: data[i].allocated,
-                    });
-                  }}
-                  key={"edit" + 1}
-                >
-                  <i className="fas fa-user-edit" />
-                </Button>
-                <Button
-                  className="btn-sm pull-right"
-                  color="danger"
-                  type="button"
-                  key={"delete" + 1}
-                >
-                  <Popconfirm
-                    title="Sure to delete?"
-                    // onConfirm={() => deleteCanteenHandler()}
-                  >
-                    <i className="fas fa-trash" />
-                  </Popconfirm>
-                </Button>
-              </>
-            ),
-          });
-        }
-        setTableData(data1);
+  const getBudgetHandler = async () => {
+    try {
+      setLoading(true);
+      const data = await getStaffBudget(user.school, user._id);
+      console.log(data);
+      if (data.err) {
         setLoading(false);
-      } catch (err) {
-        setLoading(false);
-        toast.error("Error getting staff budget");
-        console.log(err);
+        return toast.error(data.err);
       }
-    };
+      let data1 = [];
+      for (let i = 0; i < data.length; i++) {
+        data1.push({
+          key: i,
+          name: data[i].staff.firstname + " " + data[i].staff.lastname,
+          dept: data[i].staff.department.name,
+          session: data[i].session,
+          allocated: data[i].allocated,
+          used: "null",
+          status: "Under Budget",
+          action: (
+            <>
+              <Button
+                className="btn-sm pull-right"
+                color="primary"
+                type="button"
+                onClick={() => {
+                  setEditing(true);
+                  filterStaffHandler(data[i].staff.department._id)
+                  setEditData({
+                    id: data[i]._id,
+                    department: data[i].staff.department._id,
+                    staff: data[i].staff._id,
+                    session: data[i].session,
+                    allocated: data[i].allocated,
+                  });
+                  
+                }}
+                key={"edit" + 1}
+              >
+                <i className="fas fa-user-edit" />
+              </Button>
+              <Button
+                className="btn-sm pull-right"
+                color="danger"
+                type="button"
+                key={"delete" + 1}
+              >
+                <Popconfirm
+                  title="Sure to delete?"
+                  // onConfirm={() => deleteCanteenHandler()}
+                >
+                  <i className="fas fa-trash" />
+                </Popconfirm>
+              </Button>
+            </>
+          ),
+        });
+      }
+      setTableData(data1);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      toast.error("Error getting staff budget");
+      console.log(err);
+    }
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.set("department", editData.department);
+    formData.set("session", editData.session);
+    formData.set("allocated", editData.allocated);
+    formData.set("id", editData.id);
+    formData.set("staff", editData.staff);
+    try {
+      setLoading(true);
+      const data = await addStaffBudget(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        return toast.error(data.err);
+      }
+      setLoading(false);
+      toast.success("Budget Added Successfully");
+      setEditData({
+        department: "",
+        session: "",
+        used: "",
+        status: "",
+        allocated: "",
+      });
+      setEditing(false);
+      setChecked(!checked);
+    } catch (err) {
+      console.log(err);
+      toast.error("Error fetching staff");
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -576,7 +612,7 @@ const BudgetMaster = () => {
           </button>
         </div>
         <ModalBody>
-          <form>
+          <form onSubmit={handleEditSubmit}>
             <Row>
               <Col>
                 <label
