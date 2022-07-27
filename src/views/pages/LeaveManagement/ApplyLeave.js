@@ -362,17 +362,22 @@ const ApplyLeave = () => {
     e.preventDefault();
     const formData = new FormData();
     formData.set("dateFrom", dateFrom);
+    formData.set("type_from", leaveData.fromType);
     formData.set("dateTo", dateTo);
+    formData.set("type_to", leaveData.toType);
     formData.set("reason", leaveData.reason);
     formData.set("userId", user._id);
     formData.set("user", user.user);
+    formData.set("school", user.school);
     formData.set("session", leaveData.session);
     if (user.user === "student") {
       formData.set("section", user.section);
       formData.set("class", user.class);
+      formData.set("student", user.student);
     } else if (user.user === "staff") {
       formData.set("leaveType", leaveData.leaveType);
       formData.set("department", user.department);
+      formData.set("staff", user._id);
     }
 
     try {
@@ -479,9 +484,9 @@ const ApplyLeave = () => {
                             required
                           >
                             <option value="">Select Leave Type</option>
-                            <option value="Earned Leave">Earned Leave</option>
-                            <option value="LOP Leave">LOP Leave</option>
-                            <option value="Comp Off Leave">
+                            <option value="EL">Earned Leave</option>
+                            <option value="LOP">LOP Leave</option>
+                            <option value="COMPOFF">
                               Comp Off Leave
                             </option>
                           </Input>
@@ -527,8 +532,8 @@ const ApplyLeave = () => {
                           required
                         >
                           <option value="">Select Day Type</option>
-                          <option value="Full">Full</option>
-                          <option value="Half">Half</option>
+                          <option value="full">Full</option>
+                          <option value="half">Half</option>
                         </Input>
                       </Col>
 
@@ -571,8 +576,8 @@ const ApplyLeave = () => {
                           required
                         >
                           <option value="">Select Day Type</option>
-                          <option value="Full">Full</option>
-                          <option value="Half">Half</option>
+                          <option value="full">Full</option>
+                          <option value="half">Half</option>
                         </Input>
                       </Col>
                     </Row>
