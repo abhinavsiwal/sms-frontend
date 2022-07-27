@@ -862,7 +862,7 @@ function AddStudent() {
                         className="form-control-label"
                         htmlFor="example-date-input"
                       >
-                        Date of Joining
+                       Enrollment Date
                       </Label>
                       <DatePicker
                         dateFormat="dd/MM/yyyy"
@@ -917,7 +917,7 @@ function AddStudent() {
                         className="form-control-label"
                         htmlFor="example-date-input"
                       >
-                        DOB
+                        Date of Birth
                       </Label>
                       <DatePicker
                         dateFormat="dd/MM/yyyy"
@@ -959,7 +959,7 @@ function AddStudent() {
                         className="form-control-label"
                         htmlFor="example4cols2Input"
                       >
-                        Aadhar Card Number
+                        Aadhar Card Number (Optional)
                       </label>
                       <Input
                         id="example4cols2Input"
@@ -968,7 +968,7 @@ function AddStudent() {
                         onChange={handleChange("aadhar_number")}
                         pattern="[0-9]{1,12}"
                         value={studentData.aadhar_number}
-                        required
+                        
                         onBlur={aadharBlurHandler}
                         invalid={aadharError}
                       />
@@ -992,7 +992,7 @@ function AddStudent() {
                         placeholder="Email"
                         type="text"
                         onChange={handleChange("email")}
-                        required
+                        
                         value={studentData.email}
                         pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                         onBlur={emailBlurHandler}
@@ -1015,7 +1015,7 @@ function AddStudent() {
                         type="number"
                         pattern="[1-9]{1}[0-9]{9}"
                         onChange={handleChange("phone")}
-                        required
+                        
                         value={studentData.phone}
                         onBlur={phoneBlurHandler}
                         invalid={phoneError}
@@ -1039,7 +1039,7 @@ function AddStudent() {
                         type="number"
                         pattern="[1-9]{1}[0-9]{9}"
                         onChange={handleChange("alternate_phone")}
-                        required
+                        
                         value={studentData.alternate_phone}
                         onBlur={altPhoneBlurHandler}
                         invalid={altPhoneError}
@@ -1076,11 +1076,17 @@ function AddStudent() {
                       <Input
                         id="example4cols2Input"
                         placeholder="Caste"
-                        type="text"
+                        type="select"
                         onChange={handleChange("caste")}
                         required
                         value={studentData.caste}
-                      />
+                      >
+                        <option value="" disabled>Select Caste</option>
+                        <option value="General" >General</option>
+                        <option value="SC" >SC</option>
+                        <option value="ST" >ST</option>
+                        <option value="OBC" >OBC</option>
+                      </Input>
                     </Col>
                     <Col>
                       <label

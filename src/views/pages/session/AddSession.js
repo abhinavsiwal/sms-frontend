@@ -542,8 +542,7 @@ const AddSession = () => {
                           required
                         />
                       </Col>
-                    </Row>
-                    <Row className="mt-4">
+                 
                       <Col>
                         <label
                           className="form-control-label"
@@ -579,8 +578,7 @@ const AddSession = () => {
                           required
                         />
                       </Col>
-                    </Row>
-                    <Row className="mt-4">
+               
                       <Col>
                         <label
                           className="form-control-label"
@@ -606,18 +604,17 @@ const AddSession = () => {
                           className="form-control-label"
                           htmlFor="example-date-input"
                         >
-                          Working Time
+                          No of Paid Leaves
                         </label>
-                        <DatePicker
-                          id="exampleFormControlSelect3"
-                          className="Period-Time"
-                          selected={startTime}
-                          onChange={(date) => setStartTime(date)}
-                          showTimeSelect
-                          showTimeSelectOnly
-                          timeIntervals={15}
-                          timeCaption="Time"
-                          dateFormat="h:mm aa"
+                        <Input
+                          id="example-date-input"
+                          type="number"
+                          max="7"
+                          min="1"
+                          onChange={handleChange("leaves")}
+                          value={sessionData.working_days}
+                          placeholder="Leaves"
+                          required
                         />
                       </Col>
                       <Col>
