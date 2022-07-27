@@ -87,6 +87,7 @@ import PaySalary from "views/pages/Accounts/PaySalary";
 import CouponMaster from "views/pages/FeesManagement/CouponMaster";
 import StaffDocuments from "views/pages/staffManagement/StaffDocuments";
 import StudentDocuments from "views/pages/studentManagement/StudentDocuments";
+import PendingFees from "views/pages/FeesManagement/PendingFees";
 
 export const adminRoutes = [
   {
@@ -590,6 +591,14 @@ export const adminRoutes = [
         name: "Coupon Master",
         miniName: "CM",
         component: CouponMaster,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/pending-fees",
+        name: "Pending Fees",
+        miniName: "PF",
+        component: PendingFees,
         layout: "/admin",
         permission: "add",
       },
