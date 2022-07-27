@@ -28,7 +28,7 @@ export const getStaffBudget = async (schoolId, userId) => {
     console.log(err);
     throw new err();
   }
-}
+};
 
 export const addDeptBudget = async (schoolId, userId, formData) => {
   try {
@@ -57,7 +57,7 @@ export const getDeptBudget = async (schoolId, userId) => {
     console.log(err);
     throw new err();
   }
-}
+};
 export const addUsedBudget = async (schoolId, userId, formData) => {
   try {
     const { data } = await sendRequest(
@@ -107,6 +107,21 @@ export const changeAdvanceRequest = async (schoolId, userId, formData) => {
   try {
     const { data } = await sendRequest(
       `${process.env.REACT_APP_API_URL}/api/school/staff/advance_salary_status_update/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw new err();
+  }
+};
+
+export const linkStudent = async (schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/accounts/link_salary_with_student/${schoolId}/${userId}`,
       formData,
       "POST"
     );

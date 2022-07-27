@@ -21,6 +21,7 @@ import { filterStudent } from "api/student";
 import { allClass } from "api/class";
 import LoadingScreen from "react-loading-screen";
 import "./style.css";
+import { linkStudent } from "api/Budget";
 const LinkStudent = () => {
   const [loading, setLoading] = useState(false);
   const { user, token } = isAuthenticated();
@@ -32,8 +33,8 @@ const LinkStudent = () => {
       class: "",
       section: "",
       student: "",
-      oneTime:"",
-      recurring:"",
+      one_time: "",
+      recurring: "",
       selectedClass: {},
       studentList: [],
     },
@@ -114,6 +115,39 @@ const LinkStudent = () => {
     getAllClasses();
   }, [checked]);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.set("link_data", JSON.stringify(inputFields));
+    console.log(inputFields);
+    try {
+      setLoading(true);
+      const data = await linkStudent(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        return toast.error(data.err);
+      }
+      setLoading(false);
+      toast.success("Linked Successfully");
+      setInputFields([
+        {
+          class: "",
+          section: "",
+          student: "",
+          one_time: "",
+          recurring: "",
+          selectedClass: {},
+          studentList: [],
+        },
+      ]);
+    } catch (err) {
+      console.log(err);
+      toast.error("Link Failed");
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <SimpleHeader
@@ -145,17 +179,17 @@ const LinkStudent = () => {
             <h2>Add Students</h2>
           </CardHeader>
           <CardBody>
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="table_div_fees">
                 <table className="fees_table">
-                  <thead style={{backgroundColor:"#c0c0c0"}} >
-                    <th style={{backgroundColor:"#c0c0c0"}} >Class</th>
-                    <th style={{backgroundColor:"#c0c0c0"}} >Section</th>
-                    <th style={{backgroundColor:"#c0c0c0"}}>Student</th>
-                    <th style={{backgroundColor:"#c0c0c0"}}>One Time</th>
-                    <th style={{backgroundColor:"#c0c0c0"}}>Recurring</th>
-                    <th style={{backgroundColor:"#c0c0c0"}}>Add</th>
-                    <th style={{backgroundColor:"#c0c0c0"}}>Remove</th>
+                  <thead style={{ backgroundColor: "#c0c0c0" }}>
+                    <th style={{ backgroundColor: "#c0c0c0" }}>Class</th>
+                    <th style={{ backgroundColor: "#c0c0c0" }}>Section</th>
+                    <th style={{ backgroundColor: "#c0c0c0" }}>Student</th>
+                    <th style={{ backgroundColor: "#c0c0c0" }}>One Time</th>
+                    <th style={{ backgroundColor: "#c0c0c0" }}>Recurring</th>
+                    <th style={{ backgroundColor: "#c0c0c0" }}>Add</th>
+                    <th style={{ backgroundColor: "#c0c0c0" }}>Remove</th>
                   </thead>
                   <tbody>
                     {inputFields?.map((inputfield, index) => {
@@ -219,7 +253,7 @@ const LinkStudent = () => {
                                 Select Student
                               </option>
                               {inputfield.studentList?.map((student) => {
-                                console.log(student);
+                           
                                 return (
                                   <option value={student._id} key={student._id}>
                                     {student.firstname + " " + student.lastname}
@@ -230,27 +264,45 @@ const LinkStudent = () => {
                           </td>
                           <td>
                             <Input
-                              // className="custom-control-input"
-                              type="checkbox"
-                              
-                              // onChange={(e) => handleChange(index, e)}
-                              value={inputfield.oneTime}
-                              name="oneTime"
-                          
-                            />
+                              id="exampleFormControlTextarea1"
+                              type="select"
+                              required
+                              onChange={(e) => handleChange(index, e)}
+                              value={inputfield.one_time}
+                              name="one_time"
+                            >
+                              <option value="" selected disabled>
+                                Select One Time
+                              </option>
+                              <option value="Y" selected>
+                                Yes
+                              </option>
+                              <option value="N" selected>
+                                No
+                              </option>
+                            </Input>
                           </td>
                           <td>
                             <Input
-                              className="form-check-input"
-                              type="checkbox"
-                              
-                              // onChange={(e) => handleChange(index, e)}
-                              value="yes"
+                              id="exampleFormControlTextarea1"
+                              type="select"
+                              required
+                              onChange={(e) => handleChange(index, e)}
+                              value={inputfield.recurring}
                               name="recurring"
-                          
-                            />
+                            >
+                              <option value="" selected disabled>
+                                Select Recurring
+                              </option>
+                              <option value="Y" selected>
+                                Yes
+                              </option>
+                              <option value="N" selected>
+                                No
+                              </option>
+                            </Input>
                           </td>
-                          
+
                           <td>
                             <Button color="primary" onClick={handleAddFields}>
                               Add
@@ -270,6 +322,13 @@ const LinkStudent = () => {
                   </tbody>
                 </table>
               </div>
+              <Row className="mt-4 float-right">
+                <Col>
+                  <Button color="primary" type="submit">
+                    Submit
+                  </Button>
+                </Col>
+              </Row>
             </form>
           </CardBody>
         </Card>
