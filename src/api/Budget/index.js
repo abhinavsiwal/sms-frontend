@@ -29,6 +29,20 @@ export const getStaffBudget = async (schoolId, userId) => {
     throw new err();
   }
 };
+export const deleteStaffBudget = async (schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/budget/delete_budget/${schoolId}/${userId}`,
+      formData,
+      "DELETE"
+    );
+    // console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw new err();
+  }
+}
 
 export const addDeptBudget = async (schoolId, userId, formData) => {
   try {

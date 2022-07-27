@@ -29,6 +29,7 @@ import { getDepartment } from "api/department";
 import { isAuthenticated } from "api/auth";
 import { addStaffBudget } from "api/Budget";
 import { getStaffBudget } from "api/Budget";
+import { deleteStaffBudget } from "api/Budget";
 
 const BudgetMaster = () => {
   const [loading, setLoading] = useState(false);
@@ -144,6 +145,7 @@ const BudgetMaster = () => {
         return toast.error(data.err);
       }
       setLoading(false);
+      setChecked(!checked);
       toast.success("Budget Added Successfully");
     } catch (err) {
       console.log(err);
@@ -151,6 +153,28 @@ const BudgetMaster = () => {
       setLoading(false);
     }
   };
+
+  const deleteBudgetHandler = async (id) => {
+    const formData = new FormData();
+    formData.set("budget_id", id);
+    try {
+      setLoading(true);
+      const data = await deleteStaffBudget(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        return toast.error(data.err);
+      }
+      setLoading(false);
+      setChecked(!checked);
+      toast.success("Budget Deleted Successfully");
+
+    } catch (err) {
+      console.log(err);
+      toast.error("Error in Deleting Budget");
+      setLoading(false);
+    }
+  }
 
   const columns = [
     {
@@ -391,7 +415,7 @@ const BudgetMaster = () => {
               >
                 <Popconfirm
                   title="Sure to delete?"
-                  // onConfirm={() => deleteCanteenHandler()}
+                  onConfirm={() => deleteBudgetHandler(data[i]._id)}
                 >
                   <i className="fas fa-trash" />
                 </Popconfirm>
