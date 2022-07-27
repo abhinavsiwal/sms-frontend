@@ -29,6 +29,7 @@ import { getStaffByDepartment, allStaffs } from "api/staff";
 import { getDepartment } from "api/department";
 import { addDeptBudget } from "api/Budget";
 import { getDeptBudget } from "api/Budget";
+import { deleteDeptBudget } from "api/Budget";
 
 const DeptBudgetMaster = () => {
   const [loading, setLoading] = useState(false);
@@ -125,6 +126,7 @@ const DeptBudgetMaster = () => {
         status: "",
         allocated: "",
       });
+      setChecked(!checked);
     } catch (err) {
       console.log(err);
       toast.error("Error fetching staff");
@@ -368,7 +370,7 @@ const DeptBudgetMaster = () => {
               >
                 <Popconfirm
                   title="Sure to delete?"
-                  // onConfirm={() => deleteCanteenHandler()}
+                  onConfirm={() => deleteBudgetHandler(data[i]._id)}
                 >
                   <i className="fas fa-trash" />
                 </Popconfirm>
@@ -385,6 +387,27 @@ const DeptBudgetMaster = () => {
       console.log(err);
     }
   };
+  const deleteBudgetHandler = async (id) => {
+    const formData = new FormData();
+    formData.set("budget_id", id);
+    try {
+      setLoading(true);
+      const data = await deleteDeptBudget(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        return toast.error(data.err);
+      }
+      setLoading(false);
+      setChecked(!checked);
+      toast.success("Budget Deleted Successfully");
+
+    } catch (err) {
+      console.log(err);
+      toast.error("Error in Deleting Budget");
+      setLoading(false);
+    }
+  }
 
   return (
     <>
