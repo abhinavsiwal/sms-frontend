@@ -85,7 +85,7 @@ function AddStudent() {
     country: "",
     state: "",
     city: "",
-    nationality: "",
+    nationality: "Indian",
     mother_tongue: "",
     contact_person_select: "",
     guardian_name: "",
@@ -98,7 +98,7 @@ function AddStudent() {
     // guardian_address: "",
     // guardian_permanent_address: "",
     guardian_pincode: "",
-    guardian_nationality: "",
+    guardian_nationality: "Indian",
     guardian_mother_tongue: "",
     father_name: "",
     father_last_name: "",
@@ -108,7 +108,7 @@ function AddStudent() {
     // father_address: "",
     // father_permanent_address: "",
     father_pincode: "",
-    father_nationality: "",
+    father_nationality: "Indian",
     father_mother_tongue: "",
     mother_name: "",
     mother_last_name: "",
@@ -118,7 +118,7 @@ function AddStudent() {
     // mother_address: "",
     // mother_permanent_address: "",
     mother_pincode: "",
-    mother_nationality: "",
+    mother_nationality: "Indian",
     mother_mother_tongue: "",
   });
   const [loading, setLoading] = useState(false);
@@ -512,7 +512,7 @@ function AddStudent() {
       } else {
         toast.success("Student added successfully");
         setLoading(false);
-        
+
         history.push("/admin/all-students");
       }
     } catch (err) {
@@ -654,7 +654,7 @@ function AddStudent() {
 
   const pincodeBlurHandler = () => {
     let regex = /^[1-9][0-9]{5}$/;
-    if (pincode.length===6) {
+    if (pincode.length === 6) {
       console.log("herre");
       setPincodeError(false);
       setDisableButton(false);
@@ -666,7 +666,7 @@ function AddStudent() {
   };
   const guardianPincodeBlurHandler = () => {
     let regex = /^[1-9][0-9]{5}$/;
-    if (studentData.guardian_pincode.length===6) {
+    if (studentData.guardian_pincode.length === 6) {
       console.log("herre");
       setGuardianPincodeError(false);
       setDisableButton(false);
@@ -678,7 +678,7 @@ function AddStudent() {
   };
   const fatherPincodeBlurHandler = () => {
     let regex = /^[1-9][0-9]{5}$/;
-    if (studentData.father_pincode.length===6) {
+    if (studentData.father_pincode.length === 6) {
       console.log("herre");
       setFatherPincodeError(false);
       setDisableButton(false);
@@ -690,7 +690,7 @@ function AddStudent() {
   };
   const motherPincodeBlurHandler = () => {
     let regex = /^[1-9][0-9]{5}$/;
-    if (studentData.mother_pincode.length===6) {
+    if (studentData.mother_pincode.length === 6) {
       console.log("herre");
       setMotherPincodeError(false);
       setDisableButton(false);
@@ -764,7 +764,6 @@ function AddStudent() {
             {step === 0 && (
               <Form onSubmit={handleFormChange} className="mb-4">
                 <CardBody>
-                 
                   <Row md="4" className="d-flex justify-content-center mb-4">
                     <Col>
                       <img
@@ -862,7 +861,7 @@ function AddStudent() {
                         className="form-control-label"
                         htmlFor="example-date-input"
                       >
-                       Enrollment Date
+                        Enrollment Date
                       </Label>
                       <DatePicker
                         dateFormat="dd/MM/yyyy"
@@ -968,7 +967,6 @@ function AddStudent() {
                         onChange={handleChange("aadhar_number")}
                         pattern="[0-9]{1,12}"
                         value={studentData.aadhar_number}
-                        
                         onBlur={aadharBlurHandler}
                         invalid={aadharError}
                       />
@@ -992,7 +990,6 @@ function AddStudent() {
                         placeholder="Email"
                         type="text"
                         onChange={handleChange("email")}
-                        
                         value={studentData.email}
                         pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                         onBlur={emailBlurHandler}
@@ -1015,7 +1012,6 @@ function AddStudent() {
                         type="number"
                         pattern="[1-9]{1}[0-9]{9}"
                         onChange={handleChange("phone")}
-                        
                         value={studentData.phone}
                         onBlur={phoneBlurHandler}
                         invalid={phoneError}
@@ -1039,7 +1035,6 @@ function AddStudent() {
                         type="number"
                         pattern="[1-9]{1}[0-9]{9}"
                         onChange={handleChange("alternate_phone")}
-                        
                         value={studentData.alternate_phone}
                         onBlur={altPhoneBlurHandler}
                         invalid={altPhoneError}
@@ -1081,11 +1076,13 @@ function AddStudent() {
                         required
                         value={studentData.caste}
                       >
-                        <option value="" disabled>Select Caste</option>
-                        <option value="General" >General</option>
-                        <option value="SC" >SC</option>
-                        <option value="ST" >ST</option>
-                        <option value="OBC" >OBC</option>
+                        <option value="" disabled>
+                          Select Caste
+                        </option>
+                        <option value="General">General</option>
+                        <option value="SC">SC</option>
+                        <option value="ST">ST</option>
+                        <option value="OBC">OBC</option>
                       </Input>
                     </Col>
                     <Col>
@@ -1136,7 +1133,11 @@ function AddStudent() {
                     <Button onClick={cancelHandler} color="danger">
                       Cancel
                     </Button>
-                    <Button color="primary" type="submit" disabled={disableButton} >
+                    <Button
+                      color="primary"
+                      type="submit"
+                      disabled={disableButton}
+                    >
                       Next
                     </Button>
                   </Row>
@@ -1259,7 +1260,12 @@ function AddStudent() {
                       <Button onClick={cancelHandler} color="danger">
                         Cancel
                       </Button>
-                      <Button className="mr-4" color="primary" type="submit"  disabled={disableButton}>
+                      <Button
+                        className="mr-4"
+                        color="primary"
+                        type="submit"
+                        disabled={disableButton}
+                      >
                         Next
                       </Button>
                     </div>
@@ -1393,11 +1399,15 @@ function AddStudent() {
                       <Input
                         id="example4cols2Input"
                         placeholder="Nationality"
-                        type="text"
+                        type="select"
                         onChange={handleChange("nationality")}
                         required
                         value={studentData.nationality}
-                      />
+                      >
+                          <option value="" disabled >Select Nationality</option>
+                              <option value="Indian" selected >Indian</option>
+                              <option value="Others" >Others</option>
+                      </Input>
                     </Col>
                     <Col>
                       <label
@@ -1434,7 +1444,12 @@ function AddStudent() {
                       <Button onClick={cancelHandler} color="danger">
                         Cancel
                       </Button>
-                      <Button className="mr-4" color="primary" type="submit" disabled={disableButton} >
+                      <Button
+                        className="mr-4"
+                        color="primary"
+                        type="submit"
+                        disabled={disableButton}
+                      >
                         Next
                       </Button>
                     </div>
@@ -1497,7 +1512,6 @@ function AddStudent() {
                               placeholder="Parent Address"
                               type="email"
                               onChange={handleChange("parent_email")}
-                              required
                               value={studentData.parent_email}
                               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                               invalid={parentEmailError}
@@ -1568,40 +1582,36 @@ function AddStudent() {
                         </Row>
                         <Row>
                           <Col>
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="example4cols3Input"
-                              >
-                                First Name
-                              </label>
-                              <Input
-                                id="example4cols3Input"
-                                placeholder="First Name"
-                                type="text"
-                                onChange={handleChange("father_name")}
-                                required
-                                value={studentData.father_name}
-                              />
-                            </FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example4cols3Input"
+                            >
+                              First Name
+                            </label>
+                            <Input
+                              id="example4cols3Input"
+                              placeholder="First Name"
+                              type="text"
+                              onChange={handleChange("father_name")}
+                              required
+                              value={studentData.father_name}
+                            />
                           </Col>
                           <Col>
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="example4cols3Input"
-                              >
-                                Last Name
-                              </label>
-                              <Input
-                                id="example4cols3Input"
-                                placeholder="Last Name"
-                                type="text"
-                                onChange={handleChange("father_last_name")}
-                                required
-                                value={studentData.father_last_name}
-                              />
-                            </FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example4cols3Input"
+                            >
+                              Last Name
+                            </label>
+                            <Input
+                              id="example4cols3Input"
+                              placeholder="Last Name"
+                              type="text"
+                              onChange={handleChange("father_last_name")}
+                              required
+                              value={studentData.father_last_name}
+                            />
                           </Col>
                         </Row>
                         <Row className="mb-4">
@@ -1610,7 +1620,7 @@ function AddStudent() {
                               className="form-control-label"
                               htmlFor="example-date-input"
                             >
-                              DOB
+                              Date Of Birth
                             </Label>
                             <DatePicker
                               dateFormat="dd/MM/yyyy"
@@ -1711,11 +1721,19 @@ function AddStudent() {
                             <Input
                               id="example4cols2Input"
                               placeholder="Nationality"
-                              type="text"
+                              type="select"
                               onChange={handleChange("father_nationality")}
                               required
                               value={studentData.father_nationality}
-                            />
+                            >
+                              <option value="" disabled>
+                                Select Nationality
+                              </option>
+                              <option value="Indian" selected>
+                                Indian
+                              </option>
+                              <option value="Others">Others</option>
+                            </Input>
                           </Col>
                           <Col>
                             <label
@@ -1743,40 +1761,36 @@ function AddStudent() {
                         </Row>
                         <Row>
                           <Col>
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="example4cols3Input"
-                              >
-                                First Name
-                              </label>
-                              <Input
-                                id="example4cols3Input"
-                                placeholder="First Name"
-                                type="text"
-                                onChange={handleChange("mother_name")}
-                                required
-                                value={studentData.mother_name}
-                              />
-                            </FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example4cols3Input"
+                            >
+                              First Name
+                            </label>
+                            <Input
+                              id="example4cols3Input"
+                              placeholder="First Name"
+                              type="text"
+                              onChange={handleChange("mother_name")}
+                              required
+                              value={studentData.mother_name}
+                            />
                           </Col>
                           <Col>
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="example4cols3Input"
-                              >
-                                Last Name
-                              </label>
-                              <Input
-                                id="example4cols3Input"
-                                placeholder="Last Name"
-                                type="text"
-                                onChange={handleChange("mother_last_name")}
-                                required
-                                value={studentData.mother_last_name}
-                              />
-                            </FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example4cols3Input"
+                            >
+                              Last Name
+                            </label>
+                            <Input
+                              id="example4cols3Input"
+                              placeholder="Last Name"
+                              type="text"
+                              onChange={handleChange("mother_last_name")}
+                              required
+                              value={studentData.mother_last_name}
+                            />
                           </Col>
                         </Row>
                         <Row className="mb-4">
@@ -1785,7 +1799,7 @@ function AddStudent() {
                               className="form-control-label"
                               htmlFor="example-date-input"
                             >
-                              DOB
+                              Date Of Birth
                             </Label>
                             <DatePicker
                               dateFormat="dd/MM/yyyy"
@@ -1840,7 +1854,6 @@ function AddStudent() {
                               type="number"
                               pattern="[1-9]{1}[0-9]{9}"
                               onChange={handleChange("mother_phone")}
-                              required
                               value={studentData.mother_phone}
                               onBlur={motherPhoneBlurHandler}
                               invalid={motherPhoneError}
@@ -1886,11 +1899,19 @@ function AddStudent() {
                             <Input
                               id="example4cols2Input"
                               placeholder="Nationality"
-                              type="text"
+                              type="select"
                               onChange={handleChange("mother_nationality")}
                               required
                               value={studentData.mother_nationality}
-                            />
+                            >
+                              <option value="" disabled>
+                                Select Nationality
+                              </option>
+                              <option value="Indian" selected>
+                                Indian
+                              </option>
+                              <option value="Others">Others</option>
+                            </Input>
                           </Col>
                           <Col>
                             <label
@@ -1969,7 +1990,6 @@ function AddStudent() {
                               placeholder="Guardian Email"
                               type="text"
                               onChange={handleChange("guardian_email")}
-                              required
                               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                               value={studentData.guardian_email}
                               onBlur={guardianEmailBlurHandler}
@@ -2040,40 +2060,36 @@ function AddStudent() {
                         </Row>
                         <Row>
                           <Col>
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="example4cols3Input"
-                              >
-                                First Name
-                              </label>
-                              <Input
-                                id="example4cols3Input"
-                                placeholder="First Name"
-                                type="text"
-                                onChange={handleChange("guardian_name")}
-                                required
-                                value={studentData.guardian_name}
-                              />
-                            </FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example4cols3Input"
+                            >
+                              First Name
+                            </label>
+                            <Input
+                              id="example4cols3Input"
+                              placeholder="First Name"
+                              type="text"
+                              onChange={handleChange("guardian_name")}
+                              required
+                              value={studentData.guardian_name}
+                            />
                           </Col>
                           <Col>
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="example4cols3Input"
-                              >
-                                Last Name
-                              </label>
-                              <Input
-                                id="example4cols3Input"
-                                placeholder="Last Name"
-                                type="text"
-                                onChange={handleChange("guardian_last_name")}
-                                required
-                                value={studentData.guardian_last_name}
-                              />
-                            </FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example4cols3Input"
+                            >
+                              Last Name
+                            </label>
+                            <Input
+                              id="example4cols3Input"
+                              placeholder="Last Name"
+                              type="text"
+                              onChange={handleChange("guardian_last_name")}
+                              required
+                              value={studentData.guardian_last_name}
+                            />
                           </Col>
                         </Row>
                         <Row className="mb-4">
@@ -2183,11 +2199,20 @@ function AddStudent() {
                             <Input
                               id="example4cols2Input"
                               placeholder="Nationality"
-                              type="text"
+                              type="select"
                               onChange={handleChange("guardian_nationality")}
                               required
                               value={studentData.guardian_nationality}
-                            />
+                            >
+                              {" "}
+                              <option value="" disabled>
+                                Select Nationality
+                              </option>
+                              <option value="Indian" selected>
+                                Indian
+                              </option>
+                              <option value="Others">Others</option>
+                            </Input>
                           </Col>
                           <Col>
                             <label
