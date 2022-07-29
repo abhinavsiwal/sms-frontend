@@ -40,13 +40,18 @@ const GradingMaster = () => {
   const handleAddFields = () => {
     setInputFields([
       ...inputFields,
-      { class: "", section: "", student: "", feesList: "" },
+      { min: "", max: "", grade: "", description: "" },
     ]);
   };
   const handleRemoveFields = (index) => {
     const values = [...inputFields];
     values.splice(index, 1);
     setInputFields(values);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(inputFields);
   };
 
   return (
@@ -79,7 +84,7 @@ const GradingMaster = () => {
           <CardHeader>
             <h2>Add Students</h2>
           </CardHeader>
-          <form>
+          <form onSubmit={handleSubmit}>
             <table className="fees_table">
               <thead style={{ backgroundColor: "#c0c0c0" }}>
                 <th style={{ backgroundColor: "#c0c0c0" }}>Min</th>
@@ -162,6 +167,13 @@ const GradingMaster = () => {
                 })}
               </tbody>
             </table>
+            <Row className="mt-4 my-4 mx-4 float-right">
+              <Col>
+                <Button color="primary" type="submit">
+                  Submit
+                </Button>
+              </Col>
+            </Row>
           </form>
         </Card>
       </Container>
