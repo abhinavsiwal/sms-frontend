@@ -88,6 +88,7 @@ import CouponMaster from "views/pages/FeesManagement/CouponMaster";
 import StaffDocuments from "views/pages/staffManagement/StaffDocuments";
 import StudentDocuments from "views/pages/studentManagement/StudentDocuments";
 import PendingFees from "views/pages/FeesManagement/PendingFees";
+import GradingMaster from "views/pages/Result/GradingMaster";
 
 export const adminRoutes = [
   {
@@ -708,6 +709,24 @@ export const adminRoutes = [
         layout: "/admin",
         permission: "add",
       },
+    ],
+  },
+  {
+    collapse: true,
+    name: "Result Management",
+    icon: "ni ni-bag-17",
+    state: "resultCollapse",
+    module: "Result Management",
+    views: [
+      {
+        path: "/grade-master ",
+        name: "Grade Master",
+        miniName: "GM",
+        component: GradingMaster,
+        layout: "/admin",
+        permission: "add",
+      },
+     
     ],
   },
 ];
