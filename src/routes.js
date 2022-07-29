@@ -89,6 +89,7 @@ import StaffDocuments from "views/pages/staffManagement/StaffDocuments";
 import StudentDocuments from "views/pages/studentManagement/StudentDocuments";
 import PendingFees from "views/pages/FeesManagement/PendingFees";
 import GradingMaster from "views/pages/Result/GradingMaster";
+import ExamMaster from "views/pages/Result/ExamMaster";
 
 export const adminRoutes = [
   {
@@ -723,6 +724,14 @@ export const adminRoutes = [
         name: "Grade Master",
         miniName: "GM",
         component: GradingMaster,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/exam-master ",
+        name: "Exam Master",
+        miniName: "EM",
+        component: ExamMaster,
         layout: "/admin",
         permission: "add",
       },

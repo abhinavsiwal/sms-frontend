@@ -57,8 +57,8 @@ const GradingMaster = () => {
   return (
     <>
       <SimpleHeader
-        name="Link Student With Salary"
-        parentName="Accounts Management"
+        name="Grade Master"
+        parentName="Result Management"
       />
       <ToastContainer
         position="bottom-right"
