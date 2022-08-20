@@ -14,6 +14,7 @@ import { Popconfirm } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { allSessions } from "api/session";
 import { Table } from "ant-table-extensions";
+import S3FileUpload from "react-s3";
 
 import SimpleHeader from "components/Headers/SimpleHeader";
 import LoadingScreen from "react-loading-screen";
@@ -25,13 +26,26 @@ import { getDepartment } from "api/department";
 const StaffDocuments = () => {
   const [loading, setLoading] = useState(false);
   const { user, token } = isAuthenticated();
-
+  const [allStaff, setAllStaff] = useState([]);
   const [allDepartments, setAllDepartments] = useState([]);
   const [filterStaff, setFilterStaff] = useState([]);
   const [checked, setChecked] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [staff, setStaff] = useState("");
-
+  const getAllStaffs = async () => {
+    try {
+      setLoading(true);
+      const { data } = await allStaffs(user.school, user._id);
+      console.log(data);
+      //   let canteenStaff = data.find((staff) => staff.assign_role === "library");
+      setAllStaff(data);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      toast.error("Fetching Staffs Failed");
+      setLoading(false);
+    }
+  };
   const [inputFields, setInputFields] = useState([
     {
       name: "",
@@ -44,19 +58,15 @@ const StaffDocuments = () => {
   ]);
 
   const handleChange = async (index, event) => {
+    console.log(event.target.name, event.target.value);
     const values = [...inputFields];
     values[index][event.target.name] = event.target.value;
 
     if (event.target.name === "document") {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (reader.readyState === 2) {
-          values[index]["documentPreview"] = reader.result;
-          values[index]["document"] = reader.result;
-        }
-      };
-      reader.readAsDataURL(event.target.files[0]);
+      values[index]["document"] = event.target.files[0];
+     
     }
+    setInputFields(values);
   };
 
   const handleAddFields = () => {
@@ -97,6 +107,7 @@ const StaffDocuments = () => {
 
   useEffect(() => {
     getAllDepartment();
+    getAllStaffs();
   }, []);
   useEffect(() => {
     if (selectedDepartment !== "") {
@@ -127,6 +138,25 @@ const StaffDocuments = () => {
   };
 
   const handleSubmit = async () => {
+    const config = {
+      bucketName: process.env.Bucket,
+     
+      region: "eu-east-1",
+      accessKeyId: process.env.accessKeyID,
+      secretAccessKey: process.env.secretAccessID,
+      
+    };
+   
+    for (let i = 0; i < inputFields.length; i++) {
+    
+      S3FileUpload.uploadFile(inputFields[i].document, config)
+        .then((data) => {
+          console.log(data);
+          inputFields[i].documents = data.location;
+
+        })
+        .catch((err) => console.error(err));
+    }
     console.log(inputFields);
   };
 
@@ -211,7 +241,17 @@ const StaffDocuments = () => {
             </Row>
           </CardHeader>
           <CardBody>
-            <h3>Add Documents</h3>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <h2>Add Documents</h2>
+              <Button
+                color="primary"
+                size="sm"
+                onClick={handleAddFields}
+                style={{ padding: "0.2rem 0.9rem" }}
+              >
+                +
+              </Button>
+            </div>
             {inputFields?.map((field, index) => {
               return (
                 <>
@@ -230,6 +270,7 @@ const StaffDocuments = () => {
                         onChange={(e) => handleChange(index, e)}
                         value={field.name}
                         name="name"
+                        placeholder="Document Name"
                       />
                     </Col>
 
@@ -258,12 +299,31 @@ const StaffDocuments = () => {
                       </label>
                       <Input
                         id="exampleFormControlTextarea1"
-                        type="text"
+                        type="select"
                         required
                         onChange={(e) => handleChange(index, e)}
-                        value={field.date}
+                        value={field.uploadBy}
                         name="uploadBy"
-                      />
+                      >
+                        <option value="" selected>
+                          Select Staff
+                        </option>
+                        {allStaff?.map((staff, index) => {
+                          return (
+                            <option key={index} value={staff._id}>
+                              {staff.firstname + " " + staff.lastname}
+                            </option>
+                          );
+                        })}
+                      </Input>
+                    </Col>
+                    <Col style={{ marginTop: "2rem", float: "right" }}>
+                      <Button
+                        color="danger"
+                        onClick={() => handleRemoveFields(index)}
+                      >
+                        -
+                      </Button>
                     </Col>
                   </Row>
                   <Row className="mt-4">
@@ -282,19 +342,13 @@ const StaffDocuments = () => {
                         name="document"
                       />
                     </Col>
-                    <Col sm={2}>
-                      <img
-                        src={field.documentPreview}
-                        alt=""
-                        style={{ width: "100px", height: "100px" }}
-                      />
-                    </Col>
+
                     <Col>
                       <label
                         className="form-control-label"
                         htmlFor="example4cols2Input"
                       >
-                        Document
+                        Description
                       </label>
                       <Input
                         id="exampleFormControlTextarea1"
@@ -303,27 +357,15 @@ const StaffDocuments = () => {
                         onChange={(e) => handleChange(index, e)}
                         value={field.description}
                         name="description"
+                        placeholder="description"
                       />
                     </Col>
                   </Row>
-                  <Row className="mt-4" >
-                    <Col >
-                      <Button color="primary" onClick={handleAddFields}>
-                        Add
-                      </Button>
-                   
-                      <Button
-                        color="danger"
-                        onClick={() => handleRemoveFields(index)}
-                      >
-                        Remove
-                      </Button>
-                    </Col>
-                  </Row>
+                  <hr style={{ marginTop: "1rem 0" }} />
                 </>
               );
             })}
-            <Row className="mt-4">
+            <Row className="mt-2 float-right">
               <Col>
                 <Button color="primary" onClick={handleSubmit}>
                   Submit
