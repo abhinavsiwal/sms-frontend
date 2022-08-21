@@ -188,7 +188,7 @@ const StaffDocuments = () => {
       <Container fluid className="mt--6">
         <Card>
           <CardHeader>
-            <h2>Staff Budget Allocations</h2>
+            <h2>Staff Documents Upload</h2>
             <Row>
               <Col>
                 <label

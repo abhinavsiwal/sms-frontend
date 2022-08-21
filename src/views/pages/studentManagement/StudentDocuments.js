@@ -14,12 +14,12 @@ import { Popconfirm } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { allSessions } from "api/session";
 import { Table } from "ant-table-extensions";
-
+import S3FileUpload from "react-s3";
 import SimpleHeader from "components/Headers/SimpleHeader";
 import LoadingScreen from "react-loading-screen";
 import { isAuthenticated } from "api/auth";
 import { toast, ToastContainer } from "react-toastify";
-
+import { allStaffs } from "api/staff";
 import { allStudents, filterStudent } from "api/student";
 import { allClass } from "api/class";
 
@@ -34,6 +34,7 @@ const StudentDocuments = () => {
   const [section, setSection] = useState("");
   const [student, setStudent] = useState("");
   const [students, setStudents] = useState([]);
+  const [allStaff, setAllStaff] = useState([]);
   const [inputFields, setInputFields] = useState([
     {
       name: "",
@@ -50,15 +51,9 @@ const StudentDocuments = () => {
     values[index][event.target.name] = event.target.value;
 
     if (event.target.name === "document") {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (reader.readyState === 2) {
-          values[index]["documentPreview"] = reader.result;
-          values[index]["document"] = reader.result;
-        }
-      };
-      reader.readAsDataURL(event.target.files[0]);
+      values[index]["document"] = event.target.files[0];
     }
+    setInputFields(values);
   };
 
   const handleAddFields = () => {
@@ -97,6 +92,20 @@ const StudentDocuments = () => {
       toast.error("Fetching Classes Failed");
     }
   };
+  const getAllStaffs = async () => {
+    try {
+      setLoading(true);
+      const { data } = await allStaffs(user.school, user._id);
+      console.log(data);
+      //   let canteenStaff = data.find((staff) => staff.assign_role === "library");
+      setAllStaff(data);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      toast.error("Fetching Staffs Failed");
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     getAllClasses();
   }, []);
@@ -118,9 +127,30 @@ const StudentDocuments = () => {
     }
   };
   const handleSubmit = async () => {
+    const config = {
+      bucketName: process.env.REACT_APP_Bucket,
+     
+      region: "eu-east-1",
+      accessKeyId: process.env.REACT_APP_accessKeyID,
+      secretAccessKey: process.env.REACT_APP_secretAccessID,
+      
+    };
+   
+    for (let i = 0; i < inputFields.length; i++) {
+    
+      S3FileUpload.uploadFile(inputFields[i].document, config)
+        .then((data) => {
+          console.log(data);
+          inputFields[i].documents = data.location;
+
+        })
+        .catch((err) => console.error(err));
+    }
     console.log(inputFields);
   };
-
+  useEffect(() => {
+    getAllStaffs();
+  }, []);
   useEffect(() => {
     if (selectedClassId !== "") {
       const selectedClass1 = classList.find(
@@ -136,6 +166,8 @@ const StudentDocuments = () => {
     }
   }, [section]);
 
+
+  
   return (
     <>
       <SimpleHeader
@@ -164,7 +196,7 @@ const StudentDocuments = () => {
       <Container fluid className="mt--6">
         <Card>
           <CardHeader>
-            <h2>Staff Budget Allocations</h2>
+            <h2>Students Documents Upload</h2>
             <Row>
               <Col>
                 <label
@@ -218,34 +250,44 @@ const StudentDocuments = () => {
                 </Input>
               </Col>
               <Col>
-              <label
-                className="form-control-label"
-                htmlFor="example4cols2Input"
-              >
-                Student
-              </label>
-              <Input
-                id="example4cols2Input"
-                placeholder="Student Name"
-                type="select"
-                name="class"
-                onChange={(e) => setStudent(e.target.value)}
-                value={student}
-                required
-              >
-                <option value="">Select Student</option>
-                {students &&
-                  students.map((student) => (
-                    <option key={student._id} value={student._id}>
-                      {student.firstname} {student.lastname}
-                    </option>
-                  ))}
-              </Input>
-            </Col>
+                <label
+                  className="form-control-label"
+                  htmlFor="example4cols2Input"
+                >
+                  Student
+                </label>
+                <Input
+                  id="example4cols2Input"
+                  placeholder="Student Name"
+                  type="select"
+                  name="class"
+                  onChange={(e) => setStudent(e.target.value)}
+                  value={student}
+                  required
+                >
+                  <option value="">Select Student</option>
+                  {students &&
+                    students.map((student) => (
+                      <option key={student._id} value={student._id}>
+                        {student.firstname} {student.lastname}
+                      </option>
+                    ))}
+                </Input>
+              </Col>
             </Row>
           </CardHeader>
           <CardBody>
-            <h3>Add Documents</h3>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <h2>Add Documents</h2>
+              <Button
+                color="primary"
+                size="sm"
+                onClick={handleAddFields}
+                style={{ padding: "0.2rem 0.9rem" }}
+              >
+                +
+              </Button>
+            </div>
             {inputFields?.map((field, index) => {
               return (
                 <>
@@ -264,6 +306,7 @@ const StudentDocuments = () => {
                         onChange={(e) => handleChange(index, e)}
                         value={field.name}
                         name="name"
+                        placeholder="Document Name"
                       />
                     </Col>
 
@@ -292,12 +335,31 @@ const StudentDocuments = () => {
                       </label>
                       <Input
                         id="exampleFormControlTextarea1"
-                        type="text"
+                        type="select"
                         required
                         onChange={(e) => handleChange(index, e)}
-                        value={field.date}
+                        value={field.uploadBy}
                         name="uploadBy"
-                      />
+                      >
+                        <option value="" selected>
+                          Select Staff
+                        </option>
+                        {allStaff?.map((staff, index) => {
+                          return (
+                            <option key={index} value={staff._id}>
+                              {staff.firstname + " " + staff.lastname}
+                            </option>
+                          );
+                        })}
+                      </Input>
+                    </Col>
+                    <Col style={{ marginTop: "2rem", float: "right" }}>
+                      <Button
+                        color="danger"
+                        onClick={() => handleRemoveFields(index)}
+                      >
+                        -
+                      </Button>
                     </Col>
                   </Row>
                   <Row className="mt-4">
@@ -316,13 +378,7 @@ const StudentDocuments = () => {
                         name="document"
                       />
                     </Col>
-                    <Col sm={2}>
-                      <img
-                        src={field.documentPreview}
-                        alt=""
-                        style={{ width: "100px", height: "100px" }}
-                      />
-                    </Col>
+                  
                     <Col>
                       <label
                         className="form-control-label"
@@ -337,21 +393,8 @@ const StudentDocuments = () => {
                         onChange={(e) => handleChange(index, e)}
                         value={field.description}
                         name="description"
+                        placeholder="Description"
                       />
-                    </Col>
-                  </Row>
-                  <Row className="mt-4">
-                    <Col>
-                      <Button color="primary" onClick={handleAddFields}>
-                        Add
-                      </Button>
-
-                      <Button
-                        color="danger"
-                        onClick={() => handleRemoveFields(index)}
-                      >
-                        Remove
-                      </Button>
                     </Col>
                   </Row>
                 </>
