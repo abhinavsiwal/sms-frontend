@@ -139,11 +139,11 @@ const StaffDocuments = () => {
 
   const handleSubmit = async () => {
     const config = {
-      bucketName: process.env.Bucket,
+      bucketName: process.env.REACT_APP_Bucket,
      
       region: "eu-east-1",
-      accessKeyId: process.env.accessKeyID,
-      secretAccessKey: process.env.secretAccessID,
+      accessKeyId: process.env.REACT_APP_accessKeyID,
+      secretAccessKey: process.env.REACT_APP_secretAccessID,
       
     };
    
