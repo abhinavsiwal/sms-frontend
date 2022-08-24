@@ -34,7 +34,7 @@ const MarksMaster = () => {
   const [selectedClass, setSelectedClass] = useState({});
   const [section, setSection] = useState("");
   const [classList, setClassList] = useState([]);
-  const [selectedSection, setSelectedSection] = useState({});
+  const [selectedSection, setSelectedSection] = useState(undefined);
   const [showTable, setShowTable] = useState(false);
   const [students, setStudents] = useState([]);
   const getAllClasses = async () => {
@@ -207,7 +207,7 @@ const MarksMaster = () => {
                       <tr>
                         <th style={{ backgroundColor: "#c0c0c0" }}>Roll No.</th>
                         <th style={{ backgroundColor: "#c0c0c0" }}>Name</th>
-                        {selectedSection?.subject.map((subject, index) => {
+                        { selectedSection?.subject.map((subject, index) => {
                           return (
                             <React.Fragment key={index}>
                               <th style={{ backgroundColor: "#c0c0c0" }}>
