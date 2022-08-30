@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useRef,useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import {
   Container,
   Row,
   Col,
   Card,
+  CardHeader,
   CardBody,
   Form,
   Input,
@@ -76,9 +77,8 @@ const AddClass = () => {
       setPermissions(permission1);
       // console.log(permissions);
     }
-  }, [checked, reload,classList, selectedSessionId]);
+  }, [checked, reload, classList, selectedSessionId]);
 
-  
   useEffect(() => {
     getSession();
   }, []);
@@ -265,11 +265,11 @@ const AddClass = () => {
     formData.set("school", user.school);
     try {
       setAddLoading(true);
-    const data =  await addClass(user._id, token, formData);
-    if(data.err){
-      setAddLoading(false);
-      return toast.error(data.err);
-    }
+      const data = await addClass(user._id, token, formData);
+      if (data.err) {
+        setAddLoading(false);
+        return toast.error(data.err);
+      }
       setClassData({
         name: "",
         session: "",
@@ -305,7 +305,7 @@ const AddClass = () => {
       setIsEmpty(true);
       return;
     }
-   
+
     let res = classList.filter((item) => {
       return item.session._id === selectedSessionId;
     });
@@ -378,28 +378,9 @@ const AddClass = () => {
               permissions.includes("add") && (
                 <div className="card-wrapper">
                   <Card>
-                    <Row>
-                      <Col className="d-flex justify-content-center mt-3 ml-4">
-                        <form>
-                          <input
-                            type={"file"}
-                            id={"csvFileInput"}
-                            accept={".csv"}
-                            onChange={handleOnChange}
-                          />
-
-                          <Button
-                            onClick={(e) => {
-                              handleOnSubmit(e);
-                            }}
-                            color="primary"
-                            className="mt-3"
-                          >
-                            IMPORT CSV
-                          </Button>
-                        </form>
-                      </Col>
-                    </Row>
+                    <CardHeader>
+                      <h2>Create Class Master</h2>
+                    </CardHeader>
                     <Form onSubmit={handleFormChange} className="mb-4">
                       <CardBody>
                         <Row>
@@ -491,6 +472,9 @@ const AddClass = () => {
           <Col>
             <div className="card-wrapper">
               <Card>
+                <CardHeader>
+                  <h2>View Classes</h2>
+                </CardHeader>
                 <CardBody>
                   <Input
                     id="example4cols2Input"

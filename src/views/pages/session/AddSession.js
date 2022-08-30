@@ -5,6 +5,7 @@ import {
   Col,
   Card,
   CardBody,
+  CardHeader,
   Form,
   Input,
   Button,
@@ -60,6 +61,7 @@ const AddSession = () => {
     end_date: "",
     fees_method: "",
     working_days: "",
+    paid_leaves: "",
   });
   const { user, token } = isAuthenticated();
   const [file, setFile] = useState();
@@ -523,6 +525,9 @@ const AddSession = () => {
           <Col>
             <div className="card-wrapper">
               <Card>
+                <CardHeader>
+                  <h2>Session Master</h2>
+                </CardHeader>
                 <Form onSubmit={handleFormChange} className="mb-4">
                   <CardBody>
                     <Row>
@@ -542,7 +547,7 @@ const AddSession = () => {
                           required
                         />
                       </Col>
-                 
+
                       <Col>
                         <label
                           className="form-control-label"
@@ -578,13 +583,13 @@ const AddSession = () => {
                           required
                         />
                       </Col>
-               
+
                       <Col>
                         <label
                           className="form-control-label"
                           htmlFor="example-date-input"
                         >
-                          Working Days
+                          Working Days (Week)
                         </label>
                         <Input
                           id="example-date-input"
@@ -611,8 +616,8 @@ const AddSession = () => {
                           type="number"
                           max="7"
                           min="1"
-                          onChange={handleChange("leaves")}
-                          value={sessionData.working_days}
+                          onChange={handleChange("paid_leaves")}
+                          value={sessionData.paid_leaves}
                           placeholder="Leaves"
                           required
                         />

@@ -15,7 +15,7 @@ import {
   ModalBody,
   CardHeader,
   Table,
-} from "reactstrap";
+} from "reactstrap"; 
 import Loader from "components/Loader/Loader";
 // import { Table } from "ant-table-extensions";
 // import { Table } from "antd";
@@ -33,10 +33,10 @@ import { allClass } from "api/class";
 
 //import moment from moment for Date
 import moment from "moment";
-
-import { getAttendence } from "api/attendance";
+  
+import { getAttendence } from "api/attendance"; 
 import { allStudents, filterStudent } from "api/student";
-import { isAuthenticated } from "api/auth";
+import { isAuthenticated } from "api/auth";  
 import { sendRequestWithJson, sendRequest } from "api/api";
 import { toast, ToastContainer } from "react-toastify";
 import { fetchingAttendanceError } from "constants/errors";

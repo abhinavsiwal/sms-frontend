@@ -35,7 +35,7 @@ const ClassTeacher = () => {
     try {
       setLoading(true);
       const classess = await allClass(user._id, user.school, token);
-      // console.log("classes", classess);
+      console.log("classes", classess);
       if (classess.err) {
         setLoading(false);
         return toast.error(classess.err);
@@ -54,7 +54,7 @@ const ClassTeacher = () => {
       const payload = { school: user.school };
 
       const teachers = await nonClassTeachers(user.school, user._id);
-      // console.log(teachers);
+      console.log(teachers);
       if (teachers.err) {
         return toast.error(teachers.err);
       }
@@ -173,7 +173,7 @@ const ClassTeacher = () => {
                   <tr key={clas._id} className="teacher-table-row">
                     <td className="teacher-table-class">{clas.name}</td>
                     <tbody>
-                      {clas.section ? (
+                      {clas.section.length!==0 ? (
                         clas.section.map((section) => {
                           return (
                             <tr
@@ -222,7 +222,7 @@ const ClassTeacher = () => {
                           );
                         })
                       ) : (
-                        <tr>
+                        <tr   style={{ marginLeft: "2rem" }}>
                           <td>No Section</td>
                         </tr>
                       )}

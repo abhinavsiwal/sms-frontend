@@ -64,7 +64,6 @@ const StaffDocuments = () => {
 
     if (event.target.name === "document") {
       values[index]["document"] = event.target.files[0];
-     
     }
     setInputFields(values);
   };
@@ -140,20 +139,17 @@ const StaffDocuments = () => {
   const handleSubmit = async () => {
     const config = {
       bucketName: process.env.REACT_APP_Bucket,
-     
+
       region: "eu-east-1",
       accessKeyId: process.env.REACT_APP_accessKeyID,
       secretAccessKey: process.env.REACT_APP_secretAccessID,
-      
     };
-   
+
     for (let i = 0; i < inputFields.length; i++) {
-    
       S3FileUpload.uploadFile(inputFields[i].document, config)
         .then((data) => {
           console.log(data);
           inputFields[i].documents = data.location;
-
         })
         .catch((err) => console.error(err));
     }
@@ -249,14 +245,14 @@ const StaffDocuments = () => {
                 onClick={handleAddFields}
                 style={{ padding: "0.2rem 0.9rem" }}
               >
-                +
+                Add Documents
               </Button>
             </div>
             {inputFields?.map((field, index) => {
               return (
                 <>
                   <Row key={index}>
-                    <Col>
+                    <Col md={3} >
                       <label
                         className="form-control-label"
                         htmlFor="example4cols2Input"
@@ -273,24 +269,39 @@ const StaffDocuments = () => {
                         placeholder="Document Name"
                       />
                     </Col>
-
-                    <Col>
+                    <Col md={4} >
                       <label
                         className="form-control-label"
                         htmlFor="example4cols2Input"
                       >
-                        Upload Date
+                        Description
                       </label>
                       <Input
                         id="exampleFormControlTextarea1"
-                        type="date"
+                        type="textarea"
                         required
                         onChange={(e) => handleChange(index, e)}
-                        value={field.date}
-                        name="date"
+                        value={field.description}
+                        name="description"
+                        placeholder="description"
                       />
                     </Col>
-                    <Col>
+                    <Col md={3}>
+                      <label
+                        className="form-control-label"
+                        htmlFor="example4cols2Input"
+                      >
+                        Document
+                      </label>
+                      <Input
+                        id="exampleFormControlTextarea1"
+                        type="file"
+                        required
+                        onChange={(e) => handleChange(index, e)}
+                        name="document"
+                      />
+                    </Col>
+                    {/* <Col>
                       <label
                         className="form-control-label"
                         htmlFor="example4cols2Input"
@@ -316,57 +327,33 @@ const StaffDocuments = () => {
                           );
                         })}
                       </Input>
-                    </Col>
-                    <Col style={{ marginTop: "2rem", float: "right" }}>
+                    </Col> */}
+                    <Col style={{ marginTop: "2rem", float: "right" }} md={2} >
                       <Button
                         color="danger"
                         onClick={() => handleRemoveFields(index)}
+                        style={{padding:"0.1rem 0.7rem"}}
                       >
-                        -
+                         <span style={{fontSize:"1.4rem"}} >-</span>
+                      </Button>
+                      <Button
+                        color="primary"
+                        
+                        onClick={handleAddFields}
+                        style={{padding:"0.1rem 0.7rem"}}
+                      >
+                       <span style={{fontSize:"1.4rem"}} >+</span>
                       </Button>
                     </Col>
+                   
                   </Row>
-                  <Row className="mt-4">
-                    <Col>
-                      <label
-                        className="form-control-label"
-                        htmlFor="example4cols2Input"
-                      >
-                        Document
-                      </label>
-                      <Input
-                        id="exampleFormControlTextarea1"
-                        type="file"
-                        required
-                        onChange={(e) => handleChange(index, e)}
-                        name="document"
-                      />
-                    </Col>
-
-                    <Col>
-                      <label
-                        className="form-control-label"
-                        htmlFor="example4cols2Input"
-                      >
-                        Description
-                      </label>
-                      <Input
-                        id="exampleFormControlTextarea1"
-                        type="textarea"
-                        required
-                        onChange={(e) => handleChange(index, e)}
-                        value={field.description}
-                        name="description"
-                        placeholder="description"
-                      />
-                    </Col>
-                  </Row>
-                  <hr style={{ marginTop: "1rem 0" }} />
+                  <Row className="mt-4"></Row>
+                  {/* <hr style={{ marginTop: "1rem 0" }} /> */}
                 </>
               );
             })}
-            <Row className="mt-2 float-right">
-              <Col>
+            <Row className="mt-2 float-center" style={{display:"flex",justifyContent:"center",alignItems:"center",width:"100%"}} >
+              <Col style={{display:"flex",justifyContent:"center",alignItems:"center",width:"100%"}} >
                 <Button color="primary" onClick={handleSubmit}>
                   Submit
                 </Button>

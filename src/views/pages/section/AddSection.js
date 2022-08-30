@@ -5,6 +5,7 @@ import {
   Col,
   Card,
   CardBody,
+  CardHeader,
   Form,
   Input,
   Button,
@@ -520,28 +521,9 @@ const AddSection = () => {
               permissions.includes("add") && (
                 <div className="card-wrapper">
                   <Card>
-                    <Row>
-                      <Col className="d-flex justify-content-center mt-2 ml-4">
-                        <form>
-                          <input
-                            type={"file"}
-                            id={"csvFileInput"}
-                            accept={".csv"}
-                            onChange={handleOnChange}
-                          />
-
-                          <Button
-                            onClick={(e) => {
-                              handleOnSubmit(e);
-                            }}
-                            color="primary"
-                            className="mt-3"
-                          >
-                            IMPORT CSV
-                          </Button>
-                        </form>
-                      </Col>
-                    </Row>
+                  <CardHeader>
+                      <h2>Create Section Master</h2>
+                    </CardHeader>
                     <Form onSubmit={handleFormChange} className="mb-4">
                       <CardBody>
                         <Row>
@@ -641,6 +623,9 @@ const AddSection = () => {
             <div className="card-wrapper">
               <Card>
                 <CardBody>
+                <CardHeader>
+                      <h2>View Sections</h2>
+                    </CardHeader>
                   <Row>
                     <Col className="sm-4 mb-3">
                       <label

@@ -63,13 +63,16 @@ function SchoolProfile() {
     telephone: "",
     fax_no: "",
     affiliate_board: "",
-    image:""
+    image: "",
   });
   const [imagesPreview, setImagesPreview] = useState();
   const handleFileChange = (name) => (event) => {
     // formData.set(name, event.target.files[0]);
     // console.log(event.target.files[0]);
-    setEditSchoolProfile({...editSchoolProfile, image: event.target.files[0]});
+    setEditSchoolProfile({
+      ...editSchoolProfile,
+      image: event.target.files[0],
+    });
     // setImage(event.target.files[0]);
     const reader = new FileReader();
     reader.onload = () => {
@@ -142,7 +145,7 @@ function SchoolProfile() {
       setLoading(true);
       const { data } = await schoolProfile(user.school, user._id);
       // console.log(user);
-      if(data.err){
+      if (data.err) {
         toast.error(data.err);
         setLoading(false);
         return;
@@ -164,7 +167,7 @@ function SchoolProfile() {
         fax_no: "",
         affiliate_board: data.affiliate_board,
       });
-      setImagesPreview(data.photo)
+      setImagesPreview(data.photo);
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -193,14 +196,14 @@ function SchoolProfile() {
     formData.set("pincode", editSchoolProfile.pin_code);
     formData.set("state", editSchoolProfile.state);
     formData.set("telephone", editSchoolProfile.telephone);
-    
+
     formData.set("photo", editSchoolProfile.image);
 
     try {
       setEditLoading(true);
-      const data = await editProfile(user.school, user._id, formData);
-      // console.log(data);
-      if(data.err){
+      const { data } = await editProfile(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
         toast.error(data.err);
         setEditLoading(false);
         return;
@@ -237,9 +240,9 @@ function SchoolProfile() {
         size="lg"
         scrollable
       >
-        <div className="modal-header">
+        <div className="modal-header" style={{ marginBottom: "-2rem" }}>
           <h2 className="modal-title" id="modal-title-default">
-        Edit School Details
+            Edit School Details
           </h2>
           <button
             aria-label="Close"
@@ -256,43 +259,42 @@ function SchoolProfile() {
         ) : (
           <ModalBody>
             <Form onSubmit={handleEdit}>
-            <Row md="4" className="d-flex mb-4">
-                    <Col>
-                      <img
-                        src={imagesPreview && imagesPreview}
-                        alt="Preview"
-                        className="mt-3 me-2"
-                        width="80"
-                        height="80"
-                      />
-                    </Col>
-                    <Col md="6" style={{ zIndex: "1" }}>
-                      <label
-                        className="form-control-label"
-                        htmlFor="example3cols2Input"
-                      >
-                        Upload Image
-                      </label>
-                      <div className="custom-file">
-                        <input
-                          className="custom-file-input"
-                          id="customFileLang"
-                          lang="en"
-                          type="file"
-                          onChange={handleFileChange("image")}
-                          accept="image/*"
-                          // value={staffData.photo.name}
-                        />
-                        <label
-                          className="custom-file-label"
-                          htmlFor="customFileLang"
-                        >
-                          Select file
-                        </label>
-                      </div>
-                    </Col>
-                   
-                  </Row>
+              <Row md="4" className="d-flex mb-4">
+                <Col>
+                  <img
+                    src={imagesPreview ? imagesPreview:"/img/logo.jpg"}
+                    alt="Preview"
+                    className="mt-3 me-2"
+                    width="80"
+                    height="80"
+                  />
+                </Col>
+                <Col md="6" style={{ zIndex: "1" }}>
+                  <label
+                    className="form-control-label"
+                    htmlFor="example3cols2Input"
+                  >
+                    Upload Image
+                  </label>
+                  <div className="custom-file">
+                    <input
+                      className="custom-file-input"
+                      id="customFileLang"
+                      lang="en"
+                      type="file"
+                      onChange={handleFileChange("image")}
+                      accept="image/*"
+                      // value={staffData.photo.name}
+                    />
+                    <label
+                      className="custom-file-label"
+                      htmlFor="customFileLang"
+                    >
+                      Select file
+                    </label>
+                  </div>
+                </Col>
+              </Row>
               <Row>
                 <Col>
                   <Label
@@ -310,7 +312,7 @@ function SchoolProfile() {
                     required
                   />
                 </Col>
-                <Col>
+                {/* <Col>
                   <Label
                     className="form-control-label"
                     htmlFor="example4cols2Input"
@@ -325,9 +327,8 @@ function SchoolProfile() {
                     value={editSchoolProfile.abbreviation}
                     required
                   />
-                </Col>
-              </Row>
-              <Row>
+                </Col> */}
+
                 <Col>
                   <Label
                     className="form-control-label"
@@ -344,6 +345,8 @@ function SchoolProfile() {
                     required
                   />
                 </Col>
+              </Row>
+              <Row>
                 <Col>
                   <Label
                     className="form-control-label"
@@ -360,8 +363,7 @@ function SchoolProfile() {
                     required
                   />
                 </Col>
-              </Row>
-              <Row>
+
                 <Col>
                   <Label
                     className="form-control-label"
@@ -384,6 +386,8 @@ function SchoolProfile() {
                     <FormFeedback>Please Enter a valid Pincode</FormFeedback>
                   )}
                 </Col>
+              </Row>
+              <Row>
                 <Col>
                   <Label
                     className="form-control-label"
@@ -400,8 +404,7 @@ function SchoolProfile() {
                     required
                   />
                 </Col>
-              </Row>
-              <Row>
+
                 <Col>
                   <Label
                     className="form-control-label"
@@ -418,6 +421,8 @@ function SchoolProfile() {
                     required
                   />
                 </Col>
+              </Row>
+              <Row>
                 <Col>
                   <Label
                     className="form-control-label"
@@ -434,8 +439,7 @@ function SchoolProfile() {
                     required
                   />
                 </Col>
-              </Row>
-              <Row>
+
                 <Col>
                   <Label
                     className="form-control-label"
@@ -458,6 +462,8 @@ function SchoolProfile() {
                     <FormFeedback>Please Enter a valid Email</FormFeedback>
                   )}
                 </Col>
+              </Row>
+              <Row>
                 <Col>
                   <Label
                     className="form-control-label"
@@ -480,8 +486,7 @@ function SchoolProfile() {
                     <FormFeedback>Please Enter a valid phone no</FormFeedback>
                   )}
                 </Col>
-              </Row>
-              <Row>
+
                 <Col md="6">
                   <Label
                     className="form-control-label"
@@ -505,15 +510,27 @@ function SchoolProfile() {
                   )}
                 </Col>
               </Row>
-              <Button
-                color="success"
-                type="submit"
-                className="mt-2 mb-2"
-                style={{ float: "right" }}
-                disabled={disableButton}
-              >
-                Save changes
-              </Button>
+              <Row>
+                <Col
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    display: "flex",
+                    width: "100%",
+                    marginTop: "1rem",
+                  }}
+                >
+                  <Button
+                    color="success"
+                    type="submit"
+                    className="mt-2 mb-2"
+                    style={{ float: "center" }}
+                    disabled={disableButton}
+                  >
+                    Save changes
+                  </Button>
+                </Col>
+              </Row>
             </Form>
           </ModalBody>
         )}
@@ -527,13 +544,23 @@ function SchoolProfile() {
               <div className="card-wrapper">
                 <Card>
                   <Col align="center">
-                    <CardImg
-                      alt="..."
-                      src={schoolDetails.photo && schoolDetails.photo}
-                      top
-                      className="p-4"
-                      style={{ width: "80%", height: "100%" }}
-                    />
+                    {schoolDetails.photo ? (
+                      <CardImg
+                        alt=""
+                        src={schoolDetails.photo && schoolDetails.photo}
+                        top
+                        className="p-4"
+                        style={{ width: "80%", height: "100%" }}
+                      />
+                    ) : (
+                      <CardImg
+                        alt=""
+                        src="/img/logo.jpg"
+                        top
+                        className="p-4"
+                        style={{ width: "80%", height: "100%" }}
+                      />
+                    )}
                   </Col>
                   <CardBody className="mt-0">
                     <Row>
@@ -563,9 +590,7 @@ function SchoolProfile() {
                     <Row>
                       <Col align="center">
                         <h4 className="mt-3 mb-1">Website</h4>
-                        <span className="text-md">
-                          {schoolDetails.website}
-                        </span>
+                        <span className="text-md">{schoolDetails.website}</span>
                       </Col>
                     </Row>
                   </CardBody>

@@ -1810,17 +1810,17 @@ html.rtl {
   --orange: #fb6340;
   --yellow: #ffd600;
   --green: #2dce89;
-  --teal: #11cdef;
+  --teal: #3949ab;
   --cyan: #2bffc6;
   --white: #fff;
   --gray: #8898aa;
   --gray-dark: #32325d;
   --light: #ced4da;
   --lighter: #e9ecef;
-  --primary: #5e72e4;
+  --primary: #3949ab;
   --secondary: #f7fafc;
   --success: #2dce89;
-  --info: #11cdef;
+  --info: #3949ab;
   --warning: #fb6340;
   --danger: #f5365c;
   --light: #adb5bd;
@@ -4453,14 +4453,14 @@ fieldset:disabled a.btn {
 
 .btn-info {
   color: #fff;
-  background-color: #11cdef;
-  border-color: #11cdef;
+  background-color: #3949ab;
+  border-color: #3949ab;
   box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 .btn-info:hover {
   color: #fff;
-  background-color: #11cdef;
-  border-color: #11cdef;
+  background-color: #3949ab;
+  border-color: #3949ab;
 }
 .btn-info:focus,
 .btn-info.focus {
@@ -4470,15 +4470,15 @@ fieldset:disabled a.btn {
 .btn-info.disabled,
 .btn-info:disabled {
   color: #fff;
-  background-color: #11cdef;
-  border-color: #11cdef;
+  background-color: #3949ab;
+  border-color: #3949ab;
 }
 .btn-info:not(:disabled):not(.disabled):active,
 .btn-info:not(:disabled):not(.disabled).active,
 .show > .btn-info.dropdown-toggle {
   color: #fff;
   background-color: #0da5c0;
-  border-color: #11cdef;
+  border-color: #3949ab;
 }
 .btn-info:not(:disabled):not(.disabled):active:focus,
 .btn-info:not(:disabled):not(.disabled).active:focus,
@@ -4866,15 +4866,15 @@ fieldset:disabled a.btn {
 }
 
 .btn-outline-info {
-  color: #11cdef;
+  color: #3949ab;
   background-color: transparent;
   background-image: none;
-  border-color: #11cdef;
+  border-color: #3949ab;
 }
 .btn-outline-info:hover {
   color: #fff;
-  background-color: #11cdef;
-  border-color: #11cdef;
+  background-color: #3949ab;
+  border-color: #3949ab;
 }
 .btn-outline-info:focus,
 .btn-outline-info.focus {
@@ -4882,15 +4882,15 @@ fieldset:disabled a.btn {
 }
 .btn-outline-info.disabled,
 .btn-outline-info:disabled {
-  color: #11cdef;
+  color: #3949ab;
   background-color: transparent;
 }
 .btn-outline-info:not(:disabled):not(.disabled):active,
 .btn-outline-info:not(:disabled):not(.disabled).active,
 .show > .btn-outline-info.dropdown-toggle {
   color: #fff;
-  background-color: #11cdef;
-  border-color: #11cdef;
+  background-color: #3949ab;
+  border-color: #3949ab;
 }
 .btn-outline-info:not(:disabled):not(.disabled):active:focus,
 .btn-outline-info:not(:disabled):not(.disabled).active:focus,
@@ -8711,7 +8711,7 @@ button.bg-success:focus {
 }
 
 .bg-info {
-  background-color: #11cdef !important;
+  background-color: #3949ab !important;
 }
 
 a.bg-info:hover,
@@ -8870,7 +8870,7 @@ button.bg-darker:focus {
 }
 
 .border-info {
-  border-color: #11cdef !important;
+  border-color: #3949ab !important;
 }
 
 .border-warning {
@@ -15860,7 +15860,7 @@ a.text-success:focus {
 }
 
 .text-info {
-  color: #11cdef !important;
+  color: #3949ab !important;
 }
 
 a.text-info:hover,
@@ -17387,14 +17387,14 @@ a.btn-icon-only {
 .custom-checkbox-info
   .custom-control-input:checked
   ~ .custom-control-label::before {
-  border-color: #11cdef;
-  background-color: #11cdef;
+  border-color: #3949ab;
+  background-color: #3949ab;
 }
 
 .custom-checkbox-info
   .custom-control-input:checked
   ~ .custom-control-label::after {
-  background-image: #11cdef;
+  background-image: #3949ab;
 }
 
 .custom-checkbox-warning
@@ -17660,17 +17660,17 @@ a.btn-icon-only {
 }
 
 .custom-toggle-info input:checked + .custom-toggle-slider {
-  border-color: #11cdef;
+  border-color: #3949ab;
 }
 .custom-toggle-info input:checked + .custom-toggle-slider:before {
-  background: #11cdef;
+  background: #3949ab;
 }
 .custom-toggle-info input:checked + .custom-toggle-slider:after {
-  color: #11cdef;
+  color: #3949ab;
 }
 
 .custom-toggle-info input:disabled:checked + .custom-toggle-slider {
-  border-color: #11cdef;
+  border-color: #3949ab;
 }
 .custom-toggle-info input:disabled:checked + .custom-toggle-slider:before {
   background-color: #41d7f2;
@@ -18499,7 +18499,7 @@ textarea[resize="horizontal"] {
 }
 
 .checklist-item-info:before {
-  background-color: #11cdef;
+  background-color: #3949ab;
 }
 
 .checklist-item-warning:before {
@@ -18689,7 +18689,7 @@ textarea[resize="horizontal"] {
 }
 
 .modal-info .modal-content {
-  background-color: #11cdef;
+  background-color: #3949ab;
   color: #fff;
 }
 .modal-info .modal-content .heading {
@@ -20578,10 +20578,10 @@ textarea[resize="horizontal"] {
 }
 
 .popover-info {
-  background-color: #11cdef;
+  background-color: #3949ab;
 }
 .popover-info .popover-header {
-  background-color: #11cdef;
+  background-color: #3949ab;
   color: #fff;
 }
 .popover-info .popover-body {
@@ -20592,19 +20592,19 @@ textarea[resize="horizontal"] {
 }
 .popover-info.bs-popover-top .arrow::after,
 .popover-info.bs-popover-auto[x-placement^="top"] .arrow::after {
-  border-top-color: #11cdef;
+  border-top-color: #3949ab;
 }
 .popover-info.bs-popover-right .arrow::after,
 .popover-info.bs-popover-auto[x-placement^="right"] .arrow::after {
-  border-right-color: #11cdef;
+  border-right-color: #3949ab;
 }
 .popover-info.bs-popover-bottom .arrow::after,
 .popover-info.bs-popover-auto[x-placement^="bottom"] .arrow::after {
-  border-bottom-color: #11cdef;
+  border-bottom-color: #3949ab;
 }
 .popover-info.bs-popover-left .arrow::after,
 .popover-info.bs-popover-auto[x-placement^="left"] .arrow::after {
-  border-left-color: #11cdef;
+  border-left-color: #3949ab;
 }
 
 .popover-warning {
@@ -21432,7 +21432,7 @@ textarea[resize="horizontal"] {
     border-color: #2dce89;
   }
   [data-timeline-axis-color="info"]:before {
-    border-color: #11cdef;
+    border-color: #3949ab;
   }
   [data-timeline-axis-color="warning"]:before {
     border-color: #fb6340;
@@ -21672,7 +21672,7 @@ button.bg-green:focus {
 }
 
 .bg-teal {
-  background-color: #11cdef !important;
+  background-color: #3949ab !important;
 }
 
 a.bg-teal:hover,
@@ -21761,7 +21761,7 @@ button.bg-lighter:focus {
 }
 
 .bg-gradient-info {
-  background: linear-gradient(87deg, #11cdef 0, #1171ef 100%) !important;
+  background: linear-gradient(87deg, #3949ab 0, #1171ef 100%) !important;
 }
 
 .bg-gradient-warning {
@@ -21829,7 +21829,7 @@ button.bg-lighter:focus {
 }
 
 .bg-gradient-teal {
-  background: linear-gradient(87deg, #11cdef 0, #1171ef 100%) !important;
+  background: linear-gradient(87deg, #3949ab 0, #1171ef 100%) !important;
 }
 
 .bg-gradient-cyan {
@@ -22056,7 +22056,7 @@ button.section-darker:focus {
 }
 
 .bg-gradient-info {
-  background: linear-gradient(87deg, #11cdef 0, #1171ef 100%) !important;
+  background: linear-gradient(87deg, #3949ab 0, #1171ef 100%) !important;
 }
 
 .bg-gradient-warning {
@@ -22116,11 +22116,11 @@ button.section-darker:focus {
 }
 
 .fill-info {
-  fill: #11cdef;
+  fill: #3949ab;
 }
 
 .stroke-info {
-  stroke: #11cdef;
+  stroke: #3949ab;
 }
 
 .fill-warning {
@@ -22931,7 +22931,7 @@ a.text-green:focus {
 }
 
 .text-teal {
-  color: #11cdef !important;
+  color: #3949ab !important;
 }
 
 a.text-teal:hover,
@@ -26426,7 +26426,7 @@ input.datetimepicker[data-color="orange"]
 }
 
 input.datetimepicker[data-color="blue"] + .bootstrap-datetimepicker-widget {
-  background-color: #11cdef;
+  background-color: #3949ab;
 }
 input.datetimepicker[data-color="blue"]
   + .bootstrap-datetimepicker-widget
@@ -26445,7 +26445,7 @@ input.datetimepicker[data-color="blue"]
   + .bootstrap-datetimepicker-widget.dropdown-menu.top:after,
 input.datetimepicker[data-color="blue"]
   + .bootstrap-datetimepicker-widget.dropdown-menu.bottom:before {
-  color: #11cdef;
+  color: #3949ab;
 }
 
 input.datetimepicker[data-color="green"] + .bootstrap-datetimepicker-widget {
@@ -27295,7 +27295,7 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
 .rdtDay.start-date:hover,
 .rdtDay.end-date:hover,
 .rdtDay.middle-date:hover {
-  background-color: #11cdef !important;
+  background-color: #3949ab !important;
   color: #fff !important;
 }
 .rdtDay.start-date {
@@ -27501,9 +27501,9 @@ td.rdtYear:hover {
 }
 
 .rdtCounters .rdtCounter:last-child .rdtCount {
-  color: #11cdef;
+  color: #3949ab;
   border-radius: 50%;
-  border: 1px solid #11cdef;
+  border: 1px solid #3949ab;
 }
 
 .rdtCounterSeparator {
@@ -27590,7 +27590,7 @@ td.rdtYear:hover {
 .rdtYears .rdtYear.start-date,
 .rdtYears .rdtYear.end-date,
 .rdtYears .rdtYear.middle-date {
-  background-color: #11cdef !important;
+  background-color: #3949ab !important;
   color: #fff;
 }
 

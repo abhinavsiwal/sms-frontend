@@ -91,7 +91,7 @@ import PendingFees from "views/pages/FeesManagement/PendingFees";
 import GradingMaster from "views/pages/Result/GradingMaster";
 import ExamMaster from "views/pages/Result/ExamMaster";
 import MarksMaster from "views/pages/Result/MarksMaster";
-
+import Attendance1 from "views/pages/Attendance-Refactor/Attendance1"
 export const adminRoutes = [
   {
     path: "/dashboard",
@@ -190,19 +190,20 @@ export const adminRoutes = [
         layout: "/admin",
         permission: "view",
       },
-      {
-        path: "/add-section",
-        name: "Add Section",
-        miniName: "AS",
-        component: AddSection,
-        layout: "/admin",
-        permission: "view",
-      },
+     
       {
         path: "/add-subject",
         name: "Add Subject",
         miniName: "AS",
         component: AddSubject,
+        layout: "/admin",
+        permission: "view",
+      },
+      {
+        path: "/add-section",
+        name: "Add Section",
+        miniName: "AS",
+        component: AddSection,
         layout: "/admin",
         permission: "view",
       },
@@ -276,7 +277,7 @@ export const adminRoutes = [
         path: "/attendance",
         name: "Attendance",
         miniName: "A",
-        component: Attendance,
+        component:Attendance1,
         layout: "/admin",
         permission: "add",
       },

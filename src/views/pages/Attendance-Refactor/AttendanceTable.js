@@ -18,6 +18,17 @@ const AttendanceTable = (props) => {
     }
     return false;
   };
+  const formatDate = (date) => {
+    var d = date ? new Date(date) : new Date(),
+      month = "" + (d.getMonth() + 1),
+      day = "" + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
+
+    return [day, month, year].join("/");
+  };
 
   const getColumnList = () => {
     const columns = [
@@ -38,7 +49,7 @@ const AttendanceTable = (props) => {
       date.setDate(date.getDate() + 1), index++
     ) {
       columns.push({
-        name: <span title={this.formatDate(date)}>{date.getDate()}</span>,
+        name: <span title={formatDate(date)}>{date.getDate()}</span>,
         center: true,
         cell: (person, studentIndex) => {
           const status = person.attendance[index].status;
@@ -49,7 +60,7 @@ const AttendanceTable = (props) => {
           if (currentDate > new Date()) {
             return null;
           }
-          if (this.isHoliday(currentDate)) {
+          if (isHoliday(currentDate)) {
             return null;
           }
           return (
@@ -63,17 +74,17 @@ const AttendanceTable = (props) => {
             >
               {status === "P" ? (
                 <i
-                  className="icon-user-following text-light bg-success p-2"
+                  className="ni ni-single-02 text-light bg-success p-2"
                   style={{ borderRadius: "50%" }}
                 />
               ) : status === "A" ? (
                 <i
-                  className="icon-user-unfollow text-light bg-danger p-2"
+                  className="ni ni-single-02 text-light bg-danger p-2"
                   style={{ borderRadius: "50%" }}
                 />
               ) : status === "L" ? (
                 <i
-                  className="icon-user-unfollow text-light bg-warning p-2"
+                  className="ni ni-single-02 text-light bg-warning p-2"
                   style={{ borderRadius: "50%" }}
                 />
               ) : null}
@@ -89,14 +100,14 @@ const AttendanceTable = (props) => {
   return (
     <div className="card">
       <DataTable
-        columns={this.getColumnList()}
-        data={this.props.attendanceList}
+        columns={getColumnList()}
+        data={props.attendanceList}
         persistTableHead={true}
-        progressPending={this.props.isLoading}
+        progressPending={props.isLoading}
         selectableRowsVisibleOnly={true}
       />
     </div>
   );
 };
-
+ 
 export default AttendanceTable;

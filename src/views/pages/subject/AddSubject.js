@@ -372,7 +372,7 @@ const AddSubject = () => {
       render: (subjects) => (
         <>
           {subjects.map((subject) => {
-            let subject1 = JSON.stringify(subject);
+            let subject1 = subject;
 
             return <p>{subject1}</p>;
           })}
@@ -538,28 +538,9 @@ const AddSubject = () => {
               permissions.includes("add") && (
                 <div className="card-wrapper">
                   <Card>
-                    <Row>
-                      <Col className="d-flex justify-content-center mt-2 ml-4">
-                        <form>
-                          <input
-                            type={"file"}
-                            id={"csvFileInput"}
-                            accept={".csv"}
-                            onChange={handleOnChange}
-                          />
-
-                          <Button
-                            onClick={(e) => {
-                              handleOnSubmit(e);
-                            }}
-                            color="primary"
-                            className="mt-2"
-                          >
-                            IMPORT CSV
-                          </Button>
-                        </form>
-                      </Col>
-                    </Row>
+                  <CardHeader>
+                      <h2>Create Subject Master</h2>
+                    </CardHeader>
                     <Form onSubmit={handleFormChange} className="mb-4">
                       <CardBody>
                         <Row>
@@ -740,7 +721,9 @@ const AddSubject = () => {
           <Col>
             <div className="card-wrapper">
               <Card>
-                <CardHeader>
+             
+                <CardHeader style={{display:"flex",justifyContent:"space-between",widht:"100%"}} >
+                <h2>View Subjects</h2>
                   <div>
                     <Button
                       color={`${view === 0 ? "warning" : "primary"}`}

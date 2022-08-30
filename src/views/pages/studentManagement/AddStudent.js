@@ -48,7 +48,7 @@ import { useDispatch } from "react-redux";
 function AddStudent() {
   const dispatch = useDispatch();
   // Stepper form steps
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(1);
   const { classes } = useSelector((state) => state.classReducer);
   const history = useHistory();
   const [sessions, setSessions] = useState([]);
@@ -174,33 +174,33 @@ function AddStudent() {
   const phoneBlurHandler = () => {
     console.log("here");
     // console.log(studentData.phone);
-    let regex = /^[5-9]{2}[0-9]{8}$/;
+    let regex = /^[5-9]{1}[0-9]{9}$/;
     if (regex.test(studentData.phone)) {
       setPhoneError(false);
-      setDisableButton(false);
+      
     } else {
       setPhoneError(true);
-      setDisableButton(true);
+    
     }
   };
   const altPhoneBlurHandler = () => {
-    let regex = /^[5-9]{2}[0-9]{8}$/;
+    let regex = /^[5-9]{1}[0-9]{9}$/;
     if (regex.test(studentData.alternate_phone)) {
       setAltPhoneError(false);
-      setDisableButton(false);
+      
     } else {
       setAltPhoneError(true);
-      setDisableButton(true);
+      
     }
   };
   const emailBlurHandler = () => {
     let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (regex.test(studentData.email)) {
       setEmailError(false);
-      setDisableButton(false);
+      
     } else {
       setEmailError(true);
-      setDisableButton(true);
+     
     }
   };
   const parentEmailBlurHandler = async () => {
@@ -308,10 +308,10 @@ function AddStudent() {
     let regex = /^[0-9]{12}$/;
     if (regex.test(studentData.aadhar_number)) {
       setAadharError(false);
-      setDisableButton(false);
+      
     } else {
       setAadharError(true);
-      setDisableButton(true);
+     
     }
   };
   //Checking Parent or Gaurdian Email is Exist or Not
@@ -1237,7 +1237,7 @@ function AddStudent() {
                         placeholder="Previous School"
                         type="text"
                         onChange={handleChange("previous_school")}
-                        required
+                        
                         value={studentData.previous_school}
                       />
                     </Col>
@@ -1481,7 +1481,7 @@ function AddStudent() {
                   {studentData.contact_person_select.value === "parent" ? (
                     <>
                       <CardBody>
-                        <Row>
+                        {/* <Row>
                           <Col>
                             <label
                               className="form-control-label"
@@ -1498,7 +1498,7 @@ function AddStudent() {
                               value={studentData.parent_address}
                             />
                           </Col>
-                        </Row>
+                        </Row> */}
                         <Row>
                           <Col>
                             <label
@@ -1628,40 +1628,14 @@ function AddStudent() {
                               onChange={(date) => setFatherDOB(date)}
                               //  value={dateOfBirth}
                               selected={fatherDOB}
-                              required
+                            
                               showMonthDropdown
                               showYearDropdown
                               dropdownMode="select"
                               className="datePicker"
                             />
                           </Col>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="exampleFormControlSelect3"
-                            >
-                              Blood Group
-                            </label>
-                            <Input
-                              id="exampleFormControlSelect3"
-                              type="select"
-                              onChange={handleChange("father_blood_group")}
-                              required
-                              value={studentData.father_blood_group}
-                            >
-                              <option value="" disabled>
-                                Blood Group
-                              </option>
-                              <option>A+</option>
-                              <option>A-</option>
-                              <option>B+</option>
-                              <option>B-</option>
-                              <option>O+</option>
-                              <option>O-</option>
-                              <option>AB+</option>
-                              <option>AB-</option>
-                            </Input>
-                          </Col>
+                        
                           <Col>
                             <label
                               className="form-control-label"
@@ -1687,71 +1661,7 @@ function AddStudent() {
                             )}
                           </Col>
                         </Row>
-                        <Row className="mb-4">
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Pin Code
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Pin Code"
-                              type="number"
-                              onChange={handleChange("father_pincode")}
-                              required
-                              value={studentData.father_pincode}
-                              onBlur={fatherPincodeBlurHandler}
-                              invalid={fatherPincodeError}
-                            />
-                            {fatherPincodeError && (
-                              <FormFeedback>
-                                Please Enter a valid Pincode
-                              </FormFeedback>
-                            )}
-                          </Col>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Nationality
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Nationality"
-                              type="select"
-                              onChange={handleChange("father_nationality")}
-                              required
-                              value={studentData.father_nationality}
-                            >
-                              <option value="" disabled>
-                                Select Nationality
-                              </option>
-                              <option value="Indian" selected>
-                                Indian
-                              </option>
-                              <option value="Others">Others</option>
-                            </Input>
-                          </Col>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Mother Tongue
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Mother Tongue"
-                              type="text"
-                              onChange={handleChange("father_mother_tongue")}
-                              required
-                              value={studentData.father_mother_tongue}
-                            />
-                          </Col>
-                        </Row>
+                      
                       </CardBody>
                       <CardBody>
                         <Row className="mb-4">
@@ -1807,40 +1717,14 @@ function AddStudent() {
                               onChange={(date) => setMotherDOB(date)}
                               //  value={dateOfBirth}
                               selected={motherDOB}
-                              required
+                           
                               className="datePicker"
                               showMonthDropdown
                               showYearDropdown
                               dropdownMode="select"
                             />
                           </Col>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="exampleFormControlSelect3"
-                            >
-                              Blood Group
-                            </label>
-                            <Input
-                              id="exampleFormControlSelect3"
-                              type="select"
-                              onChange={handleChange("mother_blood_group")}
-                              required
-                              value={studentData.mother_blood_group}
-                            >
-                              <option value="" disabled>
-                                Blood Group
-                              </option>
-                              <option>A+</option>
-                              <option>A-</option>
-                              <option>B+</option>
-                              <option>B-</option>
-                              <option>O+</option>
-                              <option>O-</option>
-                              <option>AB+</option>
-                              <option>AB-</option>
-                            </Input>
-                          </Col>
+                      
                           <Col>
                             <label
                               className="form-control-label"
@@ -1865,71 +1749,7 @@ function AddStudent() {
                             )}
                           </Col>
                         </Row>
-                        <Row className="mb-4">
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Pin Code
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Pin Code"
-                              type="number"
-                              onChange={handleChange("mother_pincode")}
-                              required
-                              value={studentData.mother_pincode}
-                              onBlur={motherPincodeBlurHandler}
-                              invalid={motherPincodeError}
-                            />
-                            {motherPincodeError && (
-                              <FormFeedback>
-                                Please Enter a valid Pincode
-                              </FormFeedback>
-                            )}
-                          </Col>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Nationality
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Nationality"
-                              type="select"
-                              onChange={handleChange("mother_nationality")}
-                              required
-                              value={studentData.mother_nationality}
-                            >
-                              <option value="" disabled>
-                                Select Nationality
-                              </option>
-                              <option value="Indian" selected>
-                                Indian
-                              </option>
-                              <option value="Others">Others</option>
-                            </Input>
-                          </Col>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Mother Tongue
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Mother Tongue"
-                              type="text"
-                              onChange={handleChange("mother_mother_tongue")}
-                              required
-                              value={studentData.mother_mother_tongue}
-                            />
-                          </Col>
-                        </Row>
+                       
                         <Row className="mt-4 d-flex justify-content-between">
                           <Button
                             className="ml-4"
@@ -1959,7 +1779,7 @@ function AddStudent() {
                   {studentData.contact_person_select.value === "guardian" ? (
                     <>
                       <CardBody>
-                        <Row>
+                        {/* <Row>
                           <Col>
                             <label
                               className="form-control-label"
@@ -1976,7 +1796,7 @@ function AddStudent() {
                               value={studentData.guardian_address}
                             />
                           </Col>
-                        </Row>
+                        </Row> */}
                         <Row>
                           <Col>
                             <label
@@ -1994,6 +1814,7 @@ function AddStudent() {
                               value={studentData.guardian_email}
                               onBlur={guardianEmailBlurHandler}
                               invalid={guardianEmailError}
+                              required
                             />
                             {guardianEmailError && (
                               <FormFeedback>
@@ -2098,7 +1919,7 @@ function AddStudent() {
                               className="form-control-label"
                               htmlFor="example-date-input"
                             >
-                              DOB
+                              Date Of Birth
                             </Label>
                             <DatePicker
                               dateFormat="dd/MM/yyyy"
@@ -2106,40 +1927,14 @@ function AddStudent() {
                               onChange={(date) => setGuardianDOB(date)}
                               //  value={dateOfBirth}
                               selected={guardianDOB}
-                              required
+                          
                               className="datePicker"
                               showMonthDropdown
                               showYearDropdown
                               dropdownMode="select"
                             />
                           </Col>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="exampleFormControlSelect3"
-                            >
-                              Blood Group
-                            </label>
-                            <Input
-                              id="exampleFormControlSelect3"
-                              type="select"
-                              onChange={handleChange("guardian_blood_group")}
-                              required
-                              value={studentData.guardian_blood_group}
-                            >
-                              <option value="" disabled>
-                                Blood Group
-                              </option>
-                              <option>A+</option>
-                              <option>A-</option>
-                              <option>B+</option>
-                              <option>B-</option>
-                              <option>O+</option>
-                              <option>O-</option>
-                              <option>AB+</option>
-                              <option>AB-</option>
-                            </Input>
-                          </Col>
+                       
                           <Col>
                             <label
                               className="form-control-label"
@@ -2165,72 +1960,7 @@ function AddStudent() {
                             )}
                           </Col>
                         </Row>
-                        <Row className="mb-4">
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Pin Code
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Pin Code"
-                              type="number"
-                              onChange={handleChange("guardian_pincode")}
-                              required
-                              value={studentData.guardian_pincode}
-                              onBlur={guardianPincodeBlurHandler}
-                              invalid={guardianPincodeError}
-                            />
-                            {guardianPincodeError && (
-                              <FormFeedback>
-                                Please Enter a valid Pincode
-                              </FormFeedback>
-                            )}
-                          </Col>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Nationality
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Nationality"
-                              type="select"
-                              onChange={handleChange("guardian_nationality")}
-                              required
-                              value={studentData.guardian_nationality}
-                            >
-                              {" "}
-                              <option value="" disabled>
-                                Select Nationality
-                              </option>
-                              <option value="Indian" selected>
-                                Indian
-                              </option>
-                              <option value="Others">Others</option>
-                            </Input>
-                          </Col>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Mother Tongue
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Mother Tongue"
-                              type="text"
-                              onChange={handleChange("guardian_mother_tongue")}
-                              required
-                              value={studentData.guardian_mother_tongue}
-                            />
-                          </Col>
-                        </Row>
+                     
                         <Row className="mt-4 d-flex justify-content-between">
                           <Button
                             className="ml-4"

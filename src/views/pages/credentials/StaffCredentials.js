@@ -23,11 +23,7 @@ import SimpleHeader from "components/Headers/SimpleHeader.js";
 import { isAuthenticated } from "api/auth";
 import { toast, ToastContainer } from "react-toastify";
 import { allSessions } from "api/session";
-import {
-  allStudentCredentials,
-  staffPasswordEdit,
-  
-} from "api/credentials";
+import { allStudentCredentials, staffPasswordEdit } from "api/credentials";
 import { getStaffByDepartment } from "api/staff";
 import { SearchOutlined } from "@ant-design/icons";
 import AntTable from "../tables/AntTable";
@@ -78,6 +74,36 @@ const StaffCredentials = () => {
     }
   };
   const columns = [
+    {
+      title: "Staff Name",
+      dataIndex: "name",
+      align: "left",
+      sorter: (a, b) => a.name > b.name,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+        return (
+          <>
+            <Input
+              autoFocus
+              placeholder="Type text here"
+              value={selectedKeys[0]}
+              onChange={(e) => {
+                setSelectedKeys(e.target.value ? [e.target.value] : []);
+                confirm({ closeDropdown: false });
+              }}
+              onBlur={() => {
+                confirm();
+              }}
+            ></Input>
+          </>
+        );
+      },
+      filterIcon: () => {
+        return <SearchOutlined />;
+      },
+      onFilter: (value, record) => {
+        return record.name.toLowerCase().includes(value.toLowerCase());
+      },
+    },
     {
       title: "Staff SID",
       dataIndex: "sid",
@@ -164,6 +190,7 @@ const StaffCredentials = () => {
         tableData.push({
           key: i,
           sid: data[i].SID,
+          name:data[i].firstname+" "+data[i].lastname,
           password: data[i].temp,
 
           action: (
@@ -204,7 +231,7 @@ const StaffCredentials = () => {
     try {
     } catch (error) {}
   };
-  const handleEdit = async()=>{
+  const handleEdit = async () => {
     const formData = new FormData();
     formData.set("SID", editStaffSID);
     formData.set("password", editStaffPassword);
@@ -222,10 +249,10 @@ const StaffCredentials = () => {
       toast.error("Staff Password Update Failed");
       setEditing(false);
     }
-  }
+  };
   return (
     <>
-      <SimpleHeader name="Add Student" parentName="Student Management" />
+      <SimpleHeader name="Staff Credentials" parentName="Credentials Master" />
       <ToastContainer
         position="bottom-right"
         autoClose={5000}
@@ -243,6 +270,9 @@ const StaffCredentials = () => {
           <Loader />
         ) : (
           <Card>
+            <CardHeader>
+              <h2>Staff Credentials Master</h2>
+            </CardHeader>
             <CardBody>
               <Row className="d-flex justify-content-center mb-4">
                 <Col md="6">
@@ -341,11 +371,9 @@ const StaffCredentials = () => {
               </Row>
             </ModalBody>
             <ModalFooter>
-              
-                <Button color="success" type="button" onClick={handleEdit} > 
-                  Save Password
-                </Button>
-             
+              <Button color="success" type="button" onClick={handleEdit}>
+                Save Password
+              </Button>
             </ModalFooter>
           </>
         )}

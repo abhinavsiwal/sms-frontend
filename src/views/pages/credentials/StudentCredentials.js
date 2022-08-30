@@ -85,6 +85,35 @@ const StudentCredentials = () => {
 
   const columns = [
     {
+      title: "Student Name",
+      dataIndex: "name",
+      sorter: (a, b) => a.name > b.name,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+        return (
+          <>
+            <Input
+              autoFocus
+              placeholder="Type text here"
+              value={selectedKeys[0]}
+              onChange={(e) => {
+                setSelectedKeys(e.target.value ? [e.target.value] : []);
+                confirm({ closeDropdown: false });
+              }}
+              onBlur={() => {
+                confirm();
+              }}
+            ></Input>
+          </>
+        );
+      },
+      filterIcon: () => {
+        return <SearchOutlined />;
+      },
+      onFilter: (value, record) => {
+        return record.name.toLowerCase().includes(value.toLowerCase());
+      },
+    },
+    {
       title: "Student SID",
       dataIndex: "sid",
       sorter: (a, b) => a.sid > b.sid,
@@ -141,9 +170,7 @@ const StudentCredentials = () => {
       onFilter: (value, record) => {
         return record.password.toLowerCase().includes(value.toLowerCase());
       },
-      render: (value) => (
-       <PasswordField value={value} />
-      ),
+      render: (value) => <PasswordField value={value} />,
     },
 
     {
@@ -205,9 +232,7 @@ const StudentCredentials = () => {
           .toLowerCase()
           .includes(value.toLowerCase());
       },
-      render: (value) => (
-        <PasswordField value={value} />
-       ),
+      render: (value) => <PasswordField value={value} />,
     },
     {
       title: "Action",
@@ -259,6 +284,7 @@ const StudentCredentials = () => {
       for (let i = 0; i < data.length; i++) {
         tableData.push({
           key: i,
+          name: data[i].firstname + " " + data[i].lastname,
           sid: data[i].SID,
           password: data[i].temp,
           parentId: data[i].parent_SID,
@@ -348,7 +374,10 @@ const StudentCredentials = () => {
 
   return (
     <>
-      <SimpleHeader name="Add Student" parentName="Student Management" />
+      <SimpleHeader
+        name="Student & Parent Credentials"
+        parentName="Credentials Master"
+      />
       <ToastContainer
         position="bottom-right"
         autoClose={5000}
@@ -368,8 +397,11 @@ const StudentCredentials = () => {
         ) : (
           <Card>
             <CardBody>
+              <CardHeader>
+                <h2>Student & Parents Credentials Master</h2>
+              </CardHeader>
               <Row className="d-flex justify-content-center mb-4">
-                <Col md="6">
+                <Col md={5}>
                   <Label
                     className="form-control-label"
                     htmlFor="xample-date-input"
@@ -397,7 +429,7 @@ const StudentCredentials = () => {
                       })}
                   </Input>
                 </Col>
-                <Col md="6">
+                <Col md={5}>
                   <Label
                     className="form-control-label"
                     htmlFor="xample-date-input"
@@ -430,7 +462,12 @@ const StudentCredentials = () => {
                 </Col>
 
                 <Col className="mt-4">
-                  <Button color="primary" onClick={searchHandler}>
+                  <Button
+                    color="primary"
+                    size="sm"
+                    onClick={searchHandler}
+                    style={{ marginTop: "0.5rem" }}
+                  >
                     Search
                   </Button>
                 </Col>
@@ -445,7 +482,6 @@ const StudentCredentials = () => {
             <Loader />
           ) : (
             <Card className="mb-4">
-              <CardHeader></CardHeader>
               <CardBody>
                 <AntTable
                   columns={columns}
