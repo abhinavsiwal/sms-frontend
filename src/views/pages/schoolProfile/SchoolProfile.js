@@ -196,8 +196,9 @@ function SchoolProfile() {
     formData.set("pincode", editSchoolProfile.pin_code);
     formData.set("state", editSchoolProfile.state);
     formData.set("telephone", editSchoolProfile.telephone);
-
-    formData.set("photo", editSchoolProfile.image);
+    if (editSchoolProfile.image) {
+      formData.set("photo", editSchoolProfile.image);
+    }
 
     try {
       setEditLoading(true);
@@ -262,7 +263,7 @@ function SchoolProfile() {
               <Row md="4" className="d-flex mb-4">
                 <Col>
                   <img
-                    src={imagesPreview ? imagesPreview:"/img/logo.jpg"}
+                    src={imagesPreview ? imagesPreview : "/img/logo.jpg"}
                     alt="Preview"
                     className="mt-3 me-2"
                     width="80"

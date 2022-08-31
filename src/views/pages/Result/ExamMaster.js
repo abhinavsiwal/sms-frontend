@@ -97,6 +97,14 @@ const ExamMaster = () => {
     setSelectedSection(selectedSection1);
   }, [section]);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  };
+  const handleChange = (name) => async (event) => {
+    console.log(name,event.target.value);
+    console.log(event.target.id);
+  };
+
   return (
     <>
       <SimpleHeader name="Exam Master" parentName="Result Management" />
@@ -237,7 +245,7 @@ const ExamMaster = () => {
               <h2>Marks Distribution</h2>
             </CardHeader>
             <CardBody>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="table_div_fees">
                   <table className="fees_table">
                     <thead style={{ backgroundColor: "#c0c0c0" }}>
@@ -254,7 +262,7 @@ const ExamMaster = () => {
                     </thead>
                     <tbody>
                       {selectedSection?.subject?.map((subject, index) => {
-                        console.log(subject);
+                       
                         return (
                           <>
                             {subject.type === "Group" && (
@@ -262,26 +270,28 @@ const ExamMaster = () => {
                                 <tr>
                                   <td>{index + 1}</td>
 
-                                  <td style={{fontWeight:"600"}} >{subject.name}</td>
+                                  <td style={{ fontWeight: "600" }}>
+                                    {subject.name}
+                                  </td>
                                   <td>
                                     <Input
-                                      id="exampleFormControlTextarea1"
+                                      id={subject.name}
                                       type="number"
                                       required
-                                      // onChange={(e) => handleChange(index, e)}
+                                      onChange={handleChange("full_marks")}
                                       // value={inputfield.min}
-                                      name="full"
+                                      name="full_marks"
                                       placeholder="Enter full marks"
                                     />
                                   </td>
                                   <td>
                                     <Input
-                                      id="exampleFormControlTextarea1"
+                                      id={subject.name}
                                       type="number"
                                       required
-                                      // onChange={(e) => handleChange(index, e)}
+                                      onChange={handleChange("passing_marks")}
                                       // value={inputfield.min}
-                                      name="pass"
+                                      name="passing_marks"
                                       placeholder="Enter passing marks"
                                     />
                                   </td>
@@ -290,26 +300,28 @@ const ExamMaster = () => {
                                   return (
                                     <tr>
                                       <td></td>
-                                      <td style={{marginLeft:"4px"}} >{sub}</td>
+                                      <td style={{ marginLeft: "4px" }}>
+                                        {sub}
+                                      </td>
                                       <td>
                                         <Input
-                                          id="exampleFormControlTextarea1"
+                                          id={sub}
                                           type="number"
                                           required
-                                          // onChange={(e) => handleChange(index, e)}
+                                          onChange={handleChange("full_marks")}
                                           // value={inputfield.min}
-                                          name="full"
+                                          name="full_marks"
                                           placeholder="Enter full marks"
                                         />
                                       </td>
                                       <td>
                                         <Input
-                                          id="exampleFormControlTextarea1"
+                                           id={sub}
                                           type="number"
                                           required
-                                          // onChange={(e) => handleChange(index, e)}
+                                          onChange={handleChange("passing_marks")}
                                           // value={inputfield.min}
-                                          name="pass"
+                                          name="passing_marks"
                                           placeholder="Enter passing marks"
                                         />
                                       </td>
@@ -324,23 +336,23 @@ const ExamMaster = () => {
                                 <td>{subject.name}</td>
                                 <td>
                                   <Input
-                                    id="exampleFormControlTextarea1"
+                                    id={subject.name}
                                     type="number"
                                     required
-                                    // onChange={(e) => handleChange(index, e)}
+                                    onChange={handleChange("full_marks")}
                                     // value={inputfield.min}
-                                    name="full"
+                                    name="full_marks"
                                     placeholder="Enter full marks"
                                   />
                                 </td>
                                 <td>
                                   <Input
-                                    id="exampleFormControlTextarea1"
+                                    id={subject.name}
                                     type="number"
                                     required
-                                    // onChange={(e) => handleChange(index, e)}
+                                    onChange={handleChange("passing_marks")}
                                     // value={inputfield.min}
-                                    name="pass"
+                                    name="passing_marks"
                                     placeholder="Enter passing marks"
                                   />
                                 </td>
@@ -353,12 +365,12 @@ const ExamMaster = () => {
                   </table>
                 </div>
                 <Row className="mt-4 float-right">
-                <Col>
-                  <Button color="primary" type="submit">
-                    Submit
-                  </Button>
-                </Col>
-              </Row>
+                  <Col>
+                    <Button color="primary" type="submit">
+                      Submit
+                    </Button>
+                  </Col>
+                </Row>
               </form>
             </CardBody>
           </Card>

@@ -82,7 +82,7 @@ const GradingMaster = () => {
       <Container className="mt--6">
         <Card>
           <CardHeader>
-            <h2>Add Students</h2>
+            <h2>Grade Master</h2>
           </CardHeader>
           <form onSubmit={handleSubmit}>
             <table className="fees_table">
