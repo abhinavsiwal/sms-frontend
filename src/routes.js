@@ -171,7 +171,7 @@ export const adminRoutes = [
     path: "/profile",
     name: "Profile",
     icon: "ni ni-shop text-primary",
-    component: StaffProfile,
+    component: Profile,
     layout: "/admin",
     module: "Staff Management",
   },

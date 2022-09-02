@@ -8,7 +8,7 @@ const Profile = () => {
   const { user } = isAuthenticated();
   // console.log(user);
 
-  if (user.user === "schoolAdmin") {
+  if (user.user.toString() === "schoolAdmin") {
     return <AdminProfile />;
   } else if (user.user === "staff") {
     return <StaffProfile />;

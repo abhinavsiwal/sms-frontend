@@ -31,10 +31,11 @@ import { useHistory } from "react-router-dom";
 import {setToken,setExpiry,setUserDetails} from '../../store/reducers/auth'
 import { useDispatch } from "react-redux";
 
-
+import { isAuthenticated } from "api/auth";
 
 function AdminNavbar({ theme, sidenavOpen, toggleSidenav }) {
   const dispatch = useDispatch();
+  const { user } = isAuthenticated();
   const history = useHistory();
   // function that on mobile devices makes the search open
   const openSearch = () => {
@@ -396,7 +397,7 @@ function AdminNavbar({ theme, sidenavOpen, toggleSidenav }) {
                     </span>
                     <Media className="ml-2 d-none d-lg-block">
                       <span className="mb-0 text-sm font-weight-bold">
-                        John Snow
+                        {user.firstname+" "+user.lastname}
                       </span>
                     </Media>
                   </Media>
