@@ -338,9 +338,9 @@ const DeptBudgetMaster = () => {
         data1.push({
           key: i,
           dept: data[i].department.name,
-          session: data[i].session,
+          session: data[i].session&&data[i].session.name,
           allocated: data[i].allocated,
-          used: "null",
+          used: data[i].used,
           status: "Under Budget",
           action: (
             <>

@@ -611,40 +611,36 @@ function UpdateStudent({ studentDetails }) {
                       />
                     </Col>
                     <Col md="4">
-                      <FormGroup>
-                        <label
-                          className="form-control-label"
-                          htmlFor="example4cols2Input"
-                        >
-                          First Name
-                        </label>
-                        <Input
-                          id="example4cols2Input"
-                          placeholder="First Name"
-                          type="text"
-                          onChange={handleChange("firstname")}
-                          value={student.firstname}
-                          required
-                        />
-                      </FormGroup>
+                      <label
+                        className="form-control-label"
+                        htmlFor="example4cols2Input"
+                      >
+                        First Name
+                      </label>
+                      <Input
+                        id="example4cols2Input"
+                        placeholder="First Name"
+                        type="text"
+                        onChange={handleChange("firstname")}
+                        value={student.firstname}
+                        required
+                      />
                     </Col>
                     <Col md="4">
-                      <FormGroup>
-                        <label
-                          className="form-control-label"
-                          htmlFor="example4cols3Input"
-                        >
-                          Last Name
-                        </label>
-                        <Input
-                          id="example4cols3Input"
-                          placeholder="Last Name"
-                          type="text"
-                          onChange={handleChange("lastname")}
-                          value={student.lastname}
-                          required
-                        />
-                      </FormGroup>
+                      <label
+                        className="form-control-label"
+                        htmlFor="example4cols3Input"
+                      >
+                        Last Name
+                      </label>
+                      <Input
+                        id="example4cols3Input"
+                        placeholder="Last Name"
+                        type="text"
+                        onChange={handleChange("lastname")}
+                        value={student.lastname}
+                        required
+                      />
                     </Col>
                   </Row>
                   <Row>
@@ -653,7 +649,7 @@ function UpdateStudent({ studentDetails }) {
                         className="form-control-label"
                         htmlFor="example-date-input"
                       >
-                        DOB
+                        Date Of Birth
                       </Label>
                       <DatePicker
                         dateFormat="dd/MM/yyyy"
@@ -721,7 +717,6 @@ function UpdateStudent({ studentDetails }) {
                         placeholder="Email"
                         type="text"
                         onChange={handleChange("email")}
-                        required
                         value={student.email}
                         onBlur={emailBlurHandler}
                         invalid={emailError}
@@ -742,7 +737,6 @@ function UpdateStudent({ studentDetails }) {
                         placeholder="Phone Number"
                         type="number"
                         onChange={handleChange("phone")}
-                        required
                         value={student.phone}
                         onBlur={phoneBlurHandler}
                         invalid={phoneError}
@@ -851,7 +845,11 @@ function UpdateStudent({ studentDetails }) {
                     <Button onClick={cancelHandler} color="danger">
                       Cancel
                     </Button>
-                    <Button color="primary" onClick={handleFormChange} disabled={disableButton} >
+                    <Button
+                      color="primary"
+                      onClick={handleFormChange}
+                      disabled={disableButton}
+                    >
                       Next
                     </Button>
                   </Row>
@@ -995,7 +993,12 @@ function UpdateStudent({ studentDetails }) {
                       <Button onClick={cancelHandler} color="danger">
                         Cancel
                       </Button>
-                      <Button className="mr-4" color="primary" type="submit" disabled={disableButton} >
+                      <Button
+                        className="mr-4"
+                        color="primary"
+                        type="submit"
+                        disabled={disableButton}
+                      >
                         Next
                       </Button>
                     </div>
@@ -1080,6 +1083,7 @@ function UpdateStudent({ studentDetails }) {
                         onChange={(e) => setCountry(e.target.value)}
                         value={country}
                         required
+                        disabled
                       />
                     </Col>
                     <Col md="3">
@@ -1096,6 +1100,7 @@ function UpdateStudent({ studentDetails }) {
                         onChange={(e) => setState(e.target.value)}
                         value={state}
                         required
+                        disabled
                       />
                     </Col>
                     <Col md="3">
@@ -1167,7 +1172,12 @@ function UpdateStudent({ studentDetails }) {
                       <Button onClick={cancelHandler} color="danger">
                         Cancel
                       </Button>
-                      <Button className="mr-4" color="primary" type="submit" disabled={disableButton} >
+                      <Button
+                        className="mr-4"
+                        color="primary"
+                        type="submit"
+                        disabled={disableButton}
+                      >
                         Next
                       </Button>
                     </div>
@@ -1183,48 +1193,27 @@ function UpdateStudent({ studentDetails }) {
                     <>
                       <CardBody>
                         <Row>
-                          <Col md="6">
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="example4cols3Input"
-                              >
-                                Parent Address
-                              </label>
-                              <Input
-                                id="example4cols3Input"
-                                placeholder="Parent Address"
-                                type="text"
-                                onChange={handleChange("parent_address")}
-                                required
-                                value={student.parent_address}
-                              />
-                            </FormGroup>
-                          </Col>
-                          <Col md="6">
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="example4cols3Input"
-                              >
-                                Parent Email
-                              </label>
-                              <Input
-                                id="example4cols3Input"
-                                placeholder="Parent Email"
-                                type="text"
-                                onChange={handleChange("parent_email")}
-                                required
-                                value={student.parent_email}
-                                invalid={parentEmailError}
-                                onBlur={parentEmailBlurHandler}
-                              />
-                              {parentEmailError && (
-                                <FormFeedback>
-                                  Please enter a valid email address.
-                                </FormFeedback>
-                              )}
-                            </FormGroup>
+                          <Col>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example4cols3Input"
+                            >
+                              Parent Email
+                            </label>
+                            <Input
+                              id="example4cols3Input"
+                              placeholder="Parent Email"
+                              type="text"
+                              onChange={handleChange("parent_email")}
+                              value={student.parent_email}
+                              invalid={parentEmailError}
+                              onBlur={parentEmailBlurHandler}
+                            />
+                            {parentEmailError && (
+                              <FormFeedback>
+                                Please enter a valid email address.
+                              </FormFeedback>
+                            )}
                           </Col>
                         </Row>
                         <Row className="mb-4">
@@ -1234,40 +1223,36 @@ function UpdateStudent({ studentDetails }) {
                         </Row>
                         <Row>
                           <Col>
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="example4cols3Input"
-                              >
-                                First Name
-                              </label>
-                              <Input
-                                id="example4cols3Input"
-                                placeholder="First Name"
-                                type="text"
-                                onChange={handleChange("father_name")}
-                                required
-                                value={student.father_name}
-                              />
-                            </FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example4cols3Input"
+                            >
+                              First Name
+                            </label>
+                            <Input
+                              id="example4cols3Input"
+                              placeholder="First Name"
+                              type="text"
+                              onChange={handleChange("father_name")}
+                              required
+                              value={student.father_name}
+                            />
                           </Col>
                           <Col>
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="example4cols3Input"
-                              >
-                                Last Name
-                              </label>
-                              <Input
-                                id="example4cols3Input"
-                                placeholder="Last Name"
-                                type="text"
-                                onChange={handleChange("father_last_name")}
-                                required
-                                value={student.father_last_name}
-                              />
-                            </FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example4cols3Input"
+                            >
+                              Last Name
+                            </label>
+                            <Input
+                              id="example4cols3Input"
+                              placeholder="Last Name"
+                              type="text"
+                              onChange={handleChange("father_last_name")}
+                              required
+                              value={student.father_last_name}
+                            />
                           </Col>
                         </Row>
                         <Row className="mb-4">
@@ -1288,30 +1273,7 @@ function UpdateStudent({ studentDetails }) {
                               className="datePicker"
                             />
                           </Col>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="exampleFormControlSelect3"
-                            >
-                              Blood Group
-                            </label>
-                            <Input
-                              id="exampleFormControlSelect3"
-                              type="select"
-                              onChange={handleChange("father_blood_group")}
-                              required
-                              value={student.father_blood_group}
-                            >
-                              <option>A+</option>
-                              <option>A-</option>
-                              <option>B+</option>
-                              <option>B-</option>
-                              <option>O+</option>
-                              <option>O-</option>
-                              <option>AB+</option>
-                              <option>AB-</option>
-                            </Input>
-                          </Col>
+
                           <Col>
                             <label
                               className="form-control-label"
@@ -1336,64 +1298,6 @@ function UpdateStudent({ studentDetails }) {
                             )}
                           </Col>
                         </Row>
-
-                        <Row className="mb-4">
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Pin Code
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Pin Code"
-                              type="number"
-                              onChange={handleChange("father_pincode")}
-                              required
-                              value={student.father_pincode}
-                              onBlur={fatherPincodeBlurHandler}
-                              invalid={fatherPincodeError}
-                            />
-                            {fatherPincodeError && (
-                              <FormFeedback>
-                                Please Enter a valid Pincode
-                              </FormFeedback>
-                            )}
-                          </Col>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Nationality
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Nationality"
-                              type="text"
-                              onChange={handleChange("father_nationality")}
-                              required
-                              value={student.father_nationality}
-                            />
-                          </Col>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Mother Tongue
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Mother Tongue"
-                              type="text"
-                              onChange={handleChange("father_mother_tongue")}
-                              required
-                              value={student.father_mother_tongue}
-                            />
-                          </Col>
-                        </Row>
                       </CardBody>
                       <CardBody>
                         <Row className="mb-4">
@@ -1403,40 +1307,36 @@ function UpdateStudent({ studentDetails }) {
                         </Row>
                         <Row>
                           <Col>
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="example4cols3Input"
-                              >
-                                First Name
-                              </label>
-                              <Input
-                                id="example4cols3Input"
-                                placeholder="First Name"
-                                type="text"
-                                onChange={handleChange("mother_name")}
-                                required
-                                value={student.mother_name}
-                              />
-                            </FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example4cols3Input"
+                            >
+                              First Name
+                            </label>
+                            <Input
+                              id="example4cols3Input"
+                              placeholder="First Name"
+                              type="text"
+                              onChange={handleChange("mother_name")}
+                              required
+                              value={student.mother_name}
+                            />
                           </Col>
                           <Col>
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="example4cols3Input"
-                              >
-                                Last Name
-                              </label>
-                              <Input
-                                id="example4cols3Input"
-                                placeholder="Last Name"
-                                type="text"
-                                onChange={handleChange("mother_last_name")}
-                                required
-                                value={student.mother_last_name}
-                              />
-                            </FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example4cols3Input"
+                            >
+                              Last Name
+                            </label>
+                            <Input
+                              id="example4cols3Input"
+                              placeholder="Last Name"
+                              type="text"
+                              onChange={handleChange("mother_last_name")}
+                              required
+                              value={student.mother_last_name}
+                            />
                           </Col>
                         </Row>
                         <Row className="mb-4">
@@ -1457,30 +1357,7 @@ function UpdateStudent({ studentDetails }) {
                               className="datePicker"
                             />
                           </Col>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="exampleFormControlSelect3"
-                            >
-                              Blood Group
-                            </label>
-                            <Input
-                              id="exampleFormControlSelect3"
-                              type="select"
-                              onChange={handleChange("mother_blood_group")}
-                              required
-                              value={student.mother_blood_group}
-                            >
-                              <option>A+</option>
-                              <option>A-</option>
-                              <option>B+</option>
-                              <option>B-</option>
-                              <option>O+</option>
-                              <option>O-</option>
-                              <option>AB+</option>
-                              <option>AB-</option>
-                            </Input>
-                          </Col>
+                          \
                           <Col>
                             <label
                               className="form-control-label"
@@ -1506,64 +1383,6 @@ function UpdateStudent({ studentDetails }) {
                           </Col>
                         </Row>
 
-                        <Row className="mb-4">
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Pin Code
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Pin Code"
-                              type="number"
-                              onChange={handleChange("mother_pincode")}
-                              required
-                              value={student.mother_pincode}
-
-                            onBlur={motherPincodeBlurHandler}
-                              invalid={motherPincodeError}
-                            />
-                            {motherPincodeError && (
-                              <FormFeedback>
-                                Please Enter a valid Pincode
-                              </FormFeedback>
-                            )}
-                          </Col>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Nationality
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Nationality"
-                              type="text"
-                              onChange={handleChange("mother_nationality")}
-                              required
-                              value={student.mother_nationality}
-                            />
-                          </Col>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Mother Tongue
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Mother Tongue"
-                              type="text"
-                              onChange={handleChange("mother_mother_tongue")}
-                              required
-                              value={student.mother_mother_tongue}
-                            />
-                          </Col>
-                        </Row>
                         <Row className="mt-4 d-flex justify-content-between">
                           <Button
                             className="ml-4"
@@ -1599,68 +1418,45 @@ function UpdateStudent({ studentDetails }) {
                           </Col>
                         </Row>
                         <Row>
-                          <Col md="6">
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="example4cols3Input"
-                              >
-                                Guardian Address
-                              </label>
-                              <Input
-                                id="example4cols3Input"
-                                placeholder="Parent Address"
-                                type="text"
-                                onChange={handleChange("guardian_address")}
-                                required
-                                value={student.guardian_address}
-                              />
-                            </FormGroup>
-                          </Col>
-                          <Col md="6">
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="example4cols3Input"
-                              >
-                                Guardian Email
-                              </label>
-                              <Input
-                                id="example4cols3Input"
-                                placeholder="Parent Email"
-                                type="text"
-                                onChange={handleChange("guardian_email")}
-                                required
-                                value={student.guardian_email}
-                                onBlur={guardianEmailBlurHandler}
-                                invalid={guardianEmailError}
-                              />
-                              {guardianEmailError && (
-                                <FormFeedback>
-                                  Please enter a valid email address
-                                </FormFeedback>
-                              )}
-                            </FormGroup>
+                          <Col>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example4cols3Input"
+                            >
+                              Guardian Email
+                            </label>
+                            <Input
+                              id="example4cols3Input"
+                              placeholder="Parent Email"
+                              type="text"
+                              onChange={handleChange("guardian_email")}
+                              value={student.guardian_email}
+                              onBlur={guardianEmailBlurHandler}
+                              invalid={guardianEmailError}
+                            />
+                            {guardianEmailError && (
+                              <FormFeedback>
+                                Please enter a valid email address
+                              </FormFeedback>
+                            )}
                           </Col>
                         </Row>
                         <Row>
                           <Col>
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="example4cols3Input"
-                              >
-                                Name
-                              </label>
-                              <Input
-                                id="example4cols3Input"
-                                placeholder="First Name"
-                                type="text"
-                                onChange={handleChange("guardian_name")}
-                                required
-                                value={student.guardian_name}
-                              />
-                            </FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example4cols3Input"
+                            >
+                              Name
+                            </label>
+                            <Input
+                              id="example4cols3Input"
+                              placeholder="First Name"
+                              type="text"
+                              onChange={handleChange("guardian_name")}
+                              required
+                              value={student.guardian_name}
+                            />
                           </Col>
                         </Row>
                         <Row className="mb-4">
@@ -1681,30 +1477,7 @@ function UpdateStudent({ studentDetails }) {
                               className="datePicker"
                             />
                           </Col>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="exampleFormControlSelect3"
-                            >
-                              Blood Group
-                            </label>
-                            <Input
-                              id="exampleFormControlSelect3"
-                              type="select"
-                              onChange={handleChange("guardian_blood_group")}
-                              required
-                              value={student.guardian_blood_group}
-                            >
-                              <option>A+</option>
-                              <option>A-</option>
-                              <option>B+</option>
-                              <option>B-</option>
-                              <option>O+</option>
-                              <option>O-</option>
-                              <option>AB+</option>
-                              <option>AB-</option>
-                            </Input>
-                          </Col>
+
                           <Col>
                             <label
                               className="form-control-label"
@@ -1729,105 +1502,7 @@ function UpdateStudent({ studentDetails }) {
                             )}
                           </Col>
                         </Row>
-                        <Row>
-                          <Col>
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="example4cols3Input"
-                              >
-                                Present Address
-                              </label>
-                              <Input
-                                id="example4cols3Input"
-                                placeholder="Present Address"
-                                type="text"
-                                onChange={handleChange("guardian_address")}
-                                required
-                                value={student.guardian_address}
-                              />
-                            </FormGroup>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="example4cols3Input"
-                              >
-                                Permanent Address
-                              </label>
-                              <Input
-                                id="example4cols3Input"
-                                placeholder="Permanent Address"
-                                type="text"
-                                onChange={handleChange(
-                                  "guardian_permanent_address"
-                                )}
-                                required
-                                value={student.permanent_address}
-                              />
-                            </FormGroup>
-                          </Col>
-                        </Row>
-                        <Row className="mb-4">
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Pin Code
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Pin Code"
-                              type="number"
-                              onChange={handleChange("guardian_pincode")}
-                              required
-                              value={student.guardian_pincode}
-                              onBlur={guardianPincodeBlurHandler}
-                              invalid={guardianPincodeError}
-                            />
-                            {guardianPincodeError && (
-                              <FormFeedback>
-                                Please Enter a valid Pincode
-                              </FormFeedback>
-                            )}
-                          </Col>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Nationality
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Nationality"
-                              type="text"
-                              onChange={handleChange("guardian_nationality")}
-                              required
-                              value={student.guardian_nationality}
-                            />
-                          </Col>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Mother Tongue
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Mother Tongue"
-                              type="text"
-                              onChange={handleChange("guardian_mother_tongue")}
-                              required
-                              value={student.guardian_mother_tongue}
-                            />
-                          </Col>
-                        </Row>
+
                         <Row className="mt-4 d-flex justify-content-between">
                           <Button
                             className="ml-4"

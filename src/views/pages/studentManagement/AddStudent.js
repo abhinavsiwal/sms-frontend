@@ -48,7 +48,7 @@ import { useDispatch } from "react-redux";
 function AddStudent() {
   const dispatch = useDispatch();
   // Stepper form steps
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   const { classes } = useSelector((state) => state.classReducer);
   const history = useHistory();
   const [sessions, setSessions] = useState([]);
@@ -722,7 +722,28 @@ function AddStudent() {
         ) : (
           <Card className="mb-4 bg-transparent">
             <CardHeader className="Step_Header">
-              <Row>
+          
+              <Row className="d-flex justify-content-center">
+                <Col md="10">
+                  <Stepper
+                    activeStep={step}
+                    styleConfig={{
+                      activeBgColor: "#e56813",
+                      completedBgColor: "#1cdc23",
+                      size: "3em",
+                    }}
+                  >
+                    <Step label="Student Details" />
+                    <Step label="Admission Details" />
+                    <Step label="Address Details" />
+                    <Step label="Contact Person Details" />
+                  </Stepper>
+                </Col>
+              </Row>
+            </CardHeader>
+            {step === 0 && (
+              <>
+                <Row>
                 <Col className="d-flex justify-content-center mt-2">
                   <form>
                     <input
@@ -743,25 +764,6 @@ function AddStudent() {
                   </form>
                 </Col>
               </Row>
-              <Row className="d-flex justify-content-center">
-                <Col md="10">
-                  <Stepper
-                    activeStep={step}
-                    styleConfig={{
-                      activeBgColor: "#e56813",
-                      completedBgColor: "#1cdc23",
-                      size: "3em",
-                    }}
-                  >
-                    <Step label="Student Details" />
-                    <Step label="Admission Details" />
-                    <Step label="Address Details" />
-                    <Step label="Contact Person Details" />
-                  </Stepper>
-                </Col>
-              </Row>
-            </CardHeader>
-            {step === 0 && (
               <Form onSubmit={handleFormChange} className="mb-4">
                 <CardBody>
                   <Row md="4" className="d-flex justify-content-center mb-4">
@@ -1143,6 +1145,8 @@ function AddStudent() {
                   </Row>
                 </CardBody>
               </Form>
+              </>
+
             )}
             {step === 1 && (
               <Form onSubmit={handleFormChange} className="mb-4">

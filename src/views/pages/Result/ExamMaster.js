@@ -99,10 +99,28 @@ const ExamMaster = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(inputFields);
   };
   const handleChange = (name) => async (event) => {
     console.log(name,event.target.value);
     console.log(event.target.id);
+
+    let obj = {
+      subject:event.target.id,
+      [name]:event.target.value,
+    }
+    let existing = inputFields.find((mark)=>{
+      return(
+        mark.subject===event.target.value
+      )
+    })
+    if(!existing){
+      obj[name]=event.target.value; 
+    }
+    setInputFields([...inputFields,obj])
+
+    console.log(obj);
+    
   };
 
   return (

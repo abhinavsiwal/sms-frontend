@@ -165,7 +165,7 @@ function Sidebar({ toggleSidenav, sidenavOpen, routes, logo, rtlActive }) {
       <div className="sidenav-header d-flex align-items-center">
         {logo ? (
           <NavbarBrand {...navbarBrandProps}>
-            <img alt={logo.imgAlt} className="navbar-brand-img" src={logo.imgSrc} />
+            <img alt={logo.imgAlt} className="navbar-brand-img" src="/img/logo1.jpeg" />
           </NavbarBrand>
         ) : null}
         <div className="ml-auto">

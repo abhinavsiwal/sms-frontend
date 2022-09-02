@@ -160,7 +160,7 @@ const AllStudents = () => {
                   key={"delete" + i + 1}
                 >
                   <Popconfirm
-                    title="Sure to delete?"
+                    title="Are you sure you want to delete this record parmanently?"
                     onConfirm={() => deleteStudentHandler(res[i]._id)}
                   >
                     <i className="fas fa-trash" />
@@ -666,7 +666,7 @@ const AllStudents = () => {
                                         <CardBody className="mt-0">
                                           <Row>
                                             <Col align="center">
-                                              <h4 className="mt-3 mb-1">SID</h4>
+                                              <h4 className="mt-3 mb-1">Student Id</h4>
                                               <span className="text-md">
                                                 {student.SID}
                                               </span>

@@ -248,27 +248,7 @@ function AddRoute() {
                   <CardHeader>
                     <h3>Add Route</h3>
                   </CardHeader>
-                  <Row>
-                    <Col className="d-flex justify-content-center mt-3 ">
-                      <form>
-                        <input
-                          type={"file"}
-                          id={"csvFileInput"}
-                          accept={".csv"}
-                          onChange={handleOnChange}
-                        />
-
-                        <Button
-                          onClick={(e) => {
-                            handleOnSubmit(e);
-                          }}
-                          color="primary"
-                        >
-                          IMPORT CSV
-                        </Button>
-                      </form>
-                    </Col>
-                  </Row>
+                
                   <Form className="mb-4" onSubmit={handleSubmit}>
                     <CardBody>
                       <Row>

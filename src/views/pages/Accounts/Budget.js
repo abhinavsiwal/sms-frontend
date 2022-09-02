@@ -383,7 +383,7 @@ const BudgetMaster = () => {
           dept: data[i].staff.department.name,
           session: data[i].session,
           allocated: data[i].allocated,
-          used: "null",
+          used: data[i].used,
           status: "Under Budget",
           action: (
             <>

@@ -282,28 +282,7 @@ function AddCanteen() {
                   <CardHeader>
                     <h3>Add Canteen</h3>
                   </CardHeader>
-                  <Row>
-                    <Col className="d-flex justify-content-center mt-3 ml-4 ">
-                      <form>
-                        <input
-                          type={"file"}
-                          id={"csvFileInput"}
-                          accept={".csv"}
-                          onChange={handleOnChange}
-                        />
-
-                        <Button
-                          onClick={(e) => {
-                            handleOnSubmit(e);
-                          }}
-                          color="primary"
-                          className="mt-2"
-                        >
-                          IMPORT CSV
-                        </Button>
-                      </form>
-                    </Col>
-                  </Row>
+              
                   <Form className="mb-4" onSubmit={addCanteenHandler}>
                     <CardBody>
                       <Row>
