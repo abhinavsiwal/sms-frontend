@@ -52,7 +52,7 @@ function ViewAllCanteen() {
   const fetchStaff = async () => {
     setLoading(true);
     const res = await allCanteens(user._id, user.school); // Call your function here
-    // console.log(res);
+    console.log(res);
     await setAllCanteen(res);
     await setCanteenData(res);
 
@@ -97,7 +97,6 @@ function ViewAllCanteen() {
 
   useEffect(() => {
     if (searchText === "") {
-      console.log("here");
       setCanteenData(allCanteen);
       return;
     }
@@ -171,22 +170,26 @@ function ViewAllCanteen() {
                       fluid
                       onClick={() => selectedStaff(canteen._id)}
                     >
-                      <Card className="h-100 w-100">
+                      <Card className="h-80 w-80">
                         <CardBody>
-                          <p className="d-flex justify-content-around">
-                            {canteen.name}
-                          </p>
+                          <Row>
+                            <Col align="center">
+                              <h4 className="mt-3 mb-1">Name</h4>
+                              <span className="text-md">{canteen.name}</span>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col align="center">
+                              <h4 className="mt-3 mb-1">Staff</h4>
+                              {canteen.staff?.map((staff) => (
+                                <span className="text-md">
+                                  {staff.firstname + " " + staff.lastname}
+                                </span>
+                              ))}
+                            </Col>
+                          </Row>
                         </CardBody>
                       </Card>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          fontSize: "1.2rem",
-                        }}
-                      >
-                        {canteen.name}
-                      </div>
                     </NavLink>
                   );
                 })
@@ -243,33 +246,62 @@ function ViewAllCanteen() {
                   />
                   <div className="Canteen-Name">
                     <h1>{selectedCanteen.name}</h1>
-                    <h3>
-                      <span>
-                        <i className="ni ni-watch-time"></i>
-                      </span>{" "}
-                      10:30AM - 11:30AM
-                    </h3>
                   </div>
 
-                  <div className="items">
+                  <div>
                     {selectedCanteen.menu.length === 0 ? (
                       <h3>No items found</h3>
                     ) : (
-                      selectedCanteen.menu.map((item) => {
-                        if (item.publish.toString() === "Yes") {
-                          return (
-                            <>
-                              <div>
-                                <img className="imgs" src={item.tempPhoto} />
-                                <div className="Name-Price">
-                                  <p className="Name">{item.item}</p>
-                                  <p className="Price">{item.price}₹</p>
-                                </div>
-                              </div>
-                            </>
-                          );
-                        }
-                      })
+                      <Row>
+                        {selectedCanteen.menu.map((item) => {
+                          if (item.publish.toString() === "Yes") {
+                            return (
+                              <Col md={4}>
+                                <Card>
+                                  <CardBody>
+                                    <Row>
+                                      <Col md={6}>
+                                        <h2 align="center" >{item.item}</h2>
+                                        <img
+                                          className="imgs"
+                                          src={item?.tempPhoto}
+                                          height="140"
+                                          width="140"
+                                        />
+                                      </Col>
+                                      <Col md={6} style={{borderLeft:"2px solid black"}} >
+                                      <Row>
+                                          <Col align="center">
+                                            <h4 className="mt-3 mb-1">Price</h4>
+                                            <span className="text-md">
+                                              {item.price}
+                                            </span>
+                                          </Col>
+                                        </Row>
+                                        <Row>
+                                          <Col align="center">
+                                            <h4 className="mt-3 mb-1">From</h4>
+                                            <span className="text-md">
+                                              {item.start_time}
+                                            </span>
+                                          </Col>
+                                          <Col align="center">
+                                            <h4 className="mt-3 mb-1">To</h4>
+                                            <span className="text-md">
+                                              {item.end_time}
+                                            </span>
+                                          </Col>
+                                        </Row>
+                                     
+                                      </Col>
+                                    </Row>
+                                  </CardBody>
+                                </Card>
+                              </Col>
+                            );
+                          }
+                        })}
+                      </Row>
                     )}
                   </div>
                 </CardBody>
