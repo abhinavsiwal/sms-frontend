@@ -654,15 +654,15 @@ const AllStudents = () => {
                                     <Col md="4" key={index}>
                                       <Card>
                                       
-                                        {student.tempPhoto && (
+                                       
                                           <CardImg
                                             alt="..."
-                                            src={student.tempPhoto}
+                                            src={student.tempPhoto?student.tempPhoto :"/img/student.png"}
                                             top
                                             className="p-4"
                                             style={{ height: "13rem" }}
                                           />
-                                        )}
+                                        
                                         <CardBody className="mt-0">
                                           <Row>
                                             <Col align="center">

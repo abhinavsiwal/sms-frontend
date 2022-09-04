@@ -48,7 +48,7 @@ import { useDispatch } from "react-redux";
 function AddStudent() {
   const dispatch = useDispatch();
   // Stepper form steps
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(3);
   const { classes } = useSelector((state) => state.classReducer);
   const history = useHistory();
   const [sessions, setSessions] = useState([]);
@@ -90,7 +90,10 @@ function AddStudent() {
     city: "",
     nationality: "Indian",
     mother_tongue: "",
-    contact_person_select: "",
+    contact_person_select: {
+      label:"Parent",
+      value:"parent"
+    },
     guardian_name: "",
     guardian_last_name: "",
     guardian_dob: "",
@@ -125,10 +128,13 @@ function AddStudent() {
     mother_mother_tongue: "",
   });
   const [loading, setLoading] = useState(false);
-
+const [checked, setChecked] = useState(false);
   const [country, setCountry] = useState("India");
+  const [permanentCountry, setPermanentCountry] = useState("India");
   const [state, setState] = useState("");
+  const [permanentState, setPermanentState] = useState("");
   const [city, setCity] = useState("");
+  const [permanentCity, setPermanentCity] = useState("");
   // console.log("studentData", studentData);
   const [selectedClass, setSelectedClass] = useState({});
   const [phoneError, setPhoneError] = useState(false);
@@ -149,13 +155,14 @@ function AddStudent() {
   const [dateOfJoining, setDateOfJoining] = useState();
   const [dateOfBirth, setDateOfBirth] = useState();
   const [guardianDOB, setGuardianDOB] = useState();
-  const [fatherDOB, setFatherDOB] = useState(); 
+  const [fatherDOB, setFatherDOB] = useState();
   const [motherDOB, setMotherDOB] = useState();
   const [pincode, setPincode] = useState("");
-  const [permanent, setpermanent] = useState("")
+  const [permanentPincode, setPermanentPincode] = useState("");
   const [pincodeError, setPincodeError] = useState(false);
+  const [permanentPincodeError, setPermanentPincodeError] = useState(false);
   const { user, token } = isAuthenticated();
-  const [imagesPreview, setImagesPreview] = useState(); 
+  const [imagesPreview, setImagesPreview] = useState();
   const [disableButton, setDisableButton] = useState(true);
   useEffect(() => {
     getAllClasses();
@@ -633,6 +640,7 @@ function AddStudent() {
 
   const pincodeChangeHandler = async (e) => {
     setPincode(e.target.value);
+    // console.log("p");
     if (e.target.value.length === 6) {
       try {
         const { data } = await axios.get(
@@ -648,15 +656,16 @@ function AddStudent() {
     }
   };
   const permanentPincodeChangeHandler = async (e) => {
-    setPincode(e.target.value);
+    setPermanentPincode(e.target.value);
+    // console.log("pp");
     if (e.target.value.length === 6) {
       try {
         const { data } = await axios.get(
           `https://api.postalpincode.in/pincode/${e.target.value}`
         );
         console.log(data);
-        setState(data[0].PostOffice[0].State);
-        setCity(data[0].PostOffice[0].District);
+        setPermanentState(data[0].PostOffice[0].State);
+        setPermanentCity(data[0].PostOffice[0].District);
       } catch (err) {
         console.log(err);
         toast.error("Failed to fetch pin code.");
@@ -673,6 +682,19 @@ function AddStudent() {
     } else {
       console.log("herrsadasdadse");
       setPincodeError(true);
+      setDisableButton(true);
+    }
+  };
+  const permanentPincodeBlurHandler = () => {
+    let regex = /^[1-9][0-9]{5}$/;
+    // console.log("Here");
+    if (permanentPincode.length === 6) {
+      console.log("herre");
+      setPermanentPincodeError(false);
+      setDisableButton(false);
+    } else {
+      console.log("herrsadasdadse");
+      setPermanentPincodeError(true);
       setDisableButton(true);
     }
   };
@@ -712,6 +734,25 @@ function AddStudent() {
       setDisableButton(true);
     }
   };
+
+  const checkboxChangeHandler = ()=>{
+    setChecked(!checked)
+  }
+
+  useEffect(() => {
+    
+  console.log(checked);
+
+  if(checked){
+    setPermanentPincode(pincode);
+    setPermanentCity(city);
+    setPermanentCountry(country);
+    setPermanentState(state);
+  }
+    
+  }, [checked])
+  
+
   useEffect(() => {}, [cscd]);
   return (
     <>
@@ -780,7 +821,9 @@ function AddStudent() {
                     <Row md="4" className="d-flex justify-content-center mb-4">
                       <Col>
                         <img
-                          src={imagesPreview && imagesPreview}
+                          src={
+                            imagesPreview ? imagesPreview : "/img/student.png"
+                          }
                           alt="Preview"
                           className="mt-3 me-2"
                           width="80"
@@ -1390,6 +1433,27 @@ function AddStudent() {
                   </Row>
 
                   <Row>
+                    <Col style={{marginLeft:"1.2rem"}} >
+                      <Input
+                        id="example4cols3Input"
+                        placeholder="Permanent Address"
+                        type="checkbox"
+                        onChange={checkboxChangeHandler}
+                        required
+                        checked={checked}
+                        // value={studentData.permanent_address}
+                      />{" "}
+                      <label
+                        className="form-control-label"
+                        htmlFor="example4cols3Input"
+                      >
+                        Permanent Address - Same as Present Address
+                      </label>
+                    </Col>
+                  </Row>
+                  {!checked && (
+                    <>
+ <Row>
                     <Col>
                       <label
                         className="form-control-label"
@@ -1407,6 +1471,85 @@ function AddStudent() {
                       />
                     </Col>
                   </Row>
+                  <Row className="mb-4">
+                    <Col md="3">
+                      <label
+                        className="form-control-label"
+                        htmlFor="example4cols2Input"
+                      >
+                        Pin Code
+                      </label>
+                      <Input
+                        id="example4cols2Input"
+                        placeholder="Pin Code"
+                        onChange={(e) => permanentPincodeChangeHandler(e)}
+                        value={permanentPincode}
+                        type="number"
+                        required
+                        onBlur={permanentPincodeBlurHandler}
+                        invalid={permanentPincodeError}
+                      />
+                      {permanentPincodeError && (
+                        <FormFeedback>
+                          Please Enter a valid Pincode
+                        </FormFeedback>
+                      )}
+                    </Col>
+                    <Col md="3">
+                      <label
+                        className="form-control-label"
+                        htmlFor="exampleFormControlSelect3"
+                      >
+                        Country
+                      </label>
+                      <Input
+                        id="example4cols1Input"
+                        placeholder="Country"
+                        type="text"
+                        onChange={(e) => setPermanentCountry(e.target.value)}
+                        value={permanentCountry}
+                        required
+                        disabled
+                      />
+                    </Col>
+                    <Col md="3">
+                      <label
+                        className="form-control-label"
+                        htmlFor="exampleFormControlSelect3"
+                      >
+                        State
+                      </label>
+                      <Input
+                        id="example4cols1Input"
+                        placeholder="State"
+                        type="text"
+                        onChange={(e) => setPermanentState(e.target.value)}
+                        value={permanentState}
+                        required
+                        disabled
+                      />
+                    </Col>
+                    <Col md="3">
+                      <label
+                        className="form-control-label"
+                        htmlFor="exampleFormControlSelect3"
+                      >
+                        City
+                      </label>
+                      <Input
+                        id="example4cols2Input"
+                        placeholder="City"
+                        type="text"
+                        onChange={(e) => setPermanentCity(e.target.value)}
+                        value={permanentCity}
+                        required
+                        disabled
+                      />
+                    </Col>
+                  </Row>
+                    </>
+                  )}
+                 
                   <Row>
                     <Col>
                       <label

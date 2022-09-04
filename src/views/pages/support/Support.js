@@ -279,28 +279,7 @@ function Support() {
           <Col lg="4">
             <div className="card-wrapper">
               <Card>
-                <Row>
-                  <Col className="d-flex justify-content-center mt-2  ml-4">
-                    <form>
-                      <input
-                        type={"file"}
-                        id={"csvFileInput"}
-                        accept={".csv"}
-                        onChange={handleOnChange}
-                      />
-
-                      <Button
-                        onClick={(e) => {
-                          handleOnSubmit(e);
-                        }}
-                        color="primary"
-                        className="mt-2"
-                      >
-                        IMPORT CSV
-                      </Button>
-                    </form>
-                  </Col>
-                </Row>
+              
                 <Form className="mb-4" onSubmit={handleFormChange} >
                   {addLoading ? (
                     <Loader />
