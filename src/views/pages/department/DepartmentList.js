@@ -300,11 +300,15 @@ const DepartmentList = () => {
     e.preventDefault();
     // console.log("here");
     // const role = [primaryHeadId, secondaryHeadId];
+    sessions.map((data) => {
+      if (data.status === "current") {
+        formData.set("session", data._id);
+      }
+    });
     const { user, token } = isAuthenticated();
     try {
       formData.set("school", user.school);
       formData.set("name", name);
-      formData.set("session", sessionID);
       // formData.set("role", JSON.stringify(role));
       // formData.set("module", JSON.stringify(data));
       setAddLoading(true);
@@ -354,7 +358,7 @@ const DepartmentList = () => {
                   <Card>
                     <Form onSubmit={handleFormChange} className="mb-4">
                       <CardBody>
-                        <Row>
+                        {/* <Row>
                           <Col>
                             <label
                               className="form-control-label"
@@ -379,7 +383,7 @@ const DepartmentList = () => {
                                 })}
                             </select>
                           </Col>
-                        </Row>
+                        </Row> */}
                         <br />
                         <Row>
                           <Col>
@@ -398,8 +402,8 @@ const DepartmentList = () => {
                             />
                           </Col>
                         </Row>
-                        <Row className="mt-4 float-right">
-                          <Col>
+                        <Row className="mt-4 float">
+                          <Col style={{display:"flex",justifyContent:"center",width:"100%"}} >
                             <Button
                               color="primary"
                               type="submit"
@@ -465,7 +469,7 @@ const DepartmentList = () => {
         <Modal
           isOpen={editing}
           toggle={() => setEditing(false)}
-          size="lg"
+          size="sm"
           style={{ height: "50vh" }}
           scrollable
         >

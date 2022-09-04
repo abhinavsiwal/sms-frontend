@@ -370,7 +370,7 @@ const StaffCredentials = () => {
                 </Col>
               </Row>
             </ModalBody>
-            <ModalFooter>
+            <ModalFooter  style={{display:"flex",justifyContent:"center",width:"100%"}}>
               <Button color="success" type="button" onClick={handleEdit}>
                 Save Password
               </Button>
