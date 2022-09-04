@@ -175,7 +175,7 @@ export const adminRoutes = [
     layout: "/admin",
     module: "Staff Management",
   },
-  {
+  { 
     collapse: true,
     name: "Class Management",
     icon: "fa fa-users",

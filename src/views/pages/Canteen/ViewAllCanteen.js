@@ -265,11 +265,11 @@ function ViewAllCanteen() {
                                         <img
                                           className="imgs"
                                           src={item?.tempPhoto}
-                                          height="140"
-                                          width="140"
+                                          height="130"
+                                          width="130"
                                         />
                                       </Col>
-                                      <Col md={6} style={{borderLeft:"2px solid black"}} >
+                                      <Col md={6}  >
                                       <Row>
                                           <Col align="center">
                                             <h4 className="mt-3 mb-1">Price</h4>

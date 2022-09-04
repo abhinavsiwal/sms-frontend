@@ -21,10 +21,10 @@ import SimpleHeader from "components/Headers/SimpleHeader.js";
 import { SearchOutlined } from "@ant-design/icons";
 import AntTable from "../tables/AntTable";
 import { Popconfirm } from "antd";
-import { toast, ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify"; 
 import LoadingScreen from "react-loading-screen";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import SalarySlip from "./SalarySlip";
+// import { PDFDownloadLink } from "@react-pdf/renderer";
+// import SalarySlip from "./SalarySlip";
 
 const PaySalary = () => {
   const { user } = isAuthenticated();
@@ -213,33 +213,33 @@ const PaySalary = () => {
       amount: "30000",
       status: "Due",
       action: (
-        // <Button
-        //   className="btn-sm pull-right"
-        //   color="primary"
-        //   type="button"
-        //   key={"edit" + 1}
-        //   onClick={slipGenerator}
-        // >
-        //   {/* <i className="fas fa-user-edit" /> */}
-        //   Reshare
-        // </Button>
-        <PDFDownloadLink document={<SalarySlip />} fileName="SalarySlip.pdf">
-          {({ blob, url, loading, error }) =>
-            loading ? (
-              "Loading document..."
-            ) : (
-              <Button
-                className="btn-sm pull-right"
-                color="primary"
-                type="button"
-                key={"edit" + 1}
-              >
-                Reshare
-              </Button>
-            )
-          }
-        </PDFDownloadLink>
-      ),
+        <Button
+          className="btn-sm pull-right"
+          color="primary"
+          type="button"
+          key={"edit" + 1}
+        
+        >
+          {/* <i className="fas fa-user-edit" /> */}
+          Reshare
+        </Button>
+        // <PDFDownloadLink document={<SalarySlip />} fileName="SalarySlip.pdf">
+        //   {({ blob, url, loading, error }) =>
+        //     loading ? (
+        //       "Loading document..."
+        //     ) : (
+        //       <Button
+        //         className="btn-sm pull-right"
+        //         color="primary"
+        //         type="button"
+        //         key={"edit" + 1}
+        //       >
+        //         Reshare
+        //       </Button>
+        //     )
+        //   }
+        // </PDFDownloadLink>
+      ), 
     });
     setTableData(data);
   };

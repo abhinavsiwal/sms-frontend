@@ -11,6 +11,7 @@ import {
   Button,
   Modal,
   ModalBody,
+  FormFeedback,
   ModalFooter,
 } from "reactstrap";
 import { useReactToPrint } from "react-to-print";
@@ -63,6 +64,9 @@ const AddSession = () => {
     working_days: "",
     paid_leaves: "",
   });
+  const [disableButton, setDisableButton] = useState(true);
+  const [paidLeavesError, setPaidLeavesError] = useState(false);
+  const [workingDaysError, setWorkingDaysError] = useState(false);
   const { user, token } = isAuthenticated();
   const [file, setFile] = useState();
 
@@ -104,7 +108,7 @@ const AddSession = () => {
       // All Sections
       allSessions(user._id, user.school, token)
         .then((res) => {
-          // console.log(res);
+          console.log(res);
           const data = [];
           for (let i = 0; i < res.length; i++) {
             data.push({
@@ -113,7 +117,7 @@ const AddSession = () => {
               start_date: moment(res[i].start_date).format("DD-MM-YYYY"),
               end_date: moment(res[i].end_date).format("DD-MM-YYYY"),
               working_days: res[i].working_days,
-              working_time: res[i].working_time,
+              working_time: res[i].paid_leaves,
               year: res[i].year,
               fees_method: res[i].fees_method,
               action: (
@@ -184,7 +188,24 @@ const AddSession = () => {
       toast.error(deleteSessionError);
     }
   }
-
+  const paidLeavesBlurHandler = () => {
+    if (sessionData.paid_leaves > sessionData.working_days) {
+      setDisableButton(true);
+      setPaidLeavesError(true);
+    } else {
+      setDisableButton(false);
+      setPaidLeavesError(false);
+    }
+  };
+  const workingDaysBlurHandler = () => {
+    if (sessionData.working_days > 7) {
+      setDisableButton(true);
+      setWorkingDaysError(true);
+    } else {
+      setDisableButton(false);
+      setWorkingDaysError(false);
+    }
+  };
   //Edit Session
   const handleEditSubmit = async (e) => {
     e.preventDefault();
@@ -379,7 +400,7 @@ const AddSession = () => {
       sorter: (a, b) => a.working_days > b.working_days,
     },
     {
-      title: "Working Time",
+      title: "Paid Leaves",
       align: "left",
       dataIndex: "working_time",
       // width: 150,
@@ -480,6 +501,7 @@ const AddSession = () => {
     formData.set("year", year);
     formData.set("working_days", sessionData.working_days);
     formData.set("working_time", startTimeDuration);
+    formData.set("earned_leaves",sessionData.paid_leaves)
     try {
       const resp = await addSession(user._id, token, formData);
       // console.log(resp);
@@ -600,7 +622,13 @@ const AddSession = () => {
                           value={sessionData.working_days}
                           placeholder="Working Days"
                           required
+                          onBlur={workingDaysBlurHandler}
                         />
+                         {workingDaysError && (
+                          <div style={{color:"red",fontSize:"0.7rem"}} >
+                            Value must be smaller or equal to Working Days
+                          </div>
+                        )}
                       </Col>
                     </Row>
                     <Row className="mt-4">
@@ -620,7 +648,13 @@ const AddSession = () => {
                           value={sessionData.paid_leaves}
                           placeholder="Leaves"
                           required
+                          onBlur={paidLeavesBlurHandler}
                         />
+                        {paidLeavesError && (
+                          <div style={{color:"red",fontSize:"0.7rem"}} >
+                            Value must be smaller or equal to 7
+                          </div>
+                        )}
                       </Col>
                       <Col>
                         <label
@@ -643,11 +677,15 @@ const AddSession = () => {
                         </select>
                       </Col>
                     </Row>
-                    <Row className="mt-4 float-right">
+                    <Row className="mt-4">
                       <Col
-                        style={{ display: "flex", justifyContent: "center" }}
+                        style={{ display: "flex", justifyContent: "center",width:"100%" }}
                       >
-                        <Button color="primary" type="submit">
+                        <Button
+                          color="primary"
+                          type="submit"
+                          disabled={disableButton}
+                        >
                           Submit
                         </Button>
                       </Col>
@@ -658,20 +696,21 @@ const AddSession = () => {
             </div>
           </Col>
 
-          {/* <Col>
+          <Col>
             <div className="card-wrapper">
               <Card>
                 <CardBody>
-                  <Button
+                <Button
                     color="primary"
                     className="mb-2"
                     onClick={handlePrint}
+                    style={{ float: "right" }}
                   >
                     Print
                   </Button>
                   <Row className="ml-2">
                     {loading && sessionList ? (
-                      <div ref={componentRef}>
+                      <div ref={componentRef} style={{overflowX:"auto"}} >
                         <AntTable
                           columns={columns}
                           data={sessionList}
@@ -686,8 +725,8 @@ const AddSession = () => {
                 </CardBody>
               </Card>
             </div>
-          </Col> */}
-          <Col>
+          </Col>
+          {/* <Col>
             <div className="card-wrapper">
               <Card>
                 <CardBody>
@@ -700,7 +739,7 @@ const AddSession = () => {
                     Print
                   </Button>
                   {loading && sessionList ? (
-                    permission1 && permission1.includes("edit") ? (
+                    permission1 && !permission1.includes("edit") ? (
                       <div ref={componentRef}>
                         <AntTable
                           columns={columns}
@@ -735,7 +774,7 @@ const AddSession = () => {
                 </CardBody>
               </Card>
             </div>
-          </Col>
+          </Col> */}
         </Row>
         <Modal
           className="modal-dialog-centered"

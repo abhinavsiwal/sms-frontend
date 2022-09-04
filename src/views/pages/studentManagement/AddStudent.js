@@ -48,7 +48,7 @@ import { useDispatch } from "react-redux";
 function AddStudent() {
   const dispatch = useDispatch();
   // Stepper form steps
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(2);
   const { classes } = useSelector((state) => state.classReducer);
   const history = useHistory();
   const [sessions, setSessions] = useState([]);
@@ -78,12 +78,15 @@ function AddStudent() {
     present_address: "",
     permanent_address: "",
     pincode: "",
+    permanent_pincode: "",
     parent_address: "",
     parent_email: "",
     connected: null,
     connectedID: "",
     country: "",
+    permanent_country: "",
     state: "",
+    permanent_city: "",
     city: "",
     nationality: "Indian",
     mother_tongue: "",
@@ -146,12 +149,13 @@ function AddStudent() {
   const [dateOfJoining, setDateOfJoining] = useState();
   const [dateOfBirth, setDateOfBirth] = useState();
   const [guardianDOB, setGuardianDOB] = useState();
-  const [fatherDOB, setFatherDOB] = useState();
+  const [fatherDOB, setFatherDOB] = useState(); 
   const [motherDOB, setMotherDOB] = useState();
   const [pincode, setPincode] = useState("");
+  const [permanent, setpermanent] = useState("")
   const [pincodeError, setPincodeError] = useState(false);
   const { user, token } = isAuthenticated();
-  const [imagesPreview, setImagesPreview] = useState();
+  const [imagesPreview, setImagesPreview] = useState(); 
   const [disableButton, setDisableButton] = useState(true);
   useEffect(() => {
     getAllClasses();
@@ -177,30 +181,24 @@ function AddStudent() {
     let regex = /^[5-9]{1}[0-9]{9}$/;
     if (regex.test(studentData.phone)) {
       setPhoneError(false);
-      
     } else {
       setPhoneError(true);
-    
     }
   };
   const altPhoneBlurHandler = () => {
     let regex = /^[5-9]{1}[0-9]{9}$/;
     if (regex.test(studentData.alternate_phone)) {
       setAltPhoneError(false);
-      
     } else {
       setAltPhoneError(true);
-      
     }
   };
   const emailBlurHandler = () => {
     let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (regex.test(studentData.email)) {
       setEmailError(false);
-      
     } else {
       setEmailError(true);
-     
     }
   };
   const parentEmailBlurHandler = async () => {
@@ -308,10 +306,8 @@ function AddStudent() {
     let regex = /^[0-9]{12}$/;
     if (regex.test(studentData.aadhar_number)) {
       setAadharError(false);
-      
     } else {
       setAadharError(true);
-     
     }
   };
   //Checking Parent or Gaurdian Email is Exist or Not
@@ -651,6 +647,22 @@ function AddStudent() {
       }
     }
   };
+  const permanentPincodeChangeHandler = async (e) => {
+    setPincode(e.target.value);
+    if (e.target.value.length === 6) {
+      try {
+        const { data } = await axios.get(
+          `https://api.postalpincode.in/pincode/${e.target.value}`
+        );
+        console.log(data);
+        setState(data[0].PostOffice[0].State);
+        setCity(data[0].PostOffice[0].District);
+      } catch (err) {
+        console.log(err);
+        toast.error("Failed to fetch pin code.");
+      }
+    }
+  };
 
   const pincodeBlurHandler = () => {
     let regex = /^[1-9][0-9]{5}$/;
@@ -722,7 +734,6 @@ function AddStudent() {
         ) : (
           <Card className="mb-4 bg-transparent">
             <CardHeader className="Step_Header">
-          
               <Row className="d-flex justify-content-center">
                 <Col md="10">
                   <Stepper
@@ -744,409 +755,412 @@ function AddStudent() {
             {step === 0 && (
               <>
                 <Row>
-                <Col className="d-flex justify-content-center mt-2">
-                  <form>
-                    <input
-                      type={"file"}
-                      id={"csvFileInput"}
-                      accept={".csv"}
-                      onChange={handleOnChange}
-                    />
-
-                    <Button
-                      onClick={(e) => {
-                        handleOnSubmit(e);
-                      }}
-                      color="primary"
-                    >
-                      IMPORT CSV
-                    </Button>
-                  </form>
-                </Col>
-              </Row>
-              <Form onSubmit={handleFormChange} className="mb-4">
-                <CardBody>
-                  <Row md="4" className="d-flex justify-content-center mb-4">
-                    <Col>
-                      <img
-                        src={imagesPreview && imagesPreview}
-                        alt="Preview"
-                        className="mt-3 me-2"
-                        width="80"
-                        height="80"
+                  <Col className="d-flex justify-content-center mt-2">
+                    <form>
+                      <input
+                        type={"file"}
+                        id={"csvFileInput"}
+                        accept={".csv"}
+                        onChange={handleOnChange}
                       />
-                    </Col>
-                    <Col md="6" style={{ zIndex: "1" }}>
-                      <label
-                        className="form-control-label"
-                        htmlFor="example3cols2Input"
+
+                      <Button
+                        onClick={(e) => {
+                          handleOnSubmit(e);
+                        }}
+                        color="primary"
                       >
-                        Upload Image
-                      </label>
-                      <div className="custom-file">
-                        <input
-                          className="custom-file-input"
-                          id="customFileLang"
-                          lang="en"
-                          type="file"
-                          accept="image/*"
-                          onChange={handleFileChange("photo")}
+                        IMPORT CSV
+                      </Button>
+                    </form>
+                  </Col>
+                </Row>
+                <Form onSubmit={handleFormChange} className="mb-4">
+                  <CardBody>
+                    <Row md="4" className="d-flex justify-content-center mb-4">
+                      <Col>
+                        <img
+                          src={imagesPreview && imagesPreview}
+                          alt="Preview"
+                          className="mt-3 me-2"
+                          width="80"
+                          height="80"
                         />
+                      </Col>
+                      <Col md="6" style={{ zIndex: "1" }}>
                         <label
-                          className="custom-file-label"
-                          htmlFor="customFileLang"
+                          className="form-control-label"
+                          htmlFor="example3cols2Input"
                         >
-                          Select file
+                          Upload Image
                         </label>
-                      </div>
-                    </Col>
-                    <Col>
-                      <label
-                        className="form-control-label"
-                        htmlFor="example3cols2Input"
-                      >
-                        Capture Now
-                      </label>
-                      <div className="custom-file">
-                        <Button
-                          color="primary"
-                          className="custom-file-input"
-                          type="button"
-                          key={"edit" + 1}
-                          id="capture_div"
-                          onClick={() => setCamera(true)}
+                        <div className="custom-file">
+                          <input
+                            className="custom-file-input"
+                            id="customFileLang"
+                            lang="en"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange("photo")}
+                          />
+                          <label
+                            className="custom-file-label"
+                            htmlFor="customFileLang"
+                          >
+                            Select file
+                          </label>
+                        </div>
+                      </Col>
+                      <Col>
+                        <label
+                          className="form-control-label"
+                          htmlFor="example3cols2Input"
                         >
-                          <i className="fas fa-camera" />
-                        </Button>
-                      </div>
-                    </Col>
-                  </Row>
-                  {camera && (
-                    <Camera
-                      className="camera_div"
-                      onTakePhoto={(dataUri) => {
-                        handlecamera(dataUri);
-                      }}
-                    />
-                  )}
-                  <Row>
-                    <Col>
-                      <label
-                        className="form-control-label"
-                        htmlFor="example4cols2Input"
-                      >
-                        Session
-                      </label>
+                          Capture Now
+                        </label>
+                        <div className="custom-file">
+                          <Button
+                            color="primary"
+                            className="custom-file-input"
+                            type="button"
+                            key={"edit" + 1}
+                            id="capture_div"
+                            onClick={() => setCamera(true)}
+                          >
+                            <i className="fas fa-camera" />
+                          </Button>
+                        </div>
+                      </Col>
+                    </Row>
+                    {camera && (
+                      <Camera
+                        className="camera_div"
+                        onTakePhoto={(dataUri) => {
+                          handlecamera(dataUri);
+                        }}
+                      />
+                    )}
+                    <Row>
+                      <Col>
+                        <label
+                          className="form-control-label"
+                          htmlFor="example4cols2Input"
+                        >
+                          Session
+                        </label>
 
-                      <select
-                        className="form-control"
-                        required
-                        onChange={handleChange("session")}
-                        value={studentData.session}
-                      >
-                        <option value="">Select Session</option>
-                        {sessions &&
-                          sessions.map((data) => {
-                            return (
-                              <option key={data._id} value={data._id}>
-                                {data.name}
-                              </option>
-                            );
-                          })}
-                      </select>
-                    </Col>
-                  </Row>
-                  <br />
-                  <Row>
-                    <Col md="4">
-                      <Label
-                        className="form-control-label"
-                        htmlFor="example-date-input"
-                      >
-                        Enrollment Date
-                      </Label>
-                      <DatePicker
-                        dateFormat="dd/MM/yyyy"
-                        placeholderText="dd/mm/yyyy"
-                        onChange={(date) => setDateOfJoining(date)}
-                        //  value={dateOfBirth}
-                        selected={dateOfJoining}
-                        required
-                        showMonthDropdown
-                        showYearDropdown
-                        dropdownMode="select"
-                        className="datePicker"
-                      />
-                    </Col>
-                    <Col md="4">
-                      <label
-                        className="form-control-label"
-                        htmlFor="example4cols2Input"
-                      >
-                        First Name
-                      </label>
-                      <Input
-                        id="example4cols2Input"
-                        placeholder="First Name"
-                        type="text"
-                        onChange={handleChange("firstname")}
-                        value={studentData.firstname}
-                        required
-                      />
-                    </Col>
-                    <Col md="4">
-                      <label
-                        className="form-control-label"
-                        htmlFor="example4cols3Input"
-                      >
-                        Last Name
-                      </label>
-                      <Input
-                        id="example4cols3Input"
-                        placeholder="Last Name"
-                        type="text"
-                        onChange={handleChange("lastname")}
-                        value={studentData.lastname}
-                        required
-                      />
-                    </Col>
-                  </Row>
-                  <br />
-                  <Row>
-                    <Col md="4">
-                      <Label
-                        className="form-control-label"
-                        htmlFor="example-date-input"
-                      >
-                        Date of Birth
-                      </Label>
-                      <DatePicker
-                        dateFormat="dd/MM/yyyy"
-                        placeholderText="dd/mm/yyyy"
-                        onChange={(date) => setDateOfBirth(date)}
-                        //  value={dateOfBirth}
-                        selected={dateOfBirth}
-                        required
-                        className="datePicker"
-                        showMonthDropdown
-                        showYearDropdown
-                        dropdownMode="select"
-                        // style={{width: "100%"}}
-                      />
-                    </Col>
-                    <Col md="4">
-                      <label
-                        className="form-control-label"
-                        htmlFor="exampleFormControlSelect3"
-                      >
-                        Gender
-                      </label>
-                      <Input
-                        id="exampleFormControlSelect3"
-                        type="select"
-                        onChange={handleChange("gender")}
-                        required
-                        value={studentData.gender}
-                      >
-                        <option value="" disabled>
-                          Select Gender
-                        </option>
-                        <option>Male</option>
-                        <option>Female</option>
-                      </Input>
-                    </Col>
-                    <Col md="4">
-                      <label
-                        className="form-control-label"
-                        htmlFor="example4cols2Input"
-                      >
-                        Aadhar Card Number (Optional)
-                      </label>
-                      <Input
-                        id="example4cols2Input"
-                        placeholder="Aadhar Card Number"
-                        type="number"
-                        onChange={handleChange("aadhar_number")}
-                        pattern="[0-9]{1,12}"
-                        value={studentData.aadhar_number}
-                        onBlur={aadharBlurHandler}
-                        invalid={aadharError}
-                      />
-                      {aadharError && (
-                        <FormFeedback>
-                          Please Enter a valid Aadhar Card no
-                        </FormFeedback>
-                      )}
-                    </Col>
-                  </Row>
-                  <Row className="mt-4">
-                    <Col>
-                      <label
-                        className="form-control-label"
-                        htmlFor="example4cols2Input"
-                      >
-                        Email
-                      </label>
-                      <Input
-                        id="example4cols2Input"
-                        placeholder="Email"
-                        type="text"
-                        onChange={handleChange("email")}
-                        value={studentData.email}
-                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-                        onBlur={emailBlurHandler}
-                        invalid={emailError}
-                      />
-                      {emailError && (
-                        <FormFeedback>Please Enter a valid Email</FormFeedback>
-                      )}
-                    </Col>
-                    <Col>
-                      <label
-                        className="form-control-label"
-                        htmlFor="example4cols2Input"
-                      >
-                        Phone Number
-                      </label>
-                      <Input
-                        id="example4cols2Input"
-                        placeholder="Phone Number"
-                        type="number"
-                        pattern="[1-9]{1}[0-9]{9}"
-                        onChange={handleChange("phone")}
-                        value={studentData.phone}
-                        onBlur={phoneBlurHandler}
-                        invalid={phoneError}
-                      />
-                      {phoneError && (
-                        <FormFeedback>
-                          Please Enter a valid Phone no
-                        </FormFeedback>
-                      )}
-                    </Col>
-                    <Col>
-                      <label
-                        className="form-control-label"
-                        htmlFor="example4cols2Input"
-                      >
-                        Alternate Phone Number
-                      </label>
-                      <Input
-                        id="example4cols2Input"
-                        placeholder="Alternate Phone Number"
-                        type="number"
-                        pattern="[1-9]{1}[0-9]{9}"
-                        onChange={handleChange("alternate_phone")}
-                        value={studentData.alternate_phone}
-                        onBlur={altPhoneBlurHandler}
-                        invalid={altPhoneError}
-                      />
-                      {altPhoneError && (
-                        <FormFeedback>Please Enter a valid Phone</FormFeedback>
-                      )}
-                    </Col>
-                  </Row>
-                  <Row className="mt-4">
-                    <Col>
-                      <label
-                        className="form-control-label"
-                        htmlFor="example4cols2Input"
-                      >
-                        Birth Place
-                      </label>
-                      <Input
-                        id="example4cols2Input"
-                        placeholder="Birth Place"
-                        type="text"
-                        onChange={handleChange("birth_place")}
-                        required
-                        value={studentData.birth_place}
-                      />
-                    </Col>
-                    <Col>
-                      <label
-                        className="form-control-label"
-                        htmlFor="example4cols2Input"
-                      >
-                        Caste
-                      </label>
-                      <Input
-                        id="example4cols2Input"
-                        placeholder="Caste"
-                        type="select"
-                        onChange={handleChange("caste")}
-                        required
-                        value={studentData.caste}
-                      >
-                        <option value="" disabled>
-                          Select Caste
-                        </option>
-                        <option value="General">General</option>
-                        <option value="SC">SC</option>
-                        <option value="ST">ST</option>
-                        <option value="OBC">OBC</option>
-                      </Input>
-                    </Col>
-                    <Col>
-                      <label
-                        className="form-control-label"
-                        htmlFor="exampleFormControlSelect3"
-                      >
-                        Religion
-                      </label>
-                      <Input
-                        id="exampleFormControlSelect3"
-                        type="text"
-                        onChange={handleChange("religion")}
-                        required
-                        value={studentData.religion}
-                        placeholder="Religion"
-                      />
-                    </Col>
-                    <Col>
-                      <label
-                        className="form-control-label"
-                        htmlFor="exampleFormControlSelect3"
-                      >
-                        Blood Group
-                      </label>
-                      <Input
-                        id="exampleFormControlSelect3"
-                        type="select"
-                        onChange={handleChange("bloodgroup")}
-                        required
-                        value={studentData.bloodgroup}
-                      >
-                        <option value="" disabled>
+                        <select
+                          className="form-control"
+                          required
+                          onChange={handleChange("session")}
+                          value={studentData.session}
+                        >
+                          <option value="">Select Session</option>
+                          {sessions &&
+                            sessions.map((data) => {
+                              return (
+                                <option key={data._id} value={data._id}>
+                                  {data.name}
+                                </option>
+                              );
+                            })}
+                        </select>
+                      </Col>
+                    </Row>
+                    <br />
+                    <Row>
+                      <Col md="4">
+                        <Label
+                          className="form-control-label"
+                          htmlFor="example-date-input"
+                        >
+                          Enrollment Date
+                        </Label>
+                        <DatePicker
+                          dateFormat="dd/MM/yyyy"
+                          placeholderText="dd/mm/yyyy"
+                          onChange={(date) => setDateOfJoining(date)}
+                          //  value={dateOfBirth}
+                          selected={dateOfJoining}
+                          required
+                          showMonthDropdown
+                          showYearDropdown
+                          dropdownMode="select"
+                          className="datePicker"
+                        />
+                      </Col>
+                      <Col md="4">
+                        <label
+                          className="form-control-label"
+                          htmlFor="example4cols2Input"
+                        >
+                          First Name
+                        </label>
+                        <Input
+                          id="example4cols2Input"
+                          placeholder="First Name"
+                          type="text"
+                          onChange={handleChange("firstname")}
+                          value={studentData.firstname}
+                          required
+                        />
+                      </Col>
+                      <Col md="4">
+                        <label
+                          className="form-control-label"
+                          htmlFor="example4cols3Input"
+                        >
+                          Last Name
+                        </label>
+                        <Input
+                          id="example4cols3Input"
+                          placeholder="Last Name"
+                          type="text"
+                          onChange={handleChange("lastname")}
+                          value={studentData.lastname}
+                          required
+                        />
+                      </Col>
+                    </Row>
+                    <br />
+                    <Row>
+                      <Col md="4">
+                        <Label
+                          className="form-control-label"
+                          htmlFor="example-date-input"
+                        >
+                          Date of Birth
+                        </Label>
+                        <DatePicker
+                          dateFormat="dd/MM/yyyy"
+                          placeholderText="dd/mm/yyyy"
+                          onChange={(date) => setDateOfBirth(date)}
+                          //  value={dateOfBirth}
+                          selected={dateOfBirth}
+                          required
+                          className="datePicker"
+                          showMonthDropdown
+                          showYearDropdown
+                          dropdownMode="select"
+                          // style={{width: "100%"}}
+                        />
+                      </Col>
+                      <Col md="4">
+                        <label
+                          className="form-control-label"
+                          htmlFor="exampleFormControlSelect3"
+                        >
+                          Gender
+                        </label>
+                        <Input
+                          id="exampleFormControlSelect3"
+                          type="select"
+                          onChange={handleChange("gender")}
+                          required
+                          value={studentData.gender}
+                        >
+                          <option value="" disabled>
+                            Select Gender
+                          </option>
+                          <option>Male</option>
+                          <option>Female</option>
+                        </Input>
+                      </Col>
+                      <Col md="4">
+                        <label
+                          className="form-control-label"
+                          htmlFor="example4cols2Input"
+                        >
+                          Aadhar Card Number (Optional)
+                        </label>
+                        <Input
+                          id="example4cols2Input"
+                          placeholder="Aadhar Card Number"
+                          type="number"
+                          onChange={handleChange("aadhar_number")}
+                          pattern="[0-9]{1,12}"
+                          value={studentData.aadhar_number}
+                          onBlur={aadharBlurHandler}
+                          invalid={aadharError}
+                        />
+                        {aadharError && (
+                          <FormFeedback>
+                            Please Enter a valid Aadhar Card no
+                          </FormFeedback>
+                        )}
+                      </Col>
+                    </Row>
+                    <Row className="mt-4">
+                      <Col>
+                        <label
+                          className="form-control-label"
+                          htmlFor="example4cols2Input"
+                        >
+                          Email
+                        </label>
+                        <Input
+                          id="example4cols2Input"
+                          placeholder="Email"
+                          type="text"
+                          onChange={handleChange("email")}
+                          value={studentData.email}
+                          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                          onBlur={emailBlurHandler}
+                          invalid={emailError}
+                        />
+                        {emailError && (
+                          <FormFeedback>
+                            Please Enter a valid Email
+                          </FormFeedback>
+                        )}
+                      </Col>
+                      <Col>
+                        <label
+                          className="form-control-label"
+                          htmlFor="example4cols2Input"
+                        >
+                          Phone Number
+                        </label>
+                        <Input
+                          id="example4cols2Input"
+                          placeholder="Phone Number"
+                          type="number"
+                          pattern="[1-9]{1}[0-9]{9}"
+                          onChange={handleChange("phone")}
+                          value={studentData.phone}
+                          onBlur={phoneBlurHandler}
+                          invalid={phoneError}
+                        />
+                        {phoneError && (
+                          <FormFeedback>
+                            Please Enter a valid Phone no
+                          </FormFeedback>
+                        )}
+                      </Col>
+                      <Col>
+                        <label
+                          className="form-control-label"
+                          htmlFor="example4cols2Input"
+                        >
+                          Alternate Phone Number
+                        </label>
+                        <Input
+                          id="example4cols2Input"
+                          placeholder="Alternate Phone Number"
+                          type="number"
+                          pattern="[1-9]{1}[0-9]{9}"
+                          onChange={handleChange("alternate_phone")}
+                          value={studentData.alternate_phone}
+                          onBlur={altPhoneBlurHandler}
+                          invalid={altPhoneError}
+                        />
+                        {altPhoneError && (
+                          <FormFeedback>
+                            Please Enter a valid Phone
+                          </FormFeedback>
+                        )}
+                      </Col>
+                    </Row>
+                    <Row className="mt-4">
+                      <Col>
+                        <label
+                          className="form-control-label"
+                          htmlFor="example4cols2Input"
+                        >
+                          Birth Place
+                        </label>
+                        <Input
+                          id="example4cols2Input"
+                          placeholder="Birth Place"
+                          type="text"
+                          onChange={handleChange("birth_place")}
+                          required
+                          value={studentData.birth_place}
+                        />
+                      </Col>
+                      <Col>
+                        <label
+                          className="form-control-label"
+                          htmlFor="example4cols2Input"
+                        >
+                          Caste
+                        </label>
+                        <Input
+                          id="example4cols2Input"
+                          placeholder="Caste"
+                          type="select"
+                          onChange={handleChange("caste")}
+                          required
+                          value={studentData.caste}
+                        >
+                          <option value="" disabled>
+                            Select Caste
+                          </option>
+                          <option value="General">General</option>
+                          <option value="SC">SC</option>
+                          <option value="ST">ST</option>
+                          <option value="OBC">OBC</option>
+                        </Input>
+                      </Col>
+                      <Col>
+                        <label
+                          className="form-control-label"
+                          htmlFor="exampleFormControlSelect3"
+                        >
+                          Religion
+                        </label>
+                        <Input
+                          id="exampleFormControlSelect3"
+                          type="text"
+                          onChange={handleChange("religion")}
+                          required
+                          value={studentData.religion}
+                          placeholder="Religion"
+                        />
+                      </Col>
+                      <Col>
+                        <label
+                          className="form-control-label"
+                          htmlFor="exampleFormControlSelect3"
+                        >
                           Blood Group
-                        </option>
-                        <option>A+</option>
-                        <option>A-</option>
-                        <option>B+</option>
-                        <option>B-</option>
-                        <option>O+</option>
-                        <option>O-</option>
-                        <option>AB+</option>
-                        <option>AB-</option>
-                      </Input>
-                    </Col>
-                  </Row>
-                  <Row className="mt-4 float-right mr-4">
-                    <Button onClick={cancelHandler} color="danger">
-                      Cancel
-                    </Button>
-                    <Button
-                      color="primary"
-                      type="submit"
-                      disabled={disableButton}
-                    >
-                      Next
-                    </Button>
-                  </Row>
-                </CardBody>
-              </Form>
+                        </label>
+                        <Input
+                          id="exampleFormControlSelect3"
+                          type="select"
+                          onChange={handleChange("bloodgroup")}
+                          required
+                          value={studentData.bloodgroup}
+                        >
+                          <option value="" disabled>
+                            Blood Group
+                          </option>
+                          <option>A+</option>
+                          <option>A-</option>
+                          <option>B+</option>
+                          <option>B-</option>
+                          <option>O+</option>
+                          <option>O-</option>
+                          <option>AB+</option>
+                          <option>AB-</option>
+                        </Input>
+                      </Col>
+                    </Row>
+                    <Row className="mt-4 float-right mr-4">
+                      <Button onClick={cancelHandler} color="danger">
+                        Cancel
+                      </Button>
+                      <Button
+                        color="primary"
+                        type="submit"
+                        disabled={disableButton}
+                      >
+                        Next
+                      </Button>
+                    </Row>
+                  </CardBody>
+                </Form>
               </>
-
             )}
             {step === 1 && (
               <Form onSubmit={handleFormChange} className="mb-4">
@@ -1241,7 +1255,6 @@ function AddStudent() {
                         placeholder="Previous School"
                         type="text"
                         onChange={handleChange("previous_school")}
-                        
                         value={studentData.previous_school}
                       />
                     </Col>
@@ -1298,24 +1311,7 @@ function AddStudent() {
                       />
                     </Col>
                   </Row>
-                  <Row>
-                    <Col>
-                      <label
-                        className="form-control-label"
-                        htmlFor="example4cols3Input"
-                      >
-                        Permanent Address
-                      </label>
-                      <Input
-                        id="example4cols3Input"
-                        placeholder="Permanent Address"
-                        type="text"
-                        onChange={handleChange("permanent_address")}
-                        required
-                        value={studentData.permanent_address}
-                      />
-                    </Col>
-                  </Row>
+
                   <Row className="mb-4">
                     <Col md="3">
                       <label
@@ -1392,6 +1388,25 @@ function AddStudent() {
                       />
                     </Col>
                   </Row>
+
+                  <Row>
+                    <Col>
+                      <label
+                        className="form-control-label"
+                        htmlFor="example4cols3Input"
+                      >
+                        Permanent Address
+                      </label>
+                      <Input
+                        id="example4cols3Input"
+                        placeholder="Permanent Address"
+                        type="text"
+                        onChange={handleChange("permanent_address")}
+                        required
+                        value={studentData.permanent_address}
+                      />
+                    </Col>
+                  </Row>
                   <Row>
                     <Col>
                       <label
@@ -1408,9 +1423,13 @@ function AddStudent() {
                         required
                         value={studentData.nationality}
                       >
-                          <option value="" disabled >Select Nationality</option>
-                              <option value="Indian" selected >Indian</option>
-                              <option value="Others" >Others</option>
+                        <option value="" disabled>
+                          Select Nationality
+                        </option>
+                        <option value="Indian" selected>
+                          Indian
+                        </option>
+                        <option value="Others">Others</option>
                       </Input>
                     </Col>
                     <Col>
@@ -1632,14 +1651,13 @@ function AddStudent() {
                               onChange={(date) => setFatherDOB(date)}
                               //  value={dateOfBirth}
                               selected={fatherDOB}
-                            
                               showMonthDropdown
                               showYearDropdown
                               dropdownMode="select"
                               className="datePicker"
                             />
                           </Col>
-                        
+
                           <Col>
                             <label
                               className="form-control-label"
@@ -1665,7 +1683,6 @@ function AddStudent() {
                             )}
                           </Col>
                         </Row>
-                      
                       </CardBody>
                       <CardBody>
                         <Row className="mb-4">
@@ -1721,14 +1738,13 @@ function AddStudent() {
                               onChange={(date) => setMotherDOB(date)}
                               //  value={dateOfBirth}
                               selected={motherDOB}
-                           
                               className="datePicker"
                               showMonthDropdown
                               showYearDropdown
                               dropdownMode="select"
                             />
                           </Col>
-                      
+
                           <Col>
                             <label
                               className="form-control-label"
@@ -1753,7 +1769,7 @@ function AddStudent() {
                             )}
                           </Col>
                         </Row>
-                       
+
                         <Row className="mt-4 d-flex justify-content-between">
                           <Button
                             className="ml-4"
@@ -1931,14 +1947,13 @@ function AddStudent() {
                               onChange={(date) => setGuardianDOB(date)}
                               //  value={dateOfBirth}
                               selected={guardianDOB}
-                          
                               className="datePicker"
                               showMonthDropdown
                               showYearDropdown
                               dropdownMode="select"
                             />
                           </Col>
-                       
+
                           <Col>
                             <label
                               className="form-control-label"
@@ -1964,7 +1979,7 @@ function AddStudent() {
                             )}
                           </Col>
                         </Row>
-                     
+
                         <Row className="mt-4 d-flex justify-content-between">
                           <Button
                             className="ml-4"
