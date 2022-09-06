@@ -239,7 +239,22 @@ const BudgetUsesDetails = () => {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    if(sessions.length!==0){
+      defaultSession1();
+    }
+  }, [sessions]);
 
+  const defaultSession1 = async () => {
+    const defaultSession = await sessions.find(
+      (session) => session.status === "current"
+    );
+    setBudgetData({
+      ...budgetData,
+      session: defaultSession._id,
+    });
+   
+  };
   return (
     <>
       <SimpleHeader

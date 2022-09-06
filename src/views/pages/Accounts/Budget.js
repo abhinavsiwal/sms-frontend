@@ -56,6 +56,24 @@ const BudgetMaster = () => {
   const [checked, setChecked] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [editing, setEditing] = useState(false);
+  
+  useEffect(() => {
+    if(sessions.length!==0){
+      defaultSession1();
+    }
+  }, [sessions]);
+
+  const defaultSession1 = async () => {
+    const defaultSession = await sessions.find(
+      (session) => session.status === "current"
+    );
+    setAllocationData({
+      ...allocationData,
+      session: defaultSession._id,
+    });
+   
+  };
+
   const getAllDepartment = async () => {
     try {
       setLoading(true);

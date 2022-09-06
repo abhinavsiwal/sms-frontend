@@ -306,14 +306,16 @@ const StudentCredentials = () => {
               >
                 <i className="fas fa-user-edit" />
               </Button>
-              <Button
-                className="btn-sm pull-right"
-                color="success"
-                type="button"
-                key={"email" + i + 1}
-              >
-                Send Email
-              </Button>
+              <a href={`mailto:${data[i].email}`} target="_blank" >
+                <Button
+                  className="btn-sm pull-right"
+                  color="success"
+                  type="button"
+                  key={"email" + i + 1}
+                >
+                  Send Email
+                </Button>
+              </a>
             </h5>
           ),
         });
@@ -567,7 +569,13 @@ const StudentCredentials = () => {
                 </Row>
               )}
             </ModalBody>
-            <ModalFooter style={{display:"flex",justifyContent:"center",width:"100%"}} >
+            <ModalFooter
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
+              }}
+            >
               {view !== 0 && (
                 <Button color="success" type="button" onClick={handleEdit}>
                   Save Password

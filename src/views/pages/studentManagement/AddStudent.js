@@ -747,7 +747,7 @@ function AddStudent() {
   useEffect(() => {
     console.log(checked);
 
-    if (checked) {
+    if (!checked) {
       setPermanentPincode(pincode);
       setPermanentCity(city);
       setPermanentCountry(country);

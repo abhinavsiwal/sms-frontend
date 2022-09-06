@@ -147,7 +147,7 @@ function AddRoute() {
     arr.push(obj);
     setAddStops(arr);
     setCheck(!check);
-    setPlaceName("")
+    setPlaceName("");
     setDisableButton(true);
   };
 
@@ -222,6 +222,19 @@ function AddRoute() {
     return currentDate.getTime() < selectedDate.getTime();
   };
 
+  useEffect(() => {
+    if (sessions.length !== 0) {
+      defaultSession1();
+    }
+  }, [sessions]);
+
+  const defaultSession1 = async () => {
+    const defaultSession = await sessions.find(
+      (session) => session.status === "current"
+    );
+    setSessionID(defaultSession._id);
+  };
+
   return (
     <>
       <ToastContainer
@@ -248,7 +261,7 @@ function AddRoute() {
                   <CardHeader>
                     <h3>Add Route</h3>
                   </CardHeader>
-                
+
                   <Form className="mb-4" onSubmit={handleSubmit}>
                     <CardBody>
                       <Row>
@@ -264,6 +277,7 @@ function AddRoute() {
                             className="form-control"
                             required
                             onChange={(e) => setSessionID(e.target.value)}
+                            value={sessionID}
                           >
                             <option value="">Select Session</option>
                             {sessions &&
@@ -391,7 +405,6 @@ function AddRoute() {
                             placeholder="Place Name"
                             type="text"
                             onChange={(e) => setPlaceName(e.target.value)}
-                          
                             value={placeName}
                             onBlur={placeBlurHandler}
                           />

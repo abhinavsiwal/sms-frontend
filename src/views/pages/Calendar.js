@@ -178,7 +178,7 @@ function CalendarView() {
         if (info.start < new Date()) {
           console.log("here");
           return;
-        }
+        } 
         setModalAdd(true);
         setStartDate(info.start);
         setEndDate(endDate);

@@ -388,6 +388,23 @@ const AddSubject = () => {
     },
   ];
 
+  useEffect(() => {
+    if(sessions.length!==0){
+      defaultSession1();
+    }
+  }, [sessions]);
+
+  const defaultSession1 = async () => {
+    const defaultSession = await sessions.find(
+      (session) => session.status === "current"
+    );
+    setSubjectData({
+      ...subjectData,
+      session: defaultSession._id,
+    });
+ 
+  };
+
   const getAllClasses = () => {
     setLoading(true);
     allSubjects(user._id, user.school, token)
@@ -555,6 +572,7 @@ const AddSubject = () => {
                             <select
                               className="form-control"
                               onChange={handleChange("session")}
+                              value={subjectData.session}
                             >
                               <option>Select Session</option>
                               {sessions &&

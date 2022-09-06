@@ -165,6 +165,21 @@ const DeptBudgetMaster = () => {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    if (sessions.length !== 0) {
+      defaultSession1();
+    }
+  }, [sessions]);
+
+  const defaultSession1 = async () => {
+    const defaultSession = await sessions.find(
+      (session) => session.status === "current"
+    );
+    setAllocationData({
+      ...allocationData,
+      session: defaultSession._id,
+    });
+  };
   const columns = [
     {
       title: "Department",
@@ -338,7 +353,7 @@ const DeptBudgetMaster = () => {
         data1.push({
           key: i,
           dept: data[i].department.name,
-          session: data[i].session&&data[i].session.name,
+          session: data[i].session && data[i].session.name,
           allocated: data[i].allocated,
           used: data[i].used,
           status: "Under Budget",
@@ -401,13 +416,12 @@ const DeptBudgetMaster = () => {
       setLoading(false);
       setChecked(!checked);
       toast.success("Budget Deleted Successfully");
-
     } catch (err) {
       console.log(err);
       toast.error("Error in Deleting Budget");
       setLoading(false);
     }
-  }
+  };
 
   return (
     <>
