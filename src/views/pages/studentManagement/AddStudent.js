@@ -91,8 +91,8 @@ function AddStudent() {
     nationality: "Indian",
     mother_tongue: "",
     contact_person_select: {
-      label:"Parent",
-      value:"parent"
+      label: "Parent",
+      value: "parent",
     },
     guardian_name: "",
     guardian_last_name: "",
@@ -128,7 +128,7 @@ function AddStudent() {
     mother_mother_tongue: "",
   });
   const [loading, setLoading] = useState(false);
-const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(false);
   const [country, setCountry] = useState("India");
   const [permanentCountry, setPermanentCountry] = useState("India");
   const [state, setState] = useState("");
@@ -163,7 +163,7 @@ const [checked, setChecked] = useState(false);
   const [permanentPincodeError, setPermanentPincodeError] = useState(false);
   const { user, token } = isAuthenticated();
   const [imagesPreview, setImagesPreview] = useState();
-  const [disableButton, setDisableButton] = useState(true);
+  const [disableButton, setDisableButton] = useState(false);
   useEffect(() => {
     getAllClasses();
   }, []);
@@ -503,7 +503,12 @@ const [checked, setChecked] = useState(false);
       formData.set("father_dob", fatherDOB);
       formData.set("mother_dob", motherDOB);
     }
-
+    if (!checked) {
+      formData.set("permananent_city", permanentCity);
+      formData.set("permananent_country", permanentCountry);
+      formData.set("permanent_state", permanentState);
+      formData.set("permanent_pincode", permanentPincode);
+    }
     try {
       setLoading(true);
 
@@ -735,25 +740,37 @@ const [checked, setChecked] = useState(false);
     }
   };
 
-  const checkboxChangeHandler = ()=>{
-    setChecked(!checked)
-  }
+  const checkboxChangeHandler = () => {
+    setChecked(!checked);
+  };
 
   useEffect(() => {
-    
-  console.log(checked);
+    console.log(checked);
 
-  if(checked){
-    setPermanentPincode(pincode);
-    setPermanentCity(city);
-    setPermanentCountry(country);
-    setPermanentState(state);
-  }
-    
-  }, [checked])
-  
+    if (checked) {
+      setPermanentPincode(pincode);
+      setPermanentCity(city);
+      setPermanentCountry(country);
+      setPermanentState(state);
+    }
+  }, [checked]);
 
-  useEffect(() => {}, [cscd]);
+  useEffect(() => {
+    if(sessions.length!==0){
+      defaultSession1();
+    }
+  }, [sessions]);
+
+  const defaultSession1 = async () => {
+    const defaultSession = await sessions.find(
+      (session) => session.status === "current"
+    );
+    setStudentData({
+      ...studentData,
+      session: defaultSession._id,
+    });
+  };
+
   return (
     <>
       <SimpleHeader name="Add Student" parentName="Student Management" />
@@ -898,9 +915,12 @@ const [checked, setChecked] = useState(false);
                           onChange={handleChange("session")}
                           value={studentData.session}
                         >
-                          <option value="">Select Session</option>
+                          <option value="" disabled>
+                            Select Session
+                          </option>
                           {sessions &&
                             sessions.map((data) => {
+                              console.log(data);
                               return (
                                 <option key={data._id} value={data._id}>
                                   {data.name}
@@ -1433,13 +1453,12 @@ const [checked, setChecked] = useState(false);
                   </Row>
 
                   <Row>
-                    <Col style={{marginLeft:"1.2rem"}} >
+                    <Col style={{ marginLeft: "1.2rem" }}>
                       <Input
                         id="example4cols3Input"
                         placeholder="Permanent Address"
                         type="checkbox"
                         onChange={checkboxChangeHandler}
-                        required
                         checked={checked}
                         // value={studentData.permanent_address}
                       />{" "}
@@ -1453,103 +1472,105 @@ const [checked, setChecked] = useState(false);
                   </Row>
                   {!checked && (
                     <>
- <Row>
-                    <Col>
-                      <label
-                        className="form-control-label"
-                        htmlFor="example4cols3Input"
-                      >
-                        Permanent Address
-                      </label>
-                      <Input
-                        id="example4cols3Input"
-                        placeholder="Permanent Address"
-                        type="text"
-                        onChange={handleChange("permanent_address")}
-                        required
-                        value={studentData.permanent_address}
-                      />
-                    </Col>
-                  </Row>
-                  <Row className="mb-4">
-                    <Col md="3">
-                      <label
-                        className="form-control-label"
-                        htmlFor="example4cols2Input"
-                      >
-                        Pin Code
-                      </label>
-                      <Input
-                        id="example4cols2Input"
-                        placeholder="Pin Code"
-                        onChange={(e) => permanentPincodeChangeHandler(e)}
-                        value={permanentPincode}
-                        type="number"
-                        required
-                        onBlur={permanentPincodeBlurHandler}
-                        invalid={permanentPincodeError}
-                      />
-                      {permanentPincodeError && (
-                        <FormFeedback>
-                          Please Enter a valid Pincode
-                        </FormFeedback>
-                      )}
-                    </Col>
-                    <Col md="3">
-                      <label
-                        className="form-control-label"
-                        htmlFor="exampleFormControlSelect3"
-                      >
-                        Country
-                      </label>
-                      <Input
-                        id="example4cols1Input"
-                        placeholder="Country"
-                        type="text"
-                        onChange={(e) => setPermanentCountry(e.target.value)}
-                        value={permanentCountry}
-                        required
-                        disabled
-                      />
-                    </Col>
-                    <Col md="3">
-                      <label
-                        className="form-control-label"
-                        htmlFor="exampleFormControlSelect3"
-                      >
-                        State
-                      </label>
-                      <Input
-                        id="example4cols1Input"
-                        placeholder="State"
-                        type="text"
-                        onChange={(e) => setPermanentState(e.target.value)}
-                        value={permanentState}
-                        required
-                        disabled
-                      />
-                    </Col>
-                    <Col md="3">
-                      <label
-                        className="form-control-label"
-                        htmlFor="exampleFormControlSelect3"
-                      >
-                        City
-                      </label>
-                      <Input
-                        id="example4cols2Input"
-                        placeholder="City"
-                        type="text"
-                        onChange={(e) => setPermanentCity(e.target.value)}
-                        value={permanentCity}
-                        required
-                        disabled
-                      />
-                    </Col>
-                  </Row>
+                      <Row>
+                        <Col>
+                          <label
+                            className="form-control-label"
+                            htmlFor="example4cols3Input"
+                          >
+                            Permanent Address
+                          </label>
+                          <Input
+                            id="example4cols3Input"
+                            placeholder="Permanent Address"
+                            type="text"
+                            onChange={handleChange("permanent_address")}
+                            required
+                            value={studentData.permanent_address}
+                          />
+                        </Col>
+                      </Row>
+                      <Row className="mb-4">
+                        <Col md="3">
+                          <label
+                            className="form-control-label"
+                            htmlFor="example4cols2Input"
+                          >
+                            Pin Code
+                          </label>
+                          <Input
+                            id="example4cols2Input"
+                            placeholder="Pin Code"
+                            onChange={(e) => permanentPincodeChangeHandler(e)}
+                            value={permanentPincode}
+                            type="number"
+                            required
+                            onBlur={permanentPincodeBlurHandler}
+                            invalid={permanentPincodeError}
+                          />
+                          {permanentPincodeError && (
+                            <FormFeedback>
+                              Please Enter a valid Pincode
+                            </FormFeedback>
+                          )}
+                        </Col>
+                        <Col md="3">
+                          <label
+                            className="form-control-label"
+                            htmlFor="exampleFormControlSelect3"
+                          >
+                            Country
+                          </label>
+                          <Input
+                            id="example4cols1Input"
+                            placeholder="Country"
+                            type="text"
+                            onChange={(e) =>
+                              setPermanentCountry(e.target.value)
+                            }
+                            value={permanentCountry}
+                            required
+                            disabled
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label
+                            className="form-control-label"
+                            htmlFor="exampleFormControlSelect3"
+                          >
+                            State
+                          </label>
+                          <Input
+                            id="example4cols1Input"
+                            placeholder="State"
+                            type="text"
+                            onChange={(e) => setPermanentState(e.target.value)}
+                            value={permanentState}
+                            required
+                            disabled
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label
+                            className="form-control-label"
+                            htmlFor="exampleFormControlSelect3"
+                          >
+                            City
+                          </label>
+                          <Input
+                            id="example4cols2Input"
+                            placeholder="City"
+                            type="text"
+                            onChange={(e) => setPermanentCity(e.target.value)}
+                            value={permanentCity}
+                            required
+                            disabled
+                          />
+                        </Col>
+                      </Row>
                     </>
                   )}
-                 
+
                   <Row>
                     <Col>
                       <label
