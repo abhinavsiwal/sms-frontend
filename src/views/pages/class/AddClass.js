@@ -142,7 +142,6 @@ const AddClass = () => {
     const { user, token } = isAuthenticated();
     try {
       const session = await allSessions(user._id, user.school, token);
-      console.log(session);
       if (session.err) {
         return toast.error(session.err);
       } else {
@@ -264,11 +263,6 @@ const AddClass = () => {
     e.preventDefault();
     const { user, token } = isAuthenticated();
     formData.set("school", user.school);
-    sessions.map((data) => {
-      if (data.status === "current") {
-        formData.set("session", data._id);
-      }
-    });
     try {
       setAddLoading(true);
       const data = await addClass(user._id, token, formData);
@@ -288,6 +282,23 @@ const AddClass = () => {
       toast.error(addClassError);
       setAddLoading(false);
     }
+  };
+
+  useEffect(() => {
+    if(sessions.length!==0){
+      defaultSession1();
+    }
+  }, [sessions]);
+
+  const defaultSession1 = async () => {
+    const defaultSession = await sessions.find(
+      (session) => session.status === "current"
+    );
+    setClassData({
+      ...classData,
+      session: defaultSession._id,
+    });
+    setSelectedSessionId(defaultSession._id)
   };
 
   const handleOnChange = (e) => {
@@ -389,7 +400,7 @@ const AddClass = () => {
                     </CardHeader>
                     <Form onSubmit={handleFormChange} className="mb-4">
                       <CardBody>
-                        {/* <Row>
+                        <Row>
                           <Col>
                             <label
                               className="form-control-label"
@@ -401,6 +412,7 @@ const AddClass = () => {
                             <select
                               className="form-control"
                               onChange={handleChange("session")}
+                              value={classData.session}
                             >
                               <option>Select Session</option>
                               {sessions &&
@@ -413,7 +425,7 @@ const AddClass = () => {
                                 })}
                             </select>
                           </Col>
-                        </Row> */}
+                        </Row>
                         <br />
                         <Row>
                           <Col>
