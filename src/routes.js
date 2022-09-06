@@ -92,6 +92,7 @@ import GradingMaster from "views/pages/Result/GradingMaster";
 import ExamMaster from "views/pages/Result/ExamMaster";
 import MarksMaster from "views/pages/Result/MarksMaster";
 import Attendance1 from "views/pages/Attendance-Refactor/Attendance1"
+import TimeTable from 'views/pages/TimeTable-Refactor/TimeTable'
 export const adminRoutes = [
   {
     path: "/dashboard",
@@ -350,7 +351,7 @@ export const adminRoutes = [
         path: "/add_time_table",
         name: "Add Time Table",
         miniName: "A",
-        component: AddTimeTable,
+        component: TimeTable,
         layout: "/admin",
         permission: "add",
       },
