@@ -497,6 +497,7 @@ function AddStudent() {
     formData.set("city", city);
     formData.set("date_of_birth", dateOfBirth);
     formData.set("joining_date", dateOfJoining);
+    formData.set("session",studentData.session);
     if (guardianDOB) {
       formData.set("guardian_dob", guardianDOB);
     } else if (fatherDOB) {

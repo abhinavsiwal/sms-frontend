@@ -652,13 +652,13 @@ const AllStudents = () => {
                                   console.log(student);
                                   return (
                                     <Col md="4" key={index}>
-                                      <Card>
+                                      <Card style={{ height: "32rem" }} >
                                       
                                        
                                           <CardImg
                                             alt="..."
                                             src={student.tempPhoto?student.tempPhoto :"/img/student.png"}
-                                            top
+                                            top 
                                             className="p-4"
                                             style={{ height: "13rem" }}
                                           />
@@ -839,7 +839,7 @@ const AllStudents = () => {
                     <Row></Row>
                   </ModalBody>
                 </Modal>
-              </Container>
+              </Container> 
             </>
           ) : (
             <UpdateStudent studentDetails={editingData} />
