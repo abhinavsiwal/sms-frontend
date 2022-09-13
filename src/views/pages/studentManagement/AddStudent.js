@@ -19,7 +19,7 @@ import DatePicker from "react-datepicker";
 import SimpleHeader from "components/Headers/SimpleHeader.js";
 import axios from "axios";
 import Loader from "components/Loader/Loader";
-import { addStudent, isAuthenticateStudent } from "api/student";
+import { addStudent, isAuthenticateStudent, checkRollNo } from "api/student";
 
 import { Stepper, Step } from "react-form-stepper";
 import { ToastContainer, toast } from "react-toastify";
@@ -130,11 +130,11 @@ function AddStudent() {
   const [loading, setLoading] = useState(false);
   const [checked, setChecked] = useState(false);
   const [country, setCountry] = useState("India");
-  const [permanentCountry, setPermanentCountry] = useState("India");
   const [state, setState] = useState("");
+  const [permanentCountry, setPermanentCountry] = useState("India");
   const [permanentState, setPermanentState] = useState("");
-  const [city, setCity] = useState("");
   const [permanentCity, setPermanentCity] = useState("");
+  const [city, setCity] = useState("");
   // console.log("studentData", studentData);
   const [selectedClass, setSelectedClass] = useState({});
   const [phoneError, setPhoneError] = useState(false);
@@ -164,6 +164,7 @@ function AddStudent() {
   const { user, token } = isAuthenticated();
   const [imagesPreview, setImagesPreview] = useState();
   const [disableButton, setDisableButton] = useState(false);
+  const [rollNoCheck, setrollNoCheck] = useState(false);
   useEffect(() => {
     getAllClasses();
   }, []);
@@ -485,6 +486,33 @@ function AddStudent() {
     window.scrollTo(0, 0);
   };
 
+  const checkRollNoHandler = async () => {
+    const formData = new FormData();
+    formData.set("class", studentData.class);
+    formData.set("section", studentData.section);
+    formData.set("session", studentData.session);
+    formData.set("roll_number", studentData.roll_number);
+
+    try {
+      setLoading(true);
+      setDisableButton(true);
+      const data = await checkRollNo(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        toast.error(data.err);
+        return;
+      }
+      setDisableButton(false);
+      setLoading(false);
+      toast.success("Roll Number is Available");
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error("Something Went Wrong!");
+    }
+  };
+
   //Final Form Submit
   const handleSubmitForm = async (e) => {
     e.preventDefault();
@@ -497,7 +525,7 @@ function AddStudent() {
     formData.set("city", city);
     formData.set("date_of_birth", dateOfBirth);
     formData.set("joining_date", dateOfJoining);
-    formData.set("session",studentData.session);
+    formData.set("session", studentData.session);
     if (guardianDOB) {
       formData.set("guardian_dob", guardianDOB);
     } else if (fatherDOB) {
@@ -757,7 +785,7 @@ function AddStudent() {
   }, [checked]);
 
   useEffect(() => {
-    if(sessions.length!==0){
+    if (sessions.length !== 0) {
       defaultSession1();
     }
   }, [sessions]);
@@ -1305,13 +1333,14 @@ function AddStudent() {
                         onChange={handleChange("roll_number")}
                         required
                         value={studentData.roll_number}
+                        onBlur={checkRollNoHandler}
                       />
                     </Col>
                     <Col>
                       <label
                         className="form-control-label"
                         htmlFor="example4cols2Input"
-                      >
+                      > 
                         Previous School
                       </label>
                       <Input

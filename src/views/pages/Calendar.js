@@ -95,7 +95,7 @@ function CalendarView() {
   const [loading, setLoading] = useState(false);
   const [addLoading, setAddLoading] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
-  const [assignTeacherName, setAssignTeacherName] = useState(null)
+  const [assignTeacherName, setAssignTeacherName] = useState(null);
   let permission1 = [];
   useEffect(() => {
     // console.log(user);
@@ -107,7 +107,7 @@ function CalendarView() {
     getAllStaff();
     getSession();
   }, []);
-
+ 
   const getAllStaff = async () => {
     try {
       const { data } = await allStaffs(user.school, user._id);
@@ -144,6 +144,7 @@ function CalendarView() {
       headerToolbar: {
         left: "title",
       },
+
       customButtons: {
         prev: {
           text: "Prev",
@@ -178,7 +179,7 @@ function CalendarView() {
         if (info.start < new Date()) {
           console.log("here");
           return;
-        } 
+        }
         setModalAdd(true);
         setStartDate(info.start);
         setEndDate(endDate);
@@ -196,7 +197,7 @@ function CalendarView() {
         setEndDate(event.end);
         setEvent(event);
         setAssignTeachers(event._def.extendedProps.assignTeacher);
-        setAssignTeacherName(event._def.extendedProps.assignTeacherName)
+        setAssignTeacherName(event._def.extendedProps.assignTeacherName);
         setModalChange(true);
       },
     });
@@ -332,7 +333,6 @@ function CalendarView() {
       setEvents(updateEvents);
       setChecked(true);
       setEditLoading(false);
-
     } catch (err) {
       setEditLoading(false);
       toast.error(updateCalendarError);
@@ -343,7 +343,6 @@ function CalendarView() {
     setEventDescription(undefined);
     setEventId(undefined);
     setEvent(undefined);
-    
   };
 
   //Delete Events Confirm Box
@@ -405,7 +404,13 @@ function CalendarView() {
   };
 
   useEffect(() => {
-    let filteredEvents = events.filter(
+    if (events.length > 0) {
+      filterEvents();
+    }
+  }, [filterSessionId]);
+
+  const filterEvents = async () => {
+    let filteredEvents = await events.filter(
       (event) => event.session.toString() === filterSessionId.toString()
     );
     const data = [];
@@ -433,7 +438,7 @@ function CalendarView() {
     });
     setEventList(data);
     setChecked(false);
-  }, [filterSessionId]);
+  };
 
   //Ant Table Column
   const columns = [

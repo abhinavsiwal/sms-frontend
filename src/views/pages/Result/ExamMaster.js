@@ -104,19 +104,19 @@ const ExamMaster = () => {
   const handleChange = (name) => async (event) => {
     console.log(name,event.target.value);
     console.log(event.target.id);
-
-    let obj = {
-      subject:event.target.id,
-      [name]:event.target.value,
+ 
+    let obj = { 
+      subject:event.target.id, 
+      [name]:event.target.value, 
     }
-    let existing = inputFields.find((mark)=>{
-      return(
-        mark.subject===event.target.value
-      )
-    })
-    if(!existing){
-      obj[name]=event.target.value; 
-    }
+   
+    inputFields.forEach(element => {
+      console.log(obj);  
+      if(element.subject===event.target.id && (element.passing_marks || element.full_marks)){
+        return;
+      }
+    }); 
+     
     setInputFields([...inputFields,obj])
 
     console.log(obj);
@@ -284,7 +284,7 @@ const ExamMaster = () => {
                         return (
                           <>
                             {subject.type === "Group" && (
-                              <>
+                              <>  
                                 <tr>
                                   <td>{index + 1}</td>
 

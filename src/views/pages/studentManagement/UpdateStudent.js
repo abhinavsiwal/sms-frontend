@@ -19,7 +19,7 @@ import axios from "axios";
 import Loader from "components/Loader/Loader";
 import SimpleHeader from "components/Headers/SimpleHeader.js";
 import { useSelector, useDispatch } from "react-redux";
-import { updateStudent, allStudents } from "api/student";
+import { updateStudent, allStudents,checkRollNo } from "api/student";
 import { setStudentEditing } from "store/reducers/student";
 import DatePicker from "react-datepicker";
 import { Stepper, Step } from "react-form-stepper";
@@ -90,6 +90,11 @@ function UpdateStudent({ studentDetails }) {
   const [motherPincodeError, setMotherPincodeError] = useState(false);
   const [fatherPincodeError, setFatherPincodeError] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
+  const [permanentCountry, setPermanentCountry] = useState("India");
+  const [permanentState, setPermanentState] = useState(studentDetails.permanent_state);
+  const [permanentCity, setPermanentCity] = useState("");
+  const [permanentPincodeError, setPermanentPincodeError] = useState(false);
+  const [permanentPincode, setPermanentPincode] = useState(studentDetails.permanent_pincode);
   const [student, setStudent] = useState({
     _id: studentDetails._id,
     image: studentDetails.image,
@@ -161,50 +166,50 @@ function UpdateStudent({ studentDetails }) {
     let regex = /^[5-9]{2}[0-9]{8}$/;
     if (regex.test(student.phone)) {
       setPhoneError(false);
-      setDisableButton(false);
+     
     } else {
       setPhoneError(true);
-      setDisableButton(true);
+     
     }
   };
   const altPhoneBlurHandler = () => {
     let regex = /^[5-9]{2}[0-9]{8}$/;
     if (regex.test(student.alternate_phone)) {
       setAltPhoneError(false);
-      setDisableButton(false);
+     
     } else {
       setAltPhoneError(true);
-      setDisableButton(true);
+      
     }
   };
   const emailBlurHandler = () => {
     let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (regex.test(student.email)) {
       setEmailError(false);
-      setDisableButton(false);
+      
     } else {
       setEmailError(true);
-      setDisableButton(true);
+     
     }
   };
   const parentEmailBlurHandler = async () => {
     let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (regex.test(student.parent_email)) {
       setParentEmailError(false);
-      setDisableButton(false);
+      
     } else {
       setParentEmailError(true);
-      setDisableButton(false);
+      
     }
   };
   const guardianEmailBlurHandler = async () => {
     let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (regex.test(student.guardian_email)) {
       setGuardianEmailError(false);
-      setDisableButton(false);
+      
     } else {
       setGuardianEmailError(true);
-      setDisableButton(true);
+     
     }
   };
 
@@ -245,10 +250,10 @@ function UpdateStudent({ studentDetails }) {
     let regex = /^[0-9]{12}$/;
     if (regex.test(student.aadhar_number)) {
       setAadharError(false);
-      setDisableButton(false);
+     
     } else {
       setAadharError(true);
-      setDisableButton(true);
+    ;
     }
   };
   const handleSubmitForm = async (e) => {
@@ -265,14 +270,30 @@ function UpdateStudent({ studentDetails }) {
     if (guardianDOB === "Invalid Date") {
       console.log("here");
       formData.set("guardian_dob", guardianDOB);
-    } else if (fatherDOB || motherDOB !== "Invalid Date") {
+    } else if (fatherDOB && motherDOB) {
       formData.set("father_dob", fatherDOB);
       formData.set("mother_dob", motherDOB);
     }
-
+    if(!checked){
+      formData.set("permanent_city", permanentCity);
+      formData.set("permanent_state",permanentState);
+      formData.set("permanent_country",permanentCountry);
+      formData.set("permanent_pincode",permanentPincode);
+    }else{
+      formData.set("permanent_city", city);
+      formData.set("permanent_state",state);
+      formData.set("permanent_country",country);
+      formData.set("permanent_pincode",pincode);
+    }
     try {
       setLoading(true);
-      await updateStudent(student._id, user._id, formData);
+      const data =  await updateStudent(student._id, user._id, formData);
+      console.log(data);
+      if(data.err){
+        toast.error(data.err);
+        setLoading(false);
+        return
+      }
       toast.success("Student updated successfully");
       dispatch(setStudentEditing(false));
       setLoading(false);
@@ -314,6 +335,53 @@ function UpdateStudent({ studentDetails }) {
   // const [formData] = useState(new FormData());
 
   const [loading, setLoading] = useState(false);
+  const [checked, setChecked] = useState(false);
+  useEffect(() => {
+    console.log(checked);
+    if(studentDetails.permanent_address.length!==0){
+      setChecked(false);
+    }else{
+      setChecked(true);
+    }
+
+
+    if (!checked && permanentPincode.length===0) {
+      setPermanentPincode(pincode);
+      setPermanentCity(city);
+      setPermanentCountry(country);
+      setPermanentState(state);
+    }
+  }, [checked]);
+  const permanentPincodeBlurHandler = () => {
+    let regex = /^[1-9][0-9]{5}$/;
+    // console.log("Here");
+    if (permanentPincode.length === 6) {
+      console.log("herre");
+      setPermanentPincodeError(false);
+      setDisableButton(false);
+    } else {
+      console.log("herrsadasdadse");
+      setPermanentPincodeError(true);
+      setDisableButton(true);
+    }
+  };
+  const permanentPincodeChangeHandler = async (e) => {
+    setPermanentPincode(e.target.value);
+    // console.log("pp");
+    if (e.target.value.length === 6) {
+      try {
+        const { data } = await axios.get(
+          `https://api.postalpincode.in/pincode/${e.target.value}`
+        );
+        console.log(data);
+        setPermanentState(data[0].PostOffice[0].State);
+        setPermanentCity(data[0].PostOffice[0].District);
+      } catch (err) {
+        console.log(err);
+        toast.error("Failed to fetch pin code.");
+      }
+    }
+  };  
 
   const handleChange = (name) => (event) => {
     formData.set(name, event.target.value);
@@ -329,7 +397,35 @@ function UpdateStudent({ studentDetails }) {
       setSelectedClass(selectedClass);
     }
   };
+  const checkRollNoHandler = async () => {
+    const formData = new FormData();
+    formData.set("class", student.class);
+    formData.set("section", student.section);
+    formData.set("session", student.session._id);
+    formData.set("roll_number", student.roll_number);
 
+    try {
+      setLoading(true);
+      setDisableButton(true);
+      const data = await checkRollNo(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        toast.error(data.err);
+        return;
+      }
+      setDisableButton(false);
+      setLoading(false);
+      toast.success("Roll Number is Available");
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error("Something Went Wrong!");
+    }
+  };
+  const checkboxChangeHandler = () => {
+    setChecked(!checked);
+  };
   const handleFileChange = (name) => (event) => {
     formData.set(name, event.target.files[0]);
     setStudent({ ...student, [name]: event.target.files[0].name });
@@ -342,7 +438,7 @@ function UpdateStudent({ studentDetails }) {
     reader.readAsDataURL(event.target.files[0]);
   };
 
-  const handleDeleteFields = (name) => {
+  const handleDeleteFields = (name) => { 
     setStudent({ ...student, [name]: "" });
     formData.delete(name);
   };
@@ -519,7 +615,7 @@ function UpdateStudent({ studentDetails }) {
   useEffect(() => {}, [cscd]);
   return (
     <>
-      <SimpleHeader name="Add Student" parentName="Student Management" />
+      <SimpleHeader name="Update Student" parentName="Student Management" />
       <ToastContainer
         position="bottom-right"
         autoClose={5000}
@@ -795,11 +891,19 @@ function UpdateStudent({ studentDetails }) {
                       <Input
                         id="example4cols2Input"
                         placeholder="Caste"
-                        type="text"
+                        type="select"
                         onChange={handleChange("caste")}
                         required
                         value={student.caste}
-                      />
+                      >
+                          <option value="" disabled>
+                            Select Caste
+                          </option>
+                          <option value="General">General</option>
+                          <option value="SC">SC</option>
+                          <option value="ST">ST</option>
+                          <option value="OBC">OBC</option>
+                      </Input>
                     </Col>
                     <Col>
                       <label
@@ -951,11 +1055,10 @@ function UpdateStudent({ studentDetails }) {
                         id="example4cols2Input"
                         placeholder="Roll Number"
                         type="number"
-                        onChange={() => {
-                          setStudent({ ...student, roll_number: 12 });
-                        }}
+                        onChange={handleChange("roll_number")}
                         required
                         value={student.roll_number}
+                        onBlur={checkRollNoHandler}
                       />
                     </Col>
                     <Col>
@@ -1027,24 +1130,7 @@ function UpdateStudent({ studentDetails }) {
                       />
                     </Col>
                   </Row>
-                  <Row>
-                    <Col>
-                      <label
-                        className="form-control-label"
-                        htmlFor="example4cols3Input"
-                      >
-                        Permanent Address
-                      </label>
-                      <Input
-                        id="example4cols3Input"
-                        placeholder="Permanent Address"
-                        type="text"
-                        onChange={handleChange("permanent_address")}
-                        required
-                        value={student.permanent_address}
-                      />
-                    </Col>
-                  </Row>
+             
                   <Row className="mb-4">
                     <Col md="3">
                       <label
@@ -1117,9 +1203,128 @@ function UpdateStudent({ studentDetails }) {
                         onChange={(e) => setCity(e.target.value)}
                         value={city}
                         required
+                        disabled
                       />
                     </Col>
                   </Row>
+                  <Row>
+                    <Col style={{ marginLeft: "1.2rem" }}>
+                      <Input
+                        id="example4cols3Input"
+                        placeholder="Permanent Address"
+                        type="checkbox"
+                        onChange={checkboxChangeHandler}
+                        checked={checked}
+                        // value={studentData.permanent_address}
+                      />{" "}
+                      <label
+                        className="form-control-label"
+                        htmlFor="example4cols3Input"
+                      >
+                        Permanent Address - Same as Present Address
+                      </label>
+                    </Col>
+                  </Row>
+                  {!checked && (
+                    <>
+                      <Row>
+                        <Col>
+                          <label
+                            className="form-control-label"
+                            htmlFor="example4cols3Input"
+                          >
+                            Permanent Address
+                          </label>
+                          <Input
+                            id="example4cols3Input"
+                            placeholder="Permanent Address"
+                            type="text"
+                            onChange={handleChange("permanent_address")}
+                            required
+                            value={student.permanent_address}
+                          />
+                        </Col>
+                      </Row>
+                      <Row className="mb-4">
+                        <Col md="3">
+                          <label
+                            className="form-control-label"
+                            htmlFor="example4cols2Input"
+                          >
+                            Pin Code
+                          </label>
+                          <Input
+                            id="example4cols2Input"
+                            placeholder="Pin Code"
+                            onChange={(e) => permanentPincodeChangeHandler(e)}
+                            value={permanentPincode}
+                            type="number"
+                            required
+                            onBlur={permanentPincodeBlurHandler}
+                            invalid={permanentPincodeError}
+                          />
+                          {permanentPincodeError && (
+                            <FormFeedback>
+                              Please Enter a valid Pincode
+                            </FormFeedback>
+                          )}
+                        </Col>
+                        <Col md="3">
+                          <label
+                            className="form-control-label"
+                            htmlFor="exampleFormControlSelect3"
+                          >
+                            Country
+                          </label>
+                          <Input
+                            id="example4cols1Input"
+                            placeholder="Country"
+                            type="text"
+                            onChange={(e) =>
+                              setPermanentCountry(e.target.value)
+                            }
+                            value={permanentCountry}
+                            required
+                            disabled
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label
+                            className="form-control-label"
+                            htmlFor="exampleFormControlSelect3"
+                          >
+                            State
+                          </label>
+                          <Input
+                            id="example4cols1Input"
+                            placeholder="State"
+                            type="text"
+                            onChange={(e) => setPermanentState(e.target.value)}
+                            value={permanentState}
+                            required
+                            disabled
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label
+                            className="form-control-label"
+                            htmlFor="exampleFormControlSelect3"
+                          >
+                            City
+                          </label>
+                          <Input
+                            id="example4cols2Input"
+                            placeholder="City"
+                            type="text"
+                            onChange={(e) => setPermanentCity(e.target.value)}
+                            value={permanentCity}
+                            required
+                            disabled
+                          />
+                        </Col>
+                      </Row>
+                    </>
+                  )}
                   <Row>
                     <Col>
                       <label

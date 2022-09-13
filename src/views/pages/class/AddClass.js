@@ -263,6 +263,7 @@ const AddClass = () => {
     e.preventDefault();
     const { user, token } = isAuthenticated();
     formData.set("school", user.school);
+    formData.set("session",classData.session);
     try {
       setAddLoading(true);
       const data = await addClass(user._id, token, formData);

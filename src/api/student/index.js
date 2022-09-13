@@ -101,3 +101,17 @@ export const filterStudent=async(schoolId,userId,formData)=>{
     throw error;
   } 
 }
+export const checkRollNo=async(schoolId,userId,formData)=>{
+  try {
+    const {data} = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/student/check_roll_number/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    // console.log(data);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  } 
+}

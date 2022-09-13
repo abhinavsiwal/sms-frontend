@@ -211,6 +211,7 @@ const AddSubject = () => {
 
     const { user, token } = isAuthenticated();
     formData.set("school", user.school);
+    formData.set("session",subjectData.session);
     if (subjectData.name.length > 0) {
       formData.set("name", subjectData.name);
     } else {

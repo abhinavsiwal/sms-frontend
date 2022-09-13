@@ -69,7 +69,7 @@ const DepartmentList = () => {
 
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
+    content: () => componentRef.current, 
   });
 
   useEffect(() => {
@@ -116,7 +116,7 @@ const DepartmentList = () => {
       title: "Name",
       dataIndex: "name",
       width: "30%",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.name > b.name,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -147,7 +147,7 @@ const DepartmentList = () => {
     {
       title: "Action",
       key: "action",
-      align:"left",
+      align: "left",
       dataIndex: "action",
       width: "10%",
       fixed: "right",
@@ -300,15 +300,12 @@ const DepartmentList = () => {
     e.preventDefault();
     // console.log("here");
     // const role = [primaryHeadId, secondaryHeadId];
-    sessions.map((data) => {
-      if (data.status === "current") {
-        formData.set("session", data._id);
-      }
-    });
+
     const { user, token } = isAuthenticated();
     try {
       formData.set("school", user.school);
       formData.set("name", name);
+      formData.set("session", sessionID);
       // formData.set("role", JSON.stringify(role));
       // formData.set("module", JSON.stringify(data));
       setAddLoading(true);
@@ -330,7 +327,19 @@ const DepartmentList = () => {
       toast.error("Something Went Wrong!");
     }
   };
+  useEffect(() => {
+    if (sessions.length !== 0) {
+      defaultSession1();
+    }
+  }, [sessions]);
 
+  const defaultSession1 = async () => {
+    const defaultSession = sessions.find(
+      (session) => session.status === "current"
+    );
+    console.log(defaultSession._id);
+    setSessionID(defaultSession._id);
+  };
   return (
     <>
       <SimpleHeader name="Department List" parentName="Department Management" />
@@ -358,16 +367,18 @@ const DepartmentList = () => {
                   <Card>
                     <Form onSubmit={handleFormChange} className="mb-4">
                       <CardBody>
-                        {/* <Row>
+                        <Row>
                           <Col>
                             <label
                               className="form-control-label"
                               htmlFor="example4cols2Input"
+                              value={sessionID}
                             >
                               Session
                             </label>
 
-                            <select
+                            <Input
+                              type="select"
                               className="form-control"
                               required
                               onChange={(e) => setSessionID(e.target.value)}
@@ -381,9 +392,9 @@ const DepartmentList = () => {
                                     </option>
                                   );
                                 })}
-                            </select>
+                            </Input>
                           </Col>
-                        </Row> */}
+                        </Row>
                         <br />
                         <Row>
                           <Col>
@@ -403,7 +414,13 @@ const DepartmentList = () => {
                           </Col>
                         </Row>
                         <Row className="mt-4 float">
-                          <Col style={{display:"flex",justifyContent:"center",width:"100%"}} >
+                          <Col
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              width: "100%",
+                            }}
+                          >
                             <Button
                               color="primary"
                               type="submit"

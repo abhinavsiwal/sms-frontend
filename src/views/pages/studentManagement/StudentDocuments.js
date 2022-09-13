@@ -130,7 +130,7 @@ const StudentDocuments = () => {
     const config = {
       bucketName: process.env.REACT_APP_Bucket,
      
-      region: "eu-east-1",
+      region: "us-east-1",
       accessKeyId: process.env.REACT_APP_accessKeyID,
       secretAccessKey: process.env.REACT_APP_secretAccessID,
       
@@ -171,8 +171,8 @@ const StudentDocuments = () => {
   return (
     <>
       <SimpleHeader
-        name="Staff Budget Allocations"
-        parentName="Accounts Management"
+        name="Students Documents Upload"
+        parentName="Students Management"
       />
       <ToastContainer
         position="bottom-right"
