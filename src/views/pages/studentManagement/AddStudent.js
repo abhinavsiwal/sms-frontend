@@ -15,6 +15,7 @@ import {
   FormFeedback,
 } from "reactstrap";
 // core components
+import {uploadFile} from "api/upload"
 import DatePicker from "react-datepicker";
 import SimpleHeader from "components/Headers/SimpleHeader.js";
 import axios from "axios";
@@ -404,7 +405,6 @@ function AddStudent() {
 
   //Taking Image Value
   const handleFileChange = (name) => (event) => {
-    formData.set(name, event.target.files[0]);
     // console.log("aa", event.target.files[0]);
     setStudentData({ ...studentData, [name]: event.target.files[0] });
     setImage(event.target.files[0]);
@@ -540,7 +540,11 @@ function AddStudent() {
     }
     try {
       setLoading(true);
-
+      const formData1 = new FormData();
+      formData1.set("file", image);
+      const data = await uploadFile(formData1);
+      console.log(data);
+      formData.set("photo", data.data[0]);
       const addStudents = await addStudent(user._id, token, formData);
       // console.log("addStudent", addStudents);
       if (addStudents.err) {

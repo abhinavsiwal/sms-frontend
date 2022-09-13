@@ -642,13 +642,13 @@ const AddSession = () => {
                         <Input
                           id="example-date-input"
                           type="number"
-                          max="7"
+                       
                           min="1"
                           onChange={handleChange("paid_leaves")}
                           value={sessionData.paid_leaves}
                           placeholder="Leaves"
                           required
-                          onBlur={paidLeavesBlurHandler}
+                          
                         />
                         {paidLeavesError && (
                           <div style={{color:"red",fontSize:"0.7rem"}} >
