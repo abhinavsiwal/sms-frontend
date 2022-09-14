@@ -14,6 +14,7 @@ import {
 } from "reactstrap";
 import Loader from "components/Loader/Loader";
 //React Datepicker
+import { uploadFile } from "api/upload";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { isAuthenticated } from "api/auth";
@@ -85,13 +86,13 @@ function AddCanteen() {
     }
   }, []);
 
-
-
   const getAllStaffs = async () => {
     try {
       const { data } = await allStaffs(user.school, user._id);
       console.log(data);
-      let canteenStaff = data.filter((staff) => staff.assign_role.name === "Canteen");
+      let canteenStaff = data.filter(
+        (staff) => staff.assign_role.name === "Canteen"
+      );
       setAllStaff(canteenStaff);
       let options = [];
       for (let i = 0; i < canteenStaff.length; i++) {
@@ -213,6 +214,11 @@ function AddCanteen() {
 
     try {
       setMenuLoading(true);
+      const formData1 = new FormData();
+      formData1.set("file", addMenu.image);
+      const data1 = await uploadFile(formData1);
+      console.log(data1);
+      formData.set("image", data1.data[0]);
       let data = await menuAdd(user._id, formData);
       if (data.err) {
         setMenuLoading(false);
@@ -248,13 +254,12 @@ function AddCanteen() {
     setSelectedCanteenId(e.target.value);
   };
 
-  const filterPassedTime = (time)=>{
+  const filterPassedTime = (time) => {
     const currentDate = new Date(startDate);
     const selectedDate = new Date(time);
 
-    return currentDate.getTime()<selectedDate.getTime();
-
-  }
+    return currentDate.getTime() < selectedDate.getTime();
+  };
 
   return (
     <>
@@ -282,7 +287,7 @@ function AddCanteen() {
                   <CardHeader>
                     <h3>Add Canteen</h3>
                   </CardHeader>
-              
+
                   <Form className="mb-4" onSubmit={addCanteenHandler}>
                     <CardBody>
                       <Row>
@@ -357,13 +362,13 @@ function AddCanteen() {
                         md="4"
                         className="d-flex justify-content-center mb-4"
                       >
-                         <img
-                        src={imagesPreview && imagesPreview}
-                        alt="Preview"
-                        className="mt-3 me-2"
-                        width="80"
-                        height="80"
-                      />
+                        <img
+                          src={imagesPreview && imagesPreview}
+                          alt=""
+                          className="mt-3 me-2"
+                          width="80"
+                          height="80"
+                        />
                         <Col md="6">
                           <label
                             className="form-control-label"

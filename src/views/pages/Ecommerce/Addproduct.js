@@ -14,6 +14,7 @@ import {
   ModalBody,
   ModalFooter,
 } from "reactstrap";
+import { uploadFile } from "api/upload";
 import { SearchOutlined } from "@ant-design/icons";
 import Loader from "components/Loader/Loader";
 import { ToastContainer, toast } from "react-toastify";
@@ -55,11 +56,11 @@ function Addproduct() {
     discountValue: "",
     offerPrice: "",
     image: "",
-    publish:"",
+    publish: "",
   });
   const handleFileChange = (name) => (event) => {
     // formData.set(name, event.target.files[0]);
-    // setAddMenu({ ...addMenu, [name]: event.target.files[0].name });
+    setAddProduct({ ...addProduct, [name]: event.target.files[0] });
     const reader = new FileReader();
     reader.onload = () => {
       if (reader.readyState === 2) {
@@ -307,7 +308,7 @@ function Addproduct() {
   const addProductHandler = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.set("name", addProduct.name); 
+    formData.set("name", addProduct.name);
     formData.set("category", addProduct.category);
     formData.set("description", addProduct.description);
     formData.set("sellingPrice", addProduct.sellingPrice);
@@ -317,35 +318,39 @@ function Addproduct() {
     formData.set("school", user.school);
     formData.set("quantity", addProduct.quantity);
     formData.set("publish", addProduct.publish);
-try {
-  setAddProductLoading(true);
-  const data = await createProduct(user._id, formData);
-  console.log(data);
-  if (data.err) {
-    toast.error(data.err);
-    setAddProductLoading(false);
-    return;
-  }
-  toast.success("Product added successfully");
-  setAddProductLoading(false);
-  setAddProduct({
-    name: "",
-    category: "",
-    description: "",
-    sellingPrice: "",
-    offerPrice: "",
-    discountType: "",
-    discountValue: "",
-    quantity: "",
-    publish:"",
-
-  })
-} catch (err) {
-  console.log(err);
-  toast.error("Add Product Failed");
-  setAddProductLoading(false);
-}
-
+    try {
+      setAddProductLoading(true);
+      const formData1 = new FormData();
+      formData1.set("file", addProduct.image);
+      const data1 = await uploadFile(formData1);
+      console.log(data1);
+      formData.set("photo", data1.data[0]);
+      const data = await createProduct(user._id, formData);
+      console.log(data);
+      if (data.err) {
+        toast.error(data.err);
+        setAddProductLoading(false);
+        return;
+      }
+      toast.success("Product added successfully");
+      setAddProductLoading(false);
+      setAddProduct({
+        name: "",
+        category: "",
+        description: "",
+        sellingPrice: "",
+        offerPrice: "",
+        discountType: "",
+        discountValue: "",
+        quantity: "",
+        publish: "",
+      });
+      setImagesPreview(undefined)
+    } catch (err) {
+      console.log(err);
+      toast.error("Add Product Failed");
+      setAddProductLoading(false);
+    }
   };
 
   return (
@@ -455,229 +460,243 @@ try {
         </Row>
       </Container>
       <Container className="mt--6" fluid>
-        {addProductLoading ? (<Loader />):(
-  <Row>
-  <Col lg="12">
-    <div className="card-wrapper">
-      <Card>
-        <CardHeader>
-          <h3>Add Product</h3>
-        </CardHeader>
-        <Form className="mb-4" onSubmit={addProductHandler} >
-          <CardBody>
-            <Row md="4" className="d-flex justify-content-center mb-4">
-              <Col md="6">
-                <label
-                  className="form-control-label"
-                  htmlFor="example3cols2Input"
-                >
-                  Product Image
-                </label>
-                <div className="custom-file">
-                  <input
-                    className="custom-file-input"
-                    id="customFileLang"
-                    lang="en"
-                    type="file"
-                    // onChange={handleFileChange("image")}
-                    accept="image/*"
-                  />
-                  <label
-                    className="custom-file-label"
-                    htmlFor="customFileLang"
-                  >
-                    Select file
-                  </label>
-                </div>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Label
-                  className="form-control-label"
-                  htmlFor="example4cols2Input"
-                >
-                  Product Name
-                </Label>
-                <Input
-                  id="example4cols2Input"
-                  placeholder="Name"
-                  type="text"
-                  onChange={handleChange("name")}
-                  value={addProduct.name}
-                  required
-                />
-              </Col>
-              <Col>
-                <Label
-                  className="form-control-label"
-                  htmlFor="exampleFormControlSelect3"
-                >
-                  Product Description
-                </Label>
-                <Input
-                  id="exampleFormControlSelect3"
-                  type="textarea"
-                  onChange={handleChange("description")}
-                  value={addProduct.description}
-                  required
-                  placeholder="Description"
-                />
-              </Col>
-              <Col>
-                <Label
-                  className="form-control-label"
-                  htmlFor="exampleFormControlSelect3"
-                >
-                  Category
-                </Label>
-                <Input
-                  id="exampleFormControlSelect3"
-                  type="select"
-                  onChange={handleChange("category")}
-                  value={addProduct.category}
-                  required
-                >
-                  <option>Select Category</option>
-                  {categoriesData &&
-                    categoriesData.map((category) => {
-                      return (
-                        <option key={category._id} value={category._id}>
-                          {category.name}
-                        </option>
-                      );
-                    })}
-                </Input>
-              </Col>
-              <Col>
-                <Label
-                  className="form-control-label"
-                  htmlFor="exampleFormControlSelect3"
-                >
-                  Quantity
-                </Label>
-                <Input
-                  id="exampleFormControlSelect3"
-                  type="number"
-                  onChange={handleChange("quantity")}
-                  value={addProduct.quantity}
-                  required
-                  placeholder="Quantity"
-                />
-              </Col>
-            </Row>
-            <Row className="mt-4">
-              <Col>
-                <Label
-                  className="form-control-label"
-                  htmlFor="exampleFormControlSelect3"
-                >
-                  Selling Price
-                </Label>
-                <Input
-                  id="exampleFormControlSelect3"
-                  type="number"
-                  onChange={handleChange("sellingPrice")}
-                  value={addProduct.sellingPrice}
-                  required
-                  placeholder="Selling Price"
-                  onBlur={discountHandler}
-                />
-              </Col>
-              <Col>
-                <Label
-                  className="form-control-label"
-                  htmlFor="example4cols2Input"
-                >
-                  Discount Type
-                </Label>
-                <Input
-                  id="example4cols2Input"
-                  placeholder="Class"
-                  type="select"
-                  onChange={handleChange("discountType")}
-                  value={addProduct.discountType}
-                  required
-                  onBlur={discountHandler}
-                >
-                  <option value="">Select Type</option>
-                  <option value="Flat Rate">Flat Rate</option>
-                  <option value="Percentage">Percentage</option>
-                </Input>
-              </Col>
-              <Col>
-                <Label
-                  className="form-control-label"
-                  htmlFor="exampleFormControlSelect3"
-                >
-                  Discount Value
-                </Label>
-                <Input
-                  id="exampleFormControlSelect3"
-                  type="number"
-                  onChange={handleChange("discountValue")}
-                  value={addProduct.discountValue}
-                  required
-                  onBlur={discountHandler}
-                  placeholder="Discount Value"
-                />
-              </Col>
-              <Col>
-                <Label
-                  className="form-control-label"
-                  htmlFor="exampleFormControlSelect3"
-                >
-                  Offer Price
-                </Label>
-                <Input
-                  id="exampleFormControlSelect3"
-                  type="number"
-                  onChange={handleChange("offerPrice")}
-                  value={addProduct.offerPrice}
-                  required
-                  disabled
-                  placeholder="Offer Price"
-                />
-              </Col>
-            </Row>
-            <Row className="mt-4">
-            <Col md="3" >
-                <Label
-                  className="form-control-label"
-                  htmlFor="example4cols2Input"
-                >
-                  Publish
-                </Label>
-                <Input
-                  id="example4cols2Input"
-                  placeholder="Class"
-                  type="select"
-                  onChange={handleChange("publish")}
-                  value={addProduct.publish}
-                  required
-            
-                >
-                  <option value="">Publish</option>
-                  <option value="Yes">Yes</option>
-                  <option value="No">No</option>
-                </Input>
-              </Col>
-            </Row>
-            <Row className="mt-4 float-right">
-              <Col>
-                <Button color="primary" type="submit">
-                  Add Product
-                </Button>
-              </Col>
-            </Row>
-          </CardBody>
-        </Form>
-      </Card>
-    </div>
-  </Col>
-</Row>
+        {addProductLoading ? (
+          <Loader />
+        ) : (
+          <Row>
+            <Col lg="12">
+              <div className="card-wrapper">
+                <Card>
+                  <CardHeader>
+                    <h3>Add Product</h3>
+                  </CardHeader>
+                  <Form className="mb-4" onSubmit={addProductHandler}>
+                    <CardBody>
+                      <Row
+                        md="4"
+                        className="d-flex justify-content-center mb-4"
+                      >
+                        <img
+                          src={imagesPreview && imagesPreview}
+                          alt=""
+                          className="mt-3 me-2"
+                          width="80"
+                          height="80"
+                        />
+                        <Col md="6">
+                          <label
+                            className="form-control-label"
+                            htmlFor="example3cols2Input"
+                          >
+                            Upload Image
+                          </label>
+                          <div className="custom-file">
+                            <input
+                              className="custom-file-input"
+                              id="customFileLang"
+                              lang="en"
+                              type="file"
+                              onChange={handleFileChange("image")}
+                              accept="image/*"
+                            />
+                            <label
+                              className="custom-file-label"
+                              htmlFor="customFileLang"
+                            >
+                              Select file
+                            </label>
+                          </div>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col>
+                          <Label
+                            className="form-control-label"
+                            htmlFor="example4cols2Input"
+                          >
+                            Product Name
+                          </Label>
+                          <Input
+                            id="example4cols2Input"
+                            placeholder="Name"
+                            type="text"
+                            onChange={handleChange("name")}
+                            value={addProduct.name}
+                            required
+                          />
+                        </Col>
+                        <Col>
+                          <Label
+                            className="form-control-label"
+                            htmlFor="exampleFormControlSelect3"
+                          >
+                            Product Description
+                          </Label>
+                          <Input
+                            id="exampleFormControlSelect3"
+                            type="textarea"
+                            onChange={handleChange("description")}
+                            value={addProduct.description}
+                            required
+                            placeholder="Description"
+                          />
+                        </Col>
+                        <Col>
+                          <Label
+                            className="form-control-label"
+                            htmlFor="exampleFormControlSelect3"
+                          >
+                            Category
+                          </Label>
+                          <Input
+                            id="exampleFormControlSelect3"
+                            type="select"
+                            onChange={handleChange("category")}
+                            value={addProduct.category}
+                            required
+                          >
+                            <option>Select Category</option>
+                            {categoriesData &&
+                              categoriesData.map((category) => {
+                                return (
+                                  <option
+                                    key={category._id}
+                                    value={category._id}
+                                  >
+                                    {category.name}
+                                  </option>
+                                );
+                              })}
+                          </Input>
+                        </Col>
+                        <Col>
+                          <Label
+                            className="form-control-label"
+                            htmlFor="exampleFormControlSelect3"
+                          >
+                            Quantity
+                          </Label>
+                          <Input
+                            id="exampleFormControlSelect3"
+                            type="number"
+                            onChange={handleChange("quantity")}
+                            value={addProduct.quantity}
+                            required
+                            placeholder="Quantity"
+                          />
+                        </Col>
+                      </Row>
+                      <Row className="mt-4">
+                        <Col>
+                          <Label
+                            className="form-control-label"
+                            htmlFor="exampleFormControlSelect3"
+                          >
+                            Selling Price
+                          </Label>
+                          <Input
+                            id="exampleFormControlSelect3"
+                            type="number"
+                            onChange={handleChange("sellingPrice")}
+                            value={addProduct.sellingPrice}
+                            required
+                            placeholder="Selling Price"
+                            onBlur={discountHandler}
+                          />
+                        </Col>
+                        <Col>
+                          <Label
+                            className="form-control-label"
+                            htmlFor="example4cols2Input"
+                          >
+                            Discount Type
+                          </Label>
+                          <Input
+                            id="example4cols2Input"
+                            placeholder="Class"
+                            type="select"
+                            onChange={handleChange("discountType")}
+                            value={addProduct.discountType}
+                            required
+                            onBlur={discountHandler}
+                          >
+                            <option value="">Select Type</option>
+                            <option value="Flat Rate">Flat Rate</option>
+                            <option value="Percentage">Percentage</option>
+                          </Input>
+                        </Col>
+                        <Col>
+                          <Label
+                            className="form-control-label"
+                            htmlFor="exampleFormControlSelect3"
+                          >
+                            Discount Value
+                          </Label>
+                          <Input
+                            id="exampleFormControlSelect3"
+                            type="number"
+                            onChange={handleChange("discountValue")}
+                            value={addProduct.discountValue}
+                            required
+                            onBlur={discountHandler}
+                            placeholder="Discount Value"
+                          />
+                        </Col>
+                        <Col>
+                          <Label
+                            className="form-control-label"
+                            htmlFor="exampleFormControlSelect3"
+                          >
+                            Offer Price
+                          </Label>
+                          <Input
+                            id="exampleFormControlSelect3"
+                            type="number"
+                            onChange={handleChange("offerPrice")}
+                            value={addProduct.offerPrice}
+                            required
+                            disabled
+                            placeholder="Offer Price"
+                          />
+                        </Col>
+                      </Row>
+                      <Row className="mt-4">
+                        <Col md="3">
+                          <Label
+                            className="form-control-label"
+                            htmlFor="example4cols2Input"
+                          >
+                            Publish
+                          </Label>
+                          <Input
+                            id="example4cols2Input"
+                            placeholder="Class"
+                            type="select"
+                            onChange={handleChange("publish")}
+                            value={addProduct.publish}
+                            required
+                          >
+                            <option value="" disabled>Publish</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                          </Input>
+                        </Col>
+                      </Row>
+                      <Row className="mt-4 float-right">
+                        <Col>
+                          <Button color="primary" type="submit">
+                            Add Product
+                          </Button>
+                        </Col>
+                      </Row>
+                    </CardBody>
+                  </Form>
+                </Card>
+              </div>
+            </Col>
+          </Row>
         )}
-      
+
         <Modal
           className="modal-dialog-centered"
           isOpen={editing}

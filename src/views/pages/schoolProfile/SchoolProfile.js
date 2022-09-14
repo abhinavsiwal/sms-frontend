@@ -25,7 +25,7 @@ import {
   FormFeedback,
 } from "reactstrap";
 // core components
-
+import {uploadFile} from "api/upload"
 import Loader from "components/Loader/Loader";
 import SimpleHeader from "components/Headers/SimpleHeader.js";
 import { schoolProfile, editProfile } from "api/school";
@@ -202,6 +202,11 @@ function SchoolProfile() {
 
     try {
       setEditLoading(true);
+      const formData1 = new FormData(); 
+      formData1.set("file", editSchoolProfile.image);
+      const data1 = await uploadFile(formData1);
+      console.log(data1);
+      formData.set("photo", data1.data[0]);
       const { data } = await editProfile(user.school, user._id, formData);
       console.log(data);
       if (data.err) {

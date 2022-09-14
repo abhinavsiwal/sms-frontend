@@ -16,6 +16,7 @@ import {
 } from "reactstrap";
 import axios from "axios";
 // core components
+import {uploadFile} from "api/upload"
 import Loader from "components/Loader/Loader";
 import SimpleHeader from "components/Headers/SimpleHeader.js";
 import { useSelector, useDispatch } from "react-redux";
@@ -267,7 +268,7 @@ function UpdateStudent({ studentDetails }) {
     formData.set("pincode", pincode);
     formData.set("city", city);
     console.log(guardianDOB);
-    if (guardianDOB === "Invalid Date") {
+    if (guardianDOB) {
       console.log("here");
       formData.set("guardian_dob", guardianDOB);
     } else if (fatherDOB && motherDOB) {
@@ -287,6 +288,11 @@ function UpdateStudent({ studentDetails }) {
     }
     try {
       setLoading(true);
+      const formData1 = new FormData(); 
+      formData1.set("file", student.photo);
+      const data1 = await uploadFile(formData1);
+      console.log(data1);
+      formData.set("photo", data1.data[0]);
       const data =  await updateStudent(student._id, user._id, formData);
       console.log(data);
       if(data.err){
@@ -428,7 +434,7 @@ function UpdateStudent({ studentDetails }) {
   };
   const handleFileChange = (name) => (event) => {
     formData.set(name, event.target.files[0]);
-    setStudent({ ...student, [name]: event.target.files[0].name });
+    setStudent({ ...student, [name]: event.target.files[0] });
     const reader = new FileReader();
     reader.onload = () => {
       if (reader.readyState === 2) {
