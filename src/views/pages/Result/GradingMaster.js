@@ -18,7 +18,7 @@ import { isAuthenticated } from "api/auth";
 import { ToastContainer, toast } from "react-toastify";
 import { Popconfirm } from "antd";
 import LoadingScreen from "react-loading-screen";
-
+import { updateGrades, getGrades } from "api/result";
 const GradingMaster = () => {
   const [loading, setLoading] = useState(false);
   const { user, token } = isAuthenticated();
@@ -31,6 +31,38 @@ const GradingMaster = () => {
       description: "",
     },
   ]);
+
+  const getGradesHandler = async () => {
+    try {
+      setLoading(true);
+      const data = await getGrades(user._id, user.school);
+      console.log(data);
+
+      if (data.err) {
+        toast.error(data.err);
+        setLoading(false);
+        return;
+      }
+      let fields = [];
+      data.map((grade) => {
+        fields.push({
+          min: grade.min,
+          max: grade.max,
+          grade: grade.grade,
+          description: grade.description,
+        });
+      });
+      setInputFields(fields);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      console.log(err);
+      toast.error("Getting Grades Failed");
+    }
+  };
+  useEffect(() => {
+    getGradesHandler();
+  }, [checked]);
 
   const handleChange = async (index, event) => {
     const values = [...inputFields];
@@ -51,15 +83,37 @@ const GradingMaster = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(inputFields);
+    const formData = new FormData();
+    formData.set("grades_data", JSON.stringify(inputFields));
+    try {
+      setLoading(true);
+      const data = await updateGrades(user._id, user.school, formData);
+      if (data.err) {
+        setLoading(false);
+        toast.error(data.err);
+        return;
+      }
+      toast.success("Grades updated successfully");
+      setInputFields([
+        {
+          min: "",
+          max: "",
+          grade: "",
+          description: "",
+        },
+      ]);
+      setChecked(!checked);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error("Something went wrong");
+    }
   };
 
   return (
     <>
-      <SimpleHeader
-        name="Grade Master"
-        parentName="Result Management"
-      />
+      <SimpleHeader name="Grade Master" parentName="Result Management" />
       <ToastContainer
         position="bottom-right"
         autoClose={5000}

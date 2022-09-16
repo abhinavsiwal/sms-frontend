@@ -37,6 +37,7 @@ const ExamMaster = () => {
   const [selectedSection, setSelectedSection] = useState({});
   const [session, setSession] = useState("");
   const [name, setName] = useState("");
+  const [fields, setFields] = useState([]);
   const getSession = async () => {
     try {
       setLoading(true);
@@ -100,27 +101,48 @@ const ExamMaster = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(inputFields);
+    let customFields = [];
+    inputFields.map((field) => {
+      let bool =
+        field.hasOwnProperty("passing_marks") &&
+        field.hasOwnProperty("full_marks");
+      if (field.hasOwnProperty("subject") && bool) {
+        customFields.push(field);
+      }
+    });
+
+    console.log(customFields);
+   const filtered =  customFields.filter(
+      (v, i, a) =>
+        a.findIndex((v2) => JSON.stringify(v2) === JSON.stringify(v)) === i
+    );
+    console.log(filtered);
   };
   const handleChange = (name) => async (event) => {
-    console.log(name,event.target.value);
+    console.log(name, event.target.value);
     console.log(event.target.id);
- 
-    let obj = { 
-      subject:event.target.id, 
-      [name]:event.target.value, 
-    }
-   
-    inputFields.forEach(element => {
-      console.log(obj);  
-      if(element.subject===event.target.id && (element.passing_marks || element.full_marks)){
+
+    let obj = {
+      subject: event.target.id,
+      [name]: event.target.value,
+    };
+
+    setFields([...fields, obj]);
+    fields.map((field) => {
+      console.log(field);
+      let bool =
+        field.hasOwnProperty("passing_marks") ||
+        field.hasOwnProperty("full_marks");
+      console.log(bool);
+      if (field.subject === event.target.id && bool) {
+        field[name] = event.target.value;
+        console.log(field);
+        console.log(true);
+        setInputFields([...inputFields, field]);
         return;
       }
-    }); 
-     
-    setInputFields([...inputFields,obj])
-
-    console.log(obj);
-    
+    });
+    console.log(inputFields);
   };
 
   return (
@@ -280,12 +302,11 @@ const ExamMaster = () => {
                     </thead>
                     <tbody>
                       {selectedSection?.subject?.map((subject, index) => {
-                       
                         return (
                           <>
                             {subject.type === "Group" && (
-                              <>  
-                                <tr>
+                              <>
+                                <tr key={index}>
                                   <td>{index + 1}</td>
 
                                   <td style={{ fontWeight: "600" }}>
@@ -296,6 +317,7 @@ const ExamMaster = () => {
                                       id={subject.name}
                                       type="number"
                                       required
+                                      min={0}
                                       onChange={handleChange("full_marks")}
                                       // value={inputfield.min}
                                       name="full_marks"
@@ -307,6 +329,7 @@ const ExamMaster = () => {
                                       id={subject.name}
                                       type="number"
                                       required
+                                      min={0}
                                       onChange={handleChange("passing_marks")}
                                       // value={inputfield.min}
                                       name="passing_marks"
@@ -326,6 +349,7 @@ const ExamMaster = () => {
                                           id={sub}
                                           type="number"
                                           required
+                                          min={0}
                                           onChange={handleChange("full_marks")}
                                           // value={inputfield.min}
                                           name="full_marks"
@@ -334,10 +358,13 @@ const ExamMaster = () => {
                                       </td>
                                       <td>
                                         <Input
-                                           id={sub}
+                                          id={sub}
                                           type="number"
                                           required
-                                          onChange={handleChange("passing_marks")}
+                                          min={0}
+                                          onChange={handleChange(
+                                            "passing_marks"
+                                          )}
                                           // value={inputfield.min}
                                           name="passing_marks"
                                           placeholder="Enter passing marks"
@@ -357,6 +384,7 @@ const ExamMaster = () => {
                                     id={subject.name}
                                     type="number"
                                     required
+                                    min={0}
                                     onChange={handleChange("full_marks")}
                                     // value={inputfield.min}
                                     name="full_marks"
@@ -368,6 +396,7 @@ const ExamMaster = () => {
                                     id={subject.name}
                                     type="number"
                                     required
+                                    min={0}
                                     onChange={handleChange("passing_marks")}
                                     // value={inputfield.min}
                                     name="passing_marks"
