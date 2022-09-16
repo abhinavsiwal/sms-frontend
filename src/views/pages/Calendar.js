@@ -15,8 +15,8 @@ import {
   ButtonGroup,
   Card,
   CardHeader,
-  CardBody,
-  FormGroup,
+  CardBody, 
+  FormGroup, 
   Form,
   Input,
   Modal,
@@ -135,13 +135,13 @@ function CalendarView() {
 
   const createCalendar = () => {
     calendar = new Calendar(calendarRef.current, {
-      plugins: [interaction, dayGridPlugin],
+      plugins: [ dayGridPlugin],
       initialView: "dayGridMonth",
       selectable: true,
 
       // editable: true,
       // events: events,
-      headerToolbar: {
+      headerToolbar: { 
         left: "title",
       },
 

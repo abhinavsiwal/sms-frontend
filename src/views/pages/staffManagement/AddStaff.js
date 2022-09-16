@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Camera from "react-html5-camera-photo";
 import Pincode from "react-pincode";
 //import reactstrap
+import { uploadFile } from "api/upload";
 import {
   Card,
   CardHeader,
@@ -130,6 +131,21 @@ function AddStaff() {
   const [dateOfJoining, setDateOfJoining] = useState();
   const [dateOfBirth, setDateOfBirth] = useState();
   const [imagesPreview, setImagesPreview] = useState();
+  useEffect(() => {
+    if (sessions.length !== 0) {
+      defaultSession1();
+    }
+  }, [sessions]);
+
+  const defaultSession1 = async () => {
+    const defaultSession = await sessions.find(
+      (session) => session.status === "current"
+    );
+    setStaffData({
+      ...staffData,
+      session: defaultSession._id,
+    });
+  };
 
   useEffect(() => {
     getAllRolesHandler();
@@ -239,6 +255,7 @@ function AddStaff() {
     formData.set("school", user.school);
     formData.set("country", country);
     formData.set("state", state);
+    formData.set("session", staffData.session);
     formData.set("contact_person_country", contactCountry);
     formData.set("contact_person_state", contactState);
     formData.set("date_of_birth", dateOfBirth);
@@ -253,6 +270,11 @@ function AddStaff() {
     formData.set("contact_person_pincode", contactPincode);
     try {
       setloading(true);
+      const formData1 = new FormData(); 
+      formData1.set("file", image);
+      const data1 = await uploadFile(formData1);
+      console.log(data1);
+      formData.set("photo", data1.data[0]);
       const resp = await addStaff(user._id, token, formData);
       if (resp.err) {
         setloading(false);

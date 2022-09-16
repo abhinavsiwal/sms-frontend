@@ -340,7 +340,7 @@ function Addproduct() {
         description: "",
         sellingPrice: "",
         offerPrice: "",
-        discountType: "",
+        discountType: "", 
         discountValue: "",
         quantity: "",
         publish: "",

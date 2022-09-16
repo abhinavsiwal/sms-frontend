@@ -52,6 +52,7 @@ const Attendance1 = (props) => {
     today.getMonth() + 1,
     0
   );
+
   const [attendanceList, setAttendanceList] = useState([]);
   const [oldAttendanceList, setOldAttendanceList] = useState([]);
   const [holidays, setHolidays] = useState([]);
@@ -62,8 +63,8 @@ const Attendance1 = (props) => {
   const [selectedClass, setSelectedClass] = useState({});
   const [viewAttendance, setViewAttendance] = useState(false);
   const [attendance, setAttendance] = useState({
-    // dateFrom: startOfMonth,
-    // dateTo: endOfMonth,
+    dateFrom: startDate,
+    dateTo: endDate,
     name: "",
     studentId: "",
     session: "",
@@ -108,7 +109,7 @@ const Attendance1 = (props) => {
         id: null,
         personId: 56,
         firstName: "Lamdeihoi",
-        lastName: "Haokip",
+        lastName: "Haokip"  ,
         heldOnDate: null,
         classId: 7,
         status: null,
@@ -531,7 +532,39 @@ const Attendance1 = (props) => {
   };
   useEffect(() => {
     getAllClass();
+    getSession();
   }, [checked]);
+
+  useEffect(() => {
+    if (sessions.length !== 0) {
+      defaultSession1();
+    }
+  }, [sessions]);
+
+  const defaultSession1 = async () => {
+    const defaultSession = await sessions.find(
+      (session) => session.status === "current"
+    );
+    setAttendance({
+      ...attendance,
+      session: defaultSession._id,
+    });
+  };
+
+  //Getting Session data
+  const getSession = async () => {
+    const { user, token } = isAuthenticated();
+    try {
+      const session = await allSessions(user._id, user.school, token);
+      if (session.err) {
+        return toast.error(session.err);
+      } else {
+        setSessions(session);
+      }
+    } catch (err) {
+      toast.error("Something Went Wrong!");
+    }
+  };
 
   const handleChange = (name) => (event) => {
     // formData.set(name, event.target.value);
@@ -733,7 +766,7 @@ const Attendance1 = (props) => {
     // setChecked(false);
     console.log(attendanceBody);
   };
- 
+
   const setTimeZoneToUTC = (date) => {
     return new Date(
       Date.UTC(
@@ -842,7 +875,7 @@ const Attendance1 = (props) => {
                 </Col>
               </Row>
               <Row>
-                <Col md="6">
+                <Col>
                   <Label
                     className="form-control-label"
                     htmlFor="xample-date-input"
@@ -872,7 +905,7 @@ const Attendance1 = (props) => {
                       })}
                   </Input>
                 </Col>
-                <Col md="6">
+                <Col>
                   <Label
                     className="form-control-label"
                     htmlFor="xample-date-input"
@@ -905,6 +938,34 @@ const Attendance1 = (props) => {
                         );
                       })}
                   </Input>
+                </Col>
+                <Col>
+                  <label
+                    className="form-control-label"
+                    htmlFor="example4cols2Input"
+                  >
+                    Session
+                  </label>
+
+                  <select
+                    className="form-control"
+                    required
+                    onChange={handleChange("session")}
+                    value={attendance.session}
+                  >
+                    <option value="" disabled>
+                      Select Session
+                    </option>
+                    {sessions &&
+                      sessions.map((data) => {
+                      
+                        return (
+                          <option key={data._id} value={data._id}>
+                            {data.name}
+                          </option>
+                        );
+                      })}
+                  </select>
                 </Col>
               </Row>
               <Row className="mt-4 float-right">
