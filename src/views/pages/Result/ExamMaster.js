@@ -22,6 +22,7 @@ import { isAuthenticated } from "api/auth";
 import { toast, ToastContainer } from "react-toastify";
 import { allClass } from "api/class";
 import { allSessions } from "api/session";
+import { updateExam } from "../../../api/result";
 
 const ExamMaster = () => {
   const [loading, setLoading] = useState(false);
@@ -112,11 +113,41 @@ const ExamMaster = () => {
     });
 
     console.log(customFields);
-   const filtered =  customFields.filter(
+    const filtered = customFields.filter(
       (v, i, a) =>
         a.findIndex((v2) => JSON.stringify(v2) === JSON.stringify(v)) === i
     );
     console.log(filtered);
+
+    const formData = new FormData();
+    formData.set("exam_data", JSON.stringify(filtered));
+    formData.set("class", clas);
+    formData.set("section", section);
+    formData.set("session", session);
+    formData.set("name", name);
+
+    try {
+      setLoading(true);
+      const data = await updateExam(user._id, user.school, formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        return toast.error(data.err);
+      }
+      toast.success("Exam Updated Successfully");
+      setLoading(false);
+      setClas("");
+      setSection("");
+      setSession("");
+      setName("");
+      setInputFields([]);
+      setShowTable(false);
+    } catch (err) {
+      console.log(err);
+
+      setLoading(false);
+      toast.error("Exam Data Not Updated");
+    }
   };
   const handleChange = (name) => async (event) => {
     console.log(name, event.target.value);
