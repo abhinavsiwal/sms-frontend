@@ -39,3 +39,17 @@ export const updateExam = async (userId, schoolId, formData) => {
         throw error;
     }
 }
+
+export const updateMarks = async (userId, schoolId, formData) => {
+    try {
+        const { data } = await sendRequest(
+        `${process.env.REACT_APP_API_URL}/api/grades/update_marks/${schoolId}/${userId}`,
+        formData,
+        "PUT"
+        );
+        return data;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}

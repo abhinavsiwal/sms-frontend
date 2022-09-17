@@ -23,11 +23,12 @@ import LoadingScreen from "react-loading-screen";
 import { isAuthenticated } from "api/auth";
 import { toast, ToastContainer } from "react-toastify";
 import { allClass } from "api/class";
-
 import { filterStudent } from "api/student";
+import {updateMarks} from 'api/result'
 
 const MarksMaster = () => {
   const [loading, setLoading] = useState(false);
+  const [examId, setExamId] = useState("");
   const { user, token } = isAuthenticated();
   const [checked, setChecked] = useState(false);
   const [clas, setClas] = useState("");
@@ -37,6 +38,8 @@ const MarksMaster = () => {
   const [selectedSection, setSelectedSection] = useState(undefined);
   const [showTable, setShowTable] = useState(false);
   const [students, setStudents] = useState([]);
+  const [resultData, setResultData] = useState([]);
+  const [result, setResult] = useState([]);
   const getAllClasses = async () => {
     try {
       setLoading(true);
@@ -97,9 +100,90 @@ const MarksMaster = () => {
     }
   };
 
-  const handleSearch = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setShowTable(true);
+    console.log(resultData);
+    let customFields = [];
+    resultData.map((rs) => {
+      if (
+        rs.hasOwnProperty("marks") &&
+        rs.hasOwnProperty("present") &&
+        rs.hasOwnProperty("subject") &&
+        rs.hasOwnProperty("student")
+      ) {
+        customFields.push(rs);
+      }
+    });
+    console.log(customFields);
+    const filtered = customFields.filter(
+      (v, i, a) =>
+        a.findIndex((v2) => JSON.stringify(v2) === JSON.stringify(v)) === i
+    );
+    console.log(filtered);
+    const formData = new FormData();
+    formData.set("exam_data", JSON.stringify(filtered));
+    formData.set("exam_id", examId);
+
+    try {
+      setLoading(true);
+      const data = await updateMarks( user._id,user.school,formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        return toast.error(data.err);
+      }
+      toast.success("Exam Created Successfully");
+      setLoading(false);
+      setExamId("");
+      setClas("");
+      setSection("");
+      setShowTable(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleChange = (name, student) => async (event) => {
+    console.log(name, event.target.value);
+    console.log(event.target.id);
+
+    let obj = {
+      present: "Y",
+      subject: event.target.id,
+      student: student,
+    };
+    if (name === "marks") {
+      obj.marks = event.target.value;
+    } else if (name === "present") {
+      obj.present = event.target.value;
+    }
+    console.log(obj);
+    setResult([...result, obj]);
+    result.map((rs) => {
+      console.log(rs);
+      if (
+        rs.hasOwnProperty("marks") &&
+        rs.hasOwnProperty("present") &&
+        rs.hasOwnProperty("subject") &&
+        rs.hasOwnProperty("student")
+      ) {
+        if (rs.subject === event.target.id) {
+          if (name === "marks") {
+            rs.marks = event.target.value;
+          } else if (name === "present") {
+            rs.present = event.target.value;
+          }
+        }
+
+        console.log(rs);
+        setResultData([...resultData, rs]);
+        return;
+      }
+    });
+    console.log(resultData);
+
+   
   };
 
   return (
@@ -132,6 +216,27 @@ const MarksMaster = () => {
           <CardBody>
             <Form>
               <Row>
+                <Col>
+                  <label
+                    className="form-control-label"
+                    htmlFor="exampleFormControlSelect3"
+                  >
+                    Exam
+                  </label>
+                  <Input
+                    id="exampleFormControlTextarea1"
+                    type="select"
+                    required
+                    onChange={(e) => setExamId(e.target.value)}
+                    value={examId}
+                    name="examId"
+                  >
+                    <option value="" disabled>
+                      Select Exam
+                    </option>
+                    <option value="6324f3308332c411dc022484">Test</option>
+                  </Input>
+                </Col>
                 <Col>
                   <label
                     className="form-control-label"
@@ -200,22 +305,71 @@ const MarksMaster = () => {
               <h2>Marks Distribution</h2>
             </CardHeader>
             <CardBody>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="table_div_fees">
                   <table className="fees_table">
                     <thead style={{ backgroundColor: "#c0c0c0" }}>
                       <tr>
                         <th style={{ backgroundColor: "#c0c0c0" }}>Roll No.</th>
                         <th style={{ backgroundColor: "#c0c0c0" }}>Name</th>
-                        { selectedSection?.subject.map((subject, index) => {
+                        {selectedSection?.subject.map((subject, index) => {
                           return (
                             <React.Fragment key={index}>
-                              <th style={{ backgroundColor: "#c0c0c0" }}>
-                                {subject.name}
-                              </th>
-                              <th style={{ backgroundColor: "#c0c0c0" }}>
-                                Attendance
-                              </th>
+                              <>
+                                {subject.type === "Group" && (
+                                  <>
+                                    <th
+                                      style={{
+                                        backgroundColor: "#c0c0c0",
+                                        fontWeight: "900",
+                                      }}
+                                    >
+                                      {subject.name + "(Group)"}
+                                    </th>
+                                    <th style={{ backgroundColor: "#c0c0c0" }}>
+                                      Attendance
+                                    </th>
+                                    {subject.list.map((sub, index) => {
+                                      return (
+                                        <React.Fragment key={index}>
+                                          <th
+                                            style={{
+                                              backgroundColor: "#c0c0c0",
+                                            }}
+                                          >
+                                            {sub}
+                                          </th>
+                                          <th
+                                            style={{
+                                              backgroundColor: "#c0c0c0",
+                                            }}
+                                          >
+                                            Attendance
+                                          </th>
+                                        </React.Fragment>
+                                      );
+                                    })}
+                                  </>
+                                )}
+                                {subject.type === "Single" && (
+                                  <React.Fragment key={index}>
+                                    <th
+                                      style={{
+                                        backgroundColor: "#c0c0c0",
+                                      }}
+                                    >
+                                      {subject.name}
+                                    </th>
+                                    <th
+                                      style={{
+                                        backgroundColor: "#c0c0c0",
+                                      }}
+                                    >
+                                      Attendance
+                                    </th>
+                                  </React.Fragment>
+                                )}
+                              </>
                             </React.Fragment>
                           );
                         })}
@@ -232,33 +386,128 @@ const MarksMaster = () => {
                             {selectedSection?.subject.map((subject, index) => {
                               return (
                                 <React.Fragment key={index}>
-                                  <td>
-                                    <Input
-                                      id="exampleFormControlTextarea1"
-                                      type="number"
-                                      required
-                                      // onChange={(e) => handleChange(index, e)}
-                                      // value={inputfield.min}
-                                      name="full"
-                                      placeholder="Enter Marks"
-                                    />
-                                  </td>
-                                  <td>
-                                    <Input
-                                      id="exampleFormControlTextarea1"
-                                      type="select"
-                                      required
-                                      // onChange={(e) => handleChange(index, e)}
-                                      // value={inputfield.min}
-                                      name="full"
-                                      placeholder="Enter Marks"
-                                    >
-                                        <option value="" disabled>Select Attendance</option>
-                                        <option value="present">Present</option>
-                                        <option value="absent">Absent</option>
-                                    </Input>
-                                  </td>
-                                
+                                  {subject.type === "Group" && (
+                                    <>
+                                      <td>
+                                        <Input
+                                          id={subject.name}
+                                          type="number"
+                                          required
+                                          onChange={handleChange(
+                                            "marks",
+                                            student._id
+                                          )}
+                                          // value={inputfield.min}
+                                          name="marks"
+                                          placeholder="Enter Marks"
+                                          min={0}
+                                        />
+                                      </td>
+                                      <td>
+                                        <Input
+                                          id={subject.name}
+                                          type="select"
+                                          required
+                                          onChange={handleChange(
+                                            "present",
+                                            student._id
+                                          )}
+                                          // value={inputfield.min}
+                                          name="present"
+                                          // placeholder="Enter Marks"
+                                        >
+                                          <option value="" disabled>
+                                            Select Attendance
+                                          </option>
+                                          <option value="Y">Present</option>
+                                          <option value="N">Absent</option>
+                                        </Input>
+                                      </td>
+                                      {subject.list.map((sub, index) => {
+                                        return (
+                                          <>
+                                            <td>
+                                              <Input
+                                                id={sub}
+                                                type="number"
+                                                required
+                                                onChange={handleChange(
+                                                  "marks",
+                                                  student._id
+                                                )}
+                                                // value={inputfield.min}
+                                                name="marks"
+                                                placeholder="Enter Marks"
+                                              />
+                                            </td>
+                                            <td>
+                                              <Input
+                                                id={sub}
+                                                type="select"
+                                                required
+                                                onChange={handleChange(
+                                                  "present",
+                                                  student._id
+                                                )}
+                                                // value={inputfield.min}
+                                                name="present"
+                                                // placeholder="Enter Marks"
+                                              >
+                                                <option value="" disabled>
+                                                  Select Attendance
+                                                </option>
+                                                <option value="Y">
+                                                  Present
+                                                </option>
+                                                <option value="N">
+                                                  Absent
+                                                </option>
+                                              </Input>
+                                            </td>
+                                          </>
+                                        );
+                                      })}
+                                    </>
+                                  )}
+                                  {subject.type === "Single" && (
+                                    <>
+                                      <td>
+                                        <Input
+                                          id={subject.name}
+                                          type="number"
+                                          required
+                                          onChange={handleChange(
+                                            "marks",
+                                            student._id
+                                          )}
+                                          // value={inputfield.min}
+                                          name="marks"
+                                          placeholder="Enter Marks"
+                                          min={0}
+                                        />
+                                      </td>
+                                      <td>
+                                        <Input
+                                          id={subject.name}
+                                          type="select"
+                                          required
+                                          onChange={handleChange(
+                                            "present",
+                                            student._id
+                                          )}
+                                          // value={inputfield.min}
+                                          name="present"
+                                          // placeholder="Enter Marks"
+                                        >
+                                          <option value="" disabled>
+                                            Select Attendance
+                                          </option>
+                                          <option value="Y">Present</option>
+                                          <option value="N">Absent</option>
+                                        </Input>
+                                      </td>
+                                    </>
+                                  )}
                                 </React.Fragment>
                               );
                             })}
@@ -269,12 +518,12 @@ const MarksMaster = () => {
                   </table>
                 </div>
                 <Row className="mt-4 float-right">
-                <Col>
-                  <Button color="primary" type="submit">
-                    Submit
-                  </Button>
-                </Col>
-              </Row>
+                  <Col>
+                    <Button color="primary" type="submit">
+                      Submit
+                    </Button>
+                  </Col>
+                </Row>
               </form>
             </CardBody>
           </Card>
