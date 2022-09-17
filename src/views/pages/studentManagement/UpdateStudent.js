@@ -312,7 +312,7 @@ function UpdateStudent({ studentDetails }) {
 
   const [selectedClass, setSelectedClass] = useState({});
   useEffect(() => {
-    getAllClasses();
+    getAllClasses(); 
   }, []);
 
   const getAllClasses = async () => {
@@ -344,14 +344,14 @@ function UpdateStudent({ studentDetails }) {
   const [checked, setChecked] = useState(false);
   useEffect(() => {
     console.log(checked);
-    if(studentDetails.permanent_address.length!==0){
+    if(studentDetails.permanent_address?.length!==0){
       setChecked(false);
     }else{
       setChecked(true);
     }
 
 
-    if (!checked && permanentPincode.length===0) {
+    if (!checked && permanentPincode?.length===0) {
       setPermanentPincode(pincode);
       setPermanentCity(city);
       setPermanentCountry(country);
