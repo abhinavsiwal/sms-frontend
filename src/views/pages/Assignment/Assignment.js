@@ -21,6 +21,7 @@ import { isAuthenticated } from "api/auth";
 import { toast, ToastContainer } from "react-toastify";
 import { filterStudent } from "api/student";
 import { allClass } from "api/class";
+import ViewAssignments from "./ViewAssignments";
 
 const Assignment = () => {
   const [loading, setLoading] = useState(false);
@@ -304,315 +305,325 @@ const Assignment = () => {
   }, []);
   return (
     <>
-      <SimpleHeader name="Assignment" parentName="Assignment Management" />
-      <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
-      <LoadingScreen
-        loading={loading}
-        bgColor="#f1f1f1"
-        spinnerColor="#9ee5f8"
-        textColor="#676767"
-        text="Please Wait..."
-      />
-      <Container className="mt--6">
-        <Card>
-          <CardHeader>
-            <h2>Budget Uses Details</h2>
-          </CardHeader>
-          <CardBody>
-            <form onSubmit={handleSubmit}>
-              <Row>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="example4cols2Input"
-                  >
-                    Class
-                  </label>
-                  <Input
-                    id="example4cols2Input"
-                    placeholder="Canteen Name"
-                    type="select"
-                    name="class"
-                    onChange={handleChange("class")}
-                    value={assignmentData.class}
-                    required
-                  >
-                    <option value="" disabled>
-                      Select Class
-                    </option>
-                    {classList &&
-                      classList.map((classs) => (
-                        <option key={classs._id} value={classs._id}>
-                          {classs.name}
+      {!view ? (
+        <>
+          <SimpleHeader name="Assignment" parentName="Assignment Management" />
+          <ToastContainer
+            position="bottom-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+          />
+          <LoadingScreen
+            loading={loading}
+            bgColor="#f1f1f1"
+            spinnerColor="#9ee5f8"
+            textColor="#676767"
+            text="Please Wait..."
+          />
+          <Container className="mt--6">
+            <Card>
+              <CardHeader>
+                <h2>Budget Uses Details</h2>
+              </CardHeader>
+              <CardBody>
+                <form onSubmit={handleSubmit}>
+                  <Row>
+                    <Col>
+                      <label
+                        className="form-control-label"
+                        htmlFor="example4cols2Input"
+                      >
+                        Class
+                      </label>
+                      <Input
+                        id="example4cols2Input"
+                        placeholder="Canteen Name"
+                        type="select"
+                        name="class"
+                        onChange={handleChange("class")}
+                        value={assignmentData.class}
+                        required
+                      >
+                        <option value="" disabled>
+                          Select Class
                         </option>
-                      ))}
-                  </Input>
-                </Col>
+                        {classList &&
+                          classList.map((classs) => (
+                            <option key={classs._id} value={classs._id}>
+                              {classs.name}
+                            </option>
+                          ))}
+                      </Input>
+                    </Col>
 
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="exampleFormControlSelect3"
-                  >
-                    Section
-                  </label>
-                  <Input
-                    id="exampleFormControlSelect3"
-                    type="select"
-                    required
-                    value={assignmentData.section}
-                    onChange={handleChange("section")}
-                    name="section"
-                  >
-                    <option value="" disabled>
-                      Select Section
-                    </option>
-                    {selectedClass.section &&
-                      selectedClass.section.map((section) => {
-                        // console.log(section.name);
-                        return (
-                          <option
-                            value={section._id}
-                            key={section._id}
-                            selected
-                          >
-                            {section.name}
-                          </option>
-                        );
-                      })}
-                  </Input>
-                </Col>
-              </Row>
-              <Row className="mt-4">
-                <Col>
-                  <div className="custom-control custom-checkbox mb-3">
-                    <input
-                      className="custom-control-input"
-                      id="allStudents"
-                      type="checkbox"
-                      onChange={() =>
-                        setAssignmentData({
-                          ...assignmentData,
-                          assignmentFor: "allStudents",
-                        })
-                      }
-                      //   value={penalty._id}
-                      checked={assignmentData.assignmentFor === "allStudents"}
-                    />
-                    <label
-                      className="custom-control-label"
-                      htmlFor="allStudents"
-                    >
-                      All Students
-                    </label>
-                  </div>
-                </Col>
-                <Col>
-                  <div className="custom-control custom-checkbox mb-3">
-                    <Input
-                      className="custom-control-input"
-                      id="individual"
-                      type="checkbox"
-                      onChange={() =>
-                        setAssignmentData({
-                          ...assignmentData,
-                          assignmentFor: "individual",
-                        })
-                      }
-                      checked={assignmentData.assignmentFor === "individual"}
-                      //   onChange={handleFees}
-                      //   value={penalty._id}
-                    />
-                    <label
-                      className="custom-control-label"
-                      htmlFor="individual"
-                    >
-                      Individual Students
-                    </label>
-                  </div>
-                </Col>
-              </Row>
+                    <Col>
+                      <label
+                        className="form-control-label"
+                        htmlFor="exampleFormControlSelect3"
+                      >
+                        Section
+                      </label>
+                      <Input
+                        id="exampleFormControlSelect3"
+                        type="select"
+                        required
+                        value={assignmentData.section}
+                        onChange={handleChange("section")}
+                        name="section"
+                      >
+                        <option value="" disabled>
+                          Select Section
+                        </option>
+                        {selectedClass.section &&
+                          selectedClass.section.map((section) => {
+                            // console.log(section.name);
+                            return (
+                              <option
+                                value={section._id}
+                                key={section._id}
+                                selected
+                              >
+                                {section.name}
+                              </option>
+                            );
+                          })}
+                      </Input>
+                    </Col>
+                  </Row>
+                  <Row className="mt-4">
+                    <Col>
+                      <div className="custom-control custom-checkbox mb-3">
+                        <input
+                          className="custom-control-input"
+                          id="allStudents"
+                          type="checkbox"
+                          onChange={() =>
+                            setAssignmentData({
+                              ...assignmentData,
+                              assignmentFor: "allStudents",
+                            })
+                          }
+                          //   value={penalty._id}
+                          checked={
+                            assignmentData.assignmentFor === "allStudents"
+                          }
+                        />
+                        <label
+                          className="custom-control-label"
+                          htmlFor="allStudents"
+                        >
+                          All Students
+                        </label>
+                      </div>
+                    </Col>
+                    <Col>
+                      <div className="custom-control custom-checkbox mb-3">
+                        <Input
+                          className="custom-control-input"
+                          id="individual"
+                          type="checkbox"
+                          onChange={() =>
+                            setAssignmentData({
+                              ...assignmentData,
+                              assignmentFor: "individual",
+                            })
+                          }
+                          checked={
+                            assignmentData.assignmentFor === "individual"
+                          }
+                          //   onChange={handleFees}
+                          //   value={penalty._id}
+                        />
+                        <label
+                          className="custom-control-label"
+                          htmlFor="individual"
+                        >
+                          Individual Students
+                        </label>
+                      </div>
+                    </Col>
+                  </Row>
 
-              {assignmentData.assignmentFor === "individual" && (
-                <Row>
-                  {students &&
-                    students.map((student, index) => {
-                      return (
-                        <Col key={index} md={3}>
-                          <div className="custom-control custom-checkbox mb-3">
-                            <Input
-                              className="custom-control-input"
-                              id={`customCheck${index}`}
-                              type="checkbox"
-                              onChange={handleStudents}
-                              value={student._id}
-                            />
-                            <label
-                              className="custom-control-label"
-                              htmlFor={`customCheck${index}`}
-                            >
-                              {student.firstname + " " + student.lastname}
-                            </label>
-                          </div>
-                        </Col>
-                      );
-                    })}
-                </Row>
-              )}
-              <Row>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="exampleFormControlSelect3"
-                  >
-                    Subject
-                  </label>
-                  <Input
-                    id="example4cols3Input"
-                    type="select"
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">Select Subject</option>
-                    {selectedSection &&
-                      selectedSection.subject.map((subject) => {
-                        return (
-                          <option key={subject._id} value={subject._id}>
-                            {subject.name}
-                          </option>
-                        );
-                      })}
-                  </Input>
-                </Col>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="example4cols2Input"
-                  >
-                    Title
-                  </label>
-                  <Input
-                    id="example4cols2Input"
-                    type="text"
-                    onChange={handleChange("title")}
-                    required
-                    value={assignmentData.title}
-                    placeholder="Enter Title"
-                  />
-                </Col>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="example4cols2Input"
-                  >
-                    Assignment Date
-                  </label>
-                  <Input
-                    id="example4cols2Input"
-                    type="date"
-                    onChange={handleChange("assignmentDate")}
-                    required
-                    value={assignmentData.assignmentDate}
-                    placeholder="Enter Title"
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="example4cols2Input"
-                  >
-                    Submission Date
-                  </label>
-                  <Input
-                    id="example4cols2Input"
-                    type="date"
-                    onChange={handleChange("submissionDate")}
-                    required
-                    value={assignmentData.submissionDate}
-                    // placeholder="Enter Title"
-                  />
-                </Col>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="example4cols2Input"
-                  >
-                    Marks
-                  </label>
-                  <Input
-                    id="example4cols2Input"
-                    type="number"
-                    min="0"
-                    onChange={handleChange("marks")}
-                    required
-                    value={assignmentData.marks}
-                    placeholder="Enter Marks"
-                  />
-                </Col>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="example4cols2Input"
-                  >
-                    Upload File
-                  </label>
-                  <Input
-                    id="example4cols2Input"
-                    type="file"
-                    // onChange={handleChange("file")}
-                    required
-                    // value={assignmentData.marks}
-                    placeholder="Upload File"
-                  />
-                </Col>
-              </Row>
-              <Row className="mt-4">
-                <Col
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    width: "100%",
-                  }}
-                >
-                  <Button color="primary" type="submit">
-                    Submit
-                  </Button>
-                  <Button color="danger">Cancel</Button>
-                </Col>
-              </Row>
-            </form>
-          </CardBody>
-        </Card>
-      </Container>
-      <Container>
-        <Card>
-          <CardHeader>
-            {" "}
-            <h2>View Assignments</h2>
-          </CardHeader>
-          <CardBody>
-            <AntTable
-              columns={columns}
-              data={tableData}
-              pagination={true}
-              exportFileName="staffBudget"
-            />
-          </CardBody>
-        </Card>
-      </Container>
+                  {assignmentData.assignmentFor === "individual" && (
+                    <Row>
+                      {students &&
+                        students.map((student, index) => {
+                          return (
+                            <Col key={index} md={3}>
+                              <div className="custom-control custom-checkbox mb-3">
+                                <Input
+                                  className="custom-control-input"
+                                  id={`customCheck${index}`}
+                                  type="checkbox"
+                                  onChange={handleStudents}
+                                  value={student._id}
+                                />
+                                <label
+                                  className="custom-control-label"
+                                  htmlFor={`customCheck${index}`}
+                                >
+                                  {student.firstname + " " + student.lastname}
+                                </label>
+                              </div>
+                            </Col>
+                          );
+                        })}
+                    </Row>
+                  )}
+                  <Row>
+                    <Col>
+                      <label
+                        className="form-control-label"
+                        htmlFor="exampleFormControlSelect3"
+                      >
+                        Subject
+                      </label>
+                      <Input
+                        id="example4cols3Input"
+                        type="select"
+                        onChange={handleChange}
+                        required
+                      >
+                        <option value="">Select Subject</option>
+                        {selectedSection &&
+                          selectedSection.subject.map((subject) => {
+                            return (
+                              <option key={subject._id} value={subject._id}>
+                                {subject.name}
+                              </option>
+                            );
+                          })}
+                      </Input>
+                    </Col>
+                    <Col>
+                      <label
+                        className="form-control-label"
+                        htmlFor="example4cols2Input"
+                      >
+                        Title
+                      </label>
+                      <Input
+                        id="example4cols2Input"
+                        type="text"
+                        onChange={handleChange("title")}
+                        required
+                        value={assignmentData.title}
+                        placeholder="Enter Title"
+                      />
+                    </Col>
+                    <Col>
+                      <label
+                        className="form-control-label"
+                        htmlFor="example4cols2Input"
+                      >
+                        Assignment Date
+                      </label>
+                      <Input
+                        id="example4cols2Input"
+                        type="date"
+                        onChange={handleChange("assignmentDate")}
+                        required
+                        value={assignmentData.assignmentDate}
+                        placeholder="Enter Title"
+                      />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <label
+                        className="form-control-label"
+                        htmlFor="example4cols2Input"
+                      >
+                        Submission Date
+                      </label>
+                      <Input
+                        id="example4cols2Input"
+                        type="date"
+                        onChange={handleChange("submissionDate")}
+                        required
+                        value={assignmentData.submissionDate}
+                        // placeholder="Enter Title"
+                      />
+                    </Col>
+                    <Col>
+                      <label
+                        className="form-control-label"
+                        htmlFor="example4cols2Input"
+                      >
+                        Marks
+                      </label>
+                      <Input
+                        id="example4cols2Input"
+                        type="number"
+                        min="0"
+                        onChange={handleChange("marks")}
+                        required
+                        value={assignmentData.marks}
+                        placeholder="Enter Marks"
+                      />
+                    </Col>
+                    <Col>
+                      <label
+                        className="form-control-label"
+                        htmlFor="example4cols2Input"
+                      >
+                        Upload File
+                      </label>
+                      <Input
+                        id="example4cols2Input"
+                        type="file"
+                        // onChange={handleChange("file")}
+                        required
+                        // value={assignmentData.marks}
+                        placeholder="Upload File"
+                      />
+                    </Col>
+                  </Row>
+                  <Row className="mt-4">
+                    <Col
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        width: "100%",
+                      }}
+                    >
+                      <Button color="primary" type="submit">
+                        Submit
+                      </Button>
+                      <Button color="danger">Cancel</Button>
+                    </Col>
+                  </Row>
+                </form>
+              </CardBody>
+            </Card>
+          </Container>
+          <Container>
+            <Card>
+              <CardHeader>
+                {" "}
+                <h2>View Assignments</h2>
+              </CardHeader>
+              <CardBody>
+                <AntTable
+                  columns={columns}
+                  data={tableData}
+                  pagination={true}
+                  exportFileName="staffBudget"
+                />
+              </CardBody>
+            </Card>
+          </Container>
+        </>
+      ) : (
+        <ViewAssignments setView={setView} />
+      )}
     </>
   );
 };
