@@ -10,6 +10,7 @@ import {
   Button,
   Form,
 } from "reactstrap";
+import AntTable from "../tables/AntTable";
 import { Popconfirm } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { Table } from "ant-table-extensions";
@@ -42,6 +43,8 @@ const Assignment = () => {
   const [students, setStudents] = useState([]);
   const [individualStudents, setIndividualStudents] = useState([]);
   const [selectedSection, setSelectedSection] = useState(undefined);
+  const [view, setView] = useState(false);
+  const [tableData, setTableData] = useState([]);
   const getAllClasses = async () => {
     try {
       setLoading(true);
@@ -111,6 +114,194 @@ const Assignment = () => {
     setIndividualStudents(individualStudents);
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(assignmentData);
+    console.log(individualStudents);
+  };
+
+  const columns = [
+    {
+      title: "Sr No",
+      dataIndex: "sr",
+      align: "left",
+      sorter: (a, b) => a.sr > b.sr,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+        return (
+          <>
+            <Input
+              autoFocus
+              placeholder="Type text here"
+              value={selectedKeys[0]}
+              onChange={(e) => {
+                setSelectedKeys(e.target.value ? [e.target.value] : []);
+                confirm({ closeDropdown: false });
+              }}
+              onBlur={() => {
+                confirm();
+              }}
+            ></Input>
+          </>
+        );
+      },
+      filterIcon: () => {
+        return <SearchOutlined />;
+      },
+      onFilter: (value, record) => {
+        return record.sr.toLowerCase().includes(value.toLowerCase());
+      },
+    },
+    {
+      title: "Assignment Name",
+      dataIndex: "name",
+      align: "left",
+      sorter: (a, b) => a.name > b.name,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+        return (
+          <>
+            <Input
+              autoFocus
+              placeholder="Type text here"
+              value={selectedKeys[0]}
+              onChange={(e) => {
+                setSelectedKeys(e.target.value ? [e.target.value] : []);
+                confirm({ closeDropdown: false });
+              }}
+              onBlur={() => {
+                confirm();
+              }}
+            ></Input>
+          </>
+        );
+      },
+      filterIcon: () => {
+        return <SearchOutlined />;
+      },
+      onFilter: (value, record) => {
+        return record.name.toLowerCase().includes(value.toLowerCase());
+      },
+    },
+    {
+      title: "Class & Section",
+      dataIndex: "class",
+      align: "left",
+      sorter: (a, b) => a.class > b.class,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+        return (
+          <>
+            <Input
+              autoFocus
+              placeholder="Type text here"
+              value={selectedKeys[0]}
+              onChange={(e) => {
+                setSelectedKeys(e.target.value ? [e.target.value] : []);
+                confirm({ closeDropdown: false });
+              }}
+              onBlur={() => {
+                confirm();
+              }}
+            ></Input>
+          </>
+        );
+      },
+      filterIcon: () => {
+        return <SearchOutlined />;
+      },
+      onFilter: (value, record) => {
+        return record.class.toLowerCase().includes(value.toLowerCase());
+      },
+    },
+    {
+      title: "Active",
+      dataIndex: "active",
+      align: "left",
+      sorter: (a, b) => a.active > b.active,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+        return (
+          <>
+            <Input
+              autoFocus
+              placeholder="Type text here"
+              value={selectedKeys[0]}
+              onChange={(e) => {
+                setSelectedKeys(e.target.value ? [e.target.value] : []);
+                confirm({ closeDropdown: false });
+              }}
+              onBlur={() => {
+                confirm();
+              }}
+            ></Input>
+          </>
+        );
+      },
+      filterIcon: () => {
+        return <SearchOutlined />;
+      },
+      onFilter: (value, record) => {
+        return record.active.toLowerCase().includes(value.toLowerCase());
+      },
+    },
+    {
+      title: "Action",
+      key: "action",
+      dataIndex: "action",
+      fixed: "right",
+      align: "left",
+    },
+    {
+      title: "Submitted Assignment",
+      key: "action",
+      dataIndex: "viewAssignment",
+      fixed: "right",
+      align: "left",
+    },
+  ];
+  const getAllAssignments = async () => {
+    const tableData1 = [
+      {
+        sr: 1,
+        name: "Assignment 1",
+        class: "Class 1",
+        active: "Yes",
+        action: (
+          <>
+            <Button
+              className="btn-sm pull-right"
+              color="danger"
+              type="button"
+              key={"delete" + 1}
+            >
+              <Popconfirm
+                title="Sure to delete?"
+                //   onConfirm={() => deleteBudgetHandler(data[i]._id)}
+              >
+                Remove
+              </Popconfirm>
+            </Button>
+          </>
+        ),
+        viewAssignment: (
+          <>
+            <Button
+              className="btn-sm pull-right"
+              color="primary"
+              type="button"
+              key={"edit" + 1}
+              onClick={() => {
+                setView(true);
+              }}
+            >
+              View
+            </Button>
+          </>
+        ),
+      },
+    ];
+    setTableData(tableData1);
+  };
+  useEffect(() => {
+    getAllAssignments();
+  }, []);
   return (
     <>
       <SimpleHeader name="Assignment" parentName="Assignment Management" />
@@ -139,7 +330,7 @@ const Assignment = () => {
             <h2>Budget Uses Details</h2>
           </CardHeader>
           <CardBody>
-            <form>
+            <form onSubmit={handleSubmit}>
               <Row>
                 <Col>
                   <label
@@ -292,10 +483,8 @@ const Assignment = () => {
                     type="select"
                     onChange={handleChange}
                     required
-                  > 
-                    <option value="">
-                      Select Subject
-                    </option>
+                  >
+                    <option value="">Select Subject</option>
                     {selectedSection &&
                       selectedSection.subject.map((subject) => {
                         return (
@@ -340,7 +529,7 @@ const Assignment = () => {
                 </Col>
               </Row>
               <Row>
-              <Col>
+                <Col>
                   <label
                     className="form-control-label"
                     htmlFor="example4cols2Input"
@@ -374,7 +563,7 @@ const Assignment = () => {
                   />
                 </Col>
                 <Col>
-                <label
+                  <label
                     className="form-control-label"
                     htmlFor="example4cols2Input"
                   >
@@ -391,22 +580,36 @@ const Assignment = () => {
                 </Col>
               </Row>
               <Row className="mt-4">
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                width: "100%",
-              }}
-            >
-              <Button color="primary" type="submit">
-                Submit
-              </Button>
-              <Button color="danger">
-                Cancel
-              </Button>
-            </Col>
-          </Row>
+                <Col
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    width: "100%",
+                  }}
+                >
+                  <Button color="primary" type="submit">
+                    Submit
+                  </Button>
+                  <Button color="danger">Cancel</Button>
+                </Col>
+              </Row>
             </form>
+          </CardBody>
+        </Card>
+      </Container>
+      <Container>
+        <Card>
+          <CardHeader>
+            {" "}
+            <h2>View Assignments</h2>
+          </CardHeader>
+          <CardBody>
+            <AntTable
+              columns={columns}
+              data={tableData}
+              pagination={true}
+              exportFileName="staffBudget"
+            />
           </CardBody>
         </Card>
       </Container>
