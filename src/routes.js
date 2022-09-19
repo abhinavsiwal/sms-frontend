@@ -92,7 +92,9 @@ import GradingMaster from "views/pages/Result/GradingMaster";
 import ExamMaster from "views/pages/Result/ExamMaster";
 import MarksMaster from "views/pages/Result/MarksMaster";
 import Attendance1 from "views/pages/Attendance-Refactor/Attendance1"
+import Attendance2 from "views/pages/Attendance-Refactor/Attendance2"
 import TimeTable from 'views/pages/TimeTable-Refactor/TimeTable'
+import Assignment from 'views/pages/Assignment/Assignment'
 export const adminRoutes = [
   {
     path: "/dashboard",
@@ -328,9 +330,25 @@ export const adminRoutes = [
     path: "/attendance",
     name: "Attendance",
     icon: "ni ni-badge",
-    component: Attendance,
+    component: Attendance1,
     layout: "/admin",
     module: "Student Management",
+  },
+  {
+    path: "/attendance2",
+    name: "Attendance2",
+    icon: "ni ni-badge",
+    component: Attendance2,
+    layout: "/admin",
+    module: "Student Management",
+  },
+  {
+    path: "/assignment",
+    name: "Assignment Master",
+    icon: "ni ni-badge",
+    component: Assignment,
+    layout: "/admin",
+    module: "Assignment",
   },
   // {
   //   path: "/timeTable",
