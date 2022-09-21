@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Camera from "react-html5-camera-photo";
+import {useCSVReader} from 'react-papaparse'
 import {
   Card,
   CardHeader,
@@ -48,6 +49,7 @@ import {
 import { useDispatch } from "react-redux";
 function AddStudent() {
   const dispatch = useDispatch();
+  const {CSVReader} = useCSVReader()
   // Stepper form steps
   const [step, setStep] = useState(0);
   const { classes } = useSelector((state) => state.classReducer);
@@ -166,6 +168,7 @@ function AddStudent() {
   const [imagesPreview, setImagesPreview] = useState();
   const [disableButton, setDisableButton] = useState(false);
   const [rollNoCheck, setrollNoCheck] = useState(false);
+  const buttonRef = React.useRef(null);
   useEffect(() => {
     getAllClasses();
   }, []);
@@ -804,6 +807,10 @@ function AddStudent() {
     });
   };
 
+  const handleOnFileLoad = (data)=>{
+    console.log(data);
+  }
+
   return (
     <>
       <SimpleHeader name="Add Student" parentName="Student Management" />
@@ -847,23 +854,7 @@ function AddStudent() {
               <>
                 <Row>
                   <Col className="d-flex justify-content-center mt-2">
-                    <form>
-                      <input
-                        type={"file"}
-                        id={"csvFileInput"}
-                        accept={".csv"}
-                        onChange={handleOnChange}
-                      />
-
-                      <Button
-                        onClick={(e) => {
-                          handleOnSubmit(e);
-                        }}
-                        color="primary"
-                      >
-                        IMPORT CSV
-                      </Button>
-                    </form>
+                  <CSVReader ref={buttonRef} onFileLoad={handleOnFileLoad} ></CSVReader>
                   </Col>
                 </Row>
                 <Form onSubmit={handleFormChange} className="mb-4">

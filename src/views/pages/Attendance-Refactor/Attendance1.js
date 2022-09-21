@@ -27,7 +27,9 @@ import { allSessions } from "api/session";
 import { isAuthenticated } from "api/auth";
 import AttendanceTable from "./AttendanceTable";
 import { getStudentAttendance } from "api/attendance";
-
+import DataTable from "react-data-table-component";
+import AntTable from "../tables/AntTable";
+import { element } from "prop-types";
 const Attendance1 = () => {
   const { user, token } = isAuthenticated();
   const today = new Date();
@@ -133,6 +135,7 @@ const Attendance1 = () => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
+
     const formData = {
       session: searchData.session,
       from_date: searchData.dateFrom,
@@ -151,6 +154,7 @@ const Attendance1 = () => {
         setLoading(false);
         return toast.error(data.err);
       }
+      processAbsentList(data);
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -159,6 +163,102 @@ const Attendance1 = () => {
     }
   };
 
+  const processAbsentList = (attendance) => {
+    console.log(new Date(searchData.dateFrom), new Date(searchData.dateTo));
+    const start = new Date(searchData.dateFrom);
+    const end = new Date(searchData.dateTo);
+    attendance.map((att) => {
+      console.log(att);
+      for (let date = start; date <= end; date.setDate(date.getDate() + 1)) {
+        console.log("date");
+        let attendanceList = [];
+        att.attandance.map((item) => {
+          console.log(item);
+          console.log(new Date(item.date).toDateString() === date.toDateString());
+          if (new Date(item.date).toDateString() === date.toDateString()) {
+            console.log("here");
+            attendanceList.push({
+              date: date,
+              attendance_status: item.attendance_status,
+            });
+          } else {
+            attendanceList.push({
+              date: date,
+              attendance_status: "P",
+            });
+          }
+        });
+        att.attandance = attendanceList;
+      }
+    });
+    console.log(attendance);
+    // for (let date = start; date <= end; date.setDate(date.getDate() + 1)) {
+    //   console.log(attendance);
+    //   attendance.map((att) => {
+    //     console.log(att);
+    //     let attendanceList = [];
+
+    //     att.attandance.map((item) => {
+    //       if (new Date(item.date).toDateString() === date.toDateString()) {
+    //         attendanceList.push({
+    //           date: item.date,
+    //           status: item.status,
+    //         });
+    //       } else {
+    //         attendanceList.push({
+    //           date: date,
+    //           status: "P",
+    //         });
+    //       }
+    //     });
+    //     att.attandance = attendanceList;
+    //   });
+    // }
+    // console.log(attendance);
+  };
+  const formatDate = (date) => {
+    var d = date ? new Date(date) : new Date(),
+      month = "" + (d.getMonth() + 1),
+      day = "" + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
+
+    return [year, month, day].join("");
+  };
+  const dataSource = [
+    {
+      key: "1",
+      name: "Mike",
+      age: 32,
+      address: "10 Downing Street",
+    },
+    {
+      key: "2",
+      name: "John",
+      age: 42,
+      address: "10 Downing Street",
+    },
+  ];
+
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Age",
+      dataIndex: "age",
+      key: "age",
+    },
+    {
+      title: "Address",
+      dataIndex: "address",
+      key: "address",
+    },
+  ];
   return (
     <>
       <SimpleHeader name="Student" parentName="Attendance" />
@@ -355,6 +455,18 @@ const Attendance1 = () => {
                 </Col>
               </Row>
             </form>
+          </CardBody>
+        </Card>
+      </Container>
+      <Container className="mt--0 shadow-lg table-responsive" fluid>
+        <Card>
+          <CardBody>
+            <AntTable
+              columns={columns}
+              data={dataSource}
+              pagination={true}
+              exportFileName="Attendance"
+            />
           </CardBody>
         </Card>
       </Container>

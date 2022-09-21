@@ -607,8 +607,10 @@ const Attendance2 = (props) => {
   };
 
   const processAbsentList = (absentList, joiningDates) => {
+    // console.log(absentList,joiningDates);
     const absentDictionary = {};
     absentList.forEach((absent) => {
+      console.log(absent);
       if (!absentDictionary[absent.personId]) {
         absentDictionary[absent.personId] = {
           info: absent,
@@ -620,6 +622,7 @@ const Attendance2 = (props) => {
       }
     });
     let attendanceList = [];
+    console.log(absentDictionary);
     for (let studentId of Object.keys(absentDictionary)) {
       const student = {
         id: studentId,
@@ -654,6 +657,7 @@ const Attendance2 = (props) => {
         b.firstName + " " + b.lastName
       );
     });
+    console.log(attendanceList);
     setAttendanceList(attendanceList);
     setOldAttendanceList(copyObject(attendanceList));
     setLoading(false);
@@ -856,7 +860,7 @@ const Attendance2 = (props) => {
                     type="date"
                     onChange={handleChange("dateFrom")}
                     value={attendance.dateFrom}
-                    required
+              
                   />
                 </Col>
                 <Col>
@@ -1067,7 +1071,7 @@ const Attendance2 = (props) => {
               </Row>
               <Row>
                 <Col>
-                  <AttendanceTable
+                  {/* <AttendanceTable
                     // {...props}
                     attendanceList={attendanceList}
                     isLoading={loading}
@@ -1075,7 +1079,7 @@ const Attendance2 = (props) => {
                     endDate={endDateAfterSearch}
                     changeAttendance={changeAttendance}
                     holidays={holidays}
-                  />
+                  /> */}
                 </Col>
               </Row>
             </CardHeader>

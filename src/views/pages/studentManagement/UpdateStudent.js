@@ -282,7 +282,7 @@ function UpdateStudent({ studentDetails }) {
       formData.set("permanent_pincode",permanentPincode);
     }else{
       formData.set("permanent_city", city);
-      formData.set("permanent_state",state);
+      formData.set("permanent_state",state); 
       formData.set("permanent_country",country);
       formData.set("permanent_pincode",pincode);
     }
