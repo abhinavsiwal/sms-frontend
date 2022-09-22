@@ -30,6 +30,7 @@ import { getStudentAttendance } from "api/attendance";
 import DataTable from "react-data-table-component";
 import AntTable from "../tables/AntTable";
 import { element } from "prop-types";
+import Logo from "react-loading-screen/dist/components/Logo";
 const Attendance1 = () => {
   const { user, token } = isAuthenticated();
   const today = new Date();
@@ -167,55 +168,48 @@ const Attendance1 = () => {
     console.log(new Date(searchData.dateFrom), new Date(searchData.dateTo));
     const start = new Date(searchData.dateFrom);
     const end = new Date(searchData.dateTo);
-    attendance.map((att) => {
+    let dates = [];
+    let loop = new Date(start);
+    while (loop <= end) {
+      
+      dates.push(new Date(loop));
+      let newDate = loop.setDate(loop.getDate() + 1);
+      loop = new Date(newDate);
+    }
+    console.log(dates);
+    console.log(attendance);
+    attendance.forEach((att) => {
       console.log(att);
-      for (let date = start; date <= end; date.setDate(date.getDate() + 1)) {
-        console.log("date");
-        let attendanceList = [];
-        att.attandance.map((item) => {
-          console.log(item);
-          console.log(new Date(item.date).toDateString() === date.toDateString());
+      let attendanceList = [];
+      att.attandance.every((item) => {
+        console.log(item);
+      dates.every((date) => {
+        console.log(date);
           if (new Date(item.date).toDateString() === date.toDateString()) {
             console.log("here");
             attendanceList.push({
               date: date,
               attendance_status: item.attendance_status,
             });
+            return true;
           } else {
             attendanceList.push({
               date: date,
               attendance_status: "P",
             });
+            return true;
           }
+          
         });
-        att.attandance = attendanceList;
-      }
+
+        console.log(attendanceList);
+        return true;
+      });
+      att.attandance = attendanceList;
     });
     console.log(attendance);
-    // for (let date = start; date <= end; date.setDate(date.getDate() + 1)) {
-    //   console.log(attendance);
-    //   attendance.map((att) => {
-    //     console.log(att);
-    //     let attendanceList = [];
-
-    //     att.attandance.map((item) => {
-    //       if (new Date(item.date).toDateString() === date.toDateString()) {
-    //         attendanceList.push({
-    //           date: item.date,
-    //           status: item.status,
-    //         });
-    //       } else {
-    //         attendanceList.push({
-    //           date: date,
-    //           status: "P",
-    //         });
-    //       }
-    //     });
-    //     att.attandance = attendanceList;
-    //   });
-    // }
-    // console.log(attendance);
   };
+
   const formatDate = (date) => {
     var d = date ? new Date(date) : new Date(),
       month = "" + (d.getMonth() + 1),

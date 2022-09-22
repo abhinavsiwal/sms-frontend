@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Camera from "react-html5-camera-photo";
-import {useCSVReader} from 'react-papaparse'
+// import {useCSVReader} from 'react-papaparse'
 import {
   Card,
   CardHeader,
@@ -49,7 +49,7 @@ import {
 import { useDispatch } from "react-redux";
 function AddStudent() {
   const dispatch = useDispatch();
-  const {CSVReader} = useCSVReader()
+  // const {CSVReader} = useCSVReader()
   // Stepper form steps
   const [step, setStep] = useState(0);
   const { classes } = useSelector((state) => state.classReducer);
@@ -854,7 +854,7 @@ function AddStudent() {
               <>
                 <Row>
                   <Col className="d-flex justify-content-center mt-2">
-                  <CSVReader ref={buttonRef} onFileLoad={handleOnFileLoad} ></CSVReader>
+                  {/* <CSVReader ref={buttonRef} onFileLoad={handleOnFileLoad} ></CSVReader> */}
                   </Col>
                 </Row>
                 <Form onSubmit={handleFormChange} className="mb-4">
