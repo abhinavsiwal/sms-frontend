@@ -95,6 +95,7 @@ import Attendance1 from "views/pages/Attendance-Refactor/Attendance1"
 import Attendance2 from "views/pages/Attendance-Refactor/Attendance2"
 import TimeTable from 'views/pages/TimeTable-Refactor/TimeTable'
 import Assignment from 'views/pages/Assignment/Assignment'
+import Promotion from 'views/pages/Result/Promotion'
 export const adminRoutes = [
   {
     path: "/dashboard",
@@ -331,14 +332,6 @@ export const adminRoutes = [
     name: "Attendance",
     icon: "ni ni-badge",
     component: Attendance1,
-    layout: "/admin",
-    module: "Student Management",
-  },
-  {
-    path: "/attendance2",
-    name: "Attendance2",
-    icon: "ni ni-badge",
-    component: Attendance2,
     layout: "/admin",
     module: "Student Management",
   },
@@ -761,6 +754,14 @@ export const adminRoutes = [
         name: "Marks Master",
         miniName: "MM",
         component: MarksMaster,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/promotions ",
+        name: "Promotions",
+        miniName: "P",
+        component: Promotion,
         layout: "/admin",
         permission: "add",
       },
