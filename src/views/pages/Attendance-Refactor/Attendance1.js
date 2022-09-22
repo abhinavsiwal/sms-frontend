@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useReducer } from "react";
 
 import {
   Container,
@@ -31,6 +31,8 @@ import DataTable from "react-data-table-component";
 import AntTable from "../tables/AntTable";
 import { element } from "prop-types";
 import Logo from "react-loading-screen/dist/components/Logo";
+import { updateAttendance } from "api/attendance";
+import { updateStudentAttendance } from "api/attendance";
 const Attendance1 = () => {
   const { user, token } = isAuthenticated();
   const today = new Date();
@@ -59,6 +61,8 @@ const Attendance1 = () => {
   const [loading, setLoading] = useState(false);
   const [selectedClass, setSelectedClass] = useState({});
   const [viewAttendance, setViewAttendance] = useState(false);
+  const [readOnly, setReadOnly] = useState(false);
+  const [formData, setFormData] = useState([]);
   const [searchData, setSearchData] = useState({
     dateFrom: startDate,
     dateTo: endDate,
@@ -68,6 +72,7 @@ const Attendance1 = () => {
     selectClass: "",
     selectSection: "",
   });
+  const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
   const getAllClass = async () => {
     const { user, token } = isAuthenticated();
     const classes = await allClass(user._id, user.school, token);
@@ -155,6 +160,7 @@ const Attendance1 = () => {
         setLoading(false);
         return toast.error(data.err);
       }
+      setViewAttendance(true);
       processAbsentList(data);
       setLoading(false);
     } catch (err) {
@@ -171,7 +177,6 @@ const Attendance1 = () => {
     let dates = [];
     let loop = new Date(start);
     while (loop <= end) {
-      
       dates.push(new Date(loop));
       let newDate = loop.setDate(loop.getDate() + 1);
       loop = new Date(newDate);
@@ -181,33 +186,28 @@ const Attendance1 = () => {
     attendance.forEach((att) => {
       console.log(att);
       let attendanceList = [];
-      att.attandance.every((item) => {
-        console.log(item);
-      dates.every((date) => {
-        console.log(date);
-          if (new Date(item.date).toDateString() === date.toDateString()) {
-            console.log("here");
-            attendanceList.push({
-              date: date,
-              attendance_status: item.attendance_status,
-            });
-            return true;
-          } else {
-            attendanceList.push({
-              date: date,
-              attendance_status: "P",
-            });
-            return true;
-          }
-          
-        });
-
-        console.log(attendanceList);
-        return true;
+      dates.forEach((date) => {
+        const found = att.attandance.find(
+          (el) => new Date(el.date).toDateString() === date.toDateString()
+        );
+        if (found) {
+          attendanceList.push({
+            date: date,
+            attendance_status: found.attendance_status,
+          });
+        } else if (!found) {
+          attendanceList.push({
+            date: date,
+            attendance_status: "P",
+          });
+        }
       });
+
+      console.log(attendanceList);
       att.attandance = attendanceList;
     });
     console.log(attendance);
+    setAttendanceList(attendance);
   };
 
   const formatDate = (date) => {
@@ -219,40 +219,170 @@ const Attendance1 = () => {
     if (month.length < 2) month = "0" + month;
     if (day.length < 2) day = "0" + day;
 
-    return [year, month, day].join("");
+    return [year, month, day].join("/");
   };
-  const dataSource = [
-    {
-      key: "1",
-      name: "Mike",
-      age: 32,
-      address: "10 Downing Street",
-    },
-    {
-      key: "2",
-      name: "John",
-      age: 42,
-      address: "10 Downing Street",
-    },
-  ];
+  const formatDate1 = (date) => {
+    var d = date ? new Date(date) : new Date(),
+      month = "" + (d.getMonth() + 1),
+      day = "" + d.getDate(),
+      year = d.getFullYear();
 
-  const columns = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
-    },
-    {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
-    },
-  ];
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
+
+    return [year, month, day].join("-");
+  };
+  const getColumnList = () => {
+    const columns = [
+      {
+        name: "#",
+        cell: (person, index) => index + 1,
+        width: "50px",
+      },
+      {
+        name: "Name",
+        cell: (person) => person.firstname + " " + person.lastname,
+        width: "200px",
+      },
+    ];
+    for (
+      let date = new Date(searchData.dateFrom), index = 0;
+      date <= new Date(searchData.dateTo);
+      date.setDate(date.getDate() + 1), index++
+    ) {
+      columns.push({
+        name: <span title={formatDate(date)}>{date.getDate()}</span>,
+        center: true,
+        cell: (person, studentIndex) => {
+          const status = person.attandance[index].attendance_status;
+          const currentDate = person.attandance[index].date;
+          if (currentDate < person.joiningDate) {
+            return null;
+          }
+          if (currentDate > new Date()) {
+            return null;
+          }
+
+          return (
+            <span
+              style={{ cursor: readOnly ? "default" : "pointer" }}
+              onClick={(event) =>
+                !readOnly ? changeAttendance(studentIndex, index) : null
+              }
+            >
+              {status === "P" ? (
+                <i
+                  className="ni ni-single-02 text-light bg-success p-2"
+                  style={{ borderRadius: "50%" }}
+                />
+              ) : status === "A" ? (
+                <i
+                  className="ni ni-single-02 text-light bg-danger p-2"
+                  style={{ borderRadius: "50%" }}
+                />
+              ) : status === "L" ? (
+                <i
+                  className="ni ni-single-02 text-light bg-warning p-2"
+                  style={{ borderRadius: "50%" }}
+                />
+              ) : status === "H" ? (
+                <i
+                  className="ni ni-single-02 text-light bg-info p-2"
+                  style={{ borderRadius: "50%" }}
+                />
+              ) : null}
+            </span>
+          );
+        },
+        width: "40px",
+      });
+    }
+    return columns;
+  };
+  const changeAttendance = (studentIndex, dateIndex) => {
+    console.log(studentIndex, dateIndex);
+    const attendanceList1 = attendanceList;
+    const student = attendanceList1[studentIndex];
+
+    switch (student.attandance[dateIndex].attendance_status) {
+      case "P":
+        student.attandance[dateIndex].attendance_status = "A";
+        break;
+      case "A":
+        student.attandance[dateIndex].attendance_status = "L";
+        break;
+      case "L":
+        student.attandance[dateIndex].attendance_status = "H";
+        break;
+      case "H":
+        student.attandance[dateIndex].attendance_status = "P";
+        break;
+      default:
+        break;
+    }
+    attendanceList1[studentIndex] = student;
+    setAttendanceList(attendanceList1);
+    forceUpdate();
+    console.log(student);
+    console.log(student.attandance[dateIndex]);
+
+    let obj = {
+      attendance_status: student.attandance[dateIndex].attendance_status,
+      date:formatDate1(student.attandance[dateIndex].date),
+      student: student._id,
+    };
+    setFormData([...formData, obj]);
+  };
+  useEffect(() => {
+    getColumnList();
+  }, [attendanceList]);
+
+  const commitAttendance = async () => {
+    console.log(formData);
+    let attendanceData = formData.filter(
+      (v, i, a) => a.findLastIndex((v2) => v2.student === v.student) === i
+    );
+    console.log(attendanceData);
+    const formD = {
+      attandance_data: attendanceData,
+      class: searchData.selectClass,
+      section: searchData.selectSection,
+      from_date:formatDate1(searchData.dateFrom),
+      to_date: formatDate1(searchData.dateTo),
+      session: searchData.session,
+    };
+    try {
+      setLoading(true);
+      const data = await updateStudentAttendance(
+        user._id,
+        user.school,
+        JSON.stringify(formD)
+      );
+      console.log(data);
+      if (data.err) {
+        toast.error(data.err);
+        return setLoading(false);
+      }
+      setLoading(false);
+      toast.success("Attendance Updated Successfully");
+      setViewAttendance(false);
+      setSearchData({
+        
+        dateFrom: "",
+        dateTo: "",
+        session: "",
+        selectClass: "",
+        selectSection: "",
+      });
+      setAttendanceList([]);
+      setFormData([]);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error("Something went wrong");
+    }
+  };
+
   return (
     <>
       <SimpleHeader name="Student" parentName="Attendance" />
@@ -452,18 +582,75 @@ const Attendance1 = () => {
           </CardBody>
         </Card>
       </Container>
-      <Container className="mt--0 shadow-lg table-responsive" fluid>
-        <Card>
-          <CardBody>
-            <AntTable
-              columns={columns}
-              data={dataSource}
-              pagination={true}
-              exportFileName="Attendance"
-            />
-          </CardBody>
-        </Card>
-      </Container>
+      {viewAttendance && (
+        <Container className="mt--0 shadow-lg table-responsive" fluid>
+          <Card>
+            <CardHeader>
+              <Row className="header_main">
+                <Col md={3}>
+                  <div className="col-sm">
+                    <h3 className="start-end">
+                      {/* {startOfMonth} - {endOfMonth} */}
+                    </h3>
+                  </div>
+                </Col>
+                <Col>
+                  <div className="icons_list">
+                    <div>
+                      <i
+                        className="ni ni-single-02 text-light bg-success p-2"
+                        style={{ borderRadius: "50%" }}
+                      />
+                      <span className="tags p-2">Present</span>
+                    </div>
+                    <div>
+                      <i
+                        className="ni ni-single-02 text-light bg-danger p-2"
+                        style={{ borderRadius: "50%" }}
+                      />
+                      <span className="tags p-2">Absent</span>
+                    </div>
+                    <div>
+                      <i
+                        className="ni ni-single-02 text-light bg-warning p-2"
+                        style={{ borderRadius: "50%" }}
+                      />
+                      <span className="tags p-2">Leave</span>
+                    </div>
+                    <div>
+                      <i
+                        className="ni ni-single-02 text-light bg-info p-2"
+                        style={{ borderRadius: "50%" }}
+                      />
+                      <span className="tags p-2">Half Day</span>
+                    </div>
+                  </div>
+                </Col>
+                <Col className="buttons" md={3}>
+                  <div className="col-sm">
+                    <Button
+                      className="attendance-button"
+                      onClick={commitAttendance}
+                      color="primary"
+                    >
+                      Save
+                    </Button>
+                  </div>
+                </Col>
+              </Row>
+            </CardHeader>
+            <CardBody>
+              <DataTable
+                columns={getColumnList()}
+                data={attendanceList}
+                persistTableHead={true}
+                progressPending={loading}
+                selectableRowsVisibleOnly={true}
+              />
+            </CardBody>
+          </Card>
+        </Container>
+      )}
     </>
   );
 };

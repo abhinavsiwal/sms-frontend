@@ -1071,7 +1071,7 @@ const Attendance2 = (props) => {
               </Row>
               <Row>
                 <Col>
-                  {/* <AttendanceTable
+                  <AttendanceTable
                     // {...props}
                     attendanceList={attendanceList}
                     isLoading={loading}
@@ -1079,7 +1079,7 @@ const Attendance2 = (props) => {
                     endDate={endDateAfterSearch}
                     changeAttendance={changeAttendance}
                     holidays={holidays}
-                  /> */}
+                  />
                 </Col>
               </Row>
             </CardHeader>

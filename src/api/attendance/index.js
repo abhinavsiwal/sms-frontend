@@ -71,3 +71,18 @@ export const getStudentAttendance = async (userId, schoolId, formData) => {
       throw error;
   }
 }
+
+
+export const updateStudentAttendance = async (userId, schoolId, formData) => {
+  try {
+    const { data } = await sendRequestWithJson(
+    `${process.env.REACT_APP_API_URL}/api/school/attendance/update_student_attandance/${schoolId}/${userId}`,
+    formData,
+    "POST"
+    );
+    return data;
+} catch (error) {
+    console.log(error);
+    throw error;
+}
+}
