@@ -7,5 +7,6 @@ const routes = [
 		layout: '/auth'
 	}
 ];
+// dgd
 
 export default routes;
