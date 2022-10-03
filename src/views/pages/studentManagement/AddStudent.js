@@ -14,9 +14,12 @@ import {
   Button,
   Form,
   FormFeedback,
+  Modal,
+  ModalBody,
+  ModalHeader,
 } from "reactstrap";
 // core components
-import {uploadFile} from "api/upload"
+import { uploadFile } from "api/upload";
 import DatePicker from "react-datepicker";
 import SimpleHeader from "components/Headers/SimpleHeader.js";
 import axios from "axios";
@@ -168,6 +171,10 @@ function AddStudent() {
   const [imagesPreview, setImagesPreview] = useState();
   const [disableButton, setDisableButton] = useState(false);
   const [rollNoCheck, setrollNoCheck] = useState(false);
+  const [csvModal, setCsvModal] = useState(false);
+  const [csvClass, setCsvClass] = useState("");
+  const [csvSelectedClass, setCsvSelectedClass] = useState({});
+  const [csvSection, setCsvSection] = useState("");
   const buttonRef = React.useRef(null);
   useEffect(() => {
     getAllClasses();
@@ -807,9 +814,22 @@ function AddStudent() {
     });
   };
 
-  const handleOnFileLoad = (data)=>{
+  const handleOnFileLoad = (data) => {
     console.log(data);
-  }
+  };
+
+  useEffect(() => {
+    console.log(csvClass);
+    if (csvClass !== "") {
+      filteredCSVClass();
+      return;
+    }
+  }, [csvClass]);
+
+  const filteredCSVClass = async () => {
+    let filteredClass = await classes.find((item) => item._id === csvClass);
+    setCsvSelectedClass(filteredClass);
+  };
 
   return (
     <>
@@ -826,6 +846,106 @@ function AddStudent() {
         pauseOnHover
         theme="colored"
       />
+      <Modal
+        className="modal-dialog-centered"
+        isOpen={csvModal}
+        toggle={() => setCsvModal(true)}
+        size="sm"
+      >
+        <div className="modal-header">
+          <h2>Upload CSV</h2>
+          <button
+            aria-label="Close"
+            className="close"
+            data-dismiss="modal"
+            type="button"
+            onClick={() => setCsvModal(false)}
+          >
+            <span aria-hidden={true}>×</span>
+          </button>
+        </div>
+        <ModalBody>
+          <form>
+            <Row>
+              <Col>
+                <label className="form-control-label">Class</label>
+                <Input
+                  id="exampleFormControlSelect3"
+                  type="select"
+                  required
+                  onChange={(e) => setCsvClass(e.target.value)}
+                  value={csvClass}
+                >
+                  <option value="" disabled>
+                    Select Class
+                  </option>
+                  {classes &&
+                    classes.map((clas, index) => {
+                      // setselectedClassIndex(index)
+                      return (
+                        <option value={clas._id} key={index}>
+                          {clas.name}
+                        </option>
+                      );
+                    })}
+                </Input>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <label
+                  className="form-control-label"
+                  htmlFor="exampleFormControlSelect3"
+                >
+                  Section
+                </label>
+                <Input
+                  id="exampleFormControlSelect3"
+                  type="select"
+                  required
+                  onChange={(e) => csvSection(e.target.value)}
+                  value={csvSection}
+                >
+                  <option value="" disabled>
+                    Select Section
+                  </option>
+                  {csvSelectedClass.section &&
+                    csvSelectedClass.section.map((section) => {
+                      // console.log(section.name);
+                      return (
+                        <option value={section._id} key={section._id} selected>
+                          {section.name}
+                        </option>
+                      );
+                    })}
+                </Input>
+              </Col>
+            </Row>
+            <Row>
+              <Col className="my-2" >
+                <input
+                  type={"file"}
+                  id={"csvFileInput"}
+                  accept={".csv"}
+                  onChange={handleOnChange}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Button
+                  onClick={(e) => {
+                    handleOnSubmit(e);
+                  }}
+                  color="primary"
+                >
+                  IMPORT CSV
+                </Button>
+              </Col>
+            </Row>
+          </form>
+        </ModalBody>
+      </Modal>
       <Container className="mt--6 shadow-lg" fluid>
         {loading ? (
           <Loader />
@@ -853,8 +973,10 @@ function AddStudent() {
             {step === 0 && (
               <>
                 <Row>
-                  <Col className="d-flex justify-content-center mt-2">
-                  {/* <CSVReader ref={buttonRef} onFileLoad={handleOnFileLoad} ></CSVReader> */}
+                  <Col className="d-flex justify-content-start mt-2">
+                    <Button onClick={() => setCsvModal(true)} color="primary">
+                      Upload CSV
+                    </Button>
                   </Col>
                 </Row>
                 <Form onSubmit={handleFormChange} className="mb-4">
@@ -1335,7 +1457,7 @@ function AddStudent() {
                       <label
                         className="form-control-label"
                         htmlFor="example4cols2Input"
-                      > 
+                      >
                         Previous School
                       </label>
                       <Input
