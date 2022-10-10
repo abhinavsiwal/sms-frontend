@@ -23,7 +23,6 @@ import { allClass } from "api/class";
 import { isAuthenticated } from "api/auth";
 import { ToastContainer, toast } from "react-toastify";
 import { allSessions } from "api/session";
-import { allStaffs } from "api/staff";
 import { allSubjects } from "api/subjects";
 import { Popconfirm } from "antd";
 import LoadingScreen from "react-loading-screen";
@@ -127,12 +126,12 @@ const TimeTable1 = () => {
       toast.error("Something Went Wrong!");
     }
   };
-// Get All staff data
-const getAllStaffs = async () => {
+  // Get All staff data
+  const getAllStaffs = async () => {
     try {
       setLoading(true);
       const { data } = await allStaffs(user.school, user._id);
-      console.log(data);
+      console.log("staff=>=>=>=>=>=>==>=>=>=>=>", data);
       //   let canteenStaff = data.find((staff) => staff.assign_role === "library");
       setAllStaff(data);
       setLoading(false);
@@ -182,6 +181,12 @@ const getAllStaffs = async () => {
   }
   function getMoment(time) {
     return moment(new Date().toDateString() + " " + time);
+  }
+  function isOverlapping(slot1, slot2) {
+    return !(
+      (slot1[0] <= slot2[0] && slot1[1] <= slot2[0]) ||
+      (slot1[0] >= slot2[1] && slot1[1] >= slot2[1])
+    );
   }
 
   const getTimetableColumnList = (plainText = false) => {
@@ -246,15 +251,90 @@ const getAllStaffs = async () => {
                     return <option value={subject._id}>{subject.name}</option>;
                   })}
                 </select>
-
+                <select
+                  className="custom-select"
+                  value={schedule.staff._id}
+                  //   onChange={(event) =>
+                  //     handleInputChange(
+                  //       event,
+                  //       `schedules.${schedule.index}.staffId`
+                  //     )
+                  //   }
+                >
+                  <option value="" selected="true">
+                    Staff
+                  </option>
+                  {allStaff
+                    .filter((teacher) =>
+                      teacher.subjects.includes(schedule.subject)
+                    )
+                    .map((teacher) => {
+                      let available = true;
+                      for (let timeFrame of teacher.occupied) {
+                        if (
+                          timeFrame.day === day &&
+                          isOverlapping(
+                            [timeFrame.fromTime, timeFrame.toTime],
+                            [schedule.fromTime, schedule.toTime]
+                          )
+                        ) {
+                          available = false;
+                          break;
+                        }
+                      }
+                      return (
+                        <option value={teacher._id} disabled={!available}>
+                          {teacher.firstname + " " + teacher.lastname}
+                          {available ? "" : " (Not Available)"}
+                        </option>
+                      );
+                    })}
+                </select>
               </div>
             );
           },
         };
       }),
     ];
+    if (admin) {
+      columns.push({
+        name: "Action",
+        cell: (schedule) => {
+          if (typeof schedule[WorkingDaysList[0]] === "string") {
+            return <></>;
+          }
+          return (
+            <button
+              type="button"
+              className="btn btn-icon btn-sm"
+              title="Delete"
+              data-type="confirm"
+              onClick={() => deleteSchedule(schedule.fromTime, schedule.toTime)}
+            >
+              <i className="fa fa-trash-o text-danger"></i>
+            </button>
+          );
+        },
+      });
+    }
   };
+  function deleteSchedule(fromTime, toTime) {
+    const schedules = [];
+    for (let schedule of schedules) {
+      if (schedule.fromTime === fromTime && schedule.toTime === toTime) {
+        if (schedule.id) {
+          schedule.action = "delete";
+          schedules.push(schedule);
+        }
+      } else {
+        schedules.push(schedule);
+      }
+    }
+    setSchedules(schedules);
+  }
 
+
+  
   return (
     <>
       <SimpleHeader name="Class View" parentName="Time Table" />

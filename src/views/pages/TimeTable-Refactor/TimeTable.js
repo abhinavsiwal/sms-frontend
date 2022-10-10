@@ -1881,7 +1881,9 @@ const TimeTable = () => {
           label: "Recess",
         };
         console.log(tableData);
+        console.log("schedules======>>>",tableData.schedules);
     setSchedules(tableData.schedules);
+console.log("teacher--->",tableData.teachers);
     setRecess(other);
     setTeachers(tableData.teachers);
     setLoading(false);
