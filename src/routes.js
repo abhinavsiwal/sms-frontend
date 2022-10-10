@@ -94,6 +94,7 @@ import MarksMaster from "views/pages/Result/MarksMaster";
 import Attendance1 from "views/pages/Attendance-Refactor/Attendance1"
 import Attendance2 from "views/pages/Attendance-Refactor/Attendance2"
 import TimeTable from 'views/pages/TimeTable-Refactor/TimeTable'
+import TimeTable1 from 'views/pages/TimeTable-Refactor/TimeTable1'
 import Assignment from 'views/pages/Assignment/Assignment'
 import Promotion from 'views/pages/Result/Promotion'
 export const adminRoutes = [
@@ -363,6 +364,14 @@ export const adminRoutes = [
         name: "Add Time Table",
         miniName: "A",
         component: TimeTable,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/time_table",
+        name: "Time Table",
+        miniName: "A",
+        component: TimeTable1,
         layout: "/admin",
         permission: "add",
       },
