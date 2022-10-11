@@ -57,7 +57,7 @@ import {
 } from "react-country-region-selector";
 
 function AddStaff() {
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(3);
   const { user } = isAuthenticated();
   const [loading, setloading] = useState(false);
   const [staffData, setStaffData] = useState({

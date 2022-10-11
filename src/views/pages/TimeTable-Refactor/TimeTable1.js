@@ -333,8 +333,19 @@ const TimeTable1 = () => {
     setSchedules(schedules);
   }
 
+  const getMappedSchedules = () => {
+    const schedulesByTime = {};
+    for (let schedule of schedules.map((schedule, index) => {
+      return { ...schedule, index: index };
+    })){
+       if (schedule.action === "delete") {
+        continue;
+      }
+      const timeString = schedule.fromTime + " - " + schedule.toTime;
+    }
+  }
 
-  
+
   return (
     <>
       <SimpleHeader name="Class View" parentName="Time Table" />
@@ -594,6 +605,47 @@ const TimeTable1 = () => {
                   </>
                 )}
               </form>
+              <div id="time-table-class-view">
+                <DataTable
+                  columns={getTimetableColumnList()}
+                  // data={getMappedSchedules()}
+                  persistTableHead={true}
+                  progressPending={loading}
+                  selectableRowsVisibleOnly={true}
+                  pointerOnHover={true}
+                />
+              </div>
+              <div className="d-none">
+                <div id="time-table-printable">
+                  <div className="h3 text-center">
+                    {/* {className} - {sectionName} */}
+                  </div>
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        {getTimetableColumnList()
+                          .slice(0, getTimetableColumnList().length - 1)
+                          .map((column) => {
+                            return <th>{column.name}</th>;
+                          })}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {getMappedSchedules().map((schedule) => {
+                        return (
+                          <tr>
+                            {getTimetableColumnList(true)
+                              .slice(0, getTimetableColumnList().length - 1)
+                              .map((column) => {
+                                return <td>{column.cell(schedule)}</td>;
+                              })}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </CardBody>
           </Card>
         </Container>
