@@ -97,6 +97,8 @@ import TimeTable from 'views/pages/TimeTable-Refactor/TimeTable'
 import TimeTable1 from 'views/pages/TimeTable-Refactor/TimeTable1'
 import Assignment from 'views/pages/Assignment/Assignment'
 import Promotion from 'views/pages/Result/Promotion'
+import Hostel from "views/pages/FeesManagement/Hostel";
+import Transport from "views/pages/FeesManagement/Transport";
 export const adminRoutes = [
   {
     path: "/dashboard",
@@ -624,6 +626,22 @@ export const adminRoutes = [
         name: "Pending Fees",
         miniName: "PF",
         component: PendingFees,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/hostel-fees",
+        name: "Hostel Fees",
+        miniName: "HF",
+        component: Hostel,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/transportation-fees",
+        name: "Transportation Fees",
+        miniName: "TF",
+        component: Transport,
         layout: "/admin",
         permission: "add",
       },
