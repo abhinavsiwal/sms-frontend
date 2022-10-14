@@ -868,6 +868,36 @@ function AddStudent() {
           <form>
             <Row>
               <Col>
+                <label
+                  className="form-control-label"
+                  htmlFor="example4cols2Input"
+                >
+                  Session
+                </label>
+
+                <select
+                  className="form-control"
+                  required
+                  // onChange={handleChange("session")}
+                  value={studentData.session}
+                >
+                  <option value="" disabled>
+                    Select Session
+                  </option>
+                  {sessions &&
+                    sessions.map((data) => {
+                      console.log(data);
+                      return (
+                        <option key={data._id} value={data._id}>
+                          {data.name}
+                        </option>
+                      );
+                    })}
+                </select>
+              </Col>
+              </Row>
+              <Row>
+              <Col>
                 <label className="form-control-label">Class</label>
                 <Input
                   id="exampleFormControlSelect3"
@@ -922,7 +952,7 @@ function AddStudent() {
               </Col>
             </Row>
             <Row>
-              <Col className="my-2" >
+              <Col className="my-2">
                 <input
                   type={"file"}
                   id={"csvFileInput"}
