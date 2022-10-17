@@ -583,24 +583,8 @@ const AddSession = () => {
                         />
                       </Col>
 
-                      <Col>
-                        <label
-                          className="form-control-label"
-                          htmlFor="example-date-input"
-                        >
-                          Starting Date
-                        </label>
-                        <Input
-                          id="example-date-input"
-                          type="date"
-                          onChange={handleDate("start_date")}
-                          required
-                          placeholder="dd-mm-yyyy"
-                          value={sessionData.start_date}
-                        />
-                      </Col>
-                    </Row>
-                    <Row className="mt-4">
+                
+                
                       <Col>
                         <label
                           className="form-control-label"
@@ -645,6 +629,22 @@ const AddSession = () => {
                       </Col>
                     </Row>
                     <Row className="mt-4">
+                    <Col>
+                        <label
+                          className="form-control-label"
+                          htmlFor="example-date-input"
+                        >
+                          Starting Date
+                        </label>
+                        <Input
+                          id="example-date-input"
+                          type="date"
+                          onChange={handleDate("start_date")}
+                          required
+                          placeholder="dd-mm-yyyy"
+                          value={sessionData.start_date}
+                        />
+                      </Col>
                       <Col>
                         <label
                           className="form-control-label"

@@ -264,7 +264,7 @@ function CalendarView() {
         className: events.event_type,
         description: events.description,
         id: events._id,
-        assignTeacher: events.assignTeachers._id,
+        assignTeacher: events.assignTeacher && events.assignTeachers._id,
         assignTeacherName:
           events.assignTeachers.firstname +
           " " +

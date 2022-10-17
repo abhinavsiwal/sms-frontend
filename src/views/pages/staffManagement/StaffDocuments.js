@@ -20,9 +20,9 @@ import SimpleHeader from "components/Headers/SimpleHeader";
 import LoadingScreen from "react-loading-screen";
 import { isAuthenticated } from "api/auth";
 import { toast, ToastContainer } from "react-toastify";
-import { getStaffByDepartment, allStaffs } from "api/staff";
+import { getStaffByDepartment, allStaffs,uploadStaffDocuments } from "api/staff";
 import { getDepartment } from "api/department";
-
+import { uploadFile } from "api/upload";
 const StaffDocuments = () => {
   const [loading, setLoading] = useState(false);
   const { user, token } = isAuthenticated();
@@ -137,23 +137,60 @@ const StaffDocuments = () => {
   };
 
   const handleSubmit = async () => {
-    const config = {
-      bucketName: process.env.REACT_APP_Bucket,
-
-      region: "eu-east-1",
-      accessKeyId: process.env.REACT_APP_accessKeyID,
-      secretAccessKey: process.env.REACT_APP_secretAccessID,
-    };
-
-    for (let i = 0; i < inputFields.length; i++) {
-      S3FileUpload.uploadFile(inputFields[i].document, config)
-        .then((data) => {
-          console.log(data);
-          inputFields[i].documents = data.location;
-        })
-        .catch((err) => console.error(err));
-    }
     console.log(inputFields);
+    let documentData=[];
+    inputFields.forEach(async(field) => {
+      console.log(field);
+      const formData = new FormData();
+      formData.set("file",field.document);
+      try {
+        setLoading(true);
+        const data =await uploadFile(formData);
+        console.log(data);
+        if(data.err){
+          setLoading(false);
+          return toast.error(data.err);
+        }
+        documentData.push({
+          name:field.name,
+          description:field.description,
+          upload_date:(new Date()).toISOString().split('T')[0],
+          documents:data.data[0],
+          uploadBy:user._id,
+        })
+        setLoading(false);
+
+      } catch (err) {
+        console.log(err);
+        setLoading(false);
+        toast.error("Error uploading file");
+      }
+     
+    });
+    console.log(documentData);
+    const formData1 = new FormData();
+    formData1.set("document_data",JSON.stringify(documentData));
+    formData1.set("staff",staff);
+    formData1.set("department",selectedDepartment);
+    formData1.set("role","STA");
+    try {
+      setLoading(true);
+      const data = await uploadStaffDocuments(user.school, user._id, formData1);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        return toast.error(data.err);
+      }
+      toast.success("Documents Uploaded Successfully");
+      setLoading(false);
+
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error("Error uploading documents");
+    }
+
+
   };
 
   return (
@@ -252,7 +289,7 @@ const StaffDocuments = () => {
               return (
                 <>
                   <Row key={index}>
-                    <Col md={3} >
+                    <Col md={3}>
                       <label
                         className="form-control-label"
                         htmlFor="example4cols2Input"
@@ -269,7 +306,7 @@ const StaffDocuments = () => {
                         placeholder="Document Name"
                       />
                     </Col>
-                    <Col md={4} >
+                    <Col md={4}>
                       <label
                         className="form-control-label"
                         htmlFor="example4cols2Input"
@@ -328,32 +365,45 @@ const StaffDocuments = () => {
                         })}
                       </Input>
                     </Col> */}
-                    <Col style={{ marginTop: "2rem", float: "right" }} md={2} >
+                    <Col style={{ marginTop: "2rem", float: "right" }} md={2}>
                       <Button
                         color="danger"
                         onClick={() => handleRemoveFields(index)}
-                        style={{padding:"0.1rem 0.7rem"}}
+                        style={{ padding: "0.1rem 0.7rem" }}
                       >
-                         <span style={{fontSize:"1.4rem"}} >-</span>
+                        <span style={{ fontSize: "1.4rem" }}>-</span>
                       </Button>
                       <Button
                         color="primary"
-                        
                         onClick={handleAddFields}
-                        style={{padding:"0.1rem 0.7rem"}}
+                        style={{ padding: "0.1rem 0.7rem" }}
                       >
-                       <span style={{fontSize:"1.4rem"}} >+</span>
+                        <span style={{ fontSize: "1.4rem" }}>+</span>
                       </Button>
                     </Col>
-                   
                   </Row>
                   <Row className="mt-4"></Row>
                   {/* <hr style={{ marginTop: "1rem 0" }} /> */}
                 </>
               );
             })}
-            <Row className="mt-2 float-center" style={{display:"flex",justifyContent:"center",alignItems:"center",width:"100%"}} >
-              <Col style={{display:"flex",justifyContent:"center",alignItems:"center",width:"100%"}} >
+            <Row
+              className="mt-2 float-center"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <Col
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
                 <Button color="primary" onClick={handleSubmit}>
                   Submit
                 </Button>
