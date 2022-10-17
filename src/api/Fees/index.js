@@ -58,3 +58,33 @@ export const updatePenalty = async (schoolId, userId, formData) => {
     return err;
   }
 };
+
+export const getAvailFees = async (schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/fees_management/get_avail_fees/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+}
+
+export const updateAvailFees = async (schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/fees_management/update_avail_fees/${schoolId}/${userId}`,
+      formData,
+      "PUT"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+}

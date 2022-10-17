@@ -16,7 +16,7 @@ import {
 } from "reactstrap";
 import { Popconfirm } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { allSessions } from "api/session";
+
 import { Table } from "ant-table-extensions";
 import AntTable from "../tables/AntTable";
 
@@ -26,8 +26,9 @@ import { isAuthenticated } from "api/auth";
 
 import { allClass } from "api/class";
 import { toast, ToastContainer } from "react-toastify";
-
+import { getAvailFees, updateAvailFees } from "api/Fees";
 import { allStudents, filterStudent } from "api/student";
+import { allSessions } from "api/session";
 
 const Hostel = () => {
   const { user, token } = isAuthenticated();
@@ -35,6 +36,7 @@ const Hostel = () => {
   const [searchData, setSearchData] = useState({
     class: "",
     section: "",
+    session: "",
   });
   const [loading, setLoading] = useState(false);
   const [classList, setClassList] = useState([]);
@@ -42,8 +44,11 @@ const Hostel = () => {
   const [students, setStudents] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [showTable, setShowTable] = useState(false);
+  const [sessions, setSessions] = useState([]);
+
   useEffect(() => {
     getAllClasses();
+    getSession();
   }, [checked]);
 
   const getAllClasses = async () => {
@@ -79,32 +84,50 @@ const Hostel = () => {
     }
   };
   const filterStudentHandler = async (id) => {
-    const formData = {
-      section: id,
-      class: searchData.class,
-    };
+    const formData = new FormData();
+    formData.set("section", id);
+    formData.set("class", searchData.class);
+    formData.set("session", searchData.session);
+    formData.set("type", "hostel");
+
     try {
       setLoading(true);
-      const data = await filterStudent(user.school, user._id, formData);
+      const data = await getAvailFees(user.school, user._id, formData);
       console.log(data);
       setStudents(data);
       let table = [];
       for (let i = 0; i < data.length; i++) {
         table.push({
           student: data[i].firstname + " " + data[i].lastname,
-          total: data[i].total || null,
+          total: data[i].avail_fees.total || null,
           from: (
             <>
-              <Input type="date" key={i + 1} />
+              <Input
+                type="date"
+                key={i + 1}
+                defaultValue={
+                  new Date(data[i]?.avail_fees?.from_date)
+                    .toISOString()
+                    .split("T")[0]
+                }
+              />
             </>
           ),
           to: (
             <>
-              <Input type="date" key={i + 1} />
+              <Input
+                type="date"
+                key={i + 1}
+                defaultValue={
+                  new Date(data[i]?.avail_fees?.from_date)
+                    .toISOString()
+                    .split("T")[0]
+                }
+              />
             </>
           ),
           amount: data[i].amount || null,
-          paid: data[i].paid || null,
+          paid: data[i].avail_fees.paid || 0,
           action: (
             <>
               <div
@@ -115,10 +138,10 @@ const Hostel = () => {
                   justifyContent: "center",
                 }}
               >
-                <Input type="checkbox" key={i + 1} />
+                <Input type="checkbox" key={i + 1}  checked={data[i].avail_fees.avail==="Y"} />
               </div>
             </>
-          ),
+          ), 
         });
       }
       setTableData(table);
@@ -128,6 +151,20 @@ const Hostel = () => {
       console.log(err);
       toast.error("Fetching Students Failed");
       setLoading(false);
+    }
+  };
+  //Getting Session data
+  const getSession = async () => {
+    const { user, token } = isAuthenticated();
+    try {
+      const session = await allSessions(user._id, user.school, token);
+      if (session.err) {
+        return toast.error(session.err);
+      } else {
+        setSessions(session);
+      }
+    } catch (err) {
+      toast.error("Something Went Wrong!");
     }
   };
 
@@ -272,6 +309,22 @@ const Hostel = () => {
       align: "left",
     },
   ];
+  useEffect(() => {
+    if (sessions.length !== 0) {
+      defaultSession1();
+    }
+  }, [sessions]);
+
+  const defaultSession1 = async () => {
+    const defaultSession = await sessions.find(
+      (session) => session.status === "current"
+    );
+    setSearchData({
+      ...searchData,
+      session: defaultSession._id,
+    });
+    // setSelectedSessionId(defaultSession._id)
+  };
 
   return (
     <>
@@ -304,6 +357,30 @@ const Hostel = () => {
           <CardBody>
             <form>
               <Row>
+                <Col>
+                  <label
+                    className="form-control-label"
+                    htmlFor="example4cols2Input"
+                  >
+                    Session
+                  </label>
+
+                  <select
+                    className="form-control"
+                    onChange={handleChange("session")}
+                    value={searchData.session}
+                  >
+                    <option>Select Session</option>
+                    {sessions &&
+                      sessions.map((data) => {
+                        return (
+                          <option key={data._id} value={data._id}>
+                            {data.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                </Col>
                 <Col>
                   <label
                     className="form-control-label"

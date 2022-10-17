@@ -119,10 +119,11 @@ const AddSession = () => {
               working_days: res[i].working_days,
               working_time: res[i].paid_leaves,
               year: res[i].year,
+              paid_leaves: res[i].earned_leaves,
               fees_method: res[i].fees_method,
               action: (
                 <h5 key={i + 1} className="mb-0">
-                  {permission1 && permission1.includes("edit") && (
+                  {/* {permission1 && permission1.includes("edit") && ( */}
                     <Button
                       className="btn-sm pull-right"
                       color="primary"
@@ -141,11 +142,23 @@ const AddSession = () => {
                     >
                       <i className="fas fa-user-edit" />
                     </Button>
-                  )}
+                  {/* )} */}
 
-                  {/* {permissions && permissions.includes("delete") && (
-                   
-                  )} */}
+                  {/* {permissions && permissions.includes("delete") && ( */}
+                  <Button
+              className="btn-sm pull-right"
+              color="danger"
+              type="button"
+              key={"delete" + 1}
+            >
+              <Popconfirm
+                title="Sure to delete?"
+                onConfirm={() => handleDelete(res[i]._id)}
+              >
+                <i className="fas fa-trash" />
+              </Popconfirm>
+            </Button>
+                  {/* )} */}
                 </h5>
               ),
             });
@@ -177,14 +190,14 @@ const AddSession = () => {
   async function handleDelete(sessionId) {
     const { user, token } = isAuthenticated();
     try {
+      setLoading(true);
       await deleteSession(sessionId, user._id, token);
-      if (checked === false) {
-        setChecked(true);
-      } else {
-        setChecked(false);
-      }
+      setChecked(!checked);
+      setLoading(false);
       toast.success(deleteSessionSuccess);
     } catch (err) {
+      setLoading(false);
+      console.log(err);
       toast.error(deleteSessionError);
     }
   }
@@ -402,10 +415,10 @@ const AddSession = () => {
     {
       title: "Paid Leaves",
       align: "left",
-      dataIndex: "working_time",
+      dataIndex: "paid_leaves",
       // width: 150,
       width: "10%",
-      sorter: (a, b) => a.working_time > b.working_time,
+      sorter: (a, b) => a.paid_leaves > b.paid_leaves,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
           <>
@@ -428,7 +441,7 @@ const AddSession = () => {
         return <SearchOutlined />;
       },
       onFilter: (value, record) => {
-        return record.working_time.toLowerCase().includes(value.toLowerCase());
+        return record.paid_leaves.toLowerCase().includes(value.toLowerCase());
       },
     },
     {
@@ -501,7 +514,7 @@ const AddSession = () => {
     formData.set("year", year);
     formData.set("working_days", sessionData.working_days);
     formData.set("working_time", startTimeDuration);
-    formData.set("earned_leaves",sessionData.paid_leaves)
+    formData.set("earned_leaves", sessionData.paid_leaves);
     try {
       const resp = await addSession(user._id, token, formData);
       // console.log(resp);
@@ -624,8 +637,8 @@ const AddSession = () => {
                           required
                           onBlur={workingDaysBlurHandler}
                         />
-                         {workingDaysError && (
-                          <div style={{color:"red",fontSize:"0.7rem"}} >
+                        {workingDaysError && (
+                          <div style={{ color: "red", fontSize: "0.7rem" }}>
                             Value must be smaller or equal to Working Days
                           </div>
                         )}
@@ -642,16 +655,14 @@ const AddSession = () => {
                         <Input
                           id="example-date-input"
                           type="number"
-                       
                           min="1"
                           onChange={handleChange("paid_leaves")}
                           value={sessionData.paid_leaves}
                           placeholder="Leaves"
                           required
-                          
                         />
                         {paidLeavesError && (
-                          <div style={{color:"red",fontSize:"0.7rem"}} >
+                          <div style={{ color: "red", fontSize: "0.7rem" }}>
                             Value must be smaller or equal to 7
                           </div>
                         )}
@@ -679,7 +690,11 @@ const AddSession = () => {
                     </Row>
                     <Row className="mt-4">
                       <Col
-                        style={{ display: "flex", justifyContent: "center",width:"100%" }}
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          width: "100%",
+                        }}
                       >
                         <Button
                           color="primary"
@@ -700,7 +715,7 @@ const AddSession = () => {
             <div className="card-wrapper">
               <Card>
                 <CardBody>
-                <Button
+                  <Button
                     color="primary"
                     className="mb-2"
                     onClick={handlePrint}
@@ -710,7 +725,7 @@ const AddSession = () => {
                   </Button>
                   <Row className="ml-2">
                     {loading && sessionList ? (
-                      <div ref={componentRef} style={{overflowX:"auto"}} >
+                      <div ref={componentRef} style={{ overflowX: "auto" }}>
                         <AntTable
                           columns={columns}
                           data={sessionList}
