@@ -20,7 +20,12 @@ import SimpleHeader from "components/Headers/SimpleHeader";
 import LoadingScreen from "react-loading-screen";
 import { isAuthenticated } from "api/auth";
 import { toast, ToastContainer } from "react-toastify";
-import { getStaffByDepartment, allStaffs,uploadStaffDocuments } from "api/staff";
+import {
+  getStaffByDepartment,
+  allStaffs,
+  uploadStaffDocuments,
+  getStaffDocuments,
+} from "api/staff";
 import { getDepartment } from "api/department";
 import { uploadFile } from "api/upload";
 const StaffDocuments = () => {
@@ -103,6 +108,43 @@ const StaffDocuments = () => {
       setLoading(false);
     }
   };
+  const getStaffDocumentsHandler = async () => {
+    const formData = new FormData();
+    formData.set("staff", staff);
+    formData.set("department", selectedDepartment);
+    formData.set("role", "STA");
+    try {
+      setLoading(true);
+      const data = await getStaffDocuments(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        return toast.error(data.err);
+      }
+      let fields = [];
+      data.forEach((field) => {
+        fields.push({
+          name: field.doc.name,
+          description: field.doc.description,
+          document: field.doc.documents[0],
+          documentPreview: field.document_url[0],
+        });
+      });
+      setInputFields(fields);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error("Error fetching staff documents");
+    }
+  };
+
+  useEffect(() => {
+    if (staff === "") {
+      return;
+    }
+    getStaffDocumentsHandler();
+  }, [staff,checked]);
 
   useEffect(() => {
     getAllDepartment();
@@ -138,41 +180,53 @@ const StaffDocuments = () => {
 
   const handleSubmit = async () => {
     console.log(inputFields);
-    let documentData=[];
-    inputFields.forEach(async(field) => {
+    let documentData = [];
+    for (const field of inputFields) {
       console.log(field);
-      const formData = new FormData();
-      formData.set("file",field.document);
-      try {
-        setLoading(true);
-        const data =await uploadFile(formData);
-        console.log(data);
-        if(data.err){
-          setLoading(false);
-          return toast.error(data.err);
-        }
+      if (field.documentPreview !== "") {
+        console.log("preview");
         documentData.push({
-          name:field.name,
-          description:field.description,
-          upload_date:(new Date()).toISOString().split('T')[0],
-          documents:data.data[0],
-          uploadBy:user._id,
-        })
-        setLoading(false);
+          name: field.name,
+          description: field.description,
+          documents: field.document,
+          upload_date: new Date().toISOString().split("T")[0],
+          upload_by: user._id,
+        });
+      } else {
+        console.log("image");
+        const formData = new FormData();
+        formData.set("file", field.document);
+        try {
+          setLoading(true);
+          const data = await uploadFile(formData);
+          console.log(data);
+          if (data.err) {
+            setLoading(false);
+            return toast.error(data.err);
+          }
+          documentData.push({
+            name: field.name,
+            description: field.description,
+            documents: data.data[0],
+            upload_date: new Date().toISOString().split("T")[0],
+            upload_by: user._id,
+          });
 
-      } catch (err) {
-        console.log(err);
-        setLoading(false);
-        toast.error("Error uploading file");
+          setLoading(false);
+        } catch (err) {
+          console.log(err);
+          setLoading(false);
+          toast.error("Error uploading file");
+        }
       }
-     
-    });
+    }
     console.log(documentData);
     const formData1 = new FormData();
-    formData1.set("document_data",JSON.stringify(documentData));
-    formData1.set("staff",staff);
-    formData1.set("department",selectedDepartment);
-    formData1.set("role","STA");
+    formData1.set("document_data", JSON.stringify(documentData));
+    formData1.set("staff", staff);
+    formData1.set("department", selectedDepartment);
+    formData1.set("role", "STA");
+
     try {
       setLoading(true);
       const data = await uploadStaffDocuments(user.school, user._id, formData1);
@@ -182,15 +236,21 @@ const StaffDocuments = () => {
         return toast.error(data.err);
       }
       toast.success("Documents Uploaded Successfully");
+      setChecked(!checked);
+      // setInputFields({
+      //   name: "",
+      //   date: "",
+      //   uploadBy: "",
+      //   document: "",
+      //   documentPreview: "",
+      //   description: "",
+      // });
       setLoading(false);
-
     } catch (err) {
       console.log(err);
       setLoading(false);
       toast.error("Error uploading documents");
     }
-
-
   };
 
   return (
@@ -323,21 +383,37 @@ const StaffDocuments = () => {
                         placeholder="description"
                       />
                     </Col>
-                    <Col md={3}>
-                      <label
-                        className="form-control-label"
-                        htmlFor="example4cols2Input"
-                      >
-                        Document
-                      </label>
-                      <Input
-                        id="exampleFormControlTextarea1"
-                        type="file"
-                        required
-                        onChange={(e) => handleChange(index, e)}
-                        name="document"
-                      />
-                    </Col>
+                    {field.documentPreview === "" ? (
+                      <>
+                        <Col md={3}>
+                          <label
+                            className="form-control-label"
+                            htmlFor="example4cols2Input"
+                          >
+                            Document
+                          </label>
+                          <Input
+                            id="exampleFormControlTextarea1"
+                            type="file"
+                            required
+                            onChange={(e) => handleChange(index, e)}
+                            name="document"
+                          />
+                        </Col>
+                      </>
+                    ) : (
+                      <>
+                        <Col md={3}>
+                          <img
+                            src={field.documentPreview}
+                            alt=""
+                            height={100}
+                            width={150}
+                          />
+                        </Col>
+                      </>
+                    )}
+
                     {/* <Col>
                       <label
                         className="form-control-label"

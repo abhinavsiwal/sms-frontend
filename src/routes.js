@@ -330,14 +330,7 @@ export const adminRoutes = [
     layout: "/admin",
     module: "School Calendar",
   },
-  {
-    path: "/attendance",
-    name: "Attendance",
-    icon: "ni ni-badge",
-    component: Attendance1,
-    layout: "/admin",
-    module: "Student Management",
-  },
+
   {
     path: "/assignment",
     name: "Assignment Master",
