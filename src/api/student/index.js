@@ -101,6 +101,7 @@ export const filterStudent=async(schoolId,userId,formData)=>{
     throw error;
   } 
 }
+
 export const checkRollNo=async(schoolId,userId,formData)=>{
   try {
     const {data} = await sendRequest(

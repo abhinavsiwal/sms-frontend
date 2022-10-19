@@ -1,0 +1,80 @@
+
+.identityCard__profile{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.identityCard__list{
+    flex: 1;
+    padding: 15px 20px;
+    margin: 0;
+}
+
+.list-unstyled{
+    list-style: none;
+}
+
+.identityCard__visual{
+    padding: 0 1rem;
+    max-width: 166px;
+    min-height: 166px;
+    display: flex;
+    justify-content: center;
+}
+
+.identityCard__visual img{
+    display: block;
+    width: 100%;
+    filter: none;
+}
+
+img{
+    border-style: none;
+    max-width: 100%;
+    vertical-align: middle;
+}
+.logo{
+    max-height: 50px;
+}
+.identityCard__header{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    text-transform: uppercase;
+    color: white;
+    letter-spacing: 15px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    background-color: #133f86;
+}
+
+.identityCard .filled {
+    background: url('https://zupimages.net/up/19/50/fuxd.gif') repeat-x 1px center;
+}
+
+.identityCard__footer{
+    display: flex;
+    flex-direction: column;
+    padding: 10px 20px;
+    line-height: 1.6;
+    text-transform: uppercase;
+    background-color: white;
+}
+
+.id__card__wrapper{
+    border-radius:12px ;
+    max-width: 500px;
+    margin: auto;
+    box-shadow: 0 0 15px 0 rgb(0 0 0 / 50%);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.identityCard__list li strong{
+    color: #133f86;
+}
+
+.identityCard__list li span{
+    font-weight: 700;
+    color: black;
+}

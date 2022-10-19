@@ -96,6 +96,11 @@ import Attendance2 from "views/pages/Attendance-Refactor/Attendance2"
 import TimeTable from 'views/pages/TimeTable-Refactor/TimeTable'
 import Assignment from 'views/pages/Assignment/Assignment'
 import Promotion from 'views/pages/Result/Promotion'
+import QuestionPaperBuilder from "views/pages/Question/QuestionPaperBuilder";
+import QuestionsList from "views/pages/Question/QuestionsList";
+import SetIdCard from "views/pages/ID-Card/SetIdCard";
+import GenerateIdCard from "views/pages/ID-Card/GenerateIdCard";
+
 export const adminRoutes = [
   {
     path: "/dashboard",
@@ -104,6 +109,57 @@ export const adminRoutes = [
     component: Dashboard,
     layout: "/admin",
     module: "Dashboard",
+  },
+
+  {
+    collapse:true,
+    name: "Question",
+    icon: "fa fa-print text-primary",
+    state: "Question",
+    module: "Question",
+    views: [
+      {
+        path: "/question-builder",
+        name: "Question Paper Builder",
+        miniName: "Q",
+        component: QuestionPaperBuilder,
+        layout: "/admin",
+        permission: "view",
+      },
+      {
+        path: "/question-list",
+        name: "Question List",
+        miniName: "L",
+        component: QuestionsList,
+        layout: "/admin",
+        permission: "view",
+      },
+    ],
+  },
+  {
+    collapse:true,
+    name: "Document Store",
+    icon: "fa fa-print text-primary",
+    state: "Document",
+    module: "Document",
+    views: [
+      {
+        path: "/generate-id-card",
+        name: "Generate Card",
+        miniName: "I",
+        component: GenerateIdCard,
+        layout: "/admin",
+        permission: "view",
+      },
+      {
+        path: "/set-id-card",
+        name: "Set Id Card",
+        miniName: "I",
+        component: SetIdCard,
+        layout: "/admin",
+        permission: "view",
+      },
+    ],
   },
   {
     collapse: true,
@@ -1212,6 +1268,15 @@ const routes = [
         layout: "/admin",
       },
     ],
+  },
+  {
+    path: "/question",
+    name: "Question",
+    icon: "ni ni-shop text-primary",
+    component: QuestionPaperBuilder,
+    layout: "/admin",
+    module: "Question Paper",
+    permission: "view",
   },
 ];
 
