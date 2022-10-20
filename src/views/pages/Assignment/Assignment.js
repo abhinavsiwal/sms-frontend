@@ -22,6 +22,8 @@ import { toast, ToastContainer } from "react-toastify";
 import { filterStudent } from "api/student";
 import { allClass } from "api/class";
 import ViewAssignments from "./ViewAssignments";
+import { uploadFile } from "api/upload";
+import { updateAssignment } from "api/assignment";
 
 const Assignment = () => {
   const [loading, setLoading] = useState(false);
@@ -112,13 +114,91 @@ const Assignment = () => {
     } else {
       updatedStudents.splice(individualStudents.indexOf(event.target.value), 1);
     }
-    setIndividualStudents(individualStudents);
+    setIndividualStudents(updatedStudents);
   };
 
-  const handleSubmit = (e) => {
+  const handleFileChange = (name) => (event) => {
+    setAssignmentData({ ...assignmentData, [name]: event.target.files[0] });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(assignmentData);
     console.log(individualStudents);
+    let formData = {
+      title: assignmentData.title,
+      assignment_date: assignmentData.assignmentDate,
+      submission_date: assignmentData.submissionDate,
+      marks: assignmentData.marks,
+      type: "I",
+      subject: JSON.parse(assignmentData.subject).name,
+      subject_id: JSON.parse(assignmentData.subject)._id,
+      class: assignmentData.class,
+      section: assignmentData.section,
+    };
+    try {
+      setLoading(true);
+      const formData1 = new FormData();
+      formData1.set("file", assignmentData.file);
+      const data1 = await uploadFile(formData1);
+      console.log(data1);
+      if (data1.err) {
+        setLoading(false);
+        return toast.error(data1.err);
+      }
+      formData.document = data1.data[0];
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error("Uploading File Failed");
+    }
+
+    let students1 = [];
+    if (assignmentData.assignmentFor === "allStudents") {
+      console.log("allStudents");
+      students1 = [];
+      students?.forEach((student) => {
+        console.log(student._id);
+        students1.push(student._id);
+      });
+    } else {
+      students1 = [];
+      individualStudents.forEach((student) => {
+        console.log(student);
+        students1.push(student);
+      });
+    }
+    formData.student = students1;
+    console.log(formData);
+
+    try {
+      setLoading(true);
+      const data = await updateAssignment(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        return toast.error(data.err);
+      }
+      toast.success("Assignment Added Successfully");
+      setAssignmentData({
+        title: "",
+        assignmentDate: "",
+        submissionDate: "",
+        marks: "",
+        assignmentFor: "",
+        class: "",
+        section: "",
+        subject: "",
+        file: "",
+      });
+      setChecked(!checked);
+      setIndividualStudents([]);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      toast.error("Error Adding Assignment");
+      setLoading(false);
+    }
   };
 
   const columns = [
@@ -488,14 +568,18 @@ const Assignment = () => {
                       <Input
                         id="example4cols3Input"
                         type="select"
-                        onChange={handleChange}
+                        onChange={handleChange("subject")}
                         required
+                        value={assignmentData.subject}
                       >
                         <option value="">Select Subject</option>
                         {selectedSection &&
                           selectedSection.subject.map((subject) => {
                             return (
-                              <option key={subject._id} value={subject._id}>
+                              <option
+                                key={subject._id}
+                                value={JSON.stringify(subject)}
+                              >
                                 {subject.name}
                               </option>
                             );
@@ -579,7 +663,7 @@ const Assignment = () => {
                       <Input
                         id="example4cols2Input"
                         type="file"
-                        // onChange={handleChange("file")}
+                        onChange={handleFileChange("file")}
                         required
                         // value={assignmentData.marks}
                         placeholder="Upload File"
