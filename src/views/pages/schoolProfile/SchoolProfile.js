@@ -196,10 +196,7 @@ function SchoolProfile() {
     formData.set("pincode", editSchoolProfile.pin_code);
     formData.set("state", editSchoolProfile.state);
     formData.set("telephone", editSchoolProfile.telephone);
-    if (editSchoolProfile.image) {
-      formData.set("photo", editSchoolProfile.image);
-    }
-
+   
     try {
       setEditLoading(true);
       const formData1 = new FormData(); 
