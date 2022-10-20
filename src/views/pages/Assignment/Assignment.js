@@ -24,12 +24,15 @@ import { allClass } from "api/class";
 import ViewAssignments from "./ViewAssignments";
 import { uploadFile } from "api/upload";
 import { updateAssignment } from "api/assignment";
+import { getAssignment } from "api/assignment";
+import { deleteAssignment } from "api/assignment";
 
 const Assignment = () => {
   const [loading, setLoading] = useState(false);
   const { user, token } = isAuthenticated();
   const [sessions, setSessions] = useState([]);
   const [classList, setClassList] = useState([]);
+  const [selectedAssignment, setSelectedAssignment] = useState({});
   const [assignmentData, setAssignmentData] = useState({
     class: "",
     section: "",
@@ -47,6 +50,12 @@ const Assignment = () => {
   const [individualStudents, setIndividualStudents] = useState([]);
   const [selectedSection, setSelectedSection] = useState(undefined);
   const [view, setView] = useState(false);
+  const [filterData, setFilterData] = useState({
+    class: "",
+    section: "",
+    selectedClass: "",
+    selectedSection: "",
+  });
   const [tableData, setTableData] = useState([]);
   const getAllClasses = async () => {
     try {
@@ -106,6 +115,19 @@ const Assignment = () => {
       setSelectedSection(selectedSection1);
     }
   };
+
+  const handleFilterChange = (name) => async (event) => {
+    setFilterData({ ...filterData, [name]: event.target.value });
+    console.log(name, event.target.value);
+    if (name === "class") {
+      let selectedClass = classList.find(
+        (item) => item._id.toString() === event.target.value.toString()
+      );
+      // console.log(selectedClass);
+      setFilterData({ ...filterData, selectedClass: selectedClass });
+    }
+  };
+
   const handleStudents = (event) => {
     console.log(event.target.value);
     let updatedStudents = [...individualStudents];
@@ -338,51 +360,99 @@ const Assignment = () => {
     },
   ];
   const getAllAssignments = async () => {
-    const tableData1 = [
-      {
-        sr: 1,
-        name: "Assignment 1",
-        class: "Class 1",
-        active: "Yes",
-        action: (
-          <>
-            <Button
-              className="btn-sm pull-right"
-              color="danger"
-              type="button"
-              key={"delete" + 1}
-            >
-              <Popconfirm
-                title="Sure to delete?"
-                //   onConfirm={() => deleteBudgetHandler(data[i]._id)}
+    const formData = {
+      class: filterData.selectedClass._id,
+      section: filterData.section,
+    };
+
+    try {
+      setLoading(true);
+      const { data } = await getAssignment(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        return toast.error(data.err);
+      }
+      let data1 = [];
+      data.forEach((assignment, index) => {
+        data1.push({
+          key: index,
+          sr: index + 1,
+          name: assignment.title,
+          class: assignment.class?.name + " " + assignment.section?.name,
+          active: assignment.is_active === "Y" ? "Yes" : "No",
+          action: (
+            <>
+              <Button
+                className="btn-sm pull-right"
+                color="danger"
+                type="button"
+                key={"delete" + 1}
               >
-                Remove
-              </Popconfirm>
-            </Button>
-          </>
-        ),
-        viewAssignment: (
-          <>
-            <Button
-              className="btn-sm pull-right"
-              color="primary"
-              type="button"
-              key={"edit" + 1}
-              onClick={() => {
-                setView(true);
-              }}
-            >
-              View
-            </Button>
-          </>
-        ),
-      },
-    ];
-    setTableData(tableData1);
+                <Popconfirm
+                  title="Sure to delete?"
+                  onConfirm={() => deleteAssignmentHandler(assignment._id)}
+                >
+                  Remove
+                </Popconfirm>
+              </Button>
+            </>
+          ),
+          viewAssignment: (
+            <>
+              <Button
+                className="btn-sm pull-right"
+                color="primary"
+                type="button"
+                key={"edit" + 1}
+                onClick={() => {
+                  setView(true);
+                  setSelectedAssignment(assignment);
+                }}
+              >
+                View
+              </Button>
+            </>
+          ),
+        });
+      });
+      setTableData(data1);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      toast.error("Error Getting Assignments");
+      setLoading(false);
+    }
   };
   useEffect(() => {
+    if (filterData.section === "") {
+      return;
+    }
+
     getAllAssignments();
-  }, []);
+  }, [filterData.section, checked]);
+
+  const deleteAssignmentHandler = async (id) => {
+    const formData = {
+      assignment_id: id,
+    };
+    try {
+      setLoading(true);
+      const data = await deleteAssignment(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        return toast.error(data.err);
+      }
+      setChecked(!checked);
+      toast.success("Assignment Deleted Successfully");
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      toast.error("Error Deleting Assignment");
+    }
+  };
+
   return (
     <>
       {!view ? (
@@ -695,6 +765,71 @@ const Assignment = () => {
                 <h2>View Assignments</h2>
               </CardHeader>
               <CardBody>
+                <Row className="mb-4">
+                  <Col>
+                    <label
+                      className="form-control-label"
+                      htmlFor="example4cols2Input"
+                    >
+                      Class
+                    </label>
+                    <Input
+                      id="example4cols2Input"
+                      placeholder="Canteen Name"
+                      type="select"
+                      name="class"
+                      onChange={handleFilterChange("class")}
+                      value={filterData.selectedClass._id}
+                      required
+                     
+                    >
+                      <option value="" selected disabled>
+                        Select Class
+                      </option>
+                      {classList &&
+                        classList.map((classs) => (
+                          <option key={classs._id} value={classs._id}>
+                            {classs.name}
+                          </option>
+                        ))}
+                    </Input>
+                  </Col>
+
+                  <Col>
+                    <label
+                      className="form-control-label"
+                      htmlFor="exampleFormControlSelect3"
+                    >
+                      Section
+                    </label>
+                    <Input
+                      id="exampleFormControlSelect3"
+                      type="select"
+                      required
+                      value={filterData.section}
+                      onChange={handleFilterChange("section")}
+                      name="section"
+                    >
+                      <option value="" disabled>
+                        Select Section
+                      </option>
+                      {filterData.selectedClass.section &&
+                        filterData.selectedClass.section.map((section) => {
+                          // console.log(section.name);
+                          return (
+                            <option
+                              value={section._id}
+                              key={section._id}
+                              selected
+                            >
+                              {section.name}
+                            </option>
+                          );
+                        })}
+                    </Input>
+                  </Col>
+                </Row>
+
                 <AntTable
                   columns={columns}
                   data={tableData}
@@ -706,7 +841,7 @@ const Assignment = () => {
           </Container>
         </>
       ) : (
-        <ViewAssignments setView={setView} />
+        <ViewAssignments setView={setView} assignment={selectedAssignment} />
       )}
     </>
   );

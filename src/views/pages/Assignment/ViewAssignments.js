@@ -25,12 +25,12 @@ import LoadingScreen from "react-loading-screen";
 import { toast, ToastContainer } from "react-toastify";
 import { isAuthenticated } from "api/auth";
 
-const ViewAssignments = ({setView}) => {
+const ViewAssignments = ({setView,assignment}) => {
   const [loading, setLoading] = useState(false);
   const { user, token } = isAuthenticated();
   const [checked, setChecked] = useState(false);
   const [tableData, setTableData] = useState([]);
-
+  console.log(assignment);
   const columns = [
     {
       title: "Sr No",
