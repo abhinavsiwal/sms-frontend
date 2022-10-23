@@ -124,40 +124,40 @@ const AddSession = () => {
               action: (
                 <h5 key={i + 1} className="mb-0">
                   {/* {permission1 && permission1.includes("edit") && ( */}
-                    <Button
-                      className="btn-sm pull-right"
-                      color="primary"
-                      type="button"
-                      key={"edit" + i + 1}
-                      onClick={() =>
-                        rowHandler(
-                          res[i]._id,
-                          res[i].name,
-                          res[i].fees_method,
-                          res[i].start_date.split("T")[0],
-                          res[i].end_date.split("T")[0],
-                          res[i].working_days
-                        )
-                      }
-                    >
-                      <i className="fas fa-user-edit" />
-                    </Button>
+                  <Button
+                    className="btn-sm pull-right"
+                    color="primary"
+                    type="button"
+                    key={"edit" + i + 1}
+                    onClick={() =>
+                      rowHandler(
+                        res[i]._id,
+                        res[i].name,
+                        res[i].fees_method,
+                        res[i].start_date.split("T")[0],
+                        res[i].end_date.split("T")[0],
+                        res[i].working_days
+                      )
+                    }
+                  >
+                    <i className="fas fa-user-edit" />
+                  </Button>
                   {/* )} */}
 
                   {/* {permissions && permissions.includes("delete") && ( */}
                   <Button
-              className="btn-sm pull-right"
-              color="danger"
-              type="button"
-              key={"delete" + 1}
-            >
-              <Popconfirm
-                title="Sure to delete?"
-                onConfirm={() => handleDelete(res[i]._id)}
-              >
-                <i className="fas fa-trash" />
-              </Popconfirm>
-            </Button>
+                    className="btn-sm pull-right"
+                    color="danger"
+                    type="button"
+                    key={"delete" + 1}
+                  >
+                    <Popconfirm
+                      title="Sure to delete?"
+                      onConfirm={() => handleDelete(res[i]._id)}
+                    >
+                      <i className="fas fa-trash" />
+                    </Popconfirm>
+                  </Button>
                   {/* )} */}
                 </h5>
               ),
@@ -583,26 +583,24 @@ const AddSession = () => {
                         />
                       </Col>
 
-                
-                
+                      {/* Starting DAte */}
+
                       <Col>
                         <label
                           className="form-control-label"
                           htmlFor="example-date-input"
                         >
-                          Ending Date
+                          Starting Date
                         </label>
                         <Input
                           id="example-date-input"
-                          value={sessionData.end_date}
                           type="date"
-                          min={moment(date).format("YYYY-MM-DD")}
-                          placeholder="dd-mm-yyyy"
-                          onChange={handleChange("end_date")}
+                          onChange={handleDate("start_date")}
                           required
+                          placeholder="dd-mm-yyyy"
+                          value={sessionData.start_date}
                         />
                       </Col>
-
                       <Col>
                         <label
                           className="form-control-label"
@@ -629,20 +627,23 @@ const AddSession = () => {
                       </Col>
                     </Row>
                     <Row className="mt-4">
-                    <Col>
+                      {/* Ending Date */}
+
+                      <Col>
                         <label
                           className="form-control-label"
                           htmlFor="example-date-input"
                         >
-                          Starting Date
+                          Ending Date
                         </label>
                         <Input
                           id="example-date-input"
+                          value={sessionData.end_date}
                           type="date"
-                          onChange={handleDate("start_date")}
-                          required
+                          min={moment(date).format("YYYY-MM-DD")}
                           placeholder="dd-mm-yyyy"
-                          value={sessionData.start_date}
+                          onChange={handleChange("end_date")}
+                          required
                         />
                       </Col>
                       <Col>

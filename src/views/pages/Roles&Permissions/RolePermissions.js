@@ -323,7 +323,7 @@ function RolePermissions() {
           {permissions2 && permissions2.includes("edit") && (
             <Col className="m-1">
               <Button
-                color="primary"
+                color="secondary"
                 type="button"
                 onClick={() => {
                   setManageModal(true);

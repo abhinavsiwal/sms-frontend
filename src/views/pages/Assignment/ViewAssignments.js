@@ -25,7 +25,7 @@ import LoadingScreen from "react-loading-screen";
 import { toast, ToastContainer } from "react-toastify";
 import { isAuthenticated } from "api/auth";
 
-const ViewAssignments = ({setView,assignment}) => {
+const ViewAssignments = ({ setView, assignment }) => {
   const [loading, setLoading] = useState(false);
   const { user, token } = isAuthenticated();
   const [checked, setChecked] = useState(false);
@@ -151,18 +151,26 @@ const ViewAssignments = ({setView,assignment}) => {
       align: "left",
     },
   ];
+
+  const handleChange = (name,studentId) => async (event) => {
+
+  }
+
   const getAllAssignments = () => {
-    let tableData = [
-      {
-        sr: 1,
-        name: "John Doe",
-        submitted: "12/12/2020",
+    let tableData = [];
+
+    assignment?.student?.forEach((student, index) => {
+      tableData.push({
+        sr: index + 1,
+        name: student.firstname + " " + student.lastname,
+        submitted: assignment.submission_date,
         action: <Button color="primary">View</Button>,
-        marks: <Input type="number" placeholder="Enter Marks" />,
+        marks: <Input type="number" placeholder="Enter Marks" onChange={handleChange("marks",student._id)}  />,
         remark: <Input type="text" placeholder="Enter Remark" />,
         submit: <Button color="success">Submit</Button>,
-      },
-    ];
+      });
+    });
+
     setTableData(tableData);
   };
   useEffect(() => {
@@ -193,7 +201,7 @@ const ViewAssignments = ({setView,assignment}) => {
         textColor="#676767"
         text="Please Wait..."
       />
-      <Container className="mt--6" >
+      <Container className="mt--6">
         <Row style={{ marginLeft: "2rem" }}>
           <Col className="mt--3 ">
             <Button
