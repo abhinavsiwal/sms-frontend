@@ -346,7 +346,7 @@ const PenaltyMaster = () => {
                     className="form-control-label"
                     htmlFor="exampleFormControlSelect3"
                   >
-                    Penalty Type
+                    Applicable Date
                   </label>
                   <Input
                     id="example4cols3Input"

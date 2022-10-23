@@ -399,10 +399,10 @@ const CouponMaster = () => {
                     <option value="" disabled>
                       Select Type
                     </option>
-                    <option value="one_time" disabled>
+                    <option value="one_time">
                       One Time
                     </option>
-                    <option value="recurring" disabled>
+                    <option value="recurring">
                       Recurring
                     </option>
                   </Input>
