@@ -116,12 +116,8 @@ const FeesMaster1 = () => {
       try {
         const data = await getFees(user.school, user._id, formData);
         console.log(data);
-        if (data.err) {
-          setShowLoad(false);
-          toast.error(data.err);
-          return;
-        }
-        if (data.message) {
+
+        if (data.err === "Fees data not available.") {
           if (fees_type === "one_time") {
             setFeesNumber([]);
             setType(1);
@@ -130,7 +126,12 @@ const FeesMaster1 = () => {
             setType(2);
           }
           setShowLoad(false);
+          return;
+        }
 
+        if (data.err) {
+          setShowLoad(false);
+          toast.error(data.err);
           return;
         }
 
@@ -139,8 +140,9 @@ const FeesMaster1 = () => {
           return {
             name: data["name"],
             total: data["total_amount"],
-            start_date: data["start_date"],
-            end_date: data["end_date"],
+            start_date:
+              data["start_date"] && getFormattedDate(data["start_date"]),
+            end_date: data["end_date"] && getFormattedDate(data["end_date"]),
             key: index,
           };
         });
@@ -161,6 +163,7 @@ const FeesMaster1 = () => {
     console.log("clicked");
     let temp = feesNumber;
     temp.push({ option: "" });
+    console.log(temp);
     setFeesNumber(temp);
     forceUpdate();
   };
@@ -221,6 +224,14 @@ const FeesMaster1 = () => {
       key: "name",
       title: "Name",
       dataIndex: "name",
+      align:"left",
+      
+    },
+    {
+      key: "total",
+      align:"left",
+      title: "Total",
+      dataIndex: "total",
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
           <>
@@ -248,16 +259,8 @@ const FeesMaster1 = () => {
         return <SearchOutlined />;
       },
       onFilter: (value, record) => {
-        return record.name.toLowerCase().includes(value.toLowerCase());
+        return record.total.toLowerCase().includes(value.toLowerCase());
       },
-      sorter: (record1, record2) => {
-        return record1.name > record2.name;
-      },
-    },
-    {
-      key: "total",
-      title: "Total",
-      dataIndex: "total",
       sorter: (record1, record2) => {
         return record1.total > record2.total;
       },
@@ -266,6 +269,7 @@ const FeesMaster1 = () => {
       key: "start_date",
       title: "Start Date",
       dataIndex: "start_date",
+      align:"left",
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
           <>
@@ -303,6 +307,7 @@ const FeesMaster1 = () => {
       key: "end_date",
       title: "End Date",
       dataIndex: "end_date",
+      align:"left",
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
           <>
@@ -401,8 +406,10 @@ const FeesMaster1 = () => {
         toast.error(data.err);
         return;
       }
-      setShowLoad(false);
+    
       toast.success("Fees Updated Successfully!");
+      setShowLoad(false);
+      window.location.reload()
     } catch (err) {
       setShowLoad(false);
       console.log(err);
@@ -411,9 +418,27 @@ const FeesMaster1 = () => {
   };
 
   const formatDate1 = (date) => {
+    console.log(date);
     let yourDate = new Date(date);
     return yourDate.toISOString().split("T")[0];
   };
+
+  function getFormattedDate(date1) {
+    let date = new Date(date1);
+    var year = date.getFullYear();
+
+    var month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : "0" + month;
+
+    var day = date.getDate().toString();
+    day = day.length > 1 ? day : "0" + day;
+
+    return day + "/" + month + "/" + year;
+  }
+
+  const deleteEntireFeesHandler = async () => {
+
+  }
 
   return (
     <>
@@ -712,7 +737,7 @@ const FeesMaster1 = () => {
                     Edit Fees
                   </Button>
                 </Col>
-                <Col>
+                {/* <Col>
                   <Button color="danger">
                     <Popconfirm
                       title="Are You Sure to Delete?"
@@ -721,7 +746,7 @@ const FeesMaster1 = () => {
                       Delete Entire Fees
                     </Popconfirm>
                   </Button>
-                </Col>
+                </Col> */}
               </Row>
             </CardHeader>
             <CardBody>
@@ -795,7 +820,10 @@ const FeesMaster1 = () => {
                                   id="exampleFormControlTextarea1"
                                   type="date"
                                   required
-                                  value={formatDate1(data["start_date"])}
+                                  value={
+                                    data["start_date"] &&
+                                    formatDate1(data["start_date"])
+                                  }
                                   onChange={handleDateEdit("start_date", index)}
                                 />
                               </td>
@@ -804,7 +832,10 @@ const FeesMaster1 = () => {
                                   id="exampleFormControlTextarea1"
                                   type="date"
                                   required
-                                  value={formatDate1(data["end_date"])}
+                                  value={
+                                    data["end_date"] &&
+                                    formatDate1(data["end_date"])
+                                  }
                                   onChange={handleDateEdit("end_date", index)}
                                 />
                               </td>
