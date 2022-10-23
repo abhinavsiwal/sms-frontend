@@ -559,70 +559,72 @@ const ViewAllLeaves = () => {
       }
       let staffData = [];
       let studentData = [];
-      data.forEach((leave, i) => {
-        if (leave.type === "staff") {
-          staffData.push({
-            key: i,
-            name:
-              leave.staff && leave.staff.firstname + " " + leave.staff.lastname,
-            department: leave.department && leave.department.name,
-            date_from: leave.dateFrom,
-            date_to: leave.dateTo,
-            no_of_days: leave.noOfDays,
-            leave_type: leave.leaveType,
-            reason: leave.reason,
-            status: leave.status,
-            action: (
-              <h5 key={i + 1} className="mb-0">
-                <Button
-                  className="btn-sm pull-right"
-                  color="primary"
-                  type="button"
-                  key={"edit" + i + 1}
-                  onClick={() => {
-                    setEditStatus(leave.status);
-                    setEditing(true);
-                    setEditLeaveId(leave._id);
-                  }}
-                >
-                  <i className="fas fa-user-edit" />
-                </Button>
-              </h5>
-            ),
-          });
-        } else if(leave.type==="student"){
-          studentData.push({
-            key: i,
-            name:
-              leave.student &&
-              leave.student.firstname + " " + leave.student.lastname,
-            class: leave.class && leave.class.name,
-            section: leave.section && leave.section.name,
-            date_from: getFormattedDate(leave.dateFrom),
-            date_to: getFormattedDate(leave.dateTo),
-            no_of_days: leave.noOfDays,
-            reason: leave.reason,
-            status: leave.status,
-            action: (
-              <h5 key={i + 1} className="mb-0">
-                <Button
-                  className="btn-sm pull-right"
-                  color="primary"
-                  type="button"
-                  key={"edit" + i + 1}
-                  onClick={() => {
-                    setEditStatus(leave.status);
-                    setEditing(true);
-                    setEditLeaveId(leave._id);
-                  }}
-                >
-                  <i className="fas fa-user-edit" />
-                </Button>
-              </h5>
-            ),
-          });
-        }
+      data.staff && data.staff.forEach((leave,i) => {
+        staffData.push({
+          key: i,
+          name:
+            leave.staff && leave.staff.firstname + " " + leave.staff.lastname,
+          department: leave.department && leave.department.name,
+          date_from: getFormattedDate(leave.dateFrom),
+          date_to: getFormattedDate(leave.dateTo),
+          no_of_days: leave.noOfDays,
+          leave_type: leave.leaveType,
+          reason: leave.reason,
+          status: leave.status,
+          action: (
+            <h5 key={i + 1} className="mb-0">
+              <Button
+                className="btn-sm pull-right"
+                color="primary"
+                type="button"
+                key={"edit" + i + 1}
+                onClick={() => {
+                  setEditStatus(leave.status);
+                  setEditing(true);
+                  setEditLeaveId(leave._id);
+                }}
+              >
+                <i className="fas fa-user-edit" />
+              </Button>
+            </h5>
+          ),
+        });
       });
+
+      data.student && data.student.forEach((leave,i) => {
+        studentData.push({
+          key: i,
+          name:
+            leave.student &&
+            leave.student.firstname + " " + leave.student.lastname,
+          class: leave.class && leave.class.name,
+          section: leave.section && leave.section.name,
+          date_from: getFormattedDate(leave.dateFrom),
+          date_to: getFormattedDate(leave.dateTo),
+          no_of_days: leave.noOfDays,
+          reason: leave.reason,
+          status: leave.status,
+          action: (
+            <h5 key={i + 1} className="mb-0">
+              <Button
+                className="btn-sm pull-right"
+                color="primary"
+                type="button"
+                key={"edit" + i + 1}
+                onClick={() => {
+                  setEditStatus(leave.status);
+                  setEditing(true);
+                  setEditLeaveId(leave._id);
+                }}
+              >
+                <i className="fas fa-user-edit" />
+              </Button>
+            </h5>
+          ),
+        });
+      })
+
+    
       setStaffLeaveData(staffData);
       setStudentLeaveData(studentData);
       setLoading(false);
@@ -659,8 +661,9 @@ const ViewAllLeaves = () => {
 
   const handleEdit = async () => {
     const formData = new FormData();
-    formData.set("id", editLeaveId);
+    formData.set("leave_id", editLeaveId);
     formData.set("status", editStatus);
+    formData.set("school",user.school);
     try {
       setEditLoading(true);
       const data = await editLeave(user._id, formData);

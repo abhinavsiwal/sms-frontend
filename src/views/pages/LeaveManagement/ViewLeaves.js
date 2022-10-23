@@ -642,8 +642,9 @@ const ViewLeaves = () => {
 
   const handleEdit = async () => {
     const formData = new FormData();
-    formData.set("id",editLeaveId);
+    formData.set("leave_id",editLeaveId);
     formData.set("status",editStatus);
+    formData.set("school",user.school)
     try {
       setEditLoading(true);
       const data = await editLeave(user._id,formData);

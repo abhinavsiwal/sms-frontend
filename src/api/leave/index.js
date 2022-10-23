@@ -48,7 +48,7 @@ export const deleteLeaveBySID = async (userId, sId, leaveId) => {
 export const getAllLeaves = async (userId, schoolId) => {
   try {
     const { data } = await sendRequest(
-      `${process.env.REACT_APP_API_URL}/api/school/leave/get/all/${schoolId}/${userId}`,
+      `${process.env.REACT_APP_API_URL}/api/school/leave/get/all_leaves/${schoolId}/${userId}`,
       {},
       "GET"
     );
@@ -107,7 +107,7 @@ export const getAllLeavesByStaff = async (userId, sId) => {
 export const editLeave = async (userId, formData) => {
   try {
     const { data } = await sendRequest(
-      `${process.env.REACT_APP_API_URL}/api/school/leave/edit/${userId}`,
+      `${process.env.REACT_APP_API_URL}/api/school/leave/update_leave_status/${userId}`,
       formData,
       "PUT"
     );
