@@ -92,6 +92,7 @@ function AddStudent() {
     country: "",
     permanent_country: "",
     state: "",
+    permanent_state:"",
     permanent_city: "",
     city: "",
     nationality: "Indian",
