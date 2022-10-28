@@ -123,6 +123,12 @@ function UpdateStaff({ staffDetails }) {
   const [dateOfBirth, setDateOfBirth] = useState(
     new Date(staffData.date_of_birth)
   );
+  const [checked, setChecked] = useState(false);
+  const [permanentCountry, setPermanentCountry] = useState("India");
+  const [permanentState, setPermanentState] = useState(staffDetails.permanent_state);
+  const [permanentCity, setPermanentCity] = useState("");
+  const [permanentPincodeError, setPermanentPincodeError] = useState(false);
+  const [permanentPincode, setPermanentPincode] = useState(staffDetails.permanent_pincode);
   useEffect(() => {
     let subjects = [];
     for (let i = 0; i < staffData.subject.length; i++) {
@@ -253,7 +259,18 @@ function UpdateStaff({ staffDetails }) {
     formData.set("assign_role", assignRoleId);
     formData.set("date_of_birth", dateOfBirth);
     formData.set("joining_date", dateOfJoining);
-
+    if(!checked){
+      formData.set("permanent_city", permanentCity);
+      formData.set("permanent_state",permanentState);
+      formData.set("permanent_country",permanentCountry);
+      formData.set("permanent_pincode",permanentPincode);
+    }else{
+      formData.set("permanent_city", city);
+      formData.set("permanent_state",state); 
+      formData.set("permanent_country",country);
+      formData.set("permanent_pincode",pincode);
+      formData.set("permanent_address",staffDetails.present_address);
+    }
     try {
       setLoading(true);
       const resp = await updateStaff(staffData._id, user._id, formData);
@@ -383,7 +400,7 @@ function UpdateStaff({ staffDetails }) {
   const phoneBlurHandler = () => {
     console.log("here");
     console.log(staffData.phone);
-    let regex = /^[5-9]{2}[0-9]{8}$/;
+    let regex = /^[5-9]{1}[0-9]{9}$/;
     if (regex.test(staffData.phone)) {
       setPhoneError(false);
     } else {
@@ -391,7 +408,7 @@ function UpdateStaff({ staffDetails }) {
     }
   };
   const altPhoneBlurHandler = () => {
-    let regex = /^[5-9]{2}[0-9]{8}$/;
+    let regex = /^[5-9]{1}[0-9]{9}$/;
     if (regex.test(staffData.alternate_phone)) {
       setAltPhoneError(false);
     } else {
@@ -455,7 +472,50 @@ function UpdateStaff({ staffDetails }) {
       }
     }
   };
+  useEffect(() => {
+    console.log(checked);
+    if(staffDetails.permanent_address===staffDetails.present_address){
+      setChecked(true);
+    }else{
+      setChecked(false);
+    }
 
+
+   
+  }, []);
+  const checkboxChangeHandler = () => {
+    setChecked(!checked);
+  };
+  const permanentPincodeBlurHandler = () => {
+    let regex = /^[1-9][0-9]{5}$/;
+    // console.log("Here");
+    if (permanentPincode.length === 6) {
+      console.log("herre");
+      setPermanentPincodeError(false);
+      // setDisableButton(false);
+    } else {
+      console.log("herrsadasdadse");
+      setPermanentPincodeError(true);
+      // setDisableButton(true);
+    }
+  };
+  const permanentPincodeChangeHandler = async (e) => {
+    setPermanentPincode(e.target.value);
+    // console.log("pp");
+    if (e.target.value.length === 6) {
+      try {
+        const { data } = await axios.get(
+          `https://api.postalpincode.in/pincode/${e.target.value}`
+        );
+        console.log(data);
+        setPermanentState(data[0].PostOffice[0].State);
+        setPermanentCity(data[0].PostOffice[0].District);
+      } catch (err) {
+        console.log(err);
+        toast.error("Failed to fetch pin code.");
+      }
+    }
+  };  
   return (
     <>
       <SimpleHeader name="Add Staff" parentName="Staff Management" />
@@ -617,7 +677,7 @@ function UpdateStaff({ staffDetails }) {
                         className="form-control-label"
                         htmlFor="example-date-input"
                       >
-                        DOB
+                        Date Of Birth
                       </Label>
                       <DatePicker
                         dateFormat="dd/MM/yyyy"
@@ -713,7 +773,7 @@ function UpdateStaff({ staffDetails }) {
                         value={staffData.alternate_phone}
                         type="number"
                         pattern="[1-9]{1}[0-9]{9}"
-                        required
+                   
                         onBlur={altPhoneBlurHandler}
                         invalid={altPhoneError}
                       />
@@ -778,11 +838,19 @@ function UpdateStaff({ staffDetails }) {
                       <Input
                         id="example4cols2Input"
                         placeholder="Caste"
-                        type="text"
+                        type="select"
                         onChange={handleChange("caste")}
                         value={staffData.caste}
                         required
-                      />
+                      >
+                         <option value="" disabled>
+                            Select Caste
+                          </option>
+                          <option value="General">General</option>
+                          <option value="SC">SC</option>
+                          <option value="ST">ST</option>
+                          <option value="OBC">OBC</option>
+                      </Input>
                     </Col>
                     <Col md="3">
                       <label
@@ -849,24 +917,7 @@ function UpdateStaff({ staffDetails }) {
                       />
                     </Col>
                   </Row>
-                  <Row className="mb-4">
-                    <Col>
-                      <label
-                        className="form-control-label"
-                        htmlFor="example4cols2Input"
-                      >
-                        Permanent Address
-                      </label>
-                      <Input
-                        id="example4cols2Input"
-                        placeholder="Permanent Address"
-                        onChange={handleChange("permanent_address")}
-                        value={staffData.permanent_address}
-                        type="text"
-                        required
-                      />
-                    </Col>
-                  </Row>
+               
                   <Row className="mt-4">
                     <Col md="3">
                       <label
@@ -940,6 +991,124 @@ function UpdateStaff({ staffDetails }) {
                       />
                     </Col>
                   </Row>
+                  <Row>
+                    <Col style={{ marginLeft: "1.2rem" }}>
+                      <Input
+                        id="example4cols3Input"
+                        placeholder="Permanent Address"
+                        type="checkbox"
+                        onChange={checkboxChangeHandler}
+                        checked={checked}
+                        // value={studentData.permanent_address}
+                      />{" "}
+                      <label
+                        className="form-control-label"
+                        htmlFor="example4cols3Input"
+                      >
+                        Permanent Address - Same as Present Address
+                      </label>
+                    </Col>
+                  </Row>
+                  {!checked && (
+                    <>
+                      <Row>
+                        <Col>
+                          <label
+                            className="form-control-label"
+                            htmlFor="example4cols3Input"
+                          >
+                            Permanent Address
+                          </label>
+                          <Input
+                            id="example4cols3Input"
+                            placeholder="Permanent Address"
+                            type="text"
+                            onChange={handleChange("permanent_address")}
+                            required
+                            value={staffData.permanent_address}
+                          />
+                        </Col>
+                      </Row>
+                      <Row className="mb-4">
+                        <Col md="3">
+                          <label
+                            className="form-control-label"
+                            htmlFor="example4cols2Input"
+                          >
+                            Pin Code
+                          </label>
+                          <Input
+                            id="example4cols2Input"
+                            placeholder="Pin Code"
+                            onChange={(e) => permanentPincodeChangeHandler(e)}
+                            value={permanentPincode}
+                            type="number"
+                            required
+                            onBlur={permanentPincodeBlurHandler}
+                            invalid={permanentPincodeError}
+                          />
+                          {permanentPincodeError && (
+                            <FormFeedback>
+                              Please Enter a valid Pincode
+                            </FormFeedback>
+                          )}
+                        </Col>
+                        <Col md="3">
+                          <label
+                            className="form-control-label"
+                            htmlFor="exampleFormControlSelect3"
+                          >
+                            Country
+                          </label>
+                          <Input
+                            id="example4cols1Input"
+                            placeholder="Country"
+                            type="text"
+                            onChange={(e) =>
+                              setPermanentCountry(e.target.value)
+                            }
+                            value={permanentCountry}
+                            required
+                            disabled
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label
+                            className="form-control-label"
+                            htmlFor="exampleFormControlSelect3"
+                          >
+                            State
+                          </label>
+                          <Input
+                            id="example4cols1Input"
+                            placeholder="State"
+                            type="text"
+                            onChange={(e) => setPermanentState(e.target.value)}
+                            value={permanentState}
+                            required
+                            disabled
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label
+                            className="form-control-label"
+                            htmlFor="exampleFormControlSelect3"
+                          >
+                            City
+                          </label>
+                          <Input
+                            id="example4cols2Input"
+                            placeholder="City"
+                            type="text"
+                            onChange={(e) => setPermanentCity(e.target.value)}
+                            value={permanentCity}
+                            required
+                            disabled
+                          />
+                        </Col>
+                      </Row>
+                    </>
+                  )}
                   <Row className="mt-4 d-flex justify-content-between">
                     <Button
                       className="ml-4"
@@ -1251,7 +1420,7 @@ function UpdateStaff({ staffDetails }) {
                       </Col>
                     </Row>
                   ) : null}
-                  {assignRole.name !== "" && assignRole.name !== "Teacher" && (
+                 
                     <Row>
                       <Col md="12">
                         <label
@@ -1286,7 +1455,7 @@ function UpdateStaff({ staffDetails }) {
                         />
                       </Col>
                     </Row>
-                  )}
+              
                   <Row className="mt-4 d-flex justify-content-between">
                     <Button
                       className="ml-4"
