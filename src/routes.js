@@ -56,7 +56,7 @@ import AddRoute from "views/pages/Transportation/AddRoute";
 import Viewproduct from "views/pages/Ecommerce/Viewproduct";
 import Addproduct from "views/pages/Ecommerce/Addproduct";
 import StudentCredentials from "views/pages/credentials/StudentCredentials";
-import StaffAttendance from "views/pages/staffManagement/StaffAttendance";
+// import StaffAttendance from "views/pages/staffManagement/StaffAttendance";
 import FeesMaster from "views/pages/FeesManagement/feesmaster";
 import PenaltyMaster from "views/pages/FeesManagement/penalty";
 import AddBuilding from "views/pages/Hostel/AddBuildingFloor";
@@ -99,6 +99,7 @@ import Assignment from 'views/pages/Assignment/Assignment'
 import Promotion from 'views/pages/Result/Promotion'
 import Hostel from "views/pages/FeesManagement/Hostel";
 import Transport from "views/pages/FeesManagement/Transport";
+import StaffAttendance from 'views/pages/Staff-Attendance/StaffAttendance'
 export const adminRoutes = [
   {
     path: "/dashboard",
@@ -144,6 +145,14 @@ export const adminRoutes = [
         name: "Staff Documents",
         miniName: "S",
         component: StaffDocuments,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/staff-attenadance",
+        name: "Staff Attendance",
+        miniName: "S",
+        component: StaffAttendance,
         layout: "/admin",
         permission: "add",
       },
