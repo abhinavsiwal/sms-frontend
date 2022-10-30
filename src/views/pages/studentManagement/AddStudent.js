@@ -24,7 +24,12 @@ import DatePicker from "react-datepicker";
 import SimpleHeader from "components/Headers/SimpleHeader.js";
 import axios from "axios";
 import Loader from "components/Loader/Loader";
-import { addStudent, isAuthenticateStudent, checkRollNo } from "api/student";
+import {
+  addStudent,
+  isAuthenticateStudent,
+  checkRollNo,
+  bulkUpload,
+} from "api/student";
 
 import { Stepper, Step } from "react-form-stepper";
 import { ToastContainer, toast } from "react-toastify";
@@ -92,7 +97,7 @@ function AddStudent() {
     country: "",
     permanent_country: "",
     state: "",
-    permanent_state:"",
+    permanent_state: "",
     permanent_city: "",
     city: "",
     nationality: "Indian",
@@ -176,7 +181,9 @@ function AddStudent() {
   const [csvClass, setCsvClass] = useState("");
   const [csvSelectedClass, setCsvSelectedClass] = useState({});
   const [csvSection, setCsvSection] = useState("");
+  const [csvSession, setCsvSession] = useState("");
   const buttonRef = React.useRef(null);
+  const [file, setFile] = useState();
   useEffect(() => {
     getAllClasses();
   }, []);
@@ -359,7 +366,7 @@ function AddStudent() {
 
   const [formData] = useState(new FormData());
 
-  const [file, setFile] = useState();
+  
 
   const fileReader = new FileReader();
 
@@ -832,6 +839,32 @@ function AddStudent() {
     setCsvSelectedClass(filteredClass);
   };
 
+  const bulkUploadHandler = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.set("documents", file);
+    formData.set("section", csvSection);
+    formData.set("class", csvClass);
+    formData.set("session", csvSession);
+
+    try {
+      setLoading(true);
+      const data = await bulkUpload(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        toast.error(data.err);
+        return;
+      }
+      toast.success("Students added successfully");
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error("Failed to add students");
+    }
+  };
+
   return (
     <>
       <SimpleHeader name="Add Student" parentName="Student Management" />
@@ -866,7 +899,7 @@ function AddStudent() {
           </button>
         </div>
         <ModalBody>
-          <form>
+          <form onSubmit={bulkUploadHandler} >
             <Row>
               <Col>
                 <label
@@ -879,8 +912,8 @@ function AddStudent() {
                 <select
                   className="form-control"
                   required
-                  // onChange={handleChange("session")}
-                  value={studentData.session}
+                  onChange={(e) => setCsvSession(e.target.value)}
+                  value={csvSession}
                 >
                   <option value="" disabled>
                     Select Session
@@ -896,8 +929,8 @@ function AddStudent() {
                     })}
                 </select>
               </Col>
-              </Row>
-              <Row>
+            </Row>
+            <Row>
               <Col>
                 <label className="form-control-label">Class</label>
                 <Input
@@ -934,7 +967,7 @@ function AddStudent() {
                   id="exampleFormControlSelect3"
                   type="select"
                   required
-                  onChange={(e) => csvSection(e.target.value)}
+                  onChange={(e) => setCsvSection(e.target.value)}
                   value={csvSection}
                 >
                   <option value="" disabled>
@@ -965,9 +998,7 @@ function AddStudent() {
             <Row>
               <Col>
                 <Button
-                  onClick={(e) => {
-                    handleOnSubmit(e);
-                  }}
+                 type="submit"
                   color="primary"
                 >
                   IMPORT CSV
@@ -1003,8 +1034,8 @@ function AddStudent() {
             </CardHeader>
             {step === 0 && (
               <>
-                <Row>
-                  <Col className="d-flex justify-content-start mt-2">
+                <Row style={{display:"flex",justifyContent:"center",margin:"auto"}}>
+                  <Col className="d-flex justify-content-start mt-2"  >
                     <Button onClick={() => setCsvModal(true)} color="primary">
                       Upload CSV
                     </Button>

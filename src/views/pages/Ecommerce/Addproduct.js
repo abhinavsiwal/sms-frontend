@@ -324,7 +324,7 @@ function Addproduct() {
       formData1.set("file", addProduct.image);
       const data1 = await uploadFile(formData1);
       console.log(data1);
-      formData.set("photo", data1.data[0]);
+      formData.set("image", data1.data[0]);
       const data = await createProduct(user._id, formData);
       console.log(data);
       if (data.err) {

@@ -1568,7 +1568,7 @@ function UpdateStudent({ studentDetails }) {
                               className="datePicker"
                             />
                           </Col>
-                          \
+                          
                           <Col>
                             <label
                               className="form-control-label"

@@ -87,12 +87,18 @@ function AddRoute() {
 
   const getAllStaffs = async () => {
     const { data } = await allStaffs(user.school, user._id);
-    // console.log(data);
-    let canteenStaff = data.find((staff) => staff.assign_role === "canteen");
-    setAllStaff(canteenStaff);
+    console.log(data);
+   let transportStaff=[];
+   data.forEach(staff => {
+    if(staff.assign_role.name==="Transportation"){
+      transportStaff.push(staff)
+    }
+   });
+  console.log(transportStaff);
+    setAllStaff(transportStaff);
     let options = [];
-    for (let i = 0; i < data.length; i++) {
-      options.push({ value: data[i]._id, label: data[i].firstname });
+    for (let i = 0; i < transportStaff.length; i++) {
+      options.push({ value: transportStaff[i]._id, label: transportStaff[i].firstname +" "+ transportStaff[i].lastname});
     }
     // console.log(options);
     setRoleOptions(options);
