@@ -427,6 +427,7 @@ const AllProducts = () => {
           description: data[i].description,
           category: data[i].category,
           quantity: data[i].quantity,
+          image_url: data[i].image_url,
           action: (
             <h5 key={i + 1} className="mb-0">
               {/* {permission1 && permission1.includes("edit".trim()) && ( */}
@@ -632,14 +633,15 @@ const AllProducts = () => {
                     <Container className="" fluid>
                       <Row className="card-wrapper">
                         {productList.map((product, index) => {
+                          console.log(product);
                           return (
                             <Col md="4" key={index}>
                               <Card>
-                                {product.photo && (
+                                {product.image_url!=="" && (
                                   <div style={{ height: "10rem" }}>
                                     <CardImg
                                       alt="..."
-                                      src={product.tempPhoto}
+                                      src={product.image_url && product.image_url}
                                       top
                                       className="p-4"
                                     />
