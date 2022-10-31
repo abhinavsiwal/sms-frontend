@@ -799,6 +799,66 @@ export const adminRoutes = [
   },
 ];
 
+export const adminRoutes1=[
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    icon: "ni ni-shop text-primary",
+    component: Dashboard,
+    layout: "/admin",
+    module: "Dashboard",
+  },
+  {
+    collapse: true,
+    name: "Configuration",
+    icon: "ni ni-single-02 text-orange",
+    state: "examplesCollapse",
+    module: "Configuration",
+    views: [
+      {
+        path: "/add-session",
+        name: "Create Session",
+        miniName: "CS",
+        component: Session,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/department",
+        name: "Department",
+        miniName: "D",
+        component: DepartmentList,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/staff-attendance",
+        name: "Staff Attendance",
+        miniName: "S",
+        component: StaffAttendance,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/staff-documents",
+        name: "Staff Documents",
+        miniName: "S",
+        component: StaffDocuments,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/staff-attenadance",
+        name: "Staff Attendance",
+        miniName: "S",
+        component: StaffAttendance,
+        layout: "/admin",
+        permission: "add",
+      },
+    ],
+  },
+]
+
 const routes = [
   {
     path: "/dashboard",

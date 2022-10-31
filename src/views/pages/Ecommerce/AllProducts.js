@@ -38,8 +38,8 @@ import { SCOPES } from "routeGuard/permission-maps";
 import { fetchingStaffFailed } from "constants/errors";
 import { deleteStaffError } from "constants/errors";
 import { deleteStaffSuccess } from "constants/success";
-import { getAllProducts, deleteProduct,updateProduct } from "api/product";
-
+import { getAllProducts, deleteProduct, updateProduct } from "api/product";
+import { uploadFile } from "api/upload";
 import { useReactToPrint } from "react-to-print";
 import { getAllCategories } from "api/category";
 const AllProducts = () => {
@@ -62,6 +62,7 @@ const AllProducts = () => {
     discountValue: "",
     offerPrice: "",
     image: "",
+    imagePreview: "",
     publish: "",
     id: "",
   });
@@ -384,7 +385,23 @@ const AllProducts = () => {
   const handleChange = (name) => (event) => {
     setAddProduct({ ...addProduct, [name]: event.target.value });
   };
-
+  const handleFileChange = (name) => (event) => {
+    console.log(name, event.target.files[0]);
+    // formData.set(name, event.target.files[0]);
+    // setAddProduct({ ...addProduct, [name]: event.target.files[0]});
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (reader.readyState === 2) {
+        setAddProduct({
+          ...addProduct,
+          imagePreview: reader.result,
+          [name]: event.target.files[0],
+        });
+        // setImagesPreview(reader.result);
+      }
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  };
   const getAllProductsHandler = async () => {
     try {
       setLoading(true);
@@ -463,6 +480,7 @@ const AllProducts = () => {
       description: data.description,
       category: data.category,
       quantity: data.quantity,
+      imagePreview: data.image_url,
     });
   };
   const discountHandler = () => {
@@ -498,10 +516,11 @@ const AllProducts = () => {
       toast.error("Deleting product failed");
     }
   };
-  const editProductSubmitHandler =async (e)=>{
+  const editProductSubmitHandler = async (e) => {
     e.preventDefault();
+    console.log(addProduct);
     const formData = new FormData();
-    formData.set("name", addProduct.name); 
+    formData.set("name", addProduct.name);
     formData.set("category", addProduct.category);
     formData.set("description", addProduct.description);
     formData.set("sellingPrice", addProduct.sellingPrice);
@@ -514,25 +533,32 @@ const AllProducts = () => {
     formData.set("id", addProduct.id);
 
     try {
-        setEditLoading(true);
-        const data =await updateProduct(user._id, formData);
-        console.log(data);
-        if(data.err){
-            setEditLoading(false);
-            toast.error(data.err);
-            return;
-        }
-        toast.success("Product edited successfully");
-        setChecked(!checked);
-        setEditLoading(false);
-        setEditing(false);
-    } catch (err) {
-        console.log(err);
-        setEditLoading(false);
-        toast.error("Editing product failed");
-    }
+      setEditLoading(true);
+      if (addProduct.image) {
+        const formData1 = new FormData();
+        formData1.set("file", addProduct.image);
+        const data1 = await uploadFile(formData1);
+        console.log(data1);
+        formData.set("image", data1.data[0]);
+      }
 
-  }
+      const data = await updateProduct(user._id, formData);
+      console.log(data);
+      if (data.err) {
+        setEditLoading(false);
+        toast.error(data.err);
+        return;
+      }
+      toast.success("Product edited successfully");
+      setChecked(!checked);
+      setEditLoading(false);
+      setEditing(false);
+    } catch (err) {
+      console.log(err);
+      setEditLoading(false);
+      toast.error("Editing product failed");
+    }
+  };
   return (
     <>
       <ToastContainer
@@ -717,15 +743,22 @@ const AllProducts = () => {
           {editLoading ? (
             <Loader />
           ) : (
-            <Form className="mb-4" onSubmit={editProductSubmitHandler} >
+            <Form className="mb-4" onSubmit={editProductSubmitHandler}>
               <CardBody>
                 <Row md="4" className="d-flex justify-content-center mb-4">
+                  <img
+                    src={addProduct.imagePreview && addProduct.imagePreview}
+                    alt=""
+                    className="mt-3 me-2"
+                    width="80"
+                    height="80"
+                  />
                   <Col md="6">
                     <label
                       className="form-control-label"
                       htmlFor="example3cols2Input"
                     >
-                      Product Image
+                      Upload Image
                     </label>
                     <div className="custom-file">
                       <input
@@ -733,7 +766,7 @@ const AllProducts = () => {
                         id="customFileLang"
                         lang="en"
                         type="file"
-                        // onChange={handleFileChange("image")}
+                        onChange={handleFileChange("image")}
                         accept="image/*"
                       />
                       <label

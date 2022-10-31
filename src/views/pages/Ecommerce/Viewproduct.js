@@ -139,7 +139,7 @@ function Viewproduct() {
                             >
                               <CardImg
                                 alt="..."
-                                src={product.image && product.image}
+                                src={product.image_url && product.image_url}
                                 top
                                 className="p-4"
                                 style={{ width: "100%", height: "100%" }}
