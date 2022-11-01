@@ -65,7 +65,7 @@ function AdminProfile() {
 
   useEffect(() => {
     getSchoolDetails();
- 
+
     adminProfile();
   }, [checked]);
 
@@ -116,7 +116,7 @@ function AdminProfile() {
       // console.log(data);
 
       setSchoolDetails(data);
-    
+
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -184,7 +184,7 @@ function AdminProfile() {
         style={{ height: "75vh" }}
         isOpen={editing}
         toggle={() => setEditing(false)}
-        size="lg"
+        size="sm"
         scrollable
       >
         <div className="modal-header">
@@ -223,6 +223,8 @@ function AdminProfile() {
                     required
                   />
                 </Col>
+              </Row>
+              <Row>
                 <Col>
                   <Label
                     className="form-control-label"
@@ -263,6 +265,8 @@ function AdminProfile() {
                     <FormFeedback>Please Enter a valid Email</FormFeedback>
                   )}
                 </Col>
+              </Row>
+              <Row>
                 <Col>
                   <Label
                     className="form-control-label"
@@ -286,19 +290,20 @@ function AdminProfile() {
                   )}
                 </Col>
               </Row>
-
-              <Button
-                color="success"
-                type="submit"
-                className="mt-2 mb-2"
-                style={{ float: "right" }}
-              >
-                Save changes
-              </Button>
+              <div className="mt-2 d-flex" style={{display:"flex",justifyContent:"center"}} >
+                <Button
+                  color="success"
+                  type="submit"
+                  className="mt-2 mb-2"
+                  style={{ float: "center" }}
+                >
+                  Save changes
+                </Button>
+              </div>
             </Form>
           </ModalBody>
         )}
-      </Modal>
+      </Modal>  
       <Container className="mt--6" fluid>
         {loading ? (
           <Loader />
