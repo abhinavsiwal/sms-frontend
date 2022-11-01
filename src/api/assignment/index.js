@@ -60,3 +60,33 @@ export const assignmentDetailsById = async(schoolId, userId, formData) => {
     throw new err();
   }
 }
+
+export const assignmentSubmitStudents = async(schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequestWithJson(
+      `${process.env.REACT_APP_API_URL}/api/school/assignment/assignment_submit_students/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    // console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw new err();
+  }
+}
+
+export const updateAssignmentMarks = async(schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequestWithJson(
+      `${process.env.REACT_APP_API_URL}/api/school/assignment/update_assignment_marks/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    // console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw new err();
+  }
+}

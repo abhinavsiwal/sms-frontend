@@ -25,12 +25,20 @@ import LoadingScreen from "react-loading-screen";
 import { toast, ToastContainer } from "react-toastify";
 import { isAuthenticated } from "api/auth";
 
+import { assignmentSubmitStudents } from "api/assignment";
+import { updateAssignmentMarks } from "api/assignment";
+
 const ViewAssignments = ({ setView, assignment }) => {
   const [loading, setLoading] = useState(false);
   const { user, token } = isAuthenticated();
   const [checked, setChecked] = useState(false);
+  const [inputFields, setInputFields] = useState({
+    student_assignment_id: "",
+    marks: "",
+    remarks: "",
+  });
   const [tableData, setTableData] = useState([]);
-  console.log(assignment);
+  // console.log(assignment);
   const columns = [
     {
       title: "Sr No",
@@ -152,29 +160,133 @@ const ViewAssignments = ({ setView, assignment }) => {
     },
   ];
 
-  const handleChange = (name,studentId) => async (event) => {
+  const getDetailsHandler = async () => {
+    const formData = {
+      assignment_id: assignment._id,
+    };
+    try {
+      setLoading(true);
+      const { data } = await assignmentSubmitStudents(
+        user.school,
+        user._id,
+        formData
+      );
+      console.log(data);
+      if (data.err) {
+        toast.error(data.err);
+        setLoading(false);
+        return;
+      }
+      let tableData = [];
 
-  }
-
-  const getAllAssignments = () => {
-    let tableData = [];
-
-    assignment?.student?.forEach((student, index) => {
-      tableData.push({
-        sr: index + 1,
-        name: student.firstname + " " + student.lastname,
-        submitted: assignment.submission_date,
-        action: <Button color="primary">View</Button>,
-        marks: <Input type="number" placeholder="Enter Marks" onChange={handleChange("marks",student._id)}  />,
-        remark: <Input type="text" placeholder="Enter Remark" />,
-        submit: <Button color="success">Submit</Button>,
+      data?.forEach((list, index) => {
+        tableData.push({
+          sr: index + 1,
+          name: list.student.firstname + " " + list.student.lastname,
+          submitted: formatDate(list.createdAt),
+          action: (
+            <>
+              <a href={list.document_url} target="_blank">
+                <Button color="primary">View</Button>
+              </a>
+            </>
+          ),
+          marks: (
+            <Input
+              type="number"
+              placeholder="Enter Marks"
+              onChange={handleChange("marks", list._id)}
+              defaultValue={list.marks}
+            />
+          ),
+          remark: (
+            <Input
+              type="text"
+              placeholder="Enter Remark"
+              onChange={handleChange("remarks", list._id)}
+              defaultValue={list.remarks}
+            />
+          ),
+          submit: (
+            <Button color="success" onClick={handleSubmit}>
+              Submit
+            </Button>
+          ),
+        });
       });
-    });
 
-    setTableData(tableData);
+      setTableData(tableData);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      toast.error("Something went wrong");
+    }
   };
+
+  const formatDate = (date) => {
+    var d = date ? new Date(date) : new Date(),
+      month = "" + (d.getMonth() + 1),
+      day = "" + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
+
+    return [year, month, day].join("/");
+  };
+
+  const handleChange = (name, assignmentId) => async (event) => {
+    console.log(name, assignmentId);
+    console.log(event.target.value);
+    let temp = {};
+    if (
+      inputFields.student_assignment_id !== "" &&
+      assignmentId !== inputFields.student_assignment_id
+    ) {
+      console.log("hre");
+      setInputFields({});
+      temp = {};
+    }
+    temp.student_assignment_id = assignmentId;
+    if (name === "marks") {
+      temp.marks = event.target.value;
+    } else if (name === "remarks") {
+      temp.remarks = event.target.value;
+    }
+    console.log(temp);
+    let merged = Object.assign(inputFields, temp);
+    console.log(merged);
+    setInputFields(merged);
+  };
+
+  const handleSubmit = async () => {
+    console.log(inputFields);
+    try {
+      setLoading(true);
+      const data = await updateAssignmentMarks(
+        user.school,
+        user._id,
+        inputFields
+      );
+      console.log(data);
+      if (data.err) {
+        toast.error(data.err);
+        setLoading(false);
+        return;
+      }
+      toast.success("Marks Submitted Successfully");
+      setLoading(false);
+      setChecked(!checked);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error("Something went wrong");
+    }
+  };
+
   useEffect(() => {
-    getAllAssignments();
+    getDetailsHandler();
   }, [checked]);
   return (
     <>
