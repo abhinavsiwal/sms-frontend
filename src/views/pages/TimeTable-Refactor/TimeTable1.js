@@ -14,10 +14,10 @@ import {
   Modal,
   ModalBody,
 } from "reactstrap";
+import { SearchOutlined } from "@ant-design/icons";
 import SimpleHeader from "components/Headers/SimpleHeader.js";
-import DataTable from "react-data-table-component";
-import TimePicker from "rc-time-picker";
-import "rc-time-picker/assets/index.css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import { allClass } from "api/class";
 import { isAuthenticated } from "api/auth";
@@ -26,38 +26,32 @@ import { allSessions } from "api/session";
 import { allSubjects } from "api/subjects";
 import { Popconfirm } from "antd";
 import LoadingScreen from "react-loading-screen";
-import { getTimeTableForClass } from "api/Time Table";
+import { getTimeTableForClass, updatePeriod } from "api/Time Table";
 import { allStaffs } from "api/staff";
-
+import AntTable from "../tables/AntTable";
 const TimeTable1 = () => {
-  let timeFormat = "HH:mm";
   const { user, token } = isAuthenticated();
-  let timeFormat2 = "HH:mm A";
   const [classes, setClasses] = useState([]);
   const [sessions, setSessions] = React.useState([]);
   const [classId, setClassId] = useState("");
+  const [startDate, setStartDate] = React.useState(new Date());
+  const [endDate, setEndDate] = React.useState(new Date());
+  const [breakStartTime, setBreakStartTime] = React.useState(new Date());
+  const [breakEndTime, setBreakEndTime] = React.useState(new Date());
+  const [breakName, setBreakName] = useState("");
   const [classSectionId, setclassSectionId] = useState("");
   const [loading, setLoading] = useState(false);
   const [allStaff, setAllStaff] = useState([]);
-  const [schedules, setSchedules] = useState(null);
-  const [newSchedule, setNewSchedule] = useState({
-    fromTime: moment().format(timeFormat),
-    toTime: moment().format(timeFormat),
-    errMessage: "",
-  });
-
-  const [showBreak, setShowBreak] = useState(false);
-  const [teachers, setTeachers] = useState([]);
   const [subjects, setSubjects] = useState([]);
-  const [admin, setAdmin] = useState(false);
   const [show, setShow] = useState(false);
-  const [breaks, setBreaks] = useState({
-    fromTime: moment().format(timeFormat),
-    toTime: moment().format(timeFormat),
-    breakName: "",
-    errMessage: "",
+  const [showBreak, setShowBreak] = useState(false);
+  const [selectedClass, setSelectedClass] = useState({});
+  const [timetableData, setTimetableData] = useState([]);
+  const [searchData, setSearchData] = React.useState({
+    class: "",
+    section: "",
+    session: "",
   });
-
   const WorkingDaysList = [
     "Monday",
     "Tuesday",
@@ -67,14 +61,6 @@ const TimeTable1 = () => {
     "Saturday",
   ];
   const [checked, setChecked] = useState(false);
-  let usedSlots = [];
-  const [timeTableData, setTimeTableData] = React.useState({
-    class: "",
-    section: "",
-    session: "",
-  });
-  const [selectedClass, setSelectedClass] = useState({});
-
   useEffect(() => {
     getClass();
     getSession();
@@ -83,7 +69,6 @@ const TimeTable1 = () => {
     // getMappedSchedules();
   }, [checked]);
 
-  //Getting Class data
   const getClass = async () => {
     try {
       const classes = await allClass(user._id, user.school, token);
@@ -142,7 +127,7 @@ const TimeTable1 = () => {
     }
   };
   const handleChange = (name) => (event) => {
-    setTimeTableData({ ...timeTableData, [name]: event.target.value });
+    setSearchData({ ...searchData, [name]: event.target.value });
     console.log(name);
     if (name === "class") {
       console.log("@@@@@@@@=>", event.target.value);
@@ -154,12 +139,10 @@ const TimeTable1 = () => {
       setSelectedClass(selectedClass);
     }
     if (name === "section") {
-      setAdmin(true);
       setShow(true);
       getSchedulesForClass();
     }
   };
-
   async function getSchedulesForClass() {
     const formData = new FormData();
     formData.set("class", "628515691e4eb6ec425d2ca9");
@@ -172,6 +155,16 @@ const TimeTable1 = () => {
         toast.error(data.err);
         return setLoading(false);
       }
+      let tableData1 = [];
+      data.forEach((schedule, index) => {
+        tableData1.push({
+          key: index,
+          schedule: schedule?.period_id?.start + "-" + schedule?.period_id?.end,
+          day: schedule.period_id.day,
+        });
+      });
+      console.log(tableData1);
+      setTimetableData(tableData1);
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -179,172 +172,102 @@ const TimeTable1 = () => {
       setLoading(false);
     }
   }
-  function getMoment(time) {
-    return moment(new Date().toDateString() + " " + time);
-  }
-  function isOverlapping(slot1, slot2) {
-    return !(
-      (slot1[0] <= slot2[0] && slot1[1] <= slot2[0]) ||
-      (slot1[0] >= slot2[1] && slot1[1] >= slot2[1])
-    );
-  }
 
-  const getTimetableColumnList = (plainText = false) => {
-    const columns = [
-      {
-        name: "Schedule",
-        cell: (schedule) =>
-          getMoment(schedule.fromTime).format(timeFormat2) +
-          " - " +
-          getMoment(schedule.toTime).format(timeFormat2),
+  useEffect(() => {
+    if (sessions.length !== 0) {
+      defaultSession1();
+    }
+  }, [sessions]);
+
+  const defaultSession1 = async () => {
+    const defaultSession = await sessions.find(
+      (session) => session.status === "current"
+    );
+    setSearchData({
+      ...searchData,
+      session: defaultSession._id,
+    });
+  };
+  const filterPassedTime = (time) => {
+    const currentDate = new Date(startDate);
+    const selectedDate = new Date(time);
+
+    return currentDate.getTime() < selectedDate.getTime();
+  };
+  const filterBreakTime = (time) => {
+    const currentDate = new Date(breakStartTime);
+    const selectedDate = new Date(time);
+
+    return currentDate.getTime() < selectedDate.getTime();
+  };
+
+  const columns = [
+    {
+      title: "Schedule",
+      dataIndex: "name",
+      align: "left",
+      sorter: (a, b) => a.schedule > b.schedule,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+        return (
+          <>
+            <Input
+              autoFocus
+              placeholder="Type text here"
+              value={selectedKeys[0]}
+              onChange={(e) => {
+                setSelectedKeys(e.target.value ? [e.target.value] : []);
+                confirm({ closeDropdown: false });
+              }}
+              onBlur={() => {
+                confirm();
+              }}
+            ></Input>
+          </>
+        );
       },
-      ...WorkingDaysList.map((day) => {
-        return {
-          name: day,
-          width: "200px",
-          center: true,
-          cell: (allSchedules) => {
-            const schedule = allSchedules[day];
-            if (typeof schedule === "string") {
-              return <div className="text-success">{schedule}</div>;
-            }
-            if (!admin || plainText) {
-              return (
-                <div className="d-flex flex-column">
-                  <div className="font-weight-bold">{schedule.subject}</div>
-                  <div>
-                    {/* {teachers &&
-                    teachers.filter(
-                      (teacher) =>
-                        Number(teacher.id) === Number(schedule.staffId)
-                    )[0]
-                      ? " - " +
-                        teachers.filter(
-                          (teacher) =>
-                            Number(teacher.id) === Number(schedule.staffId)
-                        )[0].name
-                      : null} */}
-                    {schedule.staff.firstname + " " + schedule.staff.lastname}
-                  </div>
-                </div>
-              );
-            }
-            return (
-              <div className="d-flex flex-column">
-                <select
-                  className="custom-select"
-                  value={schedule.subject_id}
-                  //   onChange={(event) =>
-                  //     handleInputChange(
-                  //       event,
-                  //       `schedules.${schedule.index}.subject`
-                  //     )
-                  //   }
-                >
-                  <option value="" disabled={true} selected={true}>
-                    Subject
-                  </option>
-                  {subjects.map((subject) => {
-                    if (subjects.indexOf(subject) === -1) {
-                      return null;
-                    }
-                    return <option value={subject._id}>{subject.name}</option>;
-                  })}
-                </select>
-                <select
-                  className="custom-select"
-                  value={schedule.staff._id}
-                  //   onChange={(event) =>
-                  //     handleInputChange(
-                  //       event,
-                  //       `schedules.${schedule.index}.staffId`
-                  //     )
-                  //   }
-                >
-                  <option value="" selected="true">
-                    Staff
-                  </option>
-                  {allStaff
-                    .filter((teacher) =>
-                      teacher.subjects.includes(schedule.subject)
-                    )
-                    .map((teacher) => {
-                      let available = true;
-                      for (let timeFrame of teacher.occupied) {
-                        if (
-                          timeFrame.day === day &&
-                          isOverlapping(
-                            [timeFrame.fromTime, timeFrame.toTime],
-                            [schedule.fromTime, schedule.toTime]
-                          )
-                        ) {
-                          available = false;
-                          break;
-                        }
-                      }
-                      return (
-                        <option value={teacher._id} disabled={!available}>
-                          {teacher.firstname + " " + teacher.lastname}
-                          {available ? "" : " (Not Available)"}
-                        </option>
-                      );
-                    })}
-                </select>
-              </div>
-            );
-          },
-        };
-      }),
-    ];
-    if (admin) {
-      columns.push({
-        name: "Action",
-        cell: (schedule) => {
-          if (typeof schedule[WorkingDaysList[0]] === "string") {
-            return <></>;
-          }
-          return (
-            <button
-              type="button"
-              className="btn btn-icon btn-sm"
-              title="Delete"
-              data-type="confirm"
-              onClick={() => deleteSchedule(schedule.fromTime, schedule.toTime)}
-            >
-              <i className="fa fa-trash-o text-danger"></i>
-            </button>
-          );
-        },
-      });
+      filterIcon: () => {
+        return <SearchOutlined />;
+      },
+      onFilter: (value, record) => {
+        return record.schedule.toLowerCase().includes(value.toLowerCase());
+      },
+    },
+    ...WorkingDaysList.map((day, index) => {
+      return {
+        title: day,
+        dataIndex: day,
+        align: "left",
+        key: index,
+      };
+    }),
+  ];
+
+  const addPeriodHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.set("class", searchData.class);
+      formData.set("section", searchData.section);
+      formData.set("start", startDate);
+      formData.set("end", endDate);
+      // formData.set("day","Monday");
+      formData.set("type", "P");
+      setLoading(true);
+      const data = await updatePeriod(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        toast.error(data.err);
+        return setLoading(false);
+      }
+      toast.success("Period Added Successfully");
+      setLoading(false);
+      setChecked(!checked);
+    } catch (err) {
+      console.log(err);
+      toast.error("Something Went Wrong!");
+      setLoading(false);
     }
   };
-  function deleteSchedule(fromTime, toTime) {
-    const schedules = [];
-    for (let schedule of schedules) {
-      if (schedule.fromTime === fromTime && schedule.toTime === toTime) {
-        if (schedule.id) {
-          schedule.action = "delete";
-          schedules.push(schedule);
-        }
-      } else {
-        schedules.push(schedule);
-      }
-    }
-    setSchedules(schedules);
-  }
-
-  const getMappedSchedules = () => {
-    const schedulesByTime = {};
-    for (let schedule of schedules.map((schedule, index) => {
-      return { ...schedule, index: index };
-    })){
-       if (schedule.action === "delete") {
-        continue;
-      }
-      const timeString = schedule.fromTime + " - " + schedule.toTime;
-    }
-  }
-
 
   return (
     <>
@@ -372,7 +295,32 @@ const TimeTable1 = () => {
         <Card>
           <CardBody>
             <Row className="m-4">
-              <Col md="6">
+              <Col>
+                <label
+                  className="form-control-label"
+                  htmlFor="example4cols2Input"
+                >
+                  Select Session
+                </label>
+
+                <select
+                  required
+                  className="form-control"
+                  onChange={handleChange("session")}
+                  value={searchData.session}
+                >
+                  <option value="">Select Session</option>
+                  {sessions &&
+                    sessions.map((data) => {
+                      return (
+                        <option key={data._id} value={data._id}>
+                          {data.name}
+                        </option>
+                      );
+                    })}
+                </select>
+              </Col>
+              <Col>
                 <Label
                   className="form-control-label"
                   htmlFor="xample-date-input"
@@ -383,7 +331,7 @@ const TimeTable1 = () => {
                   id="example4cols3Input"
                   type="select"
                   onChange={handleChange("class")}
-                  value={timeTableData.class}
+                  value={searchData.class}
                   required
                 >
                   <option value="" disabled selected>
@@ -398,7 +346,7 @@ const TimeTable1 = () => {
                   })}
                 </Input>
               </Col>
-              <Col md="6">
+              <Col>
                 <Label
                   className="form-control-label"
                   htmlFor="xample-date-input"
@@ -409,7 +357,7 @@ const TimeTable1 = () => {
                   id="example4cols3Input"
                   type="select"
                   onChange={handleChange("section")}
-                  value={timeTableData.section}
+                  value={searchData.section}
                   required
                   placeholder="Add Periods"
                 >
@@ -438,214 +386,147 @@ const TimeTable1 = () => {
               <h2>Add Periods</h2>
             </CardHeader>
             <CardBody>
-              <form className="col-12">
-                {admin && (
-                  <>
-                    <Row>
-                      <div className="col-12 row">
-                        <label className="font-weight-bold col-2">
-                          <i className="fa fa-plus" />
-                          &nbsp;Add Period
-                        </label>
-                        <div className="">
-                          <TimePicker
-                            value={getMoment(newSchedule.fromTime)}
-                            use12Hours={true}
-                            showSecond={false}
-                            allowEmpty={false}
-                            // onChange={(event) => {
-                            //   setNewSchedule({
-                            //     ...newSchedule,
-                            //     errMessage: "",
-                            //     fromTime: event.format(timeFormat),
-                            //     toTime:
-                            //       newSchedule.toTime.localeCompare(
-                            //         event.format(timeFormat)
-                            //       ) > -1
-                            //         ? newSchedule.toTime
-                            //         : event.format(timeFormat),
-                            //   });
-                            // }}
-                          />
-                        </div>
-                        <div className="col-auto text-center">to</div>
-                        <div className="col-auto">
-                          <TimePicker
-                            value={getMoment(newSchedule.toTime)}
-                            use12Hours={true}
-                            showSecond={false}
-                            allowEmpty={false}
-                            // onChange={(event) => {
-                            //   setNewSchedule({
-                            //     ...newSchedule,
-                            //     errMessage: "",
-                            //     toTime:
-                            //       event
-                            //         .format(timeFormat)
-                            //         .localeCompare(newSchedule.fromTime) > -1
-                            //         ? event.format(timeFormat)
-                            //         : newSchedule.fromTime,
-                            //   });
-                            // }}
-                          />
-                        </div>
-                        <div className="col-auto">
-                          <button
-                            type="button"
-                            className="btn btn-primary"
-                            // onClick={addPeriod}
-                          >
-                            <i className="fa fa-plus" />
-                            &nbsp;Add Period
-                          </button>
-                        </div>
-                        <div className="col-auto">
-                          <button
-                            type="button"
-                            className="btn btn-primary"
-                            onClick={() => {
-                              setShowBreak(true);
-                            }}
-                          >
-                            <i className="fa fa-plus" />
-                            &nbsp;Create-Break
-                          </button>
-                        </div>
-                        <div className="col-auto">
-                          <button
-                            type="button"
-                            className="btn btn-primary"
-                            // onClick={addPeriod}
-                          >
-                            <i className="fa fa-plus" />
-                            &nbsp;Online Class
-                          </button>
-                        </div>
-                      </div>
-                    </Row>
-                    {showBreak && (
-                      <div className=" row mt-2">
-                        <div className="col-auto">
-                          <label className="font-weight-bold">Break Name</label>
-                          <Input placeholder="name" type="text" />
-                        </div>
-                        <div
-                          className="col-auto d-flex  flex-col"
-                          style={{ display: "flex", flexDirection: "column" }}
-                        >
-                          <label className="font-weight-bold">From</label>
-                          <TimePicker
-                            value={getMoment(breaks.fromTime)}
-                            use12Hours={true}
-                            showSecond={false}
-                            allowEmpty={false}
-                            disabled={!admin}
-                            // onChange={(event) => {
-                            //   handleInputChange(
-                            //     {
-                            //       target: { value: event.format(timeFormat) },
-                            //     },
-                            //     "recess.fromTime"
-                            //   );
-
-                            //   setRecess({
-                            //     ...recess,
-                            //     toTime:
-                            //       recess.toTime.localeCompare(
-                            //         event.format(timeFormat)
-                            //       ) > -1
-                            //         ? recess.toTime
-                            //         : event.format(timeFormat),
-                            //   });
-                            // }}
-                          />
-                        </div>
-
-                        <div
-                          className="col-auto"
-                          style={{ display: "flex", flexDirection: "column" }}
-                        >
-                          <label className="font-weight-bold">To</label>
-                          <TimePicker
-                            value={getMoment(breaks.toTime)}
-                            use12Hours={true}
-                            showSecond={false}
-                            allowEmpty={false}
-                            disabled={!admin}
-                            // onChange={(event) =>
-                            //   handleInputChange(
-                            //     {
-                            //       target: {
-                            //         value:
-                            //           event
-                            //             .format(timeFormat)
-                            //             .localeCompare(recess.fromTime) > -1
-                            //             ? event.format(timeFormat)
-                            //             : recess.fromTime,
-                            //       },
-                            //     },
-                            //     "recess.toTime"
-                            //   )
-                            // }
-                          />
-                        </div>
-                        <div className="col-auto mt-4">
-                          <Button
-                            type="button"
-                            size="sm"
-                            color="primary"
-                            className="btn btn-primary"
-                          >
-                            <i className="fa fa-plus" />
-                            &nbsp;Create
-                          </Button>
-                        </div>
-                      </div>
-                    )}
-                  </>
+              <form onSubmit={addPeriodHandler}>
+                <Row className="mb-4">
+                  <Col>
+                    <label
+                      className="form-control-label"
+                      htmlFor="example4cols2Input"
+                    >
+                      From
+                    </label>
+                    <DatePicker
+                      id="exampleFormControlSelect3"
+                      className="Period-Time"
+                      selected={startDate}
+                      onChange={(date) => setStartDate(date)}
+                      showTimeSelect
+                      showTimeSelectOnly
+                      timeIntervals={15}
+                      timeCaption="Time"
+                      dateFormat="h:mm aa"
+                      required
+                    />
+                  </Col>
+                  <Col>
+                    <Label
+                      className="form-control-label"
+                      htmlFor="example-date-input"
+                    >
+                      To
+                    </Label>
+                    <DatePicker
+                      id="exampleFormControlSelect3"
+                      className="Period-Time"
+                      selected={endDate}
+                      onChange={(date) => setEndDate(date)}
+                      showTimeSelect
+                      showTimeSelectOnly
+                      timeIntervals={15}
+                      timeCaption="Time"
+                      dateFormat="h:mm aa"
+                      required
+                      filterTime={filterPassedTime}
+                    />
+                  </Col>
+                  <Col>
+                    <Button
+                      color="primary"
+                      type="submit"
+                      style={{ marginTop: "2rem" }}
+                    >
+                      Add Period
+                    </Button>
+                  </Col>
+                  <Col>
+                    <Button
+                      color="success"
+                      style={{ marginTop: "2rem" }}
+                      onClick={() => setShowBreak(!showBreak)}
+                    >
+                      Add Break
+                    </Button>
+                  </Col>
+                </Row>
+              </form>
+              <form>
+                {showBreak && (
+                  <Row className="mb-4">
+                    <Col>
+                      <Label
+                        className="form-control-label"
+                        htmlFor="example4cols2Input"
+                      >
+                        Break Name
+                      </Label>
+                      <Input
+                        id="example4cols2Input"
+                        placeholder="Name"
+                        type="text"
+                        onChange={(e) => setBreakName(e.target.value)}
+                        value={breakName}
+                        required
+                      />
+                    </Col>
+                    <Col>
+                      <label
+                        className="form-control-label"
+                        htmlFor="example4cols2Input"
+                      >
+                        From
+                      </label>
+                      <DatePicker
+                        id="exampleFormControlSelect3"
+                        className="Period-Time"
+                        selected={breakStartTime}
+                        onChange={(date) => setBreakStartTime(date)}
+                        showTimeSelect
+                        showTimeSelectOnly
+                        timeIntervals={15}
+                        timeCaption="Time"
+                        dateFormat="h:mm aa"
+                        required
+                      />
+                    </Col>
+                    <Col>
+                      <Label
+                        className="form-control-label"
+                        htmlFor="example-date-input"
+                      >
+                        To
+                      </Label>
+                      <DatePicker
+                        id="exampleFormControlSelect3"
+                        className="Period-Time"
+                        selected={breakEndTime}
+                        onChange={(date) => setBreakEndTime(date)}
+                        showTimeSelect
+                        showTimeSelectOnly
+                        timeIntervals={15}
+                        timeCaption="Time"
+                        dateFormat="h:mm aa"
+                        required
+                        filterTime={filterBreakTime}
+                      />
+                    </Col>
+                    <Col>
+                      <Button
+                        color="success"
+                        style={{ marginTop: "2rem" }}
+                        // onClick={() => setShowBreak(!showBreak)}
+                      >
+                        Add Break
+                      </Button>
+                    </Col>
+                  </Row>
                 )}
               </form>
-              <div id="time-table-class-view">
-                <DataTable
-                  columns={getTimetableColumnList()}
-                  // data={getMappedSchedules()}
-                  persistTableHead={true}
-                  progressPending={loading}
-                  selectableRowsVisibleOnly={true}
-                  pointerOnHover={true}
-                />
-              </div>
-              <div className="d-none">
-                <div id="time-table-printable">
-                  <div className="h3 text-center">
-                    {/* {className} - {sectionName} */}
-                  </div>
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        {getTimetableColumnList()
-                          .slice(0, getTimetableColumnList().length - 1)
-                          .map((column) => {
-                            return <th>{column.name}</th>;
-                          })}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {getMappedSchedules().map((schedule) => {
-                        return (
-                          <tr>
-                            {getTimetableColumnList(true)
-                              .slice(0, getTimetableColumnList().length - 1)
-                              .map((column) => {
-                                return <td>{column.cell(schedule)}</td>;
-                              })}
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              <AntTable
+                columns={columns}
+                data={timetableData}
+                pagination={true}
+                exportFileName="timetable"
+              />
             </CardBody>
           </Card>
         </Container>

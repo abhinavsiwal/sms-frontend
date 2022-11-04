@@ -1,4 +1,4 @@
-import { sendRequestWithJson,sendRequest } from "api/api";
+import { sendRequestWithJson, sendRequest } from "api/api";
 
 export const createTimeTable = (userId, token, data) => {
   const url = `${process.env.REACT_APP_API_URL}/api/school/timetable/create/${userId}`;
@@ -80,18 +80,32 @@ export const getSingleTimeTable = (schoolId, userId, token, data) => {
 };
 //REfactored Api
 
-export const getTimeTableForClass =async (schoolId, userId, formData) => {
+export const getTimeTableForClass = async (schoolId, userId, formData) => {
   console.log(formData);
   try {
-    const {data} = await sendRequest(
+    const { data } = await sendRequest(
       `${process.env.REACT_APP_API_URL}/api/school/timetable/time_table_list/${schoolId}/${userId}`,
       formData,
       "POST"
-    )
+    );
     console.log(data);
     return data;
   } catch (err) {
     console.log(err);
     throw new err();
   }
-}
+};
+export const updatePeriod = async (schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/timetable/update_period/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw new err();
+  }
+};

@@ -41,6 +41,7 @@
     "react-chartjs-2": "2.11.1",
     "react-copy-to-clipboard": "5.0.3",
     "react-country-region-selector": "^3.4.0",
+    "react-csv": "^2.2.2",
     "react-csv-importer": "^0.7.1",
     "react-data-table-component": "^6.11.6",
     "react-datepicker": "^4.6.0",
