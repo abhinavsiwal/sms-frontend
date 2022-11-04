@@ -44,6 +44,7 @@ import { isAuthenticated } from "api/auth";
 
 import { useSelector } from "react-redux";
 
+import { CSVLink } from "react-csv";
 import { allSessions } from "api/session";
 
 import { useHistory } from "react-router-dom";
@@ -183,6 +184,7 @@ function AddStudent() {
   const [csvSection, setCsvSection] = useState("");
   const [csvSession, setCsvSession] = useState("");
   const buttonRef = React.useRef(null);
+  const [discardedData, setDiscardedData] = useState([]);
   const [file, setFile] = useState();
   useEffect(() => {
     getAllClasses();
@@ -365,8 +367,6 @@ function AddStudent() {
   };
 
   const [formData] = useState(new FormData());
-
-  
 
   const fileReader = new FileReader();
 
@@ -856,7 +856,13 @@ function AddStudent() {
         toast.error(data.err);
         return;
       }
+      let discarded = [];
+      data?.failed_students?.forEach((student) => {
+        discarded.push(student);
+      });
+      setDiscardedData(discarded);
       toast.success("Students added successfully");
+
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -864,6 +870,53 @@ function AddStudent() {
       toast.error("Failed to add students");
     }
   };
+
+  const headers = [
+    { label: "First Name", key: "firstname" },
+    { label: "Last Name", key: "lastname" },
+    { label: "Student Email (o)", key: "email" },
+    { label: "Phone(0)", key: "phone" },
+    { label: "Alternate Phone no (0)", key: "alternate_phone" },
+    { label: "Aadhar Card(o)", key: "aadhar_number" },
+    { label: "Date Of Birth'", key: "date_of_birth" },
+    { label: "Gender", key: "gender" },
+    { label: "Birth Place", key: "birth_place" },
+    { label: "Caste", key: "caste" },
+    { label: "Religion", key: "religion" },
+    { label: "Mother Tongue", key: "mother_tongue" },
+    { label: "Blood Group", key: "bloodgroup" },
+    { label: "Nationality", key: "nationality" },
+    { label: "Enrollment Date", key: "joining_date" },
+    { label: "Previous School(o)", key: "previous_school" },
+    { label: "Present Address", key: "present_address" },
+    { label: "Permanent Addresss(o)", key: "permanent_address" },
+    { label: "Permanent State(o)", key: "permanent_state" },
+    { label: "Permanent Country (o)", key: "permanent_country" },
+    { label: "Permanent City(o)", key: "permanent_city" },
+    { label: "Pin Code (o)", key: "permanent_pincode" },
+    { label: "State", key: "state" },
+    { label: "City", key: "city" },
+    { label: "Country", key: "country" },
+    { label: "Pin Code", key: "pincode" },
+    { label: "Parent/Guardian Flag", key: "" },
+    { label: "Father Firstname(o)", key: "father_name" },
+    { label: "Father Lastname(o)", key: "father_last_name" },
+    { label: "Father Phone (o)", key: "father_phone" },
+    { label: "Father DOB(o)", key: "father_dob" },
+    { label: "Mother Firstname(o)", key: "mother_name" },
+    { label: "Mother Lastname(o)", key: "mother_last_name" },
+    { label: "Mother Phone (o)", key: "mother_phone" },
+    { label: "Mother DOB(o)", key: "mother_dob" },
+    // {label:"Email(o)",key:""},
+    { label: "Parent Email (o)", key: "parent_email" },
+    { label: "Roll No.", key: "roll_number" },
+    { label: "Guardian Firstname (o)", key: "guardian_name" },
+    { label: "Guardian Lastname (o)", key: "guardian_last_name" },
+    { label: "Guardian Phone (o)", key: "guardian_phone" },
+    { label: "Guardian Email (o)", key: "guardian_email" },
+    { label: "Guardian DOB (o)", key: "guardian_dob" },
+    { label: "Discarded Reason", key: "" },
+  ];
 
   return (
     <>
@@ -899,7 +952,7 @@ function AddStudent() {
           </button>
         </div>
         <ModalBody>
-          <form onSubmit={bulkUploadHandler} >
+          <form onSubmit={bulkUploadHandler}>
             <Row>
               <Col>
                 <label
@@ -920,7 +973,7 @@ function AddStudent() {
                   </option>
                   {sessions &&
                     sessions.map((data) => {
-                      console.log(data);
+                      // console.log(data);
                       return (
                         <option key={data._id} value={data._id}>
                           {data.name}
@@ -990,20 +1043,29 @@ function AddStudent() {
                 <input
                   type={"file"}
                   id={"csvFileInput"}
-                  accept={".csv"}
+                  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                   onChange={handleOnChange}
                 />
               </Col>
             </Row>
             <Row>
               <Col>
-                <Button
-                 type="submit"
-                  color="primary"
-                >
+                <Button type="submit" color="primary">
                   IMPORT CSV
                 </Button>
               </Col>
+              {discardedData.length > 0 && (
+                <Col>
+                  <CSVLink
+                    data={discardedData}
+                    headers={headers} 
+                    className="btn btn-danger"
+                   
+                  >
+                    Discarded CSV
+                  </CSVLink>
+                </Col>
+              )}
             </Row>
           </form>
         </ModalBody>
@@ -1034,8 +1096,14 @@ function AddStudent() {
             </CardHeader>
             {step === 0 && (
               <>
-                <Row style={{display:"flex",justifyContent:"center",margin:"auto"}}>
-                  <Col className="d-flex justify-content-start mt-2"  >
+                <Row
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    margin: "auto",
+                  }}
+                >
+                  <Col className="d-flex justify-content-start mt-2">
                     <Button onClick={() => setCsvModal(true)} color="primary">
                       Upload CSV
                     </Button>
@@ -1128,7 +1196,7 @@ function AddStudent() {
                           </option>
                           {sessions &&
                             sessions.map((data) => {
-                              console.log(data);
+                              // console.log(data);
                               return (
                                 <option key={data._id} value={data._id}>
                                   {data.name}
