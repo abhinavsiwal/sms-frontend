@@ -262,6 +262,14 @@ const ViewAssignments = ({ setView, assignment }) => {
 
   const handleSubmit = async () => {
     console.log(inputFields);
+    if (inputFields.marks === "" || inputFields.remarks === "") {
+      toast.error("Please enter marks and remarks");
+      return;
+    }
+    if(inputFields.marks > assignment.marks){
+      toast.error("Marks cannot be greater than assignment marks");
+      return;
+    }
     try {
       setLoading(true);
       const data = await updateAssignmentMarks(

@@ -34,7 +34,7 @@ import { routeAdd, routesAll } from "api/transportation";
 import { isAuthenticated } from "api/auth";
 import { allStaffs } from "api/staff";
 import { allSessions } from "api/session";
-
+import "./style.css";
 //Import ToastContainer
 import { ToastContainer, toast } from "react-toastify";
 

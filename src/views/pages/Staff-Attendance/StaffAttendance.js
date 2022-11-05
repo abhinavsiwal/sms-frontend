@@ -139,9 +139,8 @@ const StaffAttendance = () => {
 
     const formData = {
       session: searchData.session,
-      from_date: startDate.toISOString().split('T')[0],
-      to_date: endDate.toISOString().split('T')[0],
-
+      from_date: startDate.toISOString().split("T")[0],
+      to_date: endDate.toISOString().split("T")[0],
       name: searchData.name,
       staffId: searchData.staffId,
       department: searchData.department,

@@ -444,8 +444,8 @@ const AddShelf = () => {
         return;
       }
       toast.success("Shelf Deleted Successfully");
-      setChecked(!checked);
       setSelectedSectionId("empty");
+      setChecked(!checked);
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -490,7 +490,7 @@ const AddShelf = () => {
     if (selectedSectionId) {
       tableData();
     }
-  }, [selectedSectionId]);
+  }, [selectedSectionId,checked]);
 
   const deleteSectionHandler = async () => {
     try {
@@ -692,7 +692,7 @@ const AddShelf = () => {
             </Row>
             <Row>
               <Col>
-                <Container className="mt--6 shadow-lg" fluid>
+                <Container className="shadow-lg" fluid>
                   <Card>
                     <CardHeader>
                       <h3>View Section</h3>

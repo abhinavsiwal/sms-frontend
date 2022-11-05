@@ -15,7 +15,7 @@ import {
   Table,
   Form,
 } from "reactstrap";
-
+import "./style.css";
 //React-Select
 import Select from "react-select";
 import DatePicker from "react-datepicker";
@@ -450,7 +450,7 @@ function ViewRoute() {
       setChecked(!checked);
       setModalState(false);
       setStopLoading(false);
-      toast.success("Stop deleted successfully");
+      toast.success("Stop Updated successfully");
     } catch (err) {
       console.log(err);
       toast.error("Something went wrong");
@@ -699,6 +699,7 @@ function ViewRoute() {
           toggle={() => setEditing(false)}
           size="lg"
           scrollable
+          className="modal-dialog-centered"
         >
           <div className="modal-header">
             <h2 className="modal-title" id="modal-title-default">
@@ -774,8 +775,7 @@ function ViewRoute() {
                         required
                       />
                     </Col>
-                  </Row>
-                  <Row>
+                 
                     <Col>
                       <Label
                         className="form-control-label"
@@ -785,7 +785,7 @@ function ViewRoute() {
                       </Label>
                       <DatePicker
                         id="exampleFormControlSelect3"
-                        className="Period-Time"
+                        className="Period-Time datePicker"
                         selected={startDate}
                         onChange={(date) => setStartDate(date)}
                         showTimeSelect
@@ -805,7 +805,7 @@ function ViewRoute() {
                       </Label>
                       <DatePicker
                         id="exampleFormControlSelect3"
-                        className="Period-Time"
+                        className="Period-Time datePicker"
                         selected={endDate}
                         onChange={(date) => setEndDate(date)}
                         showTimeSelect
@@ -819,11 +819,12 @@ function ViewRoute() {
                     </Col>
                   </Row>
                   <Row>
-                    <Col>
+                    <Col style={{display:"flex",justifyContent:"center"}} >
                       <Button
                         className="primary mt-5"
                         color="primary"
                         onClick={editRouteHandler}
+                        
                       >
                         Save Changes
                       </Button>

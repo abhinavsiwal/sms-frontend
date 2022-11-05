@@ -480,7 +480,7 @@ const Assignment = () => {
           <Container className="mt--6">
             <Card>
               <CardHeader>
-                <h2>Budget Uses Details</h2>
+                <h2>Add Assignment</h2>
               </CardHeader>
               <CardBody>
                 <form onSubmit={handleSubmit}>

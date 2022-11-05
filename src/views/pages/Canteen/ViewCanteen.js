@@ -20,7 +20,7 @@ import { useReactToPrint } from "react-to-print";
 // core components
 import SimpleHeader from "components/Headers/SimpleHeader.js";
 import AntTable from "../tables/AntTable";
-
+import { uploadFile } from "api/upload";
 //Ant Table
 import { SearchOutlined } from "@ant-design/icons";
 import { Popconfirm } from "antd";
@@ -477,22 +477,21 @@ function ViewCanteen() {
 
             {permission1 && permission1.includes("delete") && (
               <Button
-              className="btn-sm pull-right"
-              color="danger"
-              type="button"
-              key={"delete" + i + 1}
-            >
-              <Popconfirm
-                title="Sure to delete?"
-                onConfirm={() =>
-                  deleteMenuItemHandler(selectedCanteen.menu[i]._id)
-                }
+                className="btn-sm pull-right"
+                color="danger"
+                type="button"
+                key={"delete" + i + 1}
               >
-                <i className="fas fa-trash" />
-              </Popconfirm>
-            </Button>
+                <Popconfirm
+                  title="Sure to delete?"
+                  onConfirm={() =>
+                    deleteMenuItemHandler(selectedCanteen.menu[i]._id)
+                  }
+                >
+                  <i className="fas fa-trash" />
+                </Popconfirm>
+              </Button>
             )}
-            
           </h5>
         ),
       });
@@ -567,7 +566,7 @@ function ViewCanteen() {
       price: sectionData.price,
       publish: sectionData.publish,
       // start_time: sectionData.start_time,
-      image: sectionData.tempPhoto,
+      // image: sectionData.tempPhoto,
       id: sectionData._id,
     });
     setImagesPreview(sectionData.tempPhoto);
@@ -582,18 +581,30 @@ function ViewCanteen() {
     let formData = new FormData();
     formData.set("school", user.school);
     formData.set("item", addMenu.item);
-    formData.set("image", addMenu.image);
     // formData.set("description", addMenu.description);
     formData.set("start_time", startDuration);
     formData.set("end_time", endDuration);
     formData.set("price", addMenu.price);
     formData.set("publish", addMenu.publish);
+    // formData.set("image", addMenu.image);
 
     try {
       setEditLoading(true);
+      if(addMenu.image){
+
+        const formData1 = new FormData();
+        formData1.set("file", addMenu.image);
+        const data1 = await uploadFile(formData1);
+        console.log(data1);
+        if (data1.err) {
+          setLoading(false);
+          return toast.error(data1.err);
+        }
+        formData.set("image", data1.data[0]);
+      }
       const data = await menuItemEdit(addMenu.id, user._id, formData);
 
-      // console.log(data);
+      console.log(data);
       setChecked(!checked);
       toast.success("Item edited successfully");
       setEditing(false);

@@ -288,11 +288,13 @@ function UpdateStudent({ studentDetails }) {
     }
     try {
       setLoading(true);
-      const formData1 = new FormData(); 
-      formData1.set("file", student.photo);
-      const data1 = await uploadFile(formData1);
-      console.log(data1);
-      formData.set("photo", data1.data[0]);
+      if(student.photo){
+        const formData1 = new FormData(); 
+        formData1.set("file", student.photo);
+        const data1 = await uploadFile(formData1);
+        console.log(data1);
+        formData.set("photo", data1.data[0]);
+      }
       const data =  await updateStudent(student._id, user._id, formData);
       console.log(data);
       if(data.err){
@@ -344,20 +346,12 @@ function UpdateStudent({ studentDetails }) {
   const [checked, setChecked] = useState(false);
   useEffect(() => {
     console.log(checked);
-    if(studentDetails.permanent_address?.length!==0){
-      setChecked(false);
-    }else{
+    if(studentDetails.permanent_address===studentDetails.present_address){
       setChecked(true);
+    }else{
+      setChecked(false);
     }
-
-
-    if (!checked && permanentPincode?.length===0) {
-      setPermanentPincode(pincode);
-      setPermanentCity(city);
-      setPermanentCountry(country);
-      setPermanentState(state);
-    }
-  }, [checked]);
+  }, []);
   const permanentPincodeBlurHandler = () => {
     let regex = /^[1-9][0-9]{5}$/;
     // console.log("Here");

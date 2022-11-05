@@ -1,0 +1,13 @@
+.table thead th{
+    background-color: #d3d3d3;
+    color: black;
+}
+
+.datePicker{
+    border: 0.5px solid rgb(207, 201, 201) !important ;
+    border-radius: 2px;
+    /* background-color: rgb(245, 245, 245); */
+    width: 100% !important; 
+    z-index: 10000;
+    height: 2.9rem !important;
+  }

@@ -144,8 +144,8 @@ const Attendance1 = () => {
 
     const formData = {
       session: searchData.session,
-      from_date: searchData.dateFrom,
-      to_date: searchData.dateTo,
+      from_date: startDate.toISOString().split('T')[0],
+      to_date: endDate.toISOString().split('T')[0],
       class: searchData.selectClass,
       section: searchData.selectSection,
       name: searchData.name,
@@ -453,13 +453,17 @@ const Attendance1 = () => {
                   >
                     From
                   </Label>
-                  <Input
-                    className="form-control"
-                    id="example-date-input"
-                    type="date"
-                    onChange={handleChange("dateFrom")}
-                    value={searchData.dateFrom}
+                  <DatePicker
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText="dd/mm/yyyy"
+                    onChange={(date) => setStartDate(date)}
+                    value={startDate}
+                    selected={startDate}
                     required
+                    showMonthDropdown
+                    showYearDropdown
+                    dropdownMode="select"
+                    className="datePicker"
                   />
                 </Col>
                 <Col>
@@ -469,12 +473,17 @@ const Attendance1 = () => {
                   >
                     To
                   </Label>
-                  <Input
-                    className="form-control"
-                    id="example-date-input"
-                    type="date"
-                    onChange={handleChange("dateTo")}
-                    value={searchData.dateTo}
+                  <DatePicker
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText="dd/mm/yyyy"
+                    onChange={(date) => setEndDate(date)}
+                    value={endDate}
+                    selected={endDate}
+                    required
+                    showMonthDropdown
+                    showYearDropdown
+                    dropdownMode="select"
+                    className="datePicker"
                   />
                 </Col>
               </Row>

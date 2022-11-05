@@ -51,6 +51,7 @@ const AddSession = () => {
   const [editEndDate, setEditEndDate] = useState("");
   const [editWorkingDay, setEditWorkingDay] = useState("");
   const [editWorkingTime, setEditWorkingTime] = useState(new Date());
+  const [editPaidLeaves, setEditPaidLeaves] = useState("");
   const editTimeDuration = moment(editWorkingTime).format("LT");
   const [editSessionId, setEditSessionId] = useState("");
   const [feesmethod, setFeesmethod] = useState("");
@@ -136,7 +137,8 @@ const AddSession = () => {
                         res[i].fees_method,
                         res[i].start_date.split("T")[0],
                         res[i].end_date.split("T")[0],
-                        res[i].working_days
+                        res[i].working_days,
+                        res[i].earned_leaves
                       )
                     }
                   >
@@ -231,6 +233,7 @@ const AddSession = () => {
     formData.set("working_days", editWorkingDay);
     formData.set("working_time", editTimeDuration);
     formData.set("fees_method", feesmethod);
+    formData.set("earned_leaves", editPaidLeaves);
 
     try {
       const updateSession = await editSession(
@@ -258,7 +261,15 @@ const AddSession = () => {
   };
 
   //Getting values from fetch
-  function rowHandler(id, name, fees_method, startDate, endDate, working_days) {
+  function rowHandler(
+    id,
+    name,
+    fees_method,
+    startDate,
+    endDate,
+    working_days,
+    leaves
+  ) {
     // e.stopPropagation();
     setEditing(true);
     let nowDate = new Date();
@@ -275,6 +286,7 @@ const AddSession = () => {
     setEditEndDate(endDate);
     setEditSessionId(id);
     setEditWorkingDay(working_days);
+    setEditPaidLeaves(leaves);
   }
 
   const columns = [
@@ -601,7 +613,28 @@ const AddSession = () => {
                           value={sessionData.start_date}
                         />
                       </Col>
-                      <Col>
+                       {/* Ending Date */}
+
+                       <Col>
+                        <label
+                          className="form-control-label"
+                          htmlFor="example-date-input"
+                        >
+                          Ending Date
+                        </label>
+                        <Input
+                          id="example-date-input"
+                          value={sessionData.end_date}
+                          type="date"
+                          min={moment(date).format("YYYY-MM-DD")}
+                          placeholder="dd-mm-yyyy"
+                          onChange={handleChange("end_date")}
+                          required
+                        />
+                      </Col>
+                    </Row>
+                    <Row className="mt-4">
+                    <Col>
                         <label
                           className="form-control-label"
                           htmlFor="example-date-input"
@@ -625,27 +658,7 @@ const AddSession = () => {
                           </div>
                         )}
                       </Col>
-                    </Row>
-                    <Row className="mt-4">
-                      {/* Ending Date */}
-
-                      <Col>
-                        <label
-                          className="form-control-label"
-                          htmlFor="example-date-input"
-                        >
-                          Ending Date
-                        </label>
-                        <Input
-                          id="example-date-input"
-                          value={sessionData.end_date}
-                          type="date"
-                          min={moment(date).format("YYYY-MM-DD")}
-                          placeholder="dd-mm-yyyy"
-                          onChange={handleChange("end_date")}
-                          required
-                        />
-                      </Col>
+               
                       <Col>
                         <label
                           className="form-control-label"
@@ -825,8 +838,7 @@ const AddSession = () => {
                     type="text"
                   />
                 </Col>
-              </Row>
-              <Row className="mt-4">
+
                 <Col>
                   <label
                     className="form-control-label"
@@ -860,8 +872,7 @@ const AddSession = () => {
                     required
                   />
                 </Col>
-              </Row>
-              <Row className="mt-4">
+
                 <Col>
                   <label
                     className="form-control-label"
@@ -887,18 +898,15 @@ const AddSession = () => {
                     className="form-control-label"
                     htmlFor="example-date-input"
                   >
-                    Working Time
+                    No. of Paid Leaves
                   </label>
-                  <DatePicker
-                    id="exampleFormControlSelect3"
-                    className="Period-Time"
-                    selected={editWorkingTime}
-                    onChange={(date) => setEditWorkingTime(date)}
-                    showTimeSelect
-                    showTimeSelectOnly
-                    timeIntervals={15}
-                    timeCaption="Time"
-                    dateFormat="h:mm aa"
+                  <Input
+                    id="form-department-name"
+                    value={editPaidLeaves}
+                    onChange={(e) => setEditPaidLeaves(e.target.value)}
+                    placeholder="Paid Leaves"
+                    type="number"
+                    required
                   />
                 </Col>
                 {dateExpire && (
@@ -926,7 +934,7 @@ const AddSession = () => {
               </Row>
             </ModalBody>
             <ModalFooter>
-              <Button color="success" type="submit">
+              <Button color="success" type="submit" style={{margin:"0 auto"}} >
                 Save changes
               </Button>
             </ModalFooter>

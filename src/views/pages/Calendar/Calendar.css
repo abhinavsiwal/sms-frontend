@@ -1,0 +1,27 @@
+.fc-col-header-cell {
+    background-color: #d3d3d3;
+    border: 1px solid #ddd;
+    color: #000 !important;
+    font-size: 12px;
+    font-weight: 400;
+    padding: 5px 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+.fc-col-header-cell-cushion {
+    color: #000;
+}
+
+.fc .fc-col-header-cell.fc-day .fc-col-header-cell-cushion{
+    color: #000;
+}
+.fc{
+    text-align: center;
+}
+.fc .fc-col-header-cell.fc-day{
+    text-align: center;
+}
+
+.fc .fc-toolbar.fc-header-toolbar{
+    padding: 0.5rem 1rem;
+}

@@ -301,14 +301,6 @@ export const adminRoutes = [
     ],
   },
   {
-    path: "/student-profile",
-    name: "Student Profile",
-    icon: "ni ni-shop text-primary",
-    component: StudentProfile,
-    layout: "/admin",
-    module: "Student Profile",
-  },
-  {
     path: "/session",
     name: "Session",
     icon: "ni ni-shop text-primary",

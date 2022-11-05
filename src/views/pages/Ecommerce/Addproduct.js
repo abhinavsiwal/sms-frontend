@@ -701,7 +701,7 @@ function Addproduct() {
           className="modal-dialog-centered"
           isOpen={editing}
           toggle={() => setEditing(false)}
-          size="lg"
+          size="sm"
         >
           <div className="modal-header">
             <h2 className="modal-title" id="modal-title-default">
@@ -744,7 +744,7 @@ function Addproduct() {
             </Row>
           </ModalBody>
           <ModalFooter>
-            <Button color="success" type="button" onClick={editCategoryHandler}>
+            <Button color="success" type="button" onClick={editCategoryHandler} style={{margin:"0 auto"}} > 
               Save changes
             </Button>
           </ModalFooter>

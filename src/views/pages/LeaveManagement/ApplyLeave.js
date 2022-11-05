@@ -337,7 +337,8 @@ const ApplyLeave = () => {
 
     let formData = new FormData();
     formData.set("status", "Cancelled");
-    formData.set("id", leaveId);
+    formData.set("leave_id", leaveId);
+    formData.set("school", user.school);
     try {
       setLoading(true);
       const data = await editLeave(user._id, formData);
@@ -414,6 +415,20 @@ const ApplyLeave = () => {
 
     return currentDate < selectedDate;
   };
+
+  useEffect(() => {
+    if (sessions.length !== 0) {
+      defaultSession1();
+    }
+  }, [sessions]);
+
+  const defaultSession1 = async () => {
+    const defaultSession = await sessions.find(
+      (session) => session.status === "current"
+    );
+   setLeaveData({ ...leaveData, session: defaultSession._id });
+  };
+
   return (
     <>
       <SimpleHeader name="Apply Leave" parentName="Leave Management" />
@@ -465,9 +480,8 @@ const ApplyLeave = () => {
                             })}
                         </select>
                       </Col>
-                    </Row>
-                    {user.user === "staff" && (
-                      <Row>
+
+                      {user.user === "staff" && (
                         <Col>
                           <label
                             className="form-control-label"
@@ -486,13 +500,11 @@ const ApplyLeave = () => {
                             <option value="">Select Leave Type</option>
                             <option value="EL">Earned Leave</option>
                             <option value="LOP">LOP Leave</option>
-                            <option value="COMPOFF">
-                              Comp Off Leave
-                            </option>
+                            {/* <option value="COMPOFF">Comp Off Leave</option> */}
                           </Input>
                         </Col>
-                      </Row>
-                    )}
+                      )}
+                    </Row>
 
                     <Row>
                       <Col>
@@ -556,7 +568,6 @@ const ApplyLeave = () => {
                           className="datePicker"
                           required
                           minDate={new Date()}
-                          
                           filterDate={filterPassedTime}
                         />
                       </Col>

@@ -52,6 +52,7 @@ const AllProducts = () => {
   const [editing, setEditing] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
   const [categoriesData, setCategoriesData] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
   const [addProduct, setAddProduct] = useState({
     name: "",
     description: "",
@@ -412,7 +413,7 @@ const AllProducts = () => {
         toast.error(data.err);
         return;
       }
-
+      setAllProducts(data);
       let tableData = [];
       for (let i = 0; i < data.length; i++) {
         tableData.push({
@@ -479,7 +480,7 @@ const AllProducts = () => {
       offerPrice: data.offerPrice,
       publish: data.publish,
       description: data.description,
-      category: data.category,
+      category: data.category._id,
       quantity: data.quantity,
       imagePreview: data.image_url,
     });
@@ -550,6 +551,7 @@ const AllProducts = () => {
         toast.error(data.err);
         return;
       }
+     
       toast.success("Product edited successfully");
       setChecked(!checked);
       setEditLoading(false);
@@ -632,7 +634,7 @@ const AllProducts = () => {
                   <>
                     <Container className="" fluid>
                       <Row className="card-wrapper">
-                        {productList.map((product, index) => {
+                        {allProducts.map((product, index) => {
                           console.log(product);
                           return (
                             <Col md="4" key={index}>

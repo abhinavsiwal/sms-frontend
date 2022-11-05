@@ -544,18 +544,19 @@ function AddStudent() {
     formData.set("date_of_birth", dateOfBirth);
     formData.set("joining_date", dateOfJoining);
     formData.set("session", studentData.session);
+    formData.set("nationality",studentData.nationality);
     if (guardianDOB) {
       formData.set("guardian_dob", guardianDOB);
     } else if (fatherDOB) {
       formData.set("father_dob", fatherDOB);
       formData.set("mother_dob", motherDOB);
     }
-    if (!checked) {
+   
       formData.set("permananent_city", permanentCity);
       formData.set("permananent_country", permanentCountry);
       formData.set("permanent_state", permanentState);
       formData.set("permanent_pincode", permanentPincode);
-    }
+      formData.set("permanent_address", studentData.permanent_address);
     try {
       setLoading(true);
       const formData1 = new FormData();
@@ -798,11 +799,16 @@ function AddStudent() {
   useEffect(() => {
     console.log(checked);
 
-    if (!checked) {
+   
+    if (checked) {
       setPermanentPincode(pincode);
       setPermanentCity(city);
       setPermanentCountry(country);
       setPermanentState(state);
+      setStudentData({
+        ...studentData,
+        permanent_address: studentData.present_address,
+      });
     }
   }, [checked]);
 
@@ -820,6 +826,18 @@ function AddStudent() {
       ...studentData,
       session: defaultSession._id,
     });
+  };
+  useEffect(() => {
+    if (sessions.length !== 0) {
+      defaultSession2();
+    }
+  }, [sessions]);
+
+  const defaultSession2 = async () => {
+    const defaultSession = await sessions.find(
+      (session) => session.status === "current"
+    );
+    setCsvSession(defaultSession._id);
   };
 
   const handleOnFileLoad = (data) => {

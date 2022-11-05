@@ -115,7 +115,7 @@ const AllStudents = () => {
       JSON.stringify(payload)
     );
     // console.log("res", res);
-    setAllStudentsData(res)
+    setAllStudentsData(res);
     if (res.err) {
       return toast.error(res.err);
     } else {
@@ -652,21 +652,25 @@ const AllStudents = () => {
                                   console.log(student);
                                   return (
                                     <Col md="4" key={index}>
-                                      <Card style={{ height: "32rem" }} >
-                                      
-                                       
-                                          <CardImg
-                                            alt="..."
-                                            src={student.tempPhoto?student.tempPhoto :"/img/student.png"}
-                                            top 
-                                            className="p-4"
-                                            style={{ height: "13rem" }}
-                                          />
-                                        
+                                      <Card style={{ height: "32rem" }}>
+                                        <CardImg
+                                          alt="..."
+                                          src={
+                                            student.tempPhoto
+                                              ? student.tempPhoto
+                                              : "/img/student.png"
+                                          }
+                                          top
+                                          className="p-4"
+                                          style={{ height: "13rem" }}
+                                        />
+
                                         <CardBody className="mt-0">
                                           <Row>
                                             <Col align="center">
-                                              <h4 className="mt-3 mb-1">Student Id</h4>
+                                              <h4 className="mt-3 mb-1">
+                                                Student Id
+                                              </h4>
                                               <span className="text-md">
                                                 {student.SID}
                                               </span>
@@ -839,7 +843,7 @@ const AllStudents = () => {
                     <Row></Row>
                   </ModalBody>
                 </Modal>
-              </Container> 
+              </Container>
             </>
           ) : (
             <UpdateStudent studentDetails={editingData} />

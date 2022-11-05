@@ -445,6 +445,20 @@ const Calendar = () => {
     console.log(newView);
     setCalendarView(newView);
   };
+
+  useEffect(() => {
+    if (sessions.length !== 0) {
+      defaultSession1();
+    }
+  }, [sessions]);
+
+  const defaultSession1 = async () => {
+    const defaultSession = await sessions.find(
+      (session) => session.status === "current"
+    );
+    setSessionID(defaultSession._id);
+  };
+
   return (
     <>
       <ToastContainer
@@ -566,9 +580,13 @@ const Calendar = () => {
                   dateClick={(info) => {
                     console.log("info", info);
                     let date = new Date();
-                    let yesterday = new Date(date.getTime()-24*60*60*1000);
+                    let yesterday = new Date(
+                      date.getTime() - 24 * 60 * 60 * 1000
+                    );
 
-                    console.log(new Date(info.date).getTime() < yesterday.getTime());
+                    console.log(
+                      new Date(info.date).getTime() < yesterday.getTime()
+                    );
                     if (new Date(info.date).getTime() < yesterday.getTime()) {
                       console.log("here");
                       return;
@@ -577,7 +595,7 @@ const Calendar = () => {
                     // setStartDate(
                     //   new Date(info.start).toISOString().split("T")[0]
                     // );
-                    setStartDate( info.date);
+                    setStartDate(info.date);
                     setEndDate(info.date);
                     setRadios("bg-info");
                   }}
@@ -627,6 +645,7 @@ const Calendar = () => {
                             className="form-control"
                             required
                             onChange={(e) => setSessionID(e.target.value)}
+                            value={sessionID}
                           >
                             <option value="">Select Session</option>
                             {sessions &&
@@ -680,9 +699,8 @@ const Calendar = () => {
                             // excludeDates={addDays(new Date(),6)}
                           />
                         </Col>
-                        </Row>
-                        <Row className="mt-2">
-
+                      </Row>
+                      <Row className="mt-2">
                         <Col>
                           <Label
                             className="form-control-label"
@@ -1053,7 +1071,10 @@ const Calendar = () => {
                     </span>
                   );
                 })} */}
-                { eventDetails.assignTeachers&& eventDetails.assignTeachers.firstname + " " + eventDetails.assignTeachers.lastname}
+              {eventDetails.assignTeachers &&
+                eventDetails.assignTeachers.firstname +
+                  " " +
+                  eventDetails.assignTeachers.lastname}
             </Col>
           </Row>
         </ModalBody>

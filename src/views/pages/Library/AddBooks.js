@@ -66,13 +66,13 @@ const AddBooks = () => {
     {
       title: "S No.",
       dataIndex: "s_no",
-      align:"left",
+      align: "left",
     },
-  
+
     {
       title: "Book Name",
       dataIndex: "book_name",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.book_name > b.book_name,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -101,7 +101,7 @@ const AddBooks = () => {
     },
     {
       title: "Book Author",
-      align:"left",
+      align: "left",
       dataIndex: "book_author",
       sorter: (a, b) => a.book_author > b.book_author,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
@@ -130,35 +130,35 @@ const AddBooks = () => {
       },
     },
     {
-      align:"left",
-        title: "Quantity",
-        dataIndex: "book_quantity",
-        sorter: (a, b) => a.book_quantity > b.book_quantity,
-        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
-          return (
-            <>
-              <Input
-                autoFocus
-                placeholder="Type text here"
-                value={selectedKeys[0]}
-                onChange={(e) => {
-                  setSelectedKeys(e.target.value ? [e.target.value] : []);
-                  confirm({ closeDropdown: false });
-                }}
-                onBlur={() => {
-                  confirm();
-                }}
-              ></Input>
-            </>
-          );
-        },
-        filterIcon: () => {
-          return <SearchOutlined />;
-        },
-        onFilter: (value, record) => {
-          return record.book_quantity.toLowerCase().includes(value.toLowerCase());
-        },
+      align: "left",
+      title: "Quantity",
+      dataIndex: "book_quantity",
+      sorter: (a, b) => a.book_quantity > b.book_quantity,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+        return (
+          <>
+            <Input
+              autoFocus
+              placeholder="Type text here"
+              value={selectedKeys[0]}
+              onChange={(e) => {
+                setSelectedKeys(e.target.value ? [e.target.value] : []);
+                confirm({ closeDropdown: false });
+              }}
+              onBlur={() => {
+                confirm();
+              }}
+            ></Input>
+          </>
+        );
       },
+      filterIcon: () => {
+        return <SearchOutlined />;
+      },
+      onFilter: (value, record) => {
+        return record.book_quantity.toLowerCase().includes(value.toLowerCase());
+      },
+    },
     {
       title: "Section Name",
       dataIndex: "section_name",
@@ -190,7 +190,7 @@ const AddBooks = () => {
     },
     {
       title: "Shelf Name",
-      align:"left",
+      align: "left",
       dataIndex: "shelf_name",
       sorter: (a, b) => a.shelf_name > b.shelf_name,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
@@ -223,7 +223,7 @@ const AddBooks = () => {
       key: "action",
       dataIndex: "action",
       fixed: "right",
-      align:"left",
+      align: "left",
     },
   ];
 
@@ -365,7 +365,7 @@ const AddBooks = () => {
     let selectedSection1 = allSection.find(
       (section) => section._id === bookSection
     );
- 
+
     setSelectedSection(selectedSection1);
   }, [bookSection]);
 
@@ -405,7 +405,7 @@ const AddBooks = () => {
       setBookQty("");
       setBookSection("");
       setBookShelf("");
-      setBookAuthor("")
+      setBookAuthor("");
     } catch (err) {
       console.log(err);
       toast.error("Error in adding book");
@@ -434,7 +434,7 @@ const AddBooks = () => {
             <Loader />
           ) : (
             <>
-              <Col lg="4">
+              <Col sm={12}>
                 <div className="card-wrapper">
                   <Card>
                     <CardBody>
@@ -456,8 +456,7 @@ const AddBooks = () => {
                               required
                             />
                           </Col>
-                        </Row>
-                        <Row>
+
                           <Col>
                             <label
                               className="form-control-label"
@@ -471,11 +470,9 @@ const AddBooks = () => {
                               type="text"
                               onChange={(e) => setBookAuthor(e.target.value)}
                               value={bookAuthor}
-                            
                             />
                           </Col>
-                        </Row>
-                        <Row>
+
                           <Col>
                             <label
                               className="form-control-label"
@@ -520,8 +517,7 @@ const AddBooks = () => {
                                 })}
                             </Input>
                           </Col>
-                        </Row>
-                        <Row>
+
                           <Col>
                             <label
                               className="form-control-label"
@@ -540,7 +536,6 @@ const AddBooks = () => {
                               <option value="">Select Shelf</option>
                               {selectedSection.shelf &&
                                 selectedSection.shelf.map((shelf) => {
-                             
                                   return (
                                     <option key={shelf._id} value={shelf._id}>
                                       {shelf.name}
@@ -551,16 +546,15 @@ const AddBooks = () => {
                           </Col>
                         </Row>
 
-                        <Row className="mt-4 float-right">
-                          <Col>
-                            <Button
-                              color="primary"
-                              type="submit"
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                              }}
-                            >
+                        <Row className="mt-4">
+                          <Col
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              width: "100%",
+                            }}
+                          >
+                            <Button color="primary" type="submit">
                               Submit
                             </Button>
                           </Col>
@@ -648,7 +642,6 @@ const AddBooks = () => {
                       type="text"
                       onChange={(e) => setEditBookAuthor(e.target.value)}
                       value={editBookAuthor}
-        
                     />
                   </Col>
                 </Row>
