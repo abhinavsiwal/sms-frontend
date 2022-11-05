@@ -57,6 +57,7 @@ import {
   RegionDropdown,
   CountryRegionData,
 } from "react-country-region-selector";
+import { CSVLink } from "react-csv";
 
 function AddStaff() {
   const [step, setStep] = useState(0);
@@ -146,6 +147,7 @@ function AddStaff() {
   const [csvModal, setCsvModal] = useState(false);
   const [csvSession, setCsvSession] = useState("");
   const [csvDepartment, setCsvDepartment] = useState("");
+  const [discardedData, setDiscardedData] = useState([]);
   useEffect(() => {
     if (sessions.length !== 0) {
       defaultSession1();
@@ -601,6 +603,45 @@ function AddStaff() {
     }
   };
 
+  const headers = [
+    { label: "First Name", key: "firstname" },
+    { label: "Last Name", key: "lastname" },
+    { label: "Email", key: "email" },
+    { label: "Contact No.", key: "phone" },
+    { label: "Alternate No. (o)", key: "alternate_phone" },
+    { label: "Aadhar Card(o)", key: "aadhar_number" },
+    { label: "Date Of Birth'", key: "date_of_birth" },
+    { label: "Gender", key: "gender" },
+    { label: "Birth Place", key: "birth_place" },
+    { label: "Caste", key: "caste" },
+    { label: "Religion", key: "religion" },
+    { label: "Mother Tongue", key: "mother_tongue" },
+    { label: "Blood Group", key: "bloodgroup" },
+    { label: "Nationality", key: "nationality" },
+    { label: "Date of Joining", key: "joining_date" },
+    { label: "Present Address", key: "present_address" },
+    { label: "Permanent Addresss", key: "permanent_address" },
+    { label: "Present State", key: "state" },
+    { label: "Present City", key: "city" },
+    { label: "Present Country", key: "country" },
+    { label: "Present Pin Code", key: "pincode" },
+    { label: "Permanent State", key: "permanent_state" },
+    { label: "Permanent Country", key: "permanent_country" },
+    { label: "Permanent City", key: "permanent_city" },
+    { label: "Permanent Pincode", key: "permanent_pincode" },
+   {label:"Contact Person Name",key:"contact_person_name"},
+   {label:"Relation",key:"contact_person_relation"},
+   {label:"Address",key:"contact_person_address"},
+   {label:"State",key:"contact_person_state"},
+   {label:"City",key:"contact_person_city"},
+   {label:"Country",key:"contact_person_country"},
+   {label:"Pin Code",key:"contact_person_pincode"},
+   {label:"Job Name",key:"job"},
+   {label:"Job desription",key:"job_description"},
+   {label:"Salary",key:"salary"},
+  ];
+
+
   const bulkUploadHandler = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -617,6 +658,13 @@ function AddStaff() {
         toast.error(data.err);
         return;
       }
+
+      let discarded = [];
+      data?.failed_students?.forEach((student) => {
+        discarded.push(student);
+      });
+      setDiscardedData(discarded);
+
       toast.success("Students added successfully");
       setloading(false);
     } catch (err) {
@@ -660,7 +708,7 @@ function AddStaff() {
           </button>
         </div>
         <ModalBody>
-          <form>
+          <form onSubmit={bulkUploadHandler} >
             <Row>
               <Col>
                 <label
@@ -719,10 +767,10 @@ function AddStaff() {
             </Row>
             <Row>
               <Col className="my-2">
-                <input
+              <input
                   type={"file"}
                   id={"csvFileInput"}
-                  accept={".csv"}
+                  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                   onChange={handleOnChange}
                 />
               </Col>
@@ -733,6 +781,18 @@ function AddStaff() {
                   IMPORT CSV
                 </Button>
               </Col>
+              {discardedData.length > 0 && (
+                <Col>
+                  <CSVLink
+                    data={discardedData}
+                    headers={headers} 
+                    className="btn btn-danger"
+                   
+                  >
+                    Discarded CSV
+                  </CSVLink>
+                </Col>
+              )}
             </Row>
           </form>
         </ModalBody>
