@@ -304,6 +304,7 @@ function AddStaff() {
     formData.set("permananent_country", permanentCountry);
     formData.set("permanent_state", permanentState);
     formData.set("permanent_pincode", permanentPincode);
+    formData.set("permanent_address", staffData.permanent_address);
 
     try {
       setloading(true);

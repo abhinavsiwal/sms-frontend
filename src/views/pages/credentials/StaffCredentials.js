@@ -190,7 +190,7 @@ const StaffCredentials = () => {
         tableData.push({
           key: i,
           sid: data[i].SID,
-          name:data[i].firstname+" "+data[i].lastname,
+          name: data[i].firstname + " " + data[i].lastname,
           password: data[i].temp,
 
           action: (
@@ -208,14 +208,16 @@ const StaffCredentials = () => {
               >
                 <i className="fas fa-user-edit" />
               </Button>
-              <Button
-                className="btn-sm pull-right"
-                color="success"
-                type="button"
-                key={"email" + i + 1}
-              >
-                Send Email
-              </Button>
+              <a href={`mailto:${data[i].email}`} target="_blank">
+                <Button
+                  className="btn-sm pull-right"
+                  color="success"
+                  type="button"
+                  key={"email" + i + 1}
+                >
+                  Send Email
+                </Button>
+              </a>
             </h5>
           ),
         });
@@ -370,7 +372,13 @@ const StaffCredentials = () => {
                 </Col>
               </Row>
             </ModalBody>
-            <ModalFooter  style={{display:"flex",justifyContent:"center",width:"100%"}}>
+            <ModalFooter
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
+              }}
+            >
               <Button color="success" type="button" onClick={handleEdit}>
                 Save Password
               </Button>

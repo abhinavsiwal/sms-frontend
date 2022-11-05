@@ -148,14 +148,7 @@ export const adminRoutes = [
         layout: "/admin",
         permission: "add",
       },
-      {
-        path: "/staff-attenadance",
-        name: "Staff Attendance",
-        miniName: "S",
-        component: StaffAttendance,
-        layout: "/admin",
-        permission: "add",
-      },
+   
     ],
   },
   {

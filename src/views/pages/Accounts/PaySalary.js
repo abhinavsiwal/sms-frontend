@@ -221,7 +221,7 @@ const PaySalary = () => {
         
         >
           {/* <i className="fas fa-user-edit" /> */}
-          Reshare
+          Generate
         </Button>
         // <PDFDownloadLink document={<SalarySlip />} fileName="SalarySlip.pdf">
         //   {({ blob, url, loading, error }) =>

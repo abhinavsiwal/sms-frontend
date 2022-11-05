@@ -32,6 +32,9 @@ import { element } from "prop-types";
 import { updateStaffAttendance } from "api/staffAttendance";
 import { getStaffByDepartment, allStaffs } from "api/staff";
 import { getDepartment } from "api/department";
+// import DatePicker from "react-datepicker";
+import "./style.css";
+
 const StaffAttendance = () => {
   const { user, token } = isAuthenticated();
   const today = new Date();
@@ -62,8 +65,8 @@ const StaffAttendance = () => {
   const [readOnly, setReadOnly] = useState(false);
   const [formData, setFormData] = useState([]);
   const [searchData, setSearchData] = useState({
-    dateFrom: startDate,
-    dateTo: endDate,
+    dateFrom: new Date(today.getFullYear(), today.getMonth(), 1),
+    dateTo: new Date(today.getFullYear(), today.getMonth() + 1, 1),
     name: "",
     staffId: "",
     session: "",
@@ -136,8 +139,8 @@ const StaffAttendance = () => {
 
     const formData = {
       session: searchData.session,
-      from_date: searchData.dateFrom,
-      to_date: searchData.dateTo,
+      from_date: startDate.toISOString().split('T')[0],
+      to_date: endDate.toISOString().split('T')[0],
 
       name: searchData.name,
       staffId: searchData.staffId,
@@ -153,7 +156,7 @@ const StaffAttendance = () => {
         return toast.error(data.err);
       }
       setViewAttendance(true);
-        processAbsentList(data);
+      processAbsentList(data);
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -373,6 +376,19 @@ const StaffAttendance = () => {
       toast.error("Something went wrong");
     }
   };
+  // let date = new Date();
+
+  const formatDate2 = (d) => {
+    const date = new Date(d);
+    const formattedDate = date
+      .toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
+      .replace(/ /g, "-");
+    return formattedDate;
+  };
 
   return (
     <>
@@ -444,13 +460,17 @@ const StaffAttendance = () => {
                   >
                     From
                   </Label>
-                  <Input
-                    className="form-control"
-                    id="example-date-input"
-                    type="date"
-                    onChange={handleChange("dateFrom")}
-                    value={searchData.dateFrom}
+                  <DatePicker
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText="dd/mm/yyyy"
+                    onChange={(date) => setStartDate(date)}
+                    value={startDate}
+                    selected={startDate}
                     required
+                    showMonthDropdown
+                    showYearDropdown
+                    dropdownMode="select"
+                    className="datePicker"
                   />
                 </Col>
                 <Col>
@@ -460,12 +480,17 @@ const StaffAttendance = () => {
                   >
                     To
                   </Label>
-                  <Input
-                    className="form-control"
-                    id="example-date-input"
-                    type="date"
-                    onChange={handleChange("dateTo")}
-                    value={searchData.dateTo}
+                  <DatePicker
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText="dd/mm/yyyy"
+                    onChange={(date) => setEndDate(date)}
+                    value={endDate}
+                    selected={endDate}
+                    required
+                    showMonthDropdown
+                    showYearDropdown
+                    dropdownMode="select"
+                    className="datePicker"
                   />
                 </Col>
               </Row>
