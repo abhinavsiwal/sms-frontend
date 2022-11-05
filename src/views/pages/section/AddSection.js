@@ -324,7 +324,7 @@ const AddSection = () => {
         subject: selectedClass.section[i].subject,
         class_teacher:
           selectedClass.section[i].classTeacher &&
-          selectedClass.section[i].classTeacher.firstname,
+          selectedClass.section[i].classTeacher.firstname+" "+selectedClass.section[i].classTeacher.lastname,
         action: (
           <h5 key={i + 1} className="mb-0">
             {permissions && permissions.includes("edit".trim()) && (
@@ -430,7 +430,9 @@ const AddSection = () => {
         return toast.error(resp.err);
       } else {
         toast.success(addSectionSuccess);
-        setChecked(!checked);
+        // setChecked(!checked);
+       await getAllClasses();
+        setTableClassSelectId(clas);
         setAddLoading(false);
         setClas("");
       }
@@ -521,7 +523,7 @@ const AddSection = () => {
               permissions.includes("add") && (
                 <div className="card-wrapper">
                   <Card>
-                  <CardHeader>
+                    <CardHeader>
                       <h2>Create Section Master</h2>
                     </CardHeader>
                     <Form onSubmit={handleFormChange} className="mb-4">
@@ -623,9 +625,9 @@ const AddSection = () => {
             <div className="card-wrapper">
               <Card>
                 <CardBody>
-                <CardHeader>
-                      <h2>View Sections</h2>
-                    </CardHeader>
+                  <CardHeader>
+                    <h2>View Sections</h2>
+                  </CardHeader>
                   <Row>
                     <Col className="sm-4 mb-3">
                       <label

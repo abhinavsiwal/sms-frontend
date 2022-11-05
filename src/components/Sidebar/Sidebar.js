@@ -14,7 +14,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from 'react';
+import React,{useEffect,useState} from 'react';
 // react library for routing
 import { useLocation, NavLink as NavLinkRRD, Link } from 'react-router-dom';
 // nodejs library that concatenates classes
@@ -25,10 +25,13 @@ import { PropTypes } from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 // reactstrap components
 import { Collapse, NavbarBrand, Navbar, NavItem, NavLink, Nav } from 'reactstrap';
-
+import { schoolProfile} from "api/school";
+import { isAuthenticated } from "api/auth";
 function Sidebar({ toggleSidenav, sidenavOpen, routes, logo, rtlActive }) {
   const [state, setState] = React.useState({});
+  const [schoolDetails, setSchoolDetails] = useState({});
   const location = useLocation();
+  const { user } = isAuthenticated();
   React.useEffect(() => {
     setState(getCollapseStates(routes));
     // eslint-disable-next-line
@@ -85,6 +88,33 @@ function Sidebar({ toggleSidenav, sidenavOpen, routes, logo, rtlActive }) {
       toggleSidenav();
     }
   };
+  useEffect(() => {
+    getSchoolDetails();
+  }, []);
+
+  const getSchoolDetails = async () => {
+    try {
+      // setLoading(true);
+      const { data } = await schoolProfile(user.school, user._id);
+      // console.log(user);
+      console.log(data);
+      if (data.err) {
+        // toast.error(data.err);
+        // setLoading(false);
+        console.log(data.err);
+        return;
+      }
+      setSchoolDetails(data);
+    
+      // setImagesPreview(data.photo);
+      // setLoading(false);
+    } catch (err) {
+      console.log(err);
+      // setLoading(false);
+      // toast.error(fetchingSchoolProfileError);
+    }
+  };
+
   // this function creates the links and collapses that appear in the sidebar (left menu)
   const createLinks = (routes) => {
     return routes.map((prop, key) => {
@@ -165,7 +195,7 @@ function Sidebar({ toggleSidenav, sidenavOpen, routes, logo, rtlActive }) {
       <div className="sidenav-header d-flex align-items-center">
         {logo ? (
           <NavbarBrand {...navbarBrandProps}>
-            <img alt={logo.imgAlt} className="navbar-brand-img" src="/img/logo1.jpeg" />
+            <img alt={logo.imgAlt} className="navbar-brand-img" src={ schoolDetails?schoolDetails.photo: "/img/logo1.jpeg"} />
           </NavbarBrand>
         ) : null}
         <div className="ml-auto">

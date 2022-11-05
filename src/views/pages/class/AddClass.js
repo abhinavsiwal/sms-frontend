@@ -323,8 +323,11 @@ const AddClass = () => {
       setIsEmpty(true);
       return;
     }
-
+    console.log(classList);
     let res = classList.filter((item) => {
+      if(!item.session){
+        return
+      }
       return item.session._id === selectedSessionId;
     });
     // console.log(res);
@@ -569,7 +572,7 @@ const AddClass = () => {
           className="modal-dialog-centered"
           isOpen={editing}
           toggle={() => setEditing(false)}
-          size="lg"
+          size="sm"
         >
           <div className="modal-header">
             <h2 className="modal-title" id="modal-title-default">
@@ -611,7 +614,7 @@ const AddClass = () => {
               </Col>
             </Row>
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter style={{margin:"0 auto"}} >
             <Button color="success" type="button" onClick={handleEdit}>
               Save changes
             </Button>
