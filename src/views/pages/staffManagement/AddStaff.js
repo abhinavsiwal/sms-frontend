@@ -661,12 +661,12 @@ function AddStaff() {
       }
 
       let discarded = [];
-      data?.failed_students?.forEach((student) => {
+      data?.failed_staff?.forEach((student) => {
         discarded.push(student);
       });
       setDiscardedData(discarded);
 
-      toast.success("Students added successfully");
+      toast.success("Staffs added successfully");
       setloading(false);
     } catch (err) {
       console.log(err);

@@ -27,29 +27,43 @@ export const getGrades = async (userId, schoolId) => {
 };
 
 export const updateExam = async (userId, schoolId, formData) => {
-    try {
-        const { data } = await sendRequest(
-        `${process.env.REACT_APP_API_URL}/api/grades/update_exam/${schoolId}/${userId}`,
-        formData,
-        "PUT"
-        );
-        return data;
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/grades/update_exam/${schoolId}/${userId}`,
+      formData,
+      "PUT"
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 
 export const updateMarks = async (userId, schoolId, formData) => {
-    try {
-        const { data } = await sendRequest(
-        `${process.env.REACT_APP_API_URL}/api/grades/update_marks/${schoolId}/${userId}`,
-        formData,
-        "PUT"
-        );
-        return data;
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/grades/update_marks/${schoolId}/${userId}`,
+      formData,
+      "PUT"
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getExams = async (userId, schoolId, formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/grades/exam_list/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};

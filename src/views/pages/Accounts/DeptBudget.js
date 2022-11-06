@@ -356,7 +356,7 @@ const DeptBudgetMaster = () => {
           session: data[i].session && data[i].session.name,
           allocated: data[i].allocated,
           used: data[i].used,
-          status: "Under Budget",
+          status:data[i].allocated > data[i].used ? "Under Budget" : "Over Budget",
           action: (
             <>
               <Button
@@ -369,7 +369,7 @@ const DeptBudgetMaster = () => {
                     id: data[i]._id,
                     department: data[i].department._id,
 
-                    session: data[i].session,
+                    session: data[i].session._id,
                     allocated: data[i].allocated,
                   });
                 }}

@@ -24,7 +24,7 @@ import { isAuthenticated } from "api/auth";
 import { toast, ToastContainer } from "react-toastify";
 import { allClass } from "api/class";
 import { filterStudent } from "api/student";
-import {updateMarks} from 'api/result'
+import { updateMarks, getExams } from "api/result";
 
 const MarksMaster = () => {
   const [loading, setLoading] = useState(false);
@@ -40,6 +40,8 @@ const MarksMaster = () => {
   const [students, setStudents] = useState([]);
   const [resultData, setResultData] = useState([]);
   const [result, setResult] = useState([]);
+  const [allExams, setAllExams] = useState([]);
+  // const [examId, setexamId] = useState(second)
   const getAllClasses = async () => {
     try {
       setLoading(true);
@@ -78,6 +80,7 @@ const MarksMaster = () => {
       (item) => item._id === section
     );
     console.log(selectedSection1);
+    getExamsHandler(selectedSection1._id);
     filterStudentHandler(selectedSection1);
     setSelectedSection(selectedSection1);
   }, [section]);
@@ -127,13 +130,13 @@ const MarksMaster = () => {
 
     try {
       setLoading(true);
-      const data = await updateMarks( user._id,user.school,formData);
+      const data = await updateMarks(user._id, user.school, formData);
       console.log(data);
       if (data.err) {
         setLoading(false);
         return toast.error(data.err);
       }
-      toast.success("Exam Created Successfully");
+      toast.success("Marks Updated Successfully");
       setLoading(false);
       setExamId("");
       setClas("");
@@ -141,6 +144,26 @@ const MarksMaster = () => {
       setShowTable(false);
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const getExamsHandler = async (sect) => {
+    const formData = new FormData();
+    formData.set("class", clas);
+    formData.set("section", sect);
+    try {
+      setLoading(true);
+      const data = await getExams(user._id, user.school, formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        return toast.error(data.err);
+      }
+      setAllExams(data);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
     }
   };
 
@@ -182,8 +205,6 @@ const MarksMaster = () => {
       }
     });
     console.log(resultData);
-
-   
   };
 
   return (
@@ -216,27 +237,7 @@ const MarksMaster = () => {
           <CardBody>
             <Form>
               <Row>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="exampleFormControlSelect3"
-                  >
-                    Exam
-                  </label>
-                  <Input
-                    id="exampleFormControlTextarea1"
-                    type="select"
-                    required
-                    onChange={(e) => setExamId(e.target.value)}
-                    value={examId}
-                    name="examId"
-                  >
-                    <option value="" disabled>
-                      Select Exam
-                    </option>
-                    <option value="6324f3308332c411dc022484">Test</option>
-                  </Input>
-                </Col>
+             
                 <Col>
                   <label
                     className="form-control-label"
@@ -290,6 +291,32 @@ const MarksMaster = () => {
                           {section.name}
                         </option>
                       );
+                    })}
+                  </Input>
+                </Col>
+                <Col>
+                  <label
+                    className="form-control-label"
+                    htmlFor="exampleFormControlSelect3"
+                  >
+                    Exam
+                  </label>
+                  <Input
+                    id="exampleFormControlTextarea1"
+                    type="select"
+                    required
+                    onChange={(e) => setExamId(e.target.value)}
+                    value={examId}
+                    name="examId"
+                  >
+                    <option value="" disabled>
+                      Select Exam
+                    </option>
+                    {allExams?.map((exam) => {
+                      return (
+                        <option value={exam._id}>{exam.name}</option>
+
+                      )
                     })}
                   </Input>
                 </Col>

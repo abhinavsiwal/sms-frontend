@@ -399,7 +399,7 @@ const BudgetMaster = () => {
           key: i,
           name: data[i].staff.firstname + " " + data[i].staff.lastname,
           dept: data[i].staff.department.name,
-          session: data[i].session,
+          session: data[i].session.name,
           allocated: data[i].allocated,
           used: data[i].used,
           status: "Under Budget",
@@ -416,7 +416,7 @@ const BudgetMaster = () => {
                     id: data[i]._id,
                     department: data[i].staff.department._id,
                     staff: data[i].staff._id,
-                    session: data[i].session,
+                    session: data[i].session._id,
                     allocated: data[i].allocated,
                   });
                   

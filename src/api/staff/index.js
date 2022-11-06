@@ -152,7 +152,7 @@ export const getStaffDocuments = async (schoolId, userId, formData) => {
 export const bulkUpload = async (schoolId, userId, formData) => {
   try {
     const { data } = await sendRequest(
-      `${process.env.REACT_APP_API_URL}/api/staff/student/bulk_upload/${schoolId}/${userId}`,
+      `${process.env.REACT_APP_API_URL}/api/school/staff/bulk_upload/${schoolId}/${userId}`,
       formData,
       "POST"
     );

@@ -56,6 +56,19 @@ const ExamMaster = () => {
       toast.error("Something Went Wrong!");
     }
   };
+  useEffect(() => {
+    if (sessions.length !== 0) {
+      defaultSession1();
+    }
+  }, [sessions]);
+
+  const defaultSession1 = async () => {
+    const defaultSession = await sessions.find(
+      (session) => session.status === "current"
+    );
+    setSession(defaultSession._id);
+  };
+
   const getAllClasses = async () => {
     try {
       setLoading(true);

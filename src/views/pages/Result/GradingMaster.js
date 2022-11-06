@@ -140,13 +140,13 @@ const GradingMaster = () => {
           </CardHeader>
           <form onSubmit={handleSubmit}>
             <table className="fees_table">
-              <thead style={{ backgroundColor: "#c0c0c0" }}>
-                <th style={{ backgroundColor: "#c0c0c0" }}>Min</th>
-                <th style={{ backgroundColor: "#c0c0c0" }}>Max</th>
-                <th style={{ backgroundColor: "#c0c0c0" }}>Grade</th>
-                <th style={{ backgroundColor: "#c0c0c0" }}>Description</th>
-                <th style={{ backgroundColor: "#c0c0c0" }}>Add</th>
-                <th style={{ backgroundColor: "#c0c0c0" }}>Remove</th>
+              <thead style={{ backgroundColor: "#d3d3d3" }}>
+                <th style={{ backgroundColor: "#d3d3d3" }}>Min</th>
+                <th style={{ backgroundColor: "#d3d3d3" }}>Max</th>
+                <th style={{ backgroundColor: "#d3d3d3" }}>Grade</th>
+                <th style={{ backgroundColor: "#d3d3d3" }}>Description</th>
+                <th style={{ backgroundColor: "#d3d3d3" }}>Add</th>
+                <th style={{ backgroundColor: "#d3d3d3" }}>Remove</th>
               </thead>
               <tbody>
                 {inputFields?.map((inputfield, index) => {
@@ -221,8 +221,8 @@ const GradingMaster = () => {
                 })}
               </tbody>
             </table>
-            <Row className="mt-4 my-4 mx-4 float-right">
-              <Col>
+            <Row className="mt-4 my-4 mx-4 mx-auto">
+              <Col style={{display:"flex",justifyContent:"center"}} >
                 <Button color="primary" type="submit">
                   Submit
                 </Button>
