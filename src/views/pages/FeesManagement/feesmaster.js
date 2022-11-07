@@ -90,6 +90,18 @@ const FeesMaster1 = () => {
       setClassID(e.target.value);
     }
   };
+  useEffect(() => {
+    if (sessions.length !== 0) {
+      defaultSession1();
+    }
+  }, [sessions]);
+
+  const defaultSession1 = async () => {
+    const defaultSession = await sessions.find(
+      (session) => session.status === "current"
+    );
+    setSessionID(defaultSession._id);
+  };
 
   const handleType = (e) => {
     e.preventDefault();
@@ -529,6 +541,7 @@ const FeesMaster1 = () => {
                     required
                     className="form-control"
                     onChange={handleSession}
+                    value={sessionID}
                   >
                     <option value="">Select Session</option>
                     {sessions &&

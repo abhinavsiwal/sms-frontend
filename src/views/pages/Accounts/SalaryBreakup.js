@@ -23,15 +23,18 @@ import LoadingScreen from "react-loading-screen";
 import { isAuthenticated } from "api/auth";
 import { toast, ToastContainer } from "react-toastify";
 import { getDepartment } from "api/department";
-
+import { salaryBreakupList } from "api/Budget";
+import { updateSalaryBreakup } from "api/Budget";
 const SalaryBreakup = () => {
   const [loading, setLoading] = useState(false);
   const { user, token } = isAuthenticated();
   const [checked, setChecked] = useState(false);
   const [allDepartments, setAllDepartments] = useState([]);
-  const [showTable, setShowTable] = useState(false);
+  const [showTable, setShowTable] = useState(true);
   const [tableData, setTableData] = useState([]);
   const [editing, setEditing] = useState(false);
+  const [salaryList, setSalaryList] = useState([]);
+
   const [salaryData, setSalaryData] = useState({
     total: "",
     basic: "",
@@ -40,6 +43,8 @@ const SalaryBreakup = () => {
     tax: "",
     others: "",
     totalAmount: "",
+    staff: "",
+    department: "",
   });
   const [total, setTotal] = useState(0);
   const [disableButton, setDisableButton] = useState(false);
@@ -198,6 +203,80 @@ const SalaryBreakup = () => {
     },
   ];
 
+  const getSalaryHandler = async () => {
+    const formData = new FormData();
+    try {
+      setLoading(true);
+      const data = await salaryBreakupList(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        return toast.error(data.err);
+      }
+
+      let tableData = [];
+      data.forEach((element, index) => {
+        tableData.push({
+          sno: index + 1,
+          name: element.staff.firstname + " " + element.staff.lastname,
+          sid: element.staff.email,
+          dept: element.department.name,
+          salary: element.staff.salary,
+          action: (
+            <>
+              <Button
+                className="btn-sm pull-right"
+                color="primary"
+                type="button"
+                onClick={() => {
+                  setEditing(true);
+
+                  setSalaryData({
+                    ...salaryData,
+                    total: element.staff.salary,
+                    basic: element.basic_salary,
+                    lta: element.lta,
+                    hra: element.hra,
+                    tax: element.professional_tax,
+                    others: element.other,
+                    totalAmount: element.staff.salary,
+                    staffId: element.staff._id,
+                    department: element.department._id,
+                  });
+                }}
+                key={"edit" + 1}
+              >
+                <i className="fas fa-user-edit" />
+              </Button>
+              {/* <Button
+              className="btn-sm pull-right"
+              color="danger"
+              type="button"
+              key={"delete" + 1}
+            >
+              <Popconfirm
+                title="Sure to delete?"
+                // onConfirm={() => deleteCanteenHandler()}
+              >
+                <i className="fas fa-trash" />
+              </Popconfirm>
+            </Button> */}
+            </>
+          ),
+        });
+      });
+      setTableData(tableData);
+      setShowTable(true);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      toast.error("Error fetching Salary List");
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    getSalaryHandler();
+  }, [checked]);
   const handleSearch = async (e) => {
     e.preventDefault();
 
@@ -244,39 +323,58 @@ const SalaryBreakup = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let total =
+      Number(salaryData.basic) +
+      Number(salaryData.lta) +
+      Number(salaryData.hra) -
+      (Number(salaryData.tax) + Number(salaryData.others));
+    setSalaryData({ ...salaryData, totalAmount: total });
+    console.log(total,salaryData.total);
     if (total > salaryData.total) {
       toast.error("Total cannot be greater than Salary.");
       return;
     }
-    console.log("submit");
+    const formData = new FormData();
+    formData.append("basic_salary", salaryData.basic);
+    formData.append("hra", salaryData.hra);
+    formData.append("lta", salaryData.lta);
+    formData.append("professional_tax", salaryData.tax);
+    formData.append("other", salaryData.others);
+    formData.append("total_amount", total);
+    formData.set("staff", salaryData.staffId);
+    formData.set("department", salaryData.department);
+    try {
+      setLoading(true);
+      const data = await updateSalaryBreakup(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        return toast.error(data.err);
+      }
+      toast.success("Salary Breakup Updated Successfully");
+      setLoading(false);
+      setEditing(false);
+      setChecked(!checked);
+      setSalaryData({
+        ...salaryData,
+        total: "",
+        basic: "",
+        lta: "",
+        hra: "",
+        tax: "",
+        others: "",
+        totalAmount: "",
+        staff: "",
+        department: "",
+      });
+    } catch (err) {
+      console.log(err);
+      toast.error("Error updating Salary Breakup");
+      setLoading(false);
+    }
   };
   const handleChange = (name) => async (event) => {
     setSalaryData({ ...salaryData, [name]: event.target.value });
-  };
-  const basicBlur = () => {
-    let amount = Number(total) + Number(salaryData.basic);
-    console.log(amount);
-    setTotal(amount);
-  };
-  const ltaBlur = () => {
-    let amount = Number(total) + Number(salaryData.lta);
-    console.log(amount);
-    setTotal(amount);
-  };
-  const hraBlur = () => {
-    let amount = Number(total) + Number(salaryData.hra);
-    console.log(amount);
-    setTotal(amount);
-  };
-  const taxBlur = () => {
-    let amount = Number(total) + Number(salaryData.tax);
-    console.log(amount);
-    setTotal(amount);
-  };
-  const othersBlur = () => {
-    let amount = Number(total) + Number(salaryData.others);
-    console.log(amount);
-    setTotal(amount);
   };
 
   return (
@@ -426,7 +524,6 @@ const SalaryBreakup = () => {
                   placeholder="Basic Sallary"
                   type="number"
                   required
-                  onBlur={basicBlur}
                 />
               </Col>
             </Row>
@@ -440,7 +537,6 @@ const SalaryBreakup = () => {
                   placeholder="LTA"
                   type="number"
                   required
-                  onBlur={ltaBlur}
                 />
               </Col>
 
@@ -453,7 +549,6 @@ const SalaryBreakup = () => {
                   placeholder="HRA"
                   type="number"
                   required
-                  onBlur={hraBlur}
                 />
               </Col>
             </Row>
@@ -467,7 +562,6 @@ const SalaryBreakup = () => {
                   placeholder="Professional Tax"
                   type="number"
                   required
-                  onBlur={taxBlur}
                 />
               </Col>
 
@@ -480,7 +574,6 @@ const SalaryBreakup = () => {
                   placeholder="Others"
                   type="number"
                   required
-                  onBlur={othersBlur}
                 />
               </Col>
             </Row>

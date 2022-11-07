@@ -66,6 +66,18 @@ const PenaltyMaster = () => {
       toast.error("Something Went Wrong!");
     }
   };
+  useEffect(() => {
+    if (sessions.length !== 0) {
+      defaultSession1();
+    }
+  }, [sessions]);
+
+  const defaultSession1 = async () => {
+    const defaultSession = await sessions.find(
+      (session) => session.status === "current"
+    );
+    setSessionID(defaultSession._id);
+  };
 
   const getAllClasses = async () => {
     try {
@@ -238,7 +250,7 @@ const PenaltyMaster = () => {
                   <label
                     className="form-control-label"
                     htmlFor="example4cols2Input"
-                  >
+                  > 
                     Select Session
                   </label>
 

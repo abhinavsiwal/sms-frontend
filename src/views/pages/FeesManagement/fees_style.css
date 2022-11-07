@@ -9,8 +9,11 @@
 .fees_table{
     width: 100% !important;
     white-space: pre;
+    /* background-color: #d3d3d3; */
 }
-
+.fees_table th{
+    background-color: #d3d3d3;
+}
 .feesMainRow{
     flex-wrap: wrap !important;
     

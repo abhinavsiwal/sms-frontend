@@ -67,36 +67,36 @@ const SalaryAdvanceApprover = () => {
         return record.name.toLowerCase().includes(value.toLowerCase());
       },
     },
-    {
-      title: "Department",
-      dataIndex: "department",
-      align: "left",
-      sorter: (a, b) => a.department > b.department,
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
-        return (
-          <>
-            <Input
-              autoFocus
-              placeholder="Type text here"
-              value={selectedKeys[0]}
-              onChange={(e) => {
-                setSelectedKeys(e.target.value ? [e.target.value] : []);
-                confirm({ closeDropdown: false });
-              }}
-              onBlur={() => {
-                confirm();
-              }}
-            ></Input>
-          </>
-        );
-      },
-      filterIcon: () => {
-        return <SearchOutlined />;
-      },
-      onFilter: (value, record) => {
-        return record.department.toLowerCase().includes(value.toLowerCase());
-      },
-    },
+    // {
+    //   title: "Department",
+    //   dataIndex: "department",
+    //   align: "left",
+    //   sorter: (a, b) => a.department > b.department,
+    //   filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+    //     return (
+    //       <>
+    //         <Input
+    //           autoFocus
+    //           placeholder="Type text here"
+    //           value={selectedKeys[0]}
+    //           onChange={(e) => {
+    //             setSelectedKeys(e.target.value ? [e.target.value] : []);
+    //             confirm({ closeDropdown: false });
+    //           }}
+    //           onBlur={() => {
+    //             confirm();
+    //           }}
+    //         ></Input>
+    //       </>
+    //     );
+    //   },
+    //   filterIcon: () => {
+    //     return <SearchOutlined />;
+    //   },
+    //   onFilter: (value, record) => {
+    //     return record.department.toLowerCase().includes(value.toLowerCase());
+    //   },
+    // },
 
     {
       title: "Salary",

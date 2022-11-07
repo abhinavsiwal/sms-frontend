@@ -161,3 +161,33 @@ export const linkStudent = async (schoolId, userId, formData) => {
     throw new err();
   }
 };
+
+export const salaryBreakupList = async (schoolId, userId,formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/staff/salary_breakup_list/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw new err();
+  }
+}
+
+export const updateSalaryBreakup = async (schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/staff/salary_breakup/${schoolId}/${userId}`,
+      formData,
+      "PUT"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw new err();
+  }
+}

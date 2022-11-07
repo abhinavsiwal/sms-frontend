@@ -127,7 +127,7 @@ const StaffReturn = () => {
     formData.set("building", returnData.building);
     formData.set("department", returnData.department);
     formData.set("staff", student._id);
-    formData.set("role", student.SID.slice(3, 6));
+    formData.set("role", "STA");
 
     try {
       setLoading(true);

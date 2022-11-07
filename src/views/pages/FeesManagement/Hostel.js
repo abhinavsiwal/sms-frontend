@@ -105,11 +105,11 @@ const Hostel = () => {
               <Input
                 type="date"
                 key={i + 1}
-                defaultValue={
-                  new Date(data[i]?.avail_fees?.from_date)
-                    .toISOString()
-                    .split("T")[0]
-                }
+                // defaultValue={
+                //   new Date(data[i].avail_fees.from_date)
+                //     .toISOString()
+                //     .split("T")[0]
+                // }
               />
             </>
           ),
@@ -118,11 +118,11 @@ const Hostel = () => {
               <Input
                 type="date"
                 key={i + 1}
-                defaultValue={
-                  new Date(data[i]?.avail_fees?.from_date)
-                    .toISOString()
-                    .split("T")[0]
-                }
+                // defaultValue={
+                //   new Date(data[i].avail_fees.from_date)
+                //     .toISOString()
+                //     .split("T")[0]
+                // }
               />
             </>
           ),

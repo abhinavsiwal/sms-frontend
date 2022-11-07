@@ -315,7 +315,7 @@ function AdminProfile() {
                   <Col align="center">
                     <CardImg
                       alt="..."
-                      src="https://trancaes.files.wordpress.com/2015/09/school-logo-new.jpg"
+                      src={schoolDetails.photo && schoolDetails.photo}
                       top
                       className="p-4"
                       style={{ width: "80%", height: "100%" }}

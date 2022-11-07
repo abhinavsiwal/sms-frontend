@@ -644,7 +644,7 @@ const AllStudents = () => {
                       </>
                     ) : (
                       <>
-                        <Container className="" fluid>
+                        <Container className="pt-4" fluid  >
                           <Row className="card-wrapper">
                             {allStudentsData && (
                               <>
@@ -652,7 +652,7 @@ const AllStudents = () => {
                                   console.log(student);
                                   return (
                                     <Col md="4" key={index}>
-                                      <Card style={{ height: "32rem" }}>
+                                      <Card style={{ height: "35rem" }}  >
                                         <CardImg
                                           alt="..."
                                           src={
@@ -662,7 +662,7 @@ const AllStudents = () => {
                                           }
                                           top
                                           className="p-4"
-                                          style={{ height: "13rem" }}
+                                          style={{ height: "16rem",width:"15rem",alignSelf:"center" }}
                                         />
 
                                         <CardBody className="mt-0">

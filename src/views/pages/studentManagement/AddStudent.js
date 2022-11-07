@@ -827,6 +827,8 @@ function AddStudent() {
       session: defaultSession._id,
     });
   };
+
+  
   useEffect(() => {
     if (sessions.length !== 0) {
       defaultSession2();

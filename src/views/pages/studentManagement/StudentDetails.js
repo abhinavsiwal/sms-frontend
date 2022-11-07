@@ -29,13 +29,13 @@ function Staffdetails({ data, backHandle }) {
   function getFormattedDate(date1) {
     let date = new Date(date1);
     var year = date.getFullYear();
-  
+
     var month = (1 + date.getMonth()).toString();
     month = month.length > 1 ? month : "0" + month;
-  
+
     var day = date.getDate().toString();
     day = day.length > 1 ? day : "0" + day;
-  
+
     return day + "/" + month + "/" + year;
   }
   return (
@@ -57,7 +57,17 @@ function Staffdetails({ data, backHandle }) {
           <Col lg="4">
             <div className="card-wrapper">
               <Card>
-                <CardImg alt="..." src={data.tempPhoto} top className="p-4" />
+                <CardImg
+                  alt="..."
+                  src={data.tempPhoto}
+                  top
+                  className="p-4"
+                  style={{
+                    height: "16rem",
+                    width: "15rem",
+                    alignSelf: "center",
+                  }}
+                />
                 <CardBody>
                   <Row>
                     <Col align="center">
@@ -163,7 +173,10 @@ function Staffdetails({ data, backHandle }) {
                                   <h5 className="checklist-title mb-0">
                                     Joining Date
                                   </h5>
-                                  <small>{data.joining_date && getFormattedDate(data.joining_date)}</small>
+                                  <small>
+                                    {data.joining_date &&
+                                      getFormattedDate(data.joining_date)}
+                                  </small>
                                 </div>
                               </div>
                             </ListGroupItem>
@@ -391,7 +404,11 @@ function Staffdetails({ data, backHandle }) {
                                     <h5 className="checklist-title mb-0">
                                       Father's Name
                                     </h5>
-                                    <small>{data.father_name+" "+ data.father_last_name}</small>
+                                    <small>
+                                      {data.father_name +
+                                        " " +
+                                        data.father_last_name}
+                                    </small>
                                   </div>
                                 </div>
                               </ListGroupItem>
@@ -403,7 +420,11 @@ function Staffdetails({ data, backHandle }) {
                                     <h5 className="checklist-title mb-0">
                                       Mother's Name
                                     </h5>
-                                    <small>{data.mother_name+" "+ data.mother_last_name}</small>
+                                    <small>
+                                      {data.mother_name +
+                                        " " +
+                                        data.mother_last_name}
+                                    </small>
                                   </div>
                                 </div>
                               </ListGroupItem>
@@ -415,9 +436,7 @@ function Staffdetails({ data, backHandle }) {
                                     <h5 className="checklist-title mb-0">
                                       Parent Email
                                     </h5>
-                                    <small>
-                                      {data.parent_email}
-                                    </small>
+                                    <small>{data.parent_email}</small>
                                   </div>
                                 </div>
                               </ListGroupItem>
@@ -441,14 +460,13 @@ function Staffdetails({ data, backHandle }) {
                                 <div className="checklist-item checklist-item-info">
                                   <div className="checklist-info">
                                     <h5 className="checklist-title mb-0">
-                                    Mother Phone
+                                      Mother Phone
                                     </h5>
                                     <small>{data.mother_phone}</small>
                                   </div>
                                 </div>
                               </ListGroupItem>
                             </Col>
-                         
                           </Row>
                           <Row className="mt-4">
                             <Col>
