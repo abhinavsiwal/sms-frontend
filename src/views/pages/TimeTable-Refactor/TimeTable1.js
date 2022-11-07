@@ -14,6 +14,7 @@ import {
   Modal,
   ModalBody,
 } from "reactstrap";
+import "./style.css";
 import { SearchOutlined } from "@ant-design/icons";
 import SimpleHeader from "components/Headers/SimpleHeader.js";
 import DatePicker from "react-datepicker";
@@ -26,9 +27,14 @@ import { allSessions } from "api/session";
 import { allSubjects } from "api/subjects";
 import { Popconfirm } from "antd";
 import LoadingScreen from "react-loading-screen";
-import { getTimeTableForClass, updatePeriod } from "api/Time Table";
+import {
+  getTimeTableForClass,
+  updatePeriod,
+  getAllPeriods,
+} from "api/Time Table";
 import { allStaffs } from "api/staff";
 import AntTable from "../tables/AntTable";
+import { updateTimeTable } from "api/Time Table";
 const TimeTable1 = () => {
   const { user, token } = isAuthenticated();
   const [classes, setClasses] = useState([]);
@@ -44,6 +50,7 @@ const TimeTable1 = () => {
   const [allStaff, setAllStaff] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [show, setShow] = useState(false);
+  const [allPeriods, setAllPeriods] = useState([]);
   const [showBreak, setShowBreak] = useState(false);
   const [selectedClass, setSelectedClass] = useState({});
   const [timetableData, setTimetableData] = useState([]);
@@ -61,6 +68,7 @@ const TimeTable1 = () => {
     "Saturday",
   ];
   const [checked, setChecked] = useState(false);
+  const [periodData, setPeriodData] = useState(false);
   useEffect(() => {
     getClass();
     getSession();
@@ -117,8 +125,11 @@ const TimeTable1 = () => {
       setLoading(true);
       const { data } = await allStaffs(user.school, user._id);
       console.log("staff=>=>=>=>=>=>==>=>=>=>=>", data);
-      //   let canteenStaff = data.find((staff) => staff.assign_role === "library");
-      setAllStaff(data);
+      let teachingStaff = data.filter(
+        (staff) => staff.assign_role.name === "Teacher"
+      );
+      console.log(teachingStaff);
+      setAllStaff(teachingStaff);
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -140,31 +151,26 @@ const TimeTable1 = () => {
     }
     if (name === "section") {
       setShow(true);
-      getSchedulesForClass();
+      getSchedulesForClass(event.target.value);
     }
   };
-  async function getSchedulesForClass() {
+  async function getSchedulesForClass(sect) {
     const formData = new FormData();
-    formData.set("class", "628515691e4eb6ec425d2ca9");
-    formData.set("section", "628516d11e4eb6ec425d2d44");
+    formData.set("class", searchData.class);
+    formData.set("section", sect);
     try {
       setLoading(true);
       const data = await getTimeTableForClass(user.school, user._id, formData);
+      const data1 = await getAllPeriods(user.school, user._id, formData);
       console.log(data);
+      console.log("data1", data1);
       if (data.err) {
         toast.error(data.err);
         return setLoading(false);
       }
-      let tableData1 = [];
-      data.forEach((schedule, index) => {
-        tableData1.push({
-          key: index,
-          schedule: schedule?.period_id?.start + "-" + schedule?.period_id?.end,
-          day: schedule.period_id.day,
-        });
-      });
-      console.log(tableData1);
-      setTimetableData(tableData1);
+
+      setTimetableData(data);
+      setAllPeriods(data1);
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -248,8 +254,8 @@ const TimeTable1 = () => {
       const formData = new FormData();
       formData.set("class", searchData.class);
       formData.set("section", searchData.section);
-      formData.set("start", startDate);
-      formData.set("end", endDate);
+      formData.set("start", formatTime(startDate));
+      formData.set("end", formatTime(endDate));
       // formData.set("day","Monday");
       formData.set("type", "P");
       setLoading(true);
@@ -260,7 +266,74 @@ const TimeTable1 = () => {
         return setLoading(false);
       }
       toast.success("Period Added Successfully");
+      getSchedulesForClass(searchData.section);
       setLoading(false);
+      setChecked(!checked);
+    } catch (err) {
+      console.log(err);
+      toast.error("Something Went Wrong!");
+      setLoading(false);
+    }
+  };
+  const formatTime = (d) => {
+    const date = new Date(d);
+    let datetext =
+      date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+    return datetext;
+  };
+
+  const handlePeriodChange = async(periodId, staff, subject, day) => {
+    console.log(periodId, staff, JSON.parse(subject), day);
+  const formData = [
+    {
+      period_id: periodId,
+      staff: staff,
+      subject: JSON.parse(subject).name,
+      subject_id: JSON.parse(subject)._id,
+      day: day,
+    }
+  ]    
+  try {
+    setLoading(true);
+    const data = await updateTimeTable(user.school, user._id, formData);
+    console.log(data);
+    if(data.err){
+      toast.error(data.err);
+      return setLoading(false);
+    }
+    toast.success("Period Updated Successfully");
+    getSchedulesForClass(searchData.section);
+    setLoading(false);
+  } catch (err) {
+    console.log(err);
+    toast.error("Something Went Wrong!");
+    setLoading(false);
+  }
+
+  };
+
+  const addBreakHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.set("class", searchData.class);
+      formData.set("section", searchData.section);
+      formData.set("start", formatTime(breakStartTime));
+      formData.set("end", formatTime(breakEndTime));
+      // formData.set("day","Monday");
+      formData.set("type", "R");
+      formData.set("break_name", breakName);
+
+      setLoading(true);
+      const data = await updatePeriod(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        toast.error(data.err);
+        return setLoading(false);
+      }
+      toast.success("Break Added Successfully");
+      setLoading(false);
+      getSchedulesForClass(searchData.section);
       setChecked(!checked);
     } catch (err) {
       console.log(err);
@@ -384,8 +457,6 @@ const TimeTable1 = () => {
           <Card>
             <CardHeader>
               <h2>Add Periods</h2>
-            </CardHeader>
-            <CardBody>
               <form onSubmit={addPeriodHandler}>
                 <Row className="mb-4">
                   <Col>
@@ -449,7 +520,7 @@ const TimeTable1 = () => {
                   </Col>
                 </Row>
               </form>
-              <form>
+              <form onSubmit={addBreakHandler}>
                 {showBreak && (
                   <Row className="mb-4">
                     <Col>
@@ -514,6 +585,7 @@ const TimeTable1 = () => {
                         color="success"
                         style={{ marginTop: "2rem" }}
                         // onClick={() => setShowBreak(!showBreak)}
+                        type="submit"
                       >
                         Add Break
                       </Button>
@@ -521,12 +593,94 @@ const TimeTable1 = () => {
                   </Row>
                 )}
               </form>
-              <AntTable
-                columns={columns}
-                data={timetableData}
-                pagination={true}
-                exportFileName="timetable"
-              />
+            </CardHeader>
+            <CardBody>
+              <div className="table_div_fees">
+                <table className="fees_table">
+                  <thead style={{ backgroundColor: "#d3d3d3" }}>
+                    <tr>
+                      <th style={{ backgroundColor: "#d3d3d3" }}>Schedule</th>
+                      {WorkingDaysList.map((day, index) => {
+                        return (
+                          <th
+                            key={index}
+                            style={{ backgroundColor: "#d3d3d3" }}
+                          >
+                            {day}
+                          </th>
+                        );
+                      })}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {allPeriods.map((period, i) => {
+                      return (
+                        <tr key={i}>
+                          <th>
+                            {period.start.substring(0, 5) +
+                              "-" +
+                              period.end.substring(0, 5)}
+                          </th>
+                          {WorkingDaysList.map((day, index) => {
+                            return (
+                              <td key={index}>
+                                <Input
+                                  type="select"
+                                  defaultValue=""
+                                  onChange={(e) =>
+                                    handlePeriodChange(
+                                      period._id,
+                                      null,
+                                      e.target.value,
+                                      day
+                                    )
+                                  }
+                                >
+                                  <option value="" disabled>
+                                    Subject
+                                  </option>
+                                  {subjects.map((subject) => {
+                                    return (
+                                      <>
+                                      <option value={JSON.stringify(subject)}>
+                                        {subject.name}
+                                      </option>
+                                      </>
+                                    );
+                                  })}
+                                </Input>
+                                <Input
+                                  type="select"
+                                  defaultValue=""
+                                  onChange={(e) =>
+                                    handlePeriodChange(
+                                      period._id,
+                                      e.target.value,
+                                      null,
+                                      day
+                                    )
+                                  }
+                                >
+                                  <option value="" disabled>
+                                    Teacher
+                                  </option>
+                                  {allStaff?.map((staff, i) => {
+                                    return (
+                                      <option value={staff._id}>
+                                        {staff.firstname + " " + staff.lastname}
+                                      </option>
+                                    );
+                                  })}
+                                </Input>
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </CardBody>
           </Card>
         </Container>
