@@ -69,6 +69,10 @@ const Hostel = () => {
     }
   };
 
+  function isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+  }
+
   const handleChange = (name) => async (event) => {
     setSearchData({ ...searchData, [name]: event.target.value });
     console.log(name, event.target.value);
@@ -97,6 +101,8 @@ const Hostel = () => {
       setStudents(data);
       let table = [];
       for (let i = 0; i < data.length; i++) {
+        // console.log(new Date(data[i].avail_fees.from_date).toISOString());
+        console.log(isEmpty(data[i].avail_fees));
         table.push({
           student: data[i].firstname + " " + data[i].lastname,
           total: data[i].avail_fees.total || null,
@@ -105,11 +111,10 @@ const Hostel = () => {
               <Input
                 type="date"
                 key={i + 1}
-                // defaultValue={
-                //   new Date(data[i].avail_fees.from_date)
-                //     .toISOString()
-                //     .split("T")[0]
-                // }
+                defaultValue={
+                  !isEmpty(data[i].avail_fees) &&
+                  new Date(data[i].avail_fees.from_date).toLocaleDateString('en-CA')
+                }
               />
             </>
           ),
@@ -118,11 +123,10 @@ const Hostel = () => {
               <Input
                 type="date"
                 key={i + 1}
-                // defaultValue={
-                //   new Date(data[i].avail_fees.from_date)
-                //     .toISOString()
-                //     .split("T")[0]
-                // }
+                defaultValue={
+                  !isEmpty(data[i].avail_fees) &&
+                  new Date(data[i].avail_fees.to_date).toLocaleDateString('en-CA')
+                }
               />
             </>
           ),
@@ -138,10 +142,14 @@ const Hostel = () => {
                   justifyContent: "center",
                 }}
               >
-                <Input type="checkbox" key={i + 1}  checked={data[i].avail_fees.avail==="Y"} />
+                <Input
+                  type="checkbox"
+                  key={i + 1}
+                  defaultChecked={data[i].avail_fees.avail === "Y"}
+                />
               </div>
             </>
-          ), 
+          ),
         });
       }
       setTableData(table);
