@@ -117,3 +117,33 @@ export const getCouponList = async (schoolId, userId, formData) => {
     return err;
   }
 };
+
+export const updateSiblingMaster = async (schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/fees_management/update_sibling/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+
+export const updateSiblingStudents = async (schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/fees_management/update_sub_sibling/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};

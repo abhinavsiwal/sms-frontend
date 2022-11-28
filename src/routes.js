@@ -348,14 +348,7 @@ export const adminRoutes = [
     state: "timetableCollapse",
     module: "Time table Management",
     views: [
-      {
-        path: "/add_time_table",
-        name: "Add Time Table",
-        miniName: "A",
-        component: TimeTable,
-        layout: "/admin",
-        permission: "add",
-      },
+   
       {
         path: "/time_table",
         name: "Time Table",

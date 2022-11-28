@@ -105,7 +105,15 @@ const Hostel = () => {
         console.log(isEmpty(data[i].avail_fees));
         table.push({
           student: data[i].firstname + " " + data[i].lastname,
-          total: data[i].avail_fees.total || null,
+          total: (
+            <>
+              <Input
+                type="number"
+                placeholder="Total"
+                defaultValue={data[i]?.avail_fees?.total}
+              />
+            </>
+          ),
           from: (
             <>
               <Input
@@ -113,7 +121,9 @@ const Hostel = () => {
                 key={i + 1}
                 defaultValue={
                   !isEmpty(data[i].avail_fees) &&
-                  new Date(data[i].avail_fees.from_date).toLocaleDateString('en-CA')
+                  new Date(data[i].avail_fees.from_date).toLocaleDateString(
+                    "en-CA"
+                  )
                 }
               />
             </>
@@ -125,12 +135,22 @@ const Hostel = () => {
                 key={i + 1}
                 defaultValue={
                   !isEmpty(data[i].avail_fees) &&
-                  new Date(data[i].avail_fees.to_date).toLocaleDateString('en-CA')
+                  new Date(data[i].avail_fees.to_date).toLocaleDateString(
+                    "en-CA"
+                  )
                 }
               />
             </>
           ),
-          amount: data[i].amount || null,
+          amount: (
+            <>
+              <Input
+                type="number"
+                placeholder="Amount"
+                defaultValue={data[i]?.avail_fees?.total}
+              />
+            </>
+          ),
           paid: data[i].avail_fees.paid || 0,
           action: (
             <>
@@ -146,6 +166,9 @@ const Hostel = () => {
                   type="checkbox"
                   key={i + 1}
                   defaultChecked={data[i].avail_fees.avail === "Y"}
+                  id={`customCheck${i+1}`}
+                  onChange={handleFees}
+                  value={data[i]._id}
                 />
               </div>
             </>
@@ -333,6 +356,10 @@ const Hostel = () => {
     });
     // setSelectedSessionId(defaultSession._id)
   };
+
+const handleFees = async (e) => {
+  
+}
 
   return (
     <>

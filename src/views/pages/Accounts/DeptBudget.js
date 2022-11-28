@@ -139,7 +139,7 @@ const DeptBudgetMaster = () => {
     formData.set("department", editData.department);
     formData.set("session", editData.session);
     formData.set("allocated", editData.allocated);
-    formData.set("id", editData.id);
+    formData.set("_id", editData.id);
     try {
       setLoading(true);
       const data = await addDeptBudget(user.school, user._id, formData);
