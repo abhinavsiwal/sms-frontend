@@ -282,34 +282,40 @@ const TimeTable1 = () => {
     return datetext;
   };
 
-  const handlePeriodChange = async(periodId, staff, subject, day) => {
-    console.log(periodId, staff, JSON.parse(subject), day);
-  const formData = [
-    {
+  const handlePeriodChange = async (periodId, staff, subject, day) => {
+    // console.log(periodId, staff, JSON.parse(subject), day);
+    const formData = [
+      {
+        period_id: periodId,
+        staff: staff,
+        subject: JSON.parse(subject).name,
+        subject_id: JSON.parse(subject)._id,
+        day: day,
+      },
+    ];
+    console.log({
       period_id: periodId,
       staff: staff,
       subject: JSON.parse(subject).name,
       subject_id: JSON.parse(subject)._id,
       day: day,
+    });
+    try {
+      setLoading(true);
+      const data = await updateTimeTable(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        toast.error(data.err);
+        return setLoading(false);
+      }
+      toast.success("Period Updated Successfully");
+      getSchedulesForClass(searchData.section);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      toast.error("Something Went Wrong!");
+      setLoading(false);
     }
-  ]    
-  try {
-    setLoading(true);
-    const data = await updateTimeTable(user.school, user._id, formData);
-    console.log(data);
-    if(data.err){
-      toast.error(data.err);
-      return setLoading(false);
-    }
-    toast.success("Period Updated Successfully");
-    getSchedulesForClass(searchData.section);
-    setLoading(false);
-  } catch (err) {
-    console.log(err);
-    toast.error("Something Went Wrong!");
-    setLoading(false);
-  }
-
   };
 
   const addBreakHandler = async (e) => {
@@ -642,9 +648,9 @@ const TimeTable1 = () => {
                                   {subjects.map((subject) => {
                                     return (
                                       <>
-                                      <option value={JSON.stringify(subject)}>
-                                        {subject.name}
-                                      </option>
+                                        <option value={JSON.stringify(subject)}>
+                                          {subject.name}
+                                        </option>
                                       </>
                                     );
                                   })}

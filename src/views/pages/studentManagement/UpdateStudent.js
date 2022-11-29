@@ -1575,7 +1575,7 @@ function UpdateStudent({ studentDetails }) {
                               placeholder="Phone Number"
                               type="number"
                               onChange={handleChange("mother_phone")}
-                              required
+                      
                               value={student.mother_phone}
                               onBlur={motherPhoneBlurHandler}
                               invalid={motherPhoneError}

@@ -240,29 +240,7 @@ function AddStudent() {
       return setParentEmailError(true);
     }
 
-    const data = {
-      type: multivalues,
-      email:
-        multivalues === "parent"
-          ? studentData.parent_email
-          : studentData.guardian_email,
-    };
-    try {
-      const authenticate = await isAuthenticateStudent(user._id, token, data);
-      // console.log("auth", authenticate);
-      if (authenticate.err) {
-        toast.error(authenticate.err);
-      }
-      if (authenticate.status === false) {
-        toast.success("Email verified");
-      } else {
-        setConnectFalse(true);
-        studentData.connectedID = authenticate.id;
-        toast.success("You Can Connect the Student ");
-      }
-    } catch (err) {
-      toast.error(err);
-    }
+  
   };
   const guardianEmailBlurHandler = async () => {
     let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -273,29 +251,7 @@ function AddStudent() {
       setDisableButton(true);
       return setGuardianEmailError(true);
     }
-    const data = {
-      type: multivalues,
-      email:
-        multivalues === "parent"
-          ? studentData.parent_email
-          : studentData.guardian_email,
-    };
-    try {
-      const authenticate = await isAuthenticateStudent(user._id, token, data);
-      // console.log("auth", authenticate);
-      if (authenticate.err) {
-        toast.error(authenticate.err);
-      }
-      if (authenticate.status === false) {
-        toast.success("Email verified");
-      } else {
-        setConnectFalse(true);
-        studentData.connectedID = authenticate.id;
-        toast.success("You Can Connect the Student ");
-      }
-    } catch (err) {
-      toast.error(err);
-    }
+  
   };
 
   const guardianPhoneBlurHandler = () => {

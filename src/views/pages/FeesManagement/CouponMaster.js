@@ -9,6 +9,8 @@ import {
   Col,
   Button,
   Form,
+  Modal,
+  ModalBody,
 } from "reactstrap";
 import AntTable from "../tables/AntTable";
 import { Popconfirm } from "antd";
@@ -22,20 +24,32 @@ import { toast, ToastContainer } from "react-toastify";
 import { getFeesTypeList } from "api/Fees";
 import { allClass } from "api/class";
 import { updateCoupon } from "api/Fees";
-import { getCouponList } from "api/Fees";
-
+import { getCouponList, deleteCoupon } from "api/Fees";
+import moment from "moment";
 const CouponMaster = () => {
   const [loading, setLoading] = useState(false);
   const { user, token } = isAuthenticated();
   const [sessions, setSessions] = useState("");
   const [classList, setClassList] = useState([]);
   const [fees, setFees] = useState([]);
+  const [editFees, setEditFees] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [checked, setChecked] = useState(false);
   const [session, setSession] = useState("");
   const [clas, setClas] = useState("");
+  const [editClas, setEditClas] = useState("");
+  const [editing, setEditing] = useState(false);
+  const [editData, setEditData] = useState({
+    couponName: "",
+    amount: "",
+    description: "",
+    applicableFrom: "",
+    applicableTo: "",
+    type: "",
+    applicableOnFees: [],
+    session: "",
+  });
   useEffect(() => {
-    handleSearch();
     getCouponsHandler();
   }, [checked]);
   const getSession = async () => {
@@ -91,10 +105,40 @@ const CouponMaster = () => {
   }, []);
 
   useEffect(() => {
-    if (clas !== "") {
-      handleSearch();
+    if (clas === "") {
+      return;
     }
+    handleSearch();
   }, [clas]);
+  useEffect(() => {
+    if (editClas === "") {
+      return;
+    }
+    handleEditSearch();
+  }, [editClas]);
+
+  const handleEditSearch = async () => {
+    const formData = new FormData();
+    formData.set("class", editClas);
+    formData.set("session", session);
+    try {
+      setLoading(true);
+      const data = await getFeesTypeList(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        // return toast.error(data.err);
+        return;
+      }
+      setEditFees(data);
+
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      console.log(err);
+      toast.error("Getting Fees Type List Failed!");
+    }
+  };
 
   const handleSearch = async () => {
     const formData = new FormData();
@@ -127,8 +171,12 @@ const CouponMaster = () => {
     applicableTo: "",
     type: "",
     applicableOnFees: [],
+    id: "",
   });
 
+  const handleEditChange = (name) => async (event) => {
+    setEditData({ ...editData, [name]: event.target.value });
+  };
   const handleChange = (name) => async (event) => {
     setCouponData({ ...couponData, [name]: event.target.value });
   };
@@ -296,7 +344,7 @@ const CouponMaster = () => {
   const getCouponsHandler = async () => {
     try {
       setLoading(true);
-      const data = getCouponList(user.school, user._id, {});
+      const data = await getCouponList(user.school, user._id, {});
       console.log(data);
       if (data.err) {
         setLoading(false);
@@ -308,8 +356,8 @@ const CouponMaster = () => {
         table.push({
           name: coupon.name,
           description: coupon.description,
-          from: coupon.applicable_from,
-          to: coupon.applicable_to,
+          from: moment(coupon.applicable_from).format("DD/MM/YYYY"),
+          to: moment(coupon.applicable_to).format("DD/MM/YYYY"),
           status: null,
           action: (
             <>
@@ -318,8 +366,25 @@ const CouponMaster = () => {
                 color="primary"
                 type="button"
                 onClick={() => {
-                  // setEditing(true);
-                  // setSalaryData({ ...salaryData, total: 10000 });
+                  setEditing(true);
+                  let applicable = [];
+                  coupon.fees_applicable.forEach((fee) => {
+                    applicable.push(fee._id);
+                  });
+                  setEditData({
+                    id: coupon._id,
+                    couponName: coupon.name,
+                    amount: coupon.amount,
+                    description: coupon.description,
+                    applicableFrom: new Date(
+                      coupon.applicable_from
+                    ).toLocaleDateString("en-CA"),
+                    applicableTo: new Date(
+                      coupon.applicable_to
+                    ).toLocaleDateString("en-CA"),
+                    type: coupon.type,
+                    applicableOnFees: applicable,
+                  });
                 }}
                 key={"edit" + 1}
               >
@@ -333,7 +398,7 @@ const CouponMaster = () => {
               >
                 <Popconfirm
                   title="Sure to delete?"
-                  // onConfirm={() => deleteCanteenHandler()}
+                  onConfirm={() => deleteCouponHandler(coupon._id)}
                 >
                   <i className="fas fa-trash" />
                 </Popconfirm>
@@ -348,8 +413,6 @@ const CouponMaster = () => {
       toast.error("Something went wrong.");
       setLoading(false);
     }
-
- 
   };
 
   const submitHandler = async (e) => {
@@ -385,7 +448,52 @@ const CouponMaster = () => {
         feesApplicable: [],
       });
       setClas("");
+
       setChecked(!checked);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error("Something went wrong");
+    }
+  };
+
+  const editSubmitHandler = async (e) => {
+    e.preventDefault();
+    console.log(editData);
+    const formData = new FormData();
+    formData.append("name", editData.couponName);
+    formData.append("description", editData.description);
+    formData.append("applicable_from", editData.applicableFrom);
+    formData.append("applicable_to", editData.applicableTo);
+    formData.append("amount", editData.amount);
+    formData.append(
+      "fees_applicable",
+      JSON.stringify(editData.applicableOnFees)
+    );
+    formData.append("_id", editData.id);
+
+    try {
+      setLoading(true);
+      const data = await updateCoupon(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        toast.error(data.err);
+        return setLoading(false);
+      }
+      toast.success("Coupon Updated Successfully");
+      setLoading(false);
+      setEditData({
+        couponName: "",
+        description: "",
+        applicableFrom: "",
+        applicableTo: "",
+        amount: "",
+        feesApplicable: [],
+      });
+      setEditClas("");
+      setChecked(!checked);
+
+      setEditing(false);
     } catch (err) {
       console.log(err);
       setLoading(false);
@@ -405,6 +513,40 @@ const CouponMaster = () => {
       );
     }
     setCouponData({ ...couponData, applicableOnFees: updatedFees });
+  };
+  const handleEditFees = (event) => {
+    console.log(event.target.value);
+    let updatedFees = [...editData.applicableOnFees];
+    if (event.target.checked) {
+      updatedFees = [...editData.applicableOnFees, event.target.value];
+    } else {
+      updatedFees.splice(
+        editData.applicableOnFees.indexOf(event.target.value),
+        1
+      );
+    }
+    setEditData({ ...editData, applicableOnFees: updatedFees });
+  };
+
+  const deleteCouponHandler = async (id) => {
+    const formData = new FormData();
+    formData.set("_id", id);
+    try {
+      setLoading(true);
+      const data = await deleteCoupon(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        toast.error(data.err);
+        return setLoading(false);
+      }
+      toast.success("Coupon Deleted Successfully");
+      setLoading(false);
+      setChecked(!checked);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error("Something went wrong");
+    }
   };
 
   return (
@@ -520,28 +662,6 @@ const CouponMaster = () => {
                     value={couponData.applicableTo}
                   />
                 </Col>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="example4cols2Input"
-                  >
-                    Type
-                  </label>
-                  <Input
-                    id="example4cols2Input"
-                    type="select"
-                    onChange={handleChange("type")}
-                    required
-                    placeholder="Applicable To"
-                    value={couponData.type}
-                  >
-                    <option value="" disabled>
-                      Select Type
-                    </option>
-                    <option value="one_time">One Time</option>
-                    <option value="recurring">Recurring</option>
-                  </Input>
-                </Col>
               </Row>
               <Row>
                 <Col>
@@ -656,6 +776,215 @@ const CouponMaster = () => {
           </CardBody>
         </Card>
       </Container>
+      <Modal
+        className="modal-dialog-centered"
+        isOpen={editing}
+        toggle={() => setEditing(false)}
+        size="lg"
+      >
+        <div className="modal-header">
+          <h2 className="modal-title" id="modal-title-default">
+            Edit Coupon
+          </h2>
+          <button
+            aria-label="Close"
+            className="close"
+            data-dismiss="modal"
+            type="button"
+            onClick={() => setEditing(false)}
+          >
+            <span aria-hidden={true}>×</span>
+          </button>
+        </div>
+        <ModalBody>
+          <form onSubmit={editSubmitHandler}>
+            <Row>
+              <Col>
+                <label
+                  className="form-control-label"
+                  htmlFor="example4cols2Input"
+                >
+                  Coupon Name
+                </label>
+                <Input
+                  id="example4cols2Input"
+                  type="text"
+                  onChange={handleEditChange("couponName")}
+                  required
+                  placeholder="Coupon Name"
+                  value={editData.couponName}
+                />
+              </Col>
+              <Col>
+                <label
+                  className="form-control-label"
+                  htmlFor="example4cols2Input"
+                >
+                  Coupon Amount
+                </label>
+                <Input
+                  id="example4cols2Input"
+                  type="number"
+                  onChange={handleEditChange("amount")}
+                  required
+                  placeholder="Amount"
+                  value={editData.amount}
+                />
+              </Col>
+              <Col>
+                <label
+                  className="form-control-label"
+                  htmlFor="example4cols2Input"
+                >
+                  Description
+                </label>
+                <Input
+                  id="example4cols2Input"
+                  type="textarea"
+                  onChange={handleEditChange("description")}
+                  required
+                  placeholder="Description"
+                  value={editData.description}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <label
+                  className="form-control-label"
+                  htmlFor="example4cols2Input"
+                >
+                  Applicable From
+                </label>
+                <Input
+                  id="example4cols2Input"
+                  type="date"
+                  onChange={handleEditChange("applicableFrom")}
+                  required
+                  placeholder="Applicable From"
+                  value={editData.applicableFrom}
+                />
+              </Col>
+              <Col>
+                <label
+                  className="form-control-label"
+                  htmlFor="example4cols2Input"
+                >
+                  Applicable To
+                </label>
+                <Input
+                  id="example4cols2Input"
+                  type="date"
+                  onChange={handleEditChange("applicableTo")}
+                  required
+                  placeholder="Applicable To"
+                  value={editData.applicableTo}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <label
+                  className="form-control-label"
+                  htmlFor="example4cols2Input"
+                >
+                  Select Session
+                </label>
+
+                <select
+                  required
+                  className="form-control"
+                  onChange={handleEditChange("session")}
+                  value={session}
+                >
+                  <option value="">Select Session</option>
+                  {sessions &&
+                    sessions.map((data) => {
+                      return (
+                        <option key={data._id} value={data._id}>
+                          {data.name}
+                        </option>
+                      );
+                    })}
+                </select>
+              </Col>
+              <Col>
+                <label
+                  className="form-control-label"
+                  htmlFor="exampleFormControlSelect3"
+                >
+                  Class
+                </label>
+                <Input
+                  id="exampleFormControlTextarea1"
+                  type="select"
+                  required
+                  onChange={(e) => setEditClas(e.target.value)}
+                  value={editClas}
+                  name="class"
+                >
+                  <option value="" disabled>
+                    Select Class
+                  </option>
+                  {classList?.map((classs) => {
+                    return (
+                      <option value={classs._id} key={classs._id}>
+                        {classs.name}
+                      </option>
+                    );
+                  })}
+                </Input>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <label
+                  className="form-control-label"
+                  htmlFor="example4cols2Input"
+                >
+                  Select Fees
+                </label>
+                <Row>
+                  {editFees &&
+                    editFees.map((penalty, index) => {
+                      return (
+                        <Col key={index} md={4}>
+                          <div className="custom-control custom-checkbox mb-3">
+                            <Input
+                              className="custom-control-input"
+                              id={`customCheck${index}`}
+                              type="checkbox"
+                              onChange={handleEditFees}
+                              value={penalty._id}
+                              // defaultChecked={penalty}
+                            />
+                            <label
+                              className="custom-control-label"
+                              htmlFor={`customCheck${index}`}
+                            >
+                              {penalty.name}
+                            </label>
+                          </div>
+                        </Col>
+                      );
+                    })}
+                </Row>
+              </Col>
+            </Row>
+
+            <Row className="mt-4 mx-auto">
+              <Col
+                className="mx-auto "
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                <Button color="primary" type="submit">
+                  Submit
+                </Button>
+              </Col>
+            </Row>
+          </form>
+        </ModalBody>
+      </Modal>
     </>
   );
 };

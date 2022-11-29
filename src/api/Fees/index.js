@@ -107,7 +107,7 @@ export const getCouponList = async (schoolId, userId, formData) => {
   try {
     const { data } = await sendRequest(
       `${process.env.REACT_APP_API_URL}/api/school/fees_management/coupon_list/${schoolId}/${userId}`,
-      formData,
+      null,
       "POST"
     );
     console.log(data);
@@ -117,6 +117,21 @@ export const getCouponList = async (schoolId, userId, formData) => {
     return err;
   }
 };
+
+export const deleteCoupon = async (schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/fees_management/remove_coupon/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    // console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+}
 
 export const updateSiblingMaster = async (schoolId, userId, formData) => {
   try {
