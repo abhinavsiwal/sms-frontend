@@ -106,9 +106,9 @@ const MarksMaster = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (examId === "") {
-      return toast.error("Please select Exam first");
-    }
+if(examId===""){
+  return toast.error("Please select Exam first")
+}
 
     setShowTable(true);
     console.log(resultData);
@@ -242,6 +242,7 @@ const MarksMaster = () => {
           <CardBody>
             <Form>
               <Row>
+             
                 <Col>
                   <label
                     className="form-control-label"
@@ -317,7 +318,10 @@ const MarksMaster = () => {
                       Select Exam
                     </option>
                     {allExams?.map((exam) => {
-                      return <option value={exam._id}>{exam.name}</option>;
+                      return (
+                        <option value={exam._id}>{exam.name}</option>
+
+                      )
                     })}
                   </Input>
                 </Col>
@@ -332,22 +336,14 @@ const MarksMaster = () => {
             <CardHeader>
               <h2>Marks Distribution</h2>
             </CardHeader>
-            <CardBody style={{ overflow: "scroll" }}>
+            <CardBody style={{overflow:"scroll"}}>
               <form onSubmit={handleSubmit}>
-                <div className="table_div_fees" style={{ overflow: "scroll" }}>
-                  <table className="fees_table" style={{ overflow: "scroll" }}>
+                <div className="table_div_fees" style={{overflow:"scroll"}}>
+                  <table className="fees_table" style={{overflow:"scroll"}} >
                     <thead style={{ backgroundColor: "#c0c0c0" }}>
                       <tr>
-                        <th
-                          style={{ backgroundColor: "#c0c0c0", width: "4rem" }}
-                        >
-                          Roll No.
-                        </th>
-                        <th
-                          style={{ backgroundColor: "#c0c0c0", width: "12rem" }}
-                        >
-                          Name
-                        </th>
+                        <th style={{ backgroundColor: "#c0c0c0",width:"4rem" }} >Roll No.</th>
+                        <th style={{ backgroundColor: "#c0c0c0",width:"12rem" }}  >Name</th>
                         {selectedSection?.subject.map((subject, index) => {
                           return (
                             <React.Fragment key={index}>
@@ -358,7 +354,7 @@ const MarksMaster = () => {
                                       style={{
                                         backgroundColor: "#c0c0c0",
                                         fontWeight: "900",
-                                        width: "9rem",
+                                        width:"9rem"
                                       }}
                                     >
                                       {subject.name + "(Group)"}
@@ -372,7 +368,7 @@ const MarksMaster = () => {
                                           <th
                                             style={{
                                               backgroundColor: "#c0c0c0",
-                                              width: "9rem",
+                                              width:"9rem"
                                             }}
                                           >
                                             {sub}
@@ -380,7 +376,7 @@ const MarksMaster = () => {
                                           <th
                                             style={{
                                               backgroundColor: "#c0c0c0",
-                                              width: "6rem",
+                                              width:"9rem"
                                             }}
                                           >
                                             Attendance
@@ -395,7 +391,7 @@ const MarksMaster = () => {
                                     <th
                                       style={{
                                         backgroundColor: "#c0c0c0",
-                                        width: "9rem",
+                                        width:"9rem"
                                       }}
                                     >
                                       {subject.name}
@@ -403,7 +399,7 @@ const MarksMaster = () => {
                                     <th
                                       style={{
                                         backgroundColor: "#c0c0c0",
-                                        width: "6rem",
+                                        width:"9rem"
                                       }}
                                     >
                                       Attendance
@@ -444,15 +440,8 @@ const MarksMaster = () => {
                                           min={0}
                                         />
                                       </td>
-                                      <td
-                                        style={{
-                                          width: "9rem",
-                                          display: "flex",
-                                          justifyContent: "center",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        {/* <Input
+                                      <td>
+                                        <Input
                                           id={subject.name}
                                           type="select"
                                           required
@@ -469,8 +458,7 @@ const MarksMaster = () => {
                                           </option>
                                           <option value="Y">Present</option>
                                           <option value="N">Absent</option>
-                                        </Input> */}
-                                        {/* <Input id={subject.name} type="checkbox" onChange={handleChange("present",student._id)} name="present" /> */}
+                                        </Input>
                                       </td>
                                       {subject.list.map((sub, index) => {
                                         return (
@@ -489,25 +477,29 @@ const MarksMaster = () => {
                                                 placeholder="Enter Marks"
                                               />
                                             </td>
-                                            <td
-                                              style={{
-                                                width: "",
-                                                display: "flex",
-                                                justifyContent: "center",
-                                                alignItems: "flex-start",
-                                                marginTop: "0.8rem",
-                                              }}
-                                            >
+                                            <td>
                                               <Input
-                                                id={subject.name}
-                                                type="checkbox"
+                                                id={sub}
+                                                type="select"
+                                                required
                                                 onChange={handleChange(
                                                   "present",
                                                   student._id
                                                 )}
+                                                // value={inputfield.min}
                                                 name="present"
-                                                style={{position:"inherit"}}
-                                              />
+                                                // placeholder="Enter Marks"
+                                              >
+                                                <option value="" disabled>
+                                                  Select Attendance
+                                                </option>
+                                                <option value="Y">
+                                                  Present
+                                                </option>
+                                                <option value="N">
+                                                  Absent
+                                                </option>
+                                              </Input>
                                             </td>
                                           </>
                                         );
@@ -531,26 +523,26 @@ const MarksMaster = () => {
                                           min={0}
                                         />
                                       </td>
-                                      <td
-                                              style={{
-                                                width: "",
-                                                display: "flex",
-                                                justifyContent: "center",
-                                                alignItems: "flex-start",
-                                                marginTop: "0.8rem",
-                                              }}
-                                            >
-                                              <Input
-                                                id={subject.name}
-                                                type="checkbox"
-                                                onChange={handleChange(
-                                                  "present",
-                                                  student._id
-                                                )}
-                                                name="present"
-                                                style={{position:"inherit"}}
-                                              />
-                                            </td>
+                                      <td>
+                                        <Input
+                                          id={subject.name}
+                                          type="select"
+                                          required
+                                          onChange={handleChange(
+                                            "present",
+                                            student._id
+                                          )}
+                                          // value={inputfield.min}
+                                          name="present"
+                                          // placeholder="Enter Marks"
+                                        >
+                                          <option value="" disabled>
+                                            Select Attendance
+                                          </option>
+                                          <option value="Y">Present</option>
+                                          <option value="N">Absent</option>
+                                        </Input>
+                                      </td>
                                     </>
                                   )}
                                 </React.Fragment>
