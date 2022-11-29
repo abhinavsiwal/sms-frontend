@@ -590,8 +590,7 @@ function ViewCanteen() {
 
     try {
       setEditLoading(true);
-      if(addMenu.image){
-
+      if (addMenu.image) {
         const formData1 = new FormData();
         formData1.set("file", addMenu.image);
         const data1 = await uploadFile(formData1);
@@ -701,6 +700,11 @@ function ViewCanteen() {
                 data={selectedCanteen}
                 pagination={true}
                 exportFileName="Canteen"
+                disabled={
+                  permission1 && permission1.includes("export")
+                    ? false
+                    : true
+                }
               />
             )}
           </CardHeader>
@@ -723,6 +727,11 @@ function ViewCanteen() {
                       data={viewCanteen}
                       pagination={true}
                       exportFileName="StudentDetails"
+                      disabled={
+                        permission1 && permission1.includes("export")
+                          ? false
+                          : true
+                      }
                     />
                   </div>
                 </>

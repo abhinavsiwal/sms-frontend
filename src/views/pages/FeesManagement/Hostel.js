@@ -38,6 +38,7 @@ const Hostel = () => {
     section: "",
     session: "",
   });
+  const [section, setSection] = useState("");
   const [loading, setLoading] = useState(false);
   const [classList, setClassList] = useState([]);
   const [selectedClass, setSelectedClass] = useState({});
@@ -45,7 +46,9 @@ const Hostel = () => {
   const [tableData, setTableData] = useState([]);
   const [showTable, setShowTable] = useState(false);
   const [sessions, setSessions] = useState([]);
-
+  const [sessionStartDate, setSessionStartDate] = useState("");
+  const [sessionEndDate, setSessionEndDate] = useState("");
+  const [feesData, setFeesData] = useState([]);
   useEffect(() => {
     getAllClasses();
     getSession();
@@ -84,11 +87,15 @@ const Hostel = () => {
       setSelectedClass(selectedClass);
     }
     if (name === "section") {
+   
       filterStudentHandler(event.target.value);
     }
   };
+  let availData = [];
+
   const filterStudentHandler = async (id) => {
     const formData = new FormData();
+    setSection(id)
     formData.set("section", id);
     formData.set("class", searchData.class);
     formData.set("session", searchData.session);
@@ -98,11 +105,14 @@ const Hostel = () => {
       setLoading(true);
       const data = await getAvailFees(user.school, user._id, formData);
       console.log(data);
+      if(data.err){
+        setLoading(false);
+        setTableData([])
+        return toast.error(data.err)
+      }
       setStudents(data);
       let table = [];
       for (let i = 0; i < data.length; i++) {
-        // console.log(new Date(data[i].avail_fees.from_date).toISOString());
-        console.log(isEmpty(data[i].avail_fees));
         table.push({
           student: data[i].firstname + " " + data[i].lastname,
           total: (
@@ -111,6 +121,7 @@ const Hostel = () => {
                 type="number"
                 placeholder="Total"
                 defaultValue={data[i]?.avail_fees?.total}
+                onChange={(e) => handleFeesChange("total", i, e)}
               />
             </>
           ),
@@ -120,11 +131,13 @@ const Hostel = () => {
                 type="date"
                 key={i + 1}
                 defaultValue={
-                  !isEmpty(data[i].avail_fees) &&
-                  new Date(data[i].avail_fees.from_date).toLocaleDateString(
-                    "en-CA"
-                  )
+                  !isEmpty(data[i].avail_fees)
+                    ? new Date(data[i].avail_fees.from_date).toLocaleDateString(
+                        "en-CA"
+                      )
+                    : sessionStartDate
                 }
+                onChange={(e) => handleFeesChange("from_date", i, e)}
               />
             </>
           ),
@@ -134,11 +147,13 @@ const Hostel = () => {
                 type="date"
                 key={i + 1}
                 defaultValue={
-                  !isEmpty(data[i].avail_fees) &&
-                  new Date(data[i].avail_fees.to_date).toLocaleDateString(
-                    "en-CA"
-                  )
+                  !isEmpty(data[i].avail_fees)
+                    ? new Date(data[i].avail_fees.to_date).toLocaleDateString(
+                        "en-CA"
+                      )
+                    : sessionEndDate
                 }
+                onChange={(e) => handleFeesChange("to_date", i, e)}
               />
             </>
           ),
@@ -148,6 +163,7 @@ const Hostel = () => {
                 type="number"
                 placeholder="Amount"
                 defaultValue={data[i]?.avail_fees?.total}
+                onChange={(e) => handleFeesChange("amount", i, e)}
               />
             </>
           ),
@@ -166,8 +182,8 @@ const Hostel = () => {
                   type="checkbox"
                   key={i + 1}
                   defaultChecked={data[i].avail_fees.avail === "Y"}
-                  id={`customCheck${i+1}`}
-                  onChange={handleFees}
+                  id={`customCheck${i + 1}`}
+                  onChange={(e) => handleFeesChange("avail", i, e)}
                   value={data[i]._id}
                 />
               </div>
@@ -175,6 +191,29 @@ const Hostel = () => {
           ),
         });
       }
+      data.forEach((student, index) => {
+        availData.push({
+          student: student._id,
+          class: searchData.class,
+          section: id,
+          school: user.school,
+          session: searchData.session,
+          type: "hostel",
+          amount: "",
+          avail: "N",
+          from_date: !isEmpty(student.avail_fees)
+            ? new Date(student.avail_fees.from_date).toLocaleDateString("en-CA")
+            : sessionStartDate,
+          to_date: !isEmpty(student.avail_fees)
+            ? new Date(student.avail_fees.to_date).toLocaleDateString("en-CA")
+            : sessionEndDate,
+          total: "",
+        });
+      });
+      console.log(availData);
+      setFeesData(availData);
+      console.log(searchData);
+      console.log(section);
       setTableData(table);
       setShowTable(true);
       setLoading(false);
@@ -350,16 +389,90 @@ const Hostel = () => {
     const defaultSession = await sessions.find(
       (session) => session.status === "current"
     );
+    console.log(defaultSession);
     setSearchData({
       ...searchData,
       session: defaultSession._id,
     });
+    setSessionStartDate(
+      new Date(defaultSession.start_date).toLocaleDateString("en-CA")
+    );
+    setSessionEndDate(
+      new Date(defaultSession.end_date).toLocaleDateString("en-CA")
+    );
     // setSelectedSessionId(defaultSession._id)
   };
 
-const handleFees = async (e) => {
-  
-}
+  // const handleFeesChange = (name,id) => async (event) => {
+  //   console.log(name,event.target.value,event.target.checked,id);
+  //   let obj = {
+  //     class: searchData.class,
+  //     section: searchData.section,
+  //     session: searchData.session,
+  //     student: id,
+  //     avail:"N",
+  //     type:"hostel",
+  //     school:user.school,
+  //   }
+  //   if(name==="total"){
+  //     obj.total = event.target.value;
+  //   } else if (name==="from_date"){
+  //     obj.from_date = event.target.value;
+  //   } else if (name==="to_date"){
+  //     obj.to_date = event.target.value;
+  //   } else if (name==="amount"){
+  //     obj.amount = event.target.value;
+  //   } else if (name==="avail"){
+  //     if(event.target.checked){
+  //       obj.avail = "Y";
+  //     }else {
+  //       obj.avail = "N";
+  //     }
+  //   }
+
+  // }
+
+  const handleFeesChange = (name, index, event) => {
+    const values = [...availData];
+    console.log(feesData);
+    console.log(values);
+
+    values[index][name] = event.target.value;
+    if (name === "avail") {
+      if (event.target.checked) {
+        values[index][name] = "Y";
+      } else {
+        values[index][name] = "N";
+      }
+    }
+    setFeesData(values);
+  };
+
+  const handleFeesSubmit = async () => {
+    console.log(feesData);
+
+    const filtered = feesData.filter((item) => item.avail === "Y");
+    console.log(filtered);
+
+    const formData = new FormData();
+    formData.append("avail_data", JSON.stringify(filtered));
+    formData.append("type", "hostel");
+
+    try {
+      setLoading(true);
+      const data = await updateAvailFees(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        toast.error(data.err);
+        return setLoading(false);
+      }
+      toast.success("Fees Updated Successfully");
+      setLoading(false);
+      setChecked(!checked);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <>
@@ -485,9 +598,16 @@ const handleFees = async (e) => {
               <AntTable
                 columns={columns}
                 data={tableData}
-                pagination={true}
+                showPagination={false}
                 exportFileName="staffBudget"
               />
+              <Row>
+                <Col style={{ display: "flex", justifyContent: "center" }}>
+                  <Button onClick={handleFeesSubmit} color="primary">
+                    Submit
+                  </Button>
+                </Col>
+              </Row>
             </CardBody>
           </Card>
         </Container>

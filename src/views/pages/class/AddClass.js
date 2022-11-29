@@ -491,7 +491,7 @@ const AddClass = () => {
             )}
           </Col>
 
-          <Col>
+          <Col lg={permissions && permissions.includes("add")?8:12} >
             <div className="card-wrapper">
               <Card>
                 <CardHeader>

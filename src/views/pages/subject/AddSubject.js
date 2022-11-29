@@ -737,7 +737,7 @@ const AddSubject = () => {
               )
             )}
           </Col>
-          <Col>
+          <Col lg={permissions && permissions.includes("add")?8:12} >
             <div className="card-wrapper">
               <Card>
              
@@ -785,6 +785,7 @@ const AddSubject = () => {
                               data={subjectList}
                               pagination={true}
                               exportFileName="SubjectDetails"
+                              disabled={permissions && permissions.includes("export")?false:true}
                             />
                           </div>
                         </>
@@ -796,6 +797,7 @@ const AddSubject = () => {
                               data={subjectList1}
                               pagination={true}
                               exportFileName="SubjectDetails"
+                              disabled={permissions && permissions.includes("export")?false:true}
                             />
                           </div>
                         </>

@@ -75,13 +75,14 @@ const AddSection = () => {
   const [addLoading, setAddLoading] = useState(false);
   const [classId, seClassId] = useState("");
   const [isData, setisData] = useState(false);
+  let permissions1 = [];
   useEffect(() => {
     if (user.permissions["Class, section and subject master"]) {
-      let permissions1 = user.permissions["Class, section and subject master"];
+      permissions1 = user.permissions["Class, section and subject master"];
       // console.log(permissions);
       setPermissions(permissions1);
     }
-  }, [checked, tableClassSelectId]);
+  }, [checked, tableClassSelectId,isData,sectionList]);
 
   useEffect(() => {
     getSession();
@@ -324,10 +325,12 @@ const AddSection = () => {
         subject: selectedClass.section[i].subject,
         class_teacher:
           selectedClass.section[i].classTeacher &&
-          selectedClass.section[i].classTeacher.firstname+" "+selectedClass.section[i].classTeacher.lastname,
+          selectedClass.section[i].classTeacher.firstname +
+            " " +
+            selectedClass.section[i].classTeacher.lastname,
         action: (
           <h5 key={i + 1} className="mb-0">
-            {permissions && permissions.includes("edit".trim()) && (
+            {permissions1 && permissions1.includes("edit".trim()) && (
               <Button
                 className="btn-sm pull-right"
                 color="primary"
@@ -338,7 +341,7 @@ const AddSection = () => {
                 <i className="fas fa-user-edit" />
               </Button>
             )}
-            {permissions && permissions.includes("delete".trim()) && (
+            {permissions1 && permissions1.includes("delete".trim()) && (
               <Button
                 className="btn-sm pull-right"
                 color="danger"
@@ -431,7 +434,7 @@ const AddSection = () => {
       } else {
         toast.success(addSectionSuccess);
         // setChecked(!checked);
-       await getAllClasses();
+        await getAllClasses();
         setTableClassSelectId(clas);
         setAddLoading(false);
         setClas("");
@@ -515,111 +518,113 @@ const AddSection = () => {
       />
       <Container className="mt--6" fluid>
         <Row>
-          <Col md="12">
-            {addLoading ? (
-              <Loader />
-            ) : (
-              permissions &&
-              permissions.includes("add") && (
-                <div className="card-wrapper">
-                  <Card>
-                    <CardHeader>
-                      <h2>Create Section Master</h2>
-                    </CardHeader>
-                    <Form onSubmit={handleFormChange} className="mb-4">
-                      <CardBody>
-                        <Row>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Class
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              type="select"
-                              onChange={(e) => setClas(e.target.value)}
-                              required
-                              value={clas}
-                            >
-                              <option value="" disabled selected>
-                                Select Class
-                              </option>
-                              {classList?.map((clas, index) => (
-                                <option key={index} value={clas._id}>
-                                  {clas.name}
+          {permissions && permissions.includes("add".trim()) && (
+            <Col md="12">
+              {addLoading ? (
+                <Loader />
+              ) : (
+                permissions &&
+                permissions.includes("add") && (
+                  <div className="card-wrapper">
+                    <Card>
+                      <CardHeader>
+                        <h2>Create Section Master</h2>
+                      </CardHeader>
+                      <Form onSubmit={handleFormChange} className="mb-4">
+                        <CardBody>
+                          <Row>
+                            <Col>
+                              <label
+                                className="form-control-label"
+                                htmlFor="example4cols2Input"
+                              >
+                                Class
+                              </label>
+                              <Input
+                                id="example4cols2Input"
+                                type="select"
+                                onChange={(e) => setClas(e.target.value)}
+                                required
+                                value={clas}
+                              >
+                                <option value="" disabled selected>
+                                  Select Class
                                 </option>
-                              ))}
-                            </Input>
-                          </Col>
+                                {classList?.map((clas, index) => (
+                                  <option key={index} value={clas._id}>
+                                    {clas.name}
+                                  </option>
+                                ))}
+                              </Input>
+                            </Col>
 
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Section
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Section"
-                              type="text"
-                              onChange={handleChange("name")}
-                              required
-                            />
-                          </Col>
-                        </Row>
+                            <Col>
+                              <label
+                                className="form-control-label"
+                                htmlFor="example4cols2Input"
+                              >
+                                Section
+                              </label>
+                              <Input
+                                id="example4cols2Input"
+                                placeholder="Section"
+                                type="text"
+                                onChange={handleChange("name")}
+                                required
+                              />
+                            </Col>
+                          </Row>
 
-                        <Row className="mt-4">
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Section Abbreviation
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Section Abbreviation"
-                              type="text"
-                              onChange={handleChange("abbreviation")}
-                              required
-                            />
-                          </Col>
+                          <Row className="mt-4">
+                            <Col>
+                              <label
+                                className="form-control-label"
+                                htmlFor="example4cols2Input"
+                              >
+                                Section Abbreviation
+                              </label>
+                              <Input
+                                id="example4cols2Input"
+                                placeholder="Section Abbreviation"
+                                type="text"
+                                onChange={handleChange("abbreviation")}
+                                required
+                              />
+                            </Col>
 
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Subject
-                            </label>
-                            <Select
-                              isMulti
-                              name="colors"
-                              options={roleOptions}
-                              onChange={handleSubjectChange}
-                              className="basic-multi-select"
-                              classNamePrefix="select"
-                              required
-                            />
-                          </Col>
-                        </Row>
-                        <Row className="mt-4 float-right">
-                          <Col>
-                            <Button color="primary" type="submit">
-                              Submit
-                            </Button>
-                          </Col>
-                        </Row>
-                      </CardBody>
-                    </Form>
-                  </Card>
-                </div>
-              )
-            )}
-          </Col>
+                            <Col>
+                              <label
+                                className="form-control-label"
+                                htmlFor="example4cols2Input"
+                              >
+                                Subject
+                              </label>
+                              <Select
+                                isMulti
+                                name="colors"
+                                options={roleOptions}
+                                onChange={handleSubjectChange}
+                                className="basic-multi-select"
+                                classNamePrefix="select"
+                                required
+                              />
+                            </Col>
+                          </Row>
+                          <Row className="mt-4 float-right">
+                            <Col>
+                              <Button color="primary" type="submit">
+                                Submit
+                              </Button>
+                            </Col>
+                          </Row>
+                        </CardBody>
+                      </Form>
+                    </Card>
+                  </div>
+                )
+              )}
+            </Col>
+          )}
 
           <Col>
             <div className="card-wrapper">
@@ -667,6 +672,7 @@ const AddSection = () => {
                         data={sectionList}
                         pagination={true}
                         exportFileName="SectionDetails"
+                        disabled={permissions && permissions.includes("export".trim())?false:true}
                       />
                     ) : (
                       <h3 style={{ width: "100%" }}>No section found</h3>

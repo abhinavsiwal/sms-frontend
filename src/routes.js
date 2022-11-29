@@ -222,7 +222,7 @@ export const adminRoutes = [
         miniName: "CT",
         component: ClassTeacher,
         layout: "/admin",
-        permission: "add",
+        permission: "edit",
       },
     ],
   },
@@ -776,8 +776,7 @@ export const adminRoutes = [
     ],
   },
 ];
-
-export const adminRoutes1=[
+ const routes = [
   {
     path: "/dashboard",
     name: "Dashboard",
@@ -788,26 +787,26 @@ export const adminRoutes1=[
   },
   {
     collapse: true,
-    name: "Configuration",
+    name: "Staff Management",
     icon: "ni ni-single-02 text-orange",
     state: "examplesCollapse",
-    module: "Configuration",
+    module: "Staff Management",
     views: [
       {
-        path: "/add-session",
-        name: "Create Session",
-        miniName: "CS",
-        component: Session,
+        path: "/add-staff",
+        name: "Add Staff",
+        miniName: "A",
+        component: AddStaff,
         layout: "/admin",
         permission: "add",
       },
       {
-        path: "/department",
-        name: "Department",
-        miniName: "D",
-        component: DepartmentList,
+        path: "/all-staffs",
+        name: "All Staffs",
+        miniName: "A",
+        component: AllStaffs,
         layout: "/admin",
-        permission: "add",
+        permission: "view",
       },
       {
         path: "/staff-attendance",
@@ -825,118 +824,65 @@ export const adminRoutes1=[
         layout: "/admin",
         permission: "add",
       },
-      {
-        path: "/staff-attenadance",
-        name: "Staff Attendance",
-        miniName: "S",
-        component: StaffAttendance,
-        layout: "/admin",
-        permission: "add",
-      },
-    ],
-  },
-]
-
-const routes = [
-  {
-    path: "/dashboard",
-    name: "Dashboard",
-    icon: "ni ni-shop text-primary",
-    component: Dashboard,
-    layout: "/admin",
-  },
-  {
-    path: "/collectionmaster",
-    name: "Collection Master",
-    icon: "ni ni-shop text-primary",
-    component: CollectionMaster,
-    layout: "/admin",
-  },
-  {
-    collapse: true,
-    name: "Fees Management",
-    icon: "ni ni-single-02 text-orange",
-    state: "feesCollapse",
-    views: [
-      {
-        path: "/feesmaster",
-        name: "Fees Master",
-        miniName: "FM",
-        component: FeesMaster,
-        layout: "/admin",
-      },
-      {
-        path: "/viewfees",
-        name: "View Fees",
-        miniName: "VF",
-        component: ViewFees,
-        layout: "/admin",
-      },
-      {
-        path: "/Penaltymaster",
-        name: "Penalty Master",
-        miniName: "PM",
-        component: PenaltyMaster,
-        layout: "/admin",
-      },
-      {
-        path: "/siblingmaster",
-        name: "Sibling Master",
-        miniName: "SM",
-        component: SiblingMaster,
-        layout: "/admin",
-      },
+   
     ],
   },
   {
     collapse: true,
-    name: "Staff Management",
-    icon: "ni ni-single-02 text-orange",
-    state: "examplesCollapse",
+    name: "Credential Master",
+    icon: "ni ni-settings-gear-65 text-red",
+    state: "credentialCollapse",
+    module: "Credentials Master",
     views: [
       {
-        path: "/add-staff",
-        name: "Add Staff",
+        path: "/student-credentials",
+        name: "Student",
         miniName: "A",
-        component: AddStaff,
+        component: StudentCredentials,
         layout: "/admin",
+        permission: "view",
       },
       {
-        path: "/all-staffs",
-        name: "All Staffs",
-        miniName: "A",
-        component: AllStaffs,
-        layout: "/admin",
-      },
-      {
-        path: "/staff-attendance",
-        name: "Staff Attendance",
+        path: "/staff-credentials",
+        name: "Staff",
         miniName: "S",
-        component: StaffAttendance,
+        component: StaffCredentials,
         layout: "/admin",
+        permission: "view",
       },
     ],
   },
   {
     path: "/profile",
-    name: "User Profile",
+    name: "Profile",
     icon: "ni ni-shop text-primary",
     component: Profile,
     layout: "/admin",
-    module: "Profile",
+    module: "Staff Management",
   },
-  {
+  { 
     collapse: true,
     name: "Class Management",
     icon: "fa fa-users",
     state: "classCollapse",
+    module: "Class, section and subject master",
     views: [
       {
         path: "/add-class",
-        name: "Add Class",
-        miniName: "AC",
+        name: "Add Class ",
+        miniName: "ACs",
         component: AddClass,
         layout: "/admin",
+        permission: "view",
+      },
+     
+      {
+        path: "/add-subject",
+        name: "Add Subject",
+        miniName: "AS",
+        component: AddSubject,
+        layout: "/admin",
+        permission: "view",
       },
       {
         path: "/add-section",
@@ -944,13 +890,7 @@ const routes = [
         miniName: "AS",
         component: AddSection,
         layout: "/admin",
-      },
-      {
-        path: "/add-subject",
-        name: "Add Subject",
-        miniName: "AS",
-        component: AddSubject,
-        layout: "/admin",
+        permission: "view",
       },
       {
         path: "/class-teacher",
@@ -958,6 +898,7 @@ const routes = [
         miniName: "CT",
         component: ClassTeacher,
         layout: "/admin",
+        permission: "edit",
       },
     ],
   },
@@ -966,6 +907,7 @@ const routes = [
     name: "Department",
     icon: "fa fa-users",
     state: "departmentsCollapse",
+    module: "Department",
     views: [
       {
         path: "/department-list",
@@ -973,6 +915,7 @@ const routes = [
         miniName: "DL",
         component: DepartmentList,
         layout: "/admin",
+        permission: "view",
       },
       {
         path: "/department-head",
@@ -980,6 +923,7 @@ const routes = [
         miniName: "DH",
         component: DepartmentHead,
         layout: "/admin",
+        permission: "add",
       },
     ],
   },
@@ -989,12 +933,14 @@ const routes = [
     icon: "ni ni-shop text-primary",
     component: SchoolProfile,
     layout: "/admin",
+    module: "School Profile Module",
   },
   {
     collapse: true,
     name: "Student Management",
     icon: "ni ni-single-02 text-orange",
     state: "studentsCollapse",
+    module: "Student Management",
     views: [
       {
         path: "/add-student",
@@ -1002,6 +948,7 @@ const routes = [
         miniName: "A",
         component: AddStudent,
         layout: "/admin",
+        permission: "add",
       },
       {
         path: "/all-students",
@@ -1009,16 +956,33 @@ const routes = [
         miniName: "A",
         component: AllStudents,
         layout: "/admin",
+        permission: "view",
+      },
+      {
+        path: "/attendance",
+        name: "Attendance",
+        miniName: "A",
+        component:Attendance1,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/student-documents",
+        name: "Student Documents",
+        miniName: "SD",
+        component: StudentDocuments,
+        layout: "/admin",
+        permission: "add",
       },
     ],
   },
-
   {
     path: "/session",
     name: "Session",
     icon: "ni ni-shop text-primary",
     component: Session,
     layout: "/admin",
+    module: "Session",
   },
   {
     path: "/support",
@@ -1026,6 +990,7 @@ const routes = [
     icon: "ni ni-shop text-primary",
     component: Support,
     layout: "/admin",
+    module: "Support",
   },
   {
     path: "/calendar",
@@ -1033,13 +998,16 @@ const routes = [
     icon: "ni ni-calendar-grid-58 text-red",
     component: Calendar,
     layout: "/admin",
+    module: "School Calendar",
   },
+
   {
-    path: "/attendance",
-    name: "Attendance",
+    path: "/assignment",
+    name: "Assignment Master",
     icon: "ni ni-badge",
-    component: Attendance,
+    component: Assignment,
     layout: "/admin",
+    module: "Assignment",
   },
   // {
   //   path: "/timeTable",
@@ -1048,18 +1016,22 @@ const routes = [
   //   component: TimeTable,
   //   layout: "/admin",
   // },
+
   {
     collapse: true,
     name: "Time Table",
     icon: "ni ni-calendar-grid-58 text-black",
     state: "timetableCollapse",
+    module: "Time table Management",
     views: [
+   
       {
-        path: "/add_time_table",
-        name: "Add Time Table",
+        path: "/time_table",
+        name: "Time Table",
         miniName: "A",
-        component: AddTimeTable,
+        component: TimeTable1,
         layout: "/admin",
+        permission: "add",
       },
       {
         path: "/view_time_table",
@@ -1067,15 +1039,17 @@ const routes = [
         miniName: "V",
         component: ViewTimeTable,
         layout: "/admin",
+        permission: "view",
       },
     ],
   },
 
   {
     collapse: true,
-    name: "Canteen",
+    name: "Canteen Management",
     icon: "ni ni-basket text-yellow",
     state: "canteenCollapse",
+    module: "Canteen Management",
     views: [
       {
         path: "/add-canteen",
@@ -1083,6 +1057,7 @@ const routes = [
         miniName: "A",
         component: AddCanteen,
         layout: "/admin",
+        permission: "add",
       },
       {
         path: "/view-canteen",
@@ -1090,6 +1065,7 @@ const routes = [
         miniName: "V",
         component: ViewCanteen,
         layout: "/admin",
+        permission: "edit",
       },
       {
         path: "/view-all-canteen",
@@ -1097,6 +1073,7 @@ const routes = [
         miniName: "V",
         component: ViewAllCanteen,
         layout: "/admin",
+        permission: "view",
       },
     ],
   },
@@ -1106,13 +1083,15 @@ const routes = [
     icon: "ni ni-settings-gear-65 text-blue",
     component: RolePermissions,
     layout: "/admin",
+    module: "Role and Permissions",
   },
 
   {
     collapse: true,
-    name: "Transport",
+    name: "Transportation",
     icon: "ni ni-bus-front-12 text-red",
     state: "transportationCollapse",
+    module: "Transportation management",
     views: [
       {
         path: "/add-route",
@@ -1120,6 +1099,7 @@ const routes = [
         miniName: "A",
         component: AddRoute,
         layout: "/admin",
+        permission: "add",
       },
       {
         path: "/view-route",
@@ -1127,36 +1107,17 @@ const routes = [
         miniName: "V",
         component: ViewRoute,
         layout: "/admin",
+        permission: "view",
       },
     ],
   },
-  {
-    collapse: true,
-    name: "Credential Master",
-    icon: "ni ni-settings-gear-65 text-red",
-    state: "credentialCollapse",
-    views: [
-      {
-        path: "/student-credentials",
-        name: "Student",
-        miniName: "A",
-        component: StudentCredentials,
-        layout: "/admin",
-      },
-      {
-        path: "/staff-credentials",
-        name: "Staff",
-        miniName: "S",
-        component: StaffCredentials,
-        layout: "/admin",
-      },
-    ],
-  },
+
   {
     collapse: true,
     name: "Ecommerce",
     icon: "ni ni-bag-17 text-pink",
     state: "ecommerceCollapse",
+    module: "Ecommerce",
     views: [
       {
         path: "/add-products",
@@ -1164,6 +1125,7 @@ const routes = [
         miniName: "A",
         component: Addproduct,
         layout: "/admin",
+        permission: "add",
       },
       {
         path: "/view-all-products",
@@ -1171,6 +1133,7 @@ const routes = [
         miniName: "A",
         component: AllProducts,
         layout: "/admin",
+        permission: "add",
       },
       {
         path: "/view-products",
@@ -1178,6 +1141,7 @@ const routes = [
         miniName: "V",
         component: Viewproduct,
         layout: "/admin",
+        permission: "view",
       },
     ],
   },
@@ -1186,6 +1150,7 @@ const routes = [
     name: "Library Management",
     icon: "ni ni-bag-17 text-pink",
     state: "libraryCollapse",
+    module: "Library Management",
     views: [
       {
         path: "/add-shelf",
@@ -1193,6 +1158,7 @@ const routes = [
         miniName: "A",
         component: AddShelf,
         layout: "/admin",
+        permission: "add",
       },
       {
         path: "/add-books",
@@ -1200,6 +1166,7 @@ const routes = [
         miniName: "V",
         component: AddBooks,
         layout: "/admin",
+        permission: "add",
       },
       {
         path: "/book-allocations",
@@ -1207,6 +1174,7 @@ const routes = [
         miniName: "V",
         component: AllocationManager,
         layout: "/admin",
+        permission: "add",
       },
       {
         path: "/view-allocations",
@@ -1214,6 +1182,7 @@ const routes = [
         miniName: "V",
         component: ViewAllocations,
         layout: "/admin",
+        permission: "view",
       },
     ],
   },
@@ -1251,18 +1220,103 @@ const routes = [
       },
     ],
   },
+  // {
+  //   path: "/collectionmaster",
+  //   name: "Collection Master",
+  //   icon: "ni ni-shop text-primary",
+  //   component: CollectionMaster,
+  //   layout: "/admin",
+  //   module:"collectionMaster"
+  // },
+  {
+    collapse: true,
+    name: "Fees Management",
+    icon: "ni ni-single-02 text-orange",
+    state: "feesCollapse",
+    module: "feesManagement",
+    views: [
+      {
+        path: "/feesmaster",
+        name: "Fees Master",
+        miniName: "FM",
+        component: FeesMaster,
+        layout: "/admin",
+        permission: "view",
+      },
+
+      // {
+      //   path: "/viewfees",
+      //   name: "View Fees",
+      //   miniName: "VF",
+      //   component: ViewFees,
+      //   layout: "/admin",
+      //   permission:"view"
+      // },
+      {
+        path: "/Penaltymaster",
+        name: "Penalty Master",
+        miniName: "PM",
+        component: PenaltyMaster,
+        layout: "/admin",
+        permission: "add",
+      },
+
+      {
+        path: "/siblingmaster",
+        name: "Sibling Master",
+        miniName: "SM",
+        component: SiblingMaster,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/coupon-master",
+        name: "Coupon Master",
+        miniName: "CM",
+        component: CouponMaster,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/pending-fees",
+        name: "Pending Fees",
+        miniName: "PF",
+        component: PendingFees,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/hostel-fees",
+        name: "Hostel Fees",
+        miniName: "HF",
+        component: Hostel,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/transportation-fees",
+        name: "Transportation Fees",
+        miniName: "TF",
+        component: Transport,
+        layout: "/admin",
+        permission: "add",
+      },
+    ],
+  },
   {
     collapse: true,
     name: "Leave Management",
     icon: "ni ni-bag-17 text-pink",
     state: "leaveCollapse",
+    module: "Leave Management",
     views: [
       {
-        path: "/apply-leave",
+        path: "/apply-leave ",
         name: "Apply Leave",
         miniName: "a",
         component: ApplyLeave,
         layout: "/admin",
+        permission: "add",
       },
       {
         path: "/view-leaves",
@@ -1270,6 +1324,7 @@ const routes = [
         miniName: "a",
         component: ViewLeaves,
         layout: "/admin",
+        permission: "add",
       },
       {
         path: "/view-allleaves",
@@ -1277,9 +1332,129 @@ const routes = [
         miniName: "a",
         component: ViewAllLeaves,
         layout: "/admin",
+        permission: "edit",
       },
     ],
   },
+  {
+    collapse: true,
+    name: "Accounts Management",
+    icon: "ni ni-bag-17",
+    state: "accountsCollapse",
+    module: "Accounts Management",
+    views: [
+      {
+        path: "/staff-budget-allocations ",
+        name: "Staff Budget Allocations",
+        miniName: "SBA",
+        component: BudgetMaster,
+        layout: "/admin",
+        permission: "edit",
+      },
+      {
+        path: "/dept-budget-allocations ",
+        name: "Dept Budget Allocations",
+        miniName: "DBA",
+        component: DeptBudgetMaster,
+        layout: "/admin",
+        permission: "edit",
+      },
+      {
+        path: "/budget-uses--details ",
+        name: "Budget Uses Details",
+        miniName: "BUD",
+        component: BudgetUsesDetails,
+        layout: "/admin",
+        permission: "edit",
+      },
+      {
+        path: "/salary-breakup",
+        name: "Salary Breakup",
+        miniName: "SB",
+        component: SalaryBreakup,
+        layout: "/admin",
+        permission: "edit",
+      },
+      {
+        path: "/apply-salary-advance",
+        name: "Apply Salary Advance",
+        miniName: "ASA",
+        component: ApplySalaryAdvance,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/salary-advance-approver",
+        name: "Salary Advance Approver",
+        miniName: "SAA",
+        component: SalaryAdvanceApprover,
+        layout: "/admin",
+        permission: "edit",
+      },
+      {
+        path: "/link-student",
+        name: "Link Student With Salary",
+        miniName: "LS",
+        component: LinkStudent,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/pay-salary",
+        name: "Pay Salary",
+        miniName: "PS",
+        component: PaySalary,
+        layout: "/admin",
+        permission: "add",
+      },
+    ],
+  },
+  {
+    collapse: true,
+    name: "Result Management",
+    icon: "ni ni-bag-17",
+    state: "resultCollapse",
+    module: "Result Management",
+    views: [
+      {
+        path: "/grade-master ",
+        name: "Grade Master",
+        miniName: "GM",
+        component: GradingMaster,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/exam-master ",
+        name: "Exam Master",
+        miniName: "EM",
+        component: ExamMaster,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/marks-master ",
+        name: "Marks Master",
+        miniName: "MM",
+        component: MarksMaster,
+        layout: "/admin",
+        permission: "add",
+      },
+      {
+        path: "/promotions ",
+        name: "Promotions",
+        miniName: "P",
+        component: Promotion,
+        layout: "/admin",
+        permission: "add",
+      },
+     
+    ],
+  },
 ];
+
+
+
+
 
 export default routes;
