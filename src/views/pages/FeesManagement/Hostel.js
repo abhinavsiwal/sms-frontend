@@ -602,7 +602,7 @@ const Hostel = () => {
                 exportFileName="staffBudget"
               />
               <Row>
-                <Col style={{ display: "flex", justifyContent: "center" }}>
+                <Col style={{ display: "flex", justifyContent: "center",marginTop:"1rem" }}>
                   <Button onClick={handleFeesSubmit} color="primary">
                     Submit
                   </Button>

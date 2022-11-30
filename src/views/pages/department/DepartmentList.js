@@ -71,11 +71,11 @@ const DepartmentList = () => {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current, 
   });
-
+let permission1=[]
   useEffect(() => {
     // console.log(user);
-    if (user.permissions["Staff Management"]) {
-      let permission1 = user.permissions["Staff Management"];
+    if (user.permissions["Department"]) {
+       permission1 = user.permissions["Department"];
       // console.log(permission1);
       setPermissions(permission1);
     }
@@ -185,7 +185,7 @@ const DepartmentList = () => {
             module: res[i].module,
             action: (
               <h5 key={i + 1} className="mb-0">
-                {/* {permissions && permissions.includes("edit") && ( */}
+                {permission1 && permission1.includes("edit") && (
                 <Button
                   className="btn-sm pull-right"
                   color="primary"
@@ -197,8 +197,8 @@ const DepartmentList = () => {
                 >
                   <i className="fas fa-user-edit" />
                 </Button>
-                {/* )} */}
-                {/* {permissions && permissions.includes("delete") && ( */}
+                 )}
+                {permission1 && permission1.includes("delete") && (
                 <Button
                   className="btn-sm pull-right"
                   color="danger"
@@ -212,7 +212,7 @@ const DepartmentList = () => {
                     <i className="fas fa-trash" />
                   </Popconfirm>
                 </Button>
-                {/* )} */}
+                )}
               </h5>
             ),
           });

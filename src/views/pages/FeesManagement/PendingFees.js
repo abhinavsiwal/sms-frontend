@@ -26,7 +26,7 @@ import AntTable from "../tables/AntTable";
 import Loader from "components/Loader/Loader";
 import { Popconfirm } from "antd";
 import { toast, ToastContainer } from "react-toastify";
-
+import { getCouponList } from "api/Fees";
 const PendingFees = () => {
   const { user } = isAuthenticated();
   const [loading, setLoading] = useState(false);
@@ -35,6 +35,7 @@ const PendingFees = () => {
   const [view, setView] = useState(0);
   const [payTableData, setPayTableData] = useState([]);
   const [modal, setModal] = useState(false);
+  const [coupons, setCoupons] = useState([]);
   const [payData, setPayData] = useState({
     type: "",
     date: "",
@@ -388,6 +389,145 @@ const PendingFees = () => {
     },
   ];
 
+  const couponColumns = [
+    {
+      title: "SNo",
+      dataIndex: "sno",
+      align: "left",
+      sorter: (a, b) => a.sno > b.sno,
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      align: "left",
+      sorter: (a, b) => a.name > b.name,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+        return (
+          <>
+            <Input
+              autoFocus
+              placeholder="Type text here"
+              value={selectedKeys[0]}
+              onChange={(e) => {
+                setSelectedKeys(e.target.value ? [e.target.value] : []);
+                confirm({ closeDropdown: false });
+              }}
+              onBlur={() => {
+                confirm();
+              }}
+            ></Input>
+          </>
+        );
+      },
+      filterIcon: () => {
+        return <SearchOutlined />;
+      },
+      onFilter: (value, record) => {
+        return record.name.toLowerCase().includes(value.toLowerCase());
+      },
+    },
+    {
+      title: "Description",
+      dataIndex: "desc",
+      align: "left",
+      sorter: (a, b) => a.desc > b.desc,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+        return (
+          <>
+            <Input
+              autoFocus
+              placeholder="Type text here"
+              value={selectedKeys[0]}
+              onChange={(e) => {
+                setSelectedKeys(e.target.value ? [e.target.value] : []);
+                confirm({ closeDropdown: false });
+              }}
+              onBlur={() => {
+                confirm();
+              }}
+            ></Input>
+          </>
+        );
+      },
+      filterIcon: () => {
+        return <SearchOutlined />;
+      },
+      onFilter: (value, record) => {
+        return record.desc.toLowerCase().includes(value.toLowerCase());
+      },
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      align: "left",
+      sorter: (a, b) => a.amount > b.amount,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+        return (
+          <>
+            <Input
+              autoFocus
+              placeholder="Type text here"
+              value={selectedKeys[0]}
+              onChange={(e) => {
+                setSelectedKeys(e.target.value ? [e.target.value] : []);
+                confirm({ closeDropdown: false });
+              }}
+              onBlur={() => {
+                confirm();
+              }}
+            ></Input>
+          </>
+        );
+      },
+      filterIcon: () => {
+        return <SearchOutlined />;
+      },
+      onFilter: (value, record) => {
+        return record.amount.toLowerCase().includes(value.toLowerCase());
+      },
+    },
+    {
+      title: "Action",
+      key: "action",
+      dataIndex: "action",
+      fixed: "right",
+    },
+  ];
+
+  const getCoupons = async () => {
+    try {
+      setLoading(true);
+      const data = await getCouponList(user.school, user._id, user.token);
+      console.log(data);
+      if (data.error) {
+        setLoading(false);
+        return toast.error(data.error);
+      }
+      setLoading(false);
+      let tableData = [];
+      data.forEach((element, index) => {
+        tableData.push({
+          key: index,
+          sno: index + 1,
+          name: element.name,
+          desc: element.description,
+          amount: element.amount,
+          action: (
+            <div style={{display:"flex",justifyContent:"center",alignItems:"center"}} >
+              <Input type="checkbox" />
+            </div>
+          ),
+        });
+      });
+      console.log(tableData);
+      setCoupons(tableData);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error("Something went wrong");
+    }
+  };
+
   const getPayData = async () => {
     const data = [
       {
@@ -424,6 +564,7 @@ const PendingFees = () => {
   useEffect(() => {
     getPendingHandler();
     getPayData();
+    getCoupons();
   }, []);
 
   const handleChange = (name) => (event) => {
@@ -473,12 +614,11 @@ const PendingFees = () => {
       ) : (
         <>
           <Container className="mt--6" fluid>
-          
             <div className="card-wrapper">
               <Card className="mb-4">
                 <CardHeader>
-                  <Row className="align-items-center" >
-                    <Col className="mt--3 " sm={1} >
+                  <Row className="align-items-center">
+                    <Col className="mt--3 " sm={1}>
                       <Button
                         className="float-left mb-2"
                         color="primary"
@@ -492,6 +632,24 @@ const PendingFees = () => {
                     </Col>
                   </Row>
                 </CardHeader>
+                <Row>
+                  <Col
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      margin: "2rem",
+                      marginBottom: "-3rem",
+                    }}
+                  >
+                    <Button
+                      color="success"
+                      size="small"
+                      onClick={() => setModal(true)}
+                    >
+                      Apply Coupon
+                    </Button>
+                  </Col>
+                </Row>
                 <CardBody>
                   <AntTable
                     columns={payColumns}
@@ -982,6 +1140,35 @@ const PendingFees = () => {
           </Container>
         </>
       )}
+      <Modal
+        className="modal-dialog-centered"
+        isOpen={modal}
+        toggle={() => setModal(false)}
+        size="lg"
+      >
+        <div className="modal-header">
+          <h2 className="modal-title" id="modal-title-default">
+            Apply Coupon
+          </h2>
+          <button
+            aria-label="Close"
+            className="close"
+            data-dismiss="modal"
+            type="button"
+            onClick={() => setModal(false)}
+          >
+            <span aria-hidden={true}>×</span>
+          </button>
+        </div>
+        <ModalBody>
+          <AntTable
+            columns={couponColumns}
+            data={coupons}
+            pagination={true}
+            exportFileName="Pending Fees"
+          />
+        </ModalBody>
+      </Modal>
     </>
   );
 };
