@@ -97,9 +97,25 @@ import TimeTable from 'views/pages/TimeTable-Refactor/TimeTable'
 import TimeTable1 from 'views/pages/TimeTable-Refactor/TimeTable1'
 import Assignment from 'views/pages/Assignment/Assignment'
 import Promotion from 'views/pages/Result/Promotion'
+import GenerateIdCard from "views/pages/ID-Card/GenerateIdCard";
+import SetIdCard from "views/pages/ID-Card/SetIdCard";
 import Hostel from "views/pages/FeesManagement/Hostel";
 import Transport from "views/pages/FeesManagement/Transport";
 import StaffAttendance from 'views/pages/Staff-Attendance/StaffAttendance'
+import StudentReports from "views/pages/Reports/StudentReports"
+import StaffReports from "views/pages/Reports/StaffReports";
+import StudentAttendanceReports from "views/pages/Reports/StudentAttendanceReports";
+import StaffAttendanceReports from "views/pages/Reports/StaffAttendanceReports";
+import SummaryReport from "views/pages/Reports/SummaryReport";
+import AccessRoleReports from "views/pages/Reports/AccessRoleReports";
+import BusStudentReports from "views/pages/Reports/BusStudentReports";
+import HostelStudentReports from "views/pages/Reports/HostelStudentReports";
+import AdminDashboard from "views/pages/Reports/Dashboards/AdminDashboard";
+import StaffDashboard from "views/pages/Reports/Dashboards/StaffDashboard";
+import QuestionPaper from "views/pages/Question/question-paper.component"
+import QuestionPaperList from "views/pages/Question/question-paper-list.component";
+import CertificateGenerator from "views/pages/ID-Card/CertificateGenerator";
+
 export const adminRoutes = [
   {
     path: "/dashboard",
@@ -108,6 +124,164 @@ export const adminRoutes = [
     component: Dashboard,
     layout: "/admin",
     module: "Dashboard",
+  },
+
+  {
+    collapse:true,
+    name: "Question",
+    icon: "fa fa-print text-primary",
+    state: "Question",
+    module: "Question",
+    views: [
+      {
+        path: "/question-builder",
+        name: "Question Paper Builder",
+        miniName: "Q",
+        component: QuestionPaper,
+        layout: "/admin",
+        permission: "view",
+      },
+      {
+        path: "/question-list",
+        name: "Question List",
+        miniName: "L",
+        component: QuestionPaperList,
+        layout: "/admin",
+        permission: "view",
+      },
+    ],
+  },
+  {
+    collapse:true,
+    name: "Document Store",
+    icon: "fa fa-file text-primary",
+    state: "Document",
+    module: "Document",
+    views: [
+      {
+        path: "/generate-id-card",
+        name: "Generate Card",
+        miniName: "I",
+        component: GenerateIdCard,
+        layout: "/admin",
+        permission: "view",
+      },
+      {
+        path: "/set-id-card",
+        name: "Set Id Card",
+        miniName: "I",
+        component: SetIdCard,
+        layout: "/admin",
+        permission: "view",
+      },
+      {
+        path: "/certificate-generator",
+        name: "Certificate G",
+        miniName: "C",
+        component: CertificateGenerator,
+        layout: "/admin",
+        permission: "view",
+      },
+    ],
+  },
+  {
+    collapse:true,
+    name: "Reports",
+    icon: "fa fa-file text-primary",
+    state: "Reports",
+    module: "Reports",
+    views: [
+      {
+        path: "/student-reports",
+        name: "Student Reports",
+        miniName: "S",
+        component: StudentReports,
+        layout: "/admin",
+        permission: "view",
+      },
+      {
+        path: "/staff-reports",
+        name: "Staff Reports",
+        miniName: "S",
+        component: StaffReports,
+        layout: "/admin",
+        permission: "view",
+      }, 
+      {
+        path: "/student-attendance-reports",
+        name: "Student Attendance Reports",
+        miniName: "S",
+        component: StudentAttendanceReports,
+        layout: "/admin",
+        permission: "view",
+      },
+      {
+        path: "/staff-attendance-reports",
+        name: "Staff Attendance Reports",
+        miniName: "S",
+        component: StaffAttendanceReports,
+        layout: "/admin",
+        permission: "view",
+      },
+      {
+        path: "/summary-reports",
+        name: "Summary Reports",
+        miniName: "S",
+        component: SummaryReport,
+        layout: "/admin",
+        permission: "view",
+      },
+      {
+        path: "/access-role-reports",
+        name: "Access Role Reports",
+        miniName: "S",
+        component: AccessRoleReports,
+        layout: "/admin",
+        permission: "view",
+      },
+      {
+        path: "/bus-student-reports",
+        name: "Bus Student Reports",
+        miniName: "S",
+        component: BusStudentReports,
+        layout: "/admin",
+        permission: "view",
+      },
+      {
+        path: "/hostel-student-reports",
+        name: "Hostel Student Reports",
+        miniName: "S",
+        component: HostelStudentReports,
+        layout: "/admin",
+        permission: "view",
+      },
+    ],
+  },
+
+  {
+    collapse: true,
+    name: "Dashboards",
+    icon: "fa fa-file text-primary",
+    state: "Dashboards",
+    module: "Dashboards",
+    views: [
+      {
+        path: "/admin-dashboard",
+        name: "Admin Dashboard",
+        miniName: "D",
+        component: AdminDashboard,
+        layout: "/admin",
+        permission: "view",
+      },
+      {
+        path: "/staff-dashboard",
+        name: "Staff Dashboard",
+        miniName: "D",
+        component: StaffDashboard,
+        layout: "/admin",
+        permission: "view",
+      }
+    ]
   },
   {
     collapse: true,
@@ -1451,6 +1625,7 @@ export const adminRoutes = [
      
     ],
   },
+ 
 ];
 
 

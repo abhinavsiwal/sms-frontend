@@ -1,7 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from "redux";
 import {
-
   persistReducer,
   FLUSH,
   REHYDRATE,
@@ -18,6 +17,7 @@ import studentReducer from './reducers/student'
 import staffReducer from './reducers/staff'
 import classReducer from './reducers/class'
 import cartReducer from './reducers/cart';
+
 const reducers = combineReducers({
     authReducer,
     studentReducer,

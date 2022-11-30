@@ -141,8 +141,6 @@ function AdminNavbar({ theme, sidenavOpen, toggleSidenav }) {
                   className="dropdown-menu-xl py-0 overflow-hidden"
                   right
                 >
-                 
-
                   <ListGroup flush>
                     <ListGroupItem
                       className="list-group-item-action"

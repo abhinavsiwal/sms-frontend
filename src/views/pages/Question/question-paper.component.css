@@ -1,0 +1,65 @@
+.question-paper .document-editor {
+    border: 1px solid #c4c4c4;
+    border-radius: 2px;
+
+    /* Set vertical boundaries for the document editor. */
+    height: 95vh;
+
+    /* This element is a flex container for easier rendering. */
+    display: flex;
+    flex-flow: column nowrap;
+    box-shadow: 0 0 5px hsla( 0,0%,0%,.2 );
+    background: #fafafa;
+    overflow-y: scroll;
+    display: flex;
+}
+
+.question-paper .ck-editor__editable {
+    /* Set the dimensions of the "page". */
+    min-height: 90vh;
+    width: 25cm;
+
+    /* Keep the "page" off the boundaries of the container. */
+    border: 1px hsl( 0,0%,82.7% ) solid;
+    border-radius: 2px;
+    background: white;
+
+    /* The "page" should cast a slight shadow (3D illusion). */
+    box-shadow: 0 0 5px hsla( 0,0%,0%,.1 );
+
+    /* Center the "page". */
+    margin: 0 auto;
+    /* margin: calc( 3 * 1.5 * 0.6em ); */
+    align-self: center;
+    overflow-y: scroll;
+}
+
+.question-paper .ck.ck-editor__editable_inline {
+    padding: 1cm 2cm 2cm;
+}
+
+.question-paper strong {
+    color: black;
+}
+
+.question-paper p {
+    font-size: 16px;
+}
+
+.question-paper .document-editor ol li, .question-paper .document-editor ul li {
+    font-size: px;
+    color: #000;
+}
+
+.question-paper table:first-of-type img {
+    max-height: 100px;
+}
+
+/* .ck-content .table table, .ck-content .table table td, .ck-content .table table th {
+    border: none;
+    box-shadow: none;
+}
+
+.ck-content .table table tr > td:first-child, .ck-content .table table tr > td:last-child {
+    width: auto;
+} */

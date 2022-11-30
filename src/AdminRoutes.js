@@ -4,7 +4,7 @@ import AdminLayout from 'layouts/Admin';
 import { isAuthenticated } from 'api/auth';
 
 const AdminRoutes = () => {
-  return <Route render={() => (isAuthenticated() !== false ? <AdminLayout /> : <Redirect to="/login" />)} />;
+  return <Route render={() => (isAuthenticated() !== false ? <AdminLayout /> : <Redirect to="/login" />)} />; 
 };
 
 export default AdminRoutes;

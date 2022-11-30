@@ -7,7 +7,8 @@ import AdminFooter from "components/Footers/AdminFooter.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import { isAuthenticated } from "api/auth";
 import routes, { adminRoutes } from "routes.js";
-import Profile from "views/pages/Staff Profile/Profile";
+import Profile from 'views/pages/Staff Profile/Profile';
+
 function Admin() {
   const [sidenavOpen, setSidenavOpen] = React.useState(true);
   const location = useLocation();

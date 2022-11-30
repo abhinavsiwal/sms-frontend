@@ -1,0 +1,154 @@
+
+.identityCard__profile{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.identityCard__list{
+    flex: 1;
+    padding: 15px 20px;
+    margin: 0;
+}
+
+.list-unstyled{
+    list-style: none;
+}
+
+.identityCard__visual{
+    padding: 0 1rem;
+    max-width: 140px;
+    min-height: 170px;
+    max-height: 170px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.identityCard__visual img{
+    display: block;
+    width: 100%;
+    filter: none;
+    border-radius: 15px;
+}
+
+img{
+    border-style: none;
+    max-width: 100%;
+    vertical-align: middle;
+}
+.logo{
+    max-height: 50px;
+}
+.identityCard__header{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    text-transform: uppercase;
+    color: white;
+    letter-spacing: 10px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    background-color: #133f86;
+}
+
+.identityCard .filled {
+    background: url('https://zupimages.net/up/19/50/fuxd.gif') repeat-x 1px center;
+}
+
+.identityCard__footer{
+    display: flex;
+    flex-direction: column;
+    padding: 10px 20px;
+    line-height: 1.6;
+    text-transform: uppercase;
+    background-color: white;
+}
+
+.id__card__wrapper,.certificate__wrapper{
+    border-radius:12px ;
+    max-width: 500px;
+    margin: auto;
+    box-shadow: 0 0 15px 0 rgb(0 0 0 / 50%);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.identityCard__list li strong{
+    color: #133f86;
+}
+
+.identityCard__list li span{
+    font-weight: 700;
+    color: black;
+}
+
+.id__card{
+    width: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+/* css for certificate generator */
+
+.schoolName{
+    display: flex;
+    justify-content: center;
+    gap:0.5rem;
+    align-items: center;
+    margin: 10px 0;
+}
+.date__signature{
+    display: flex;
+    justify-content: space-between;
+    padding: 3rem;
+}
+
+.schoolName h1{
+    margin: 0;
+    font-size: 2.4rem;
+}
+
+.logo_certificate{
+    height: 45px;
+    width: 45px;
+}
+
+.certificate__wrapper{
+    max-width: 1100px;
+    padding: 20px;
+}
+.outline__one{
+    padding: 10px;
+    border-radius:12px ;
+    border: 5px solid black;
+}
+.outline__two{
+    padding: 2rem;
+    border-radius:10px ;
+    border: 2px solid black;
+}
+.certificate{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.certificate h2{
+    font-size: 2rem;
+}
+
+.certificate h1,h3{
+    margin: 0;
+}
+
+.add__content > p{
+    font-size: 2rem;
+    text-align: center;
+    padding: 1rem;
+    font-style: italic;
+    margin-bottom: 0;
+}
