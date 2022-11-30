@@ -570,13 +570,14 @@ const Attendance1 = () => {
                       })}
                   </select>
                 </Col>
-              </Row>
-              <Row className="mt-4 float-right">
-                <Col>
+                <Col style={{marginTop:"2rem"}} >
                   <Button color="primary" type="submit">
                     Search
                   </Button>
                 </Col>
+              </Row>
+              <Row className="mt-4 float-right">
+             
               </Row>
             </form>
           </CardBody>

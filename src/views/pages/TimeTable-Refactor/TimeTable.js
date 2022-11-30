@@ -1881,7 +1881,9 @@ const TimeTable = () => {
           label: "Recess",
         };
         console.log(tableData);
+        console.log("schedules======>>>",tableData.schedules);
     setSchedules(tableData.schedules);
+console.log("teacher--->",tableData.teachers);
     setRecess(other);
     setTeachers(tableData.teachers);
     setLoading(false);
@@ -2035,7 +2037,6 @@ const TimeTable = () => {
   }
   const getMappedSchedules = () => {
     const schedulesByTime = {};
-    console.log(schedules);
     for (let schedule of schedules.map((schedule, index) => {
       return { ...schedule, index: index };
     })) {

@@ -27,8 +27,9 @@ import {
   getAllLeaves,
   getAllStaffLeaves,
   getAllStudentLeaves,
-  editLeave
+  editLeave,
 } from "../../../api/leave";
+import LoadingScreen from "react-loading-screen";
 
 const ViewAllLeaves = () => {
   const { user } = isAuthenticated();
@@ -50,7 +51,7 @@ const ViewAllLeaves = () => {
     {
       title: "Name",
       dataIndex: "name",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.name > b.name,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -140,7 +141,7 @@ const ViewAllLeaves = () => {
     {
       title: "Date To",
       dataIndex: "date_to",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.date_to > b.date_to,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -170,7 +171,7 @@ const ViewAllLeaves = () => {
     {
       title: "No of Days",
       dataIndex: "no_of_days",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.no_of_days > b.no_of_days,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -200,7 +201,7 @@ const ViewAllLeaves = () => {
     {
       title: "Leave Type",
       dataIndex: "leave_type",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.leave_type > b.leave_type,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -230,7 +231,7 @@ const ViewAllLeaves = () => {
     {
       title: "Reason",
       dataIndex: "reason",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.reason > b.reason,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -260,7 +261,7 @@ const ViewAllLeaves = () => {
     {
       title: "Status",
       dataIndex: "status",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.status > b.status,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -292,14 +293,14 @@ const ViewAllLeaves = () => {
       key: "action",
       dataIndex: "action",
       fixed: "right",
-      align:"left",
+      align: "left",
     },
   ];
   const columns2 = [
     {
       title: "Name",
       dataIndex: "name",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.name > b.name,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -329,7 +330,7 @@ const ViewAllLeaves = () => {
     {
       title: "Class",
       dataIndex: "class",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.class > b.class,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -359,7 +360,7 @@ const ViewAllLeaves = () => {
     {
       title: "Section",
       dataIndex: "section",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.section > b.section,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -389,7 +390,7 @@ const ViewAllLeaves = () => {
     {
       title: "Date From",
       dataIndex: "date_from",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.date_from > b.date_from,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -419,7 +420,7 @@ const ViewAllLeaves = () => {
     {
       title: "Date To",
       dataIndex: "date_to",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.date_to > b.date_to,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -480,7 +481,7 @@ const ViewAllLeaves = () => {
     {
       title: "Reason",
       dataIndex: "reason",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.reason > b.reason,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -510,7 +511,7 @@ const ViewAllLeaves = () => {
     {
       title: "Status",
       dataIndex: "status",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.status > b.status,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -542,7 +543,7 @@ const ViewAllLeaves = () => {
       key: "action",
       dataIndex: "action",
       fixed: "right",
-      align:"left",
+      align: "left",
     },
   ];
 
@@ -551,59 +552,88 @@ const ViewAllLeaves = () => {
       setLoading(true);
       const data = await getAllLeaves(user._id, user.school);
       console.log(data);
-
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-    }
-  };
-
-  const getAllStaffLeavesHandler = async () => {
-    try {
-      setLoading(true);
-      const data = await getAllStaffLeaves(user._id, user.school);
-      console.log(data);
-      let tableData = [];
+      if (data.err) {
+        toast.error(data.err);
+        setLoading(false);
+        return;
+      }
+      let staffData = [];
+      let studentData = [];
       data.forEach((leave, i) => {
-        // console.log(leave);
-        tableData.push({
-          key: i,
-          name:
-            leave.staff && leave.staff.firstname + " " + leave.staff.lastname,
-          department: leave.department && leave.department.name,
-          date_from: leave.dateFrom,
-          date_to: leave.dateTo,
-          no_of_days: leave.noOfDays,
-          leave_type: leave.leaveType,
-          reason: leave.reason,
-          status: leave.status,
-          action: (
-            <h5 key={i + 1} className="mb-0">
-              <Button
-                className="btn-sm pull-right"
-                color="primary"
-                type="button"
-                key={"edit" + i + 1}
-                onClick={() => {
-                  setEditStatus(leave.status);
-                  setEditing(true);
-                  setEditLeaveId(leave._id);
-                }}
-              >
-                <i className="fas fa-user-edit" />
-              </Button>
-            </h5>
-          ),
-        });
+        if (leave.type === "staff") {
+          staffData.push({
+            key: i,
+            name:
+              leave.staff && leave.staff.firstname + " " + leave.staff.lastname,
+            department: leave.department && leave.department.name,
+            date_from: leave.dateFrom,
+            date_to: leave.dateTo,
+            no_of_days: leave.noOfDays,
+            leave_type: leave.leaveType,
+            reason: leave.reason,
+            status: leave.status,
+            action: (
+              <h5 key={i + 1} className="mb-0">
+                <Button
+                  className="btn-sm pull-right"
+                  color="primary"
+                  type="button"
+                  key={"edit" + i + 1}
+                  onClick={() => {
+                    setEditStatus(leave.status);
+                    setEditing(true);
+                    setEditLeaveId(leave._id);
+                  }}
+                >
+                  <i className="fas fa-user-edit" />
+                </Button>
+              </h5>
+            ),
+          });
+        } else if(leave.type==="student"){
+          studentData.push({
+            key: i,
+            name:
+              leave.student &&
+              leave.student.firstname + " " + leave.student.lastname,
+            class: leave.class && leave.class.name,
+            section: leave.section && leave.section.name,
+            date_from: getFormattedDate(leave.dateFrom),
+            date_to: getFormattedDate(leave.dateTo),
+            no_of_days: leave.noOfDays,
+            reason: leave.reason,
+            status: leave.status,
+            action: (
+              <h5 key={i + 1} className="mb-0">
+                <Button
+                  className="btn-sm pull-right"
+                  color="primary"
+                  type="button"
+                  key={"edit" + i + 1}
+                  onClick={() => {
+                    setEditStatus(leave.status);
+                    setEditing(true);
+                    setEditLeaveId(leave._id);
+                  }}
+                >
+                  <i className="fas fa-user-edit" />
+                </Button>
+              </h5>
+            ),
+          });
+        }
       });
-      setStaffLeaveData(tableData);
+      setStaffLeaveData(staffData);
+      setStudentLeaveData(studentData);
       setLoading(false);
     } catch (err) {
       console.log(err);
       setLoading(false);
+      toast.error("Something went wrong");
     }
   };
+
+ 
   function getFormattedDate(date1) {
     let date = new Date(date1);
     var year = date.getFullYear();
@@ -616,68 +646,24 @@ const ViewAllLeaves = () => {
 
     return day + "/" + month + "/" + year;
   }
-  const getAllStudentLeavesHandler = async () => {
-    try {
-      setLoading(true);
-      const data = await getAllStudentLeaves(user._id, user.school);
-      console.log(data);
-      let tableData = [];
-      data.forEach((leave, i) => {
-        tableData.push({
-          key: i,
-          name:
-            leave.student &&
-            leave.student.firstname + " " + leave.student.lastname,
-          class: leave.class && leave.class.name,
-          section: leave.section && leave.section.name,
-          date_from:getFormattedDate(leave.dateFrom),
-          date_to: getFormattedDate(leave.dateTo),
-          no_of_days: leave.noOfDays,
-          reason: leave.reason,
-          status: leave.status,
-          action: (
-            <h5 key={i + 1} className="mb-0">
-              <Button
-                className="btn-sm pull-right"
-                color="primary"
-                type="button"
-                key={"edit" + i + 1}
-                onClick={() => {
-                  setEditStatus(leave.status);
-                  setEditing(true);
-                  setEditLeaveId(leave._id);
-                }}
-              >
-                <i className="fas fa-user-edit" />
-              </Button>
-            </h5>
-          ),
-        });
-      });
-      setStudentLeaveData(tableData);
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-    }
-  };
+ 
 
-  useEffect(() => {
-    console.log(view);
-    if (view === 1) {
-      getAllStudentLeavesHandler();
-    } else if (view === 2) {
-      getAllStaffLeavesHandler();
-    }
-  }, [view,checked]);
+  // useEffect(() => {
+  //   console.log(view);
+  //   if (view === 1) {
+  //     getAllStudentLeavesHandler();
+  //   } else if (view === 2) {
+  //     getAllStaffLeavesHandler();
+  //   }
+  // }, [view, checked]);
 
   const handleEdit = async () => {
     const formData = new FormData();
-    formData.set("id",editLeaveId);
-    formData.set("status",editStatus);
+    formData.set("id", editLeaveId);
+    formData.set("status", editStatus);
     try {
       setEditLoading(true);
-      const data = await editLeave(user._id,formData);
+      const data = await editLeave(user._id, formData);
       if (data.err) {
         toast.error(data.err);
         setEditLoading(false);
@@ -710,6 +696,14 @@ const ViewAllLeaves = () => {
         pauseOnHover
         theme="colored"
       />
+
+      <LoadingScreen
+        loading={loading}
+        bgColor="#f1f1f1"
+        spinnerColor="#9ee5f8"
+        textColor="#676767"
+        text="Please Wait..."
+      ></LoadingScreen>
       <SimpleHeader name="View All Leaves" />
       <Container className="mt--6" fluid>
         <div className="card-wrapper">

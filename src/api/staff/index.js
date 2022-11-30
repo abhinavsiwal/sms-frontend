@@ -118,3 +118,33 @@ export const getStaffById = async (sId) => {
     console.log(err);
   }
 };
+
+export const uploadStaffDocuments = async (schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/documents/upload_document/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getStaffDocuments = async (schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/documents/get_documents/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

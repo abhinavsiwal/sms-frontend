@@ -362,7 +362,7 @@ const DepartmentList = () => {
           ) : (
             permissions &&
             permissions.includes("add") && (
-              <Col lg="3">
+              <Col lg="4">
                 <div className="card-wrapper">
                   <Card>
                     <Form onSubmit={handleFormChange} className="mb-4">

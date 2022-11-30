@@ -96,13 +96,10 @@ const Calendar = () => {
   }, []);
 
   useEffect(() => {
-    
     const { current: calendarDom } = calendarRef;
     const API = calendarDom ? calendarDom.getApi() : null;
     API && API.changeView(calendarView);
-    
-  }, [calendarView])
-  
+  }, [calendarView]);
 
   const getAllStaff = async () => {
     try {
@@ -168,23 +165,24 @@ const Calendar = () => {
     const { user, token } = isAuthenticated();
     setLoading(true);
     const events1 = await getCalender(user._id, user.school, token);
-    // console.log("getevents", events);
+    console.log("----------->", events1);
     setEvents(events1);
     let event = [];
     events1.map((events) => {
-        event.push({
-            title: events.name,
-            start: events.event_from,
-            end: events.event_to,
-            className: events.event_type,
-            description: events.description,
-            id: events._id,
-            assignTeacher: events.assignTeachers._id,
-            assignTeacherName:
-              events.assignTeachers.firstname +
-              " " +
-              events.assignTeachers.lastname,
-          })
+      event.push({
+        title: events.name,
+        start: events.event_from,
+        end: events.event_to,
+        className: events.event_type,
+        description: events.description,
+        id: events._id,
+        assignTeacher: events.assignTeachers && events.assignTeachers._id,
+        assignTeacherName:
+          events.assignTeachers &&
+          events.assignTeachers.firstname +
+            " " +
+            events.assignTeachers.lastname,
+      });
     });
     console.log(event);
     setEventsList(event);
@@ -294,7 +292,7 @@ const Calendar = () => {
       const { user, token } = isAuthenticated();
       const deleEvents = await deleteEvents(eventId, user._id, token);
       setEvent(undefined);
-     toast.success("Event Deleted Successfully");
+      toast.success("Event Deleted Successfully");
       setEvents(deleEvents);
       setChecked(true);
     } catch (err) {
@@ -446,10 +444,9 @@ const Calendar = () => {
   const changeView = (newView) => {
     console.log(newView);
     setCalendarView(newView);
-
   };
   return (
-    <> 
+    <>
       <ToastContainer
         position="bottom-right"
         autoClose={1000}
@@ -558,7 +555,8 @@ const Calendar = () => {
             <Card className="card-calendar w-100">
               <CardBody className="p-0">
                 <FullCalendar
-                  plugins={[dayGridPlugin, interactionPlugin,timeGridPlugin]}
+                  height="80vh"
+                  plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
                   initialView={calendarView}
                   selectable={true}
                   ref={calendarRef}
@@ -567,14 +565,20 @@ const Calendar = () => {
                   }}
                   dateClick={(info) => {
                     console.log("info", info);
+                    let date = new Date();
+                    let yesterday = new Date(date.getTime()-24*60*60*1000);
 
-                    if (info.start < new Date()) {
+                    console.log(new Date(info.date).getTime() < yesterday.getTime());
+                    if (new Date(info.date).getTime() < yesterday.getTime()) {
                       console.log("here");
-                      return; 
-                    } 
+                      return;
+                    }
                     setModalAdd(true);
-                    setStartDate(info.start);
-                    setEndDate(endDate);
+                    // setStartDate(
+                    //   new Date(info.start).toISOString().split("T")[0]
+                    // );
+                    setStartDate( info.date);
+                    setEndDate(info.date);
                     setRadios("bg-info");
                   }}
                   eventClick={({ event }) => {
@@ -651,7 +655,7 @@ const Calendar = () => {
                         </Col>
                       </Row>
                       <Row className="mt-2">
-                        <Col md="12">
+                        <Col>
                           <Label
                             className="form-control-label"
                             htmlFor="example-date-input"
@@ -670,11 +674,15 @@ const Calendar = () => {
                             strictParsing
                             value={startDate}
                             required
+                            placeholderText="dd-mm-yyyy"
                             // filterDate={disableSunday}
 
                             // excludeDates={addDays(new Date(),6)}
                           />
                         </Col>
+                        </Row>
+                        <Row className="mt-2">
+
                         <Col>
                           <Label
                             className="form-control-label"
@@ -694,6 +702,7 @@ const Calendar = () => {
                             strictParsing
                             value={endDate}
                             required
+                            placeholderText="dd-mm-yyyy"
                           />
                         </Col>
                       </Row>
@@ -1036,14 +1045,15 @@ const Calendar = () => {
             </Col>
             <Col align="center">
               <h4 className="mt-3 mb-1">Event Teachers</h4>
-              {eventDetails.assignTeachers &&
+              {/* {eventDetails.assignTeachers &&
                 eventDetails.assignTeachers.map((teacher, i) => {
                   return (
                     <span className="text-md" key={i}>
                       {teacher.firstname} {teacher.lastname}
                     </span>
                   );
-                })}
+                })} */}
+                { eventDetails.assignTeachers&& eventDetails.assignTeachers.firstname + " " + eventDetails.assignTeachers.lastname}
             </Col>
           </Row>
         </ModalBody>

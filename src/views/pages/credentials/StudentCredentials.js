@@ -499,7 +499,7 @@ const StudentCredentials = () => {
         className="modal-dialog-centered"
         isOpen={editing}
         toggle={() => setEditing(false)}
-        size="lg"
+        size="sm"
       >
         <div className="modal-header">
           <h2 className="modal-title" id="modal-title-default">

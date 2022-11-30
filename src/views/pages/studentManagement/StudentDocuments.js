@@ -22,7 +22,8 @@ import { toast, ToastContainer } from "react-toastify";
 import { allStaffs } from "api/staff";
 import { allStudents, filterStudent } from "api/student";
 import { allClass } from "api/class";
-
+import { uploadFile } from "api/upload";
+import { uploadStaffDocuments, getStaffDocuments } from "api/staff";
 const StudentDocuments = () => {
   const [loading, setLoading] = useState(false);
   const { user, token } = isAuthenticated();
@@ -74,6 +75,45 @@ const StudentDocuments = () => {
     values.splice(index, 1);
     setInputFields(values);
   };
+
+  const getStaffDocumentsHandler = async () => {
+    const formData = new FormData();
+    formData.set("student", student);
+    formData.set("class", selectedClassId);
+    formData.set("section", section);
+    formData.set("role", "STD");
+    try {
+      setLoading(true);
+      const data = await getStaffDocuments(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        return toast.error(data.err);
+      }
+      let fields = [];
+      data.forEach((field) => {
+        fields.push({
+          name: field.doc.name,
+          description: field.doc.description,
+          document: field.doc.documents[0],
+          documentPreview: field.document_url[0],
+        });
+      });
+      setInputFields(fields);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error("Error fetching staff documents");
+    }
+  };
+
+  useEffect(() => {
+    if (student === "") {
+      return;
+    }
+    getStaffDocumentsHandler();
+  }, [student, checked]);
 
   const getAllClasses = async () => {
     try {
@@ -127,27 +167,81 @@ const StudentDocuments = () => {
     }
   };
   const handleSubmit = async () => {
-    const config = {
-      bucketName: process.env.REACT_APP_Bucket,
-     
-      region: "us-east-1",
-      accessKeyId: process.env.REACT_APP_accessKeyID,
-      secretAccessKey: process.env.REACT_APP_secretAccessID,
-      
-    };
-   
-    for (let i = 0; i < inputFields.length; i++) {
-    
-      S3FileUpload.uploadFile(inputFields[i].document, config)
-        .then((data) => {
-          console.log(data);
-          inputFields[i].documents = data.location;
-
-        })
-        .catch((err) => console.error(err));
-    }
     console.log(inputFields);
+    let documentData = [];
+    for (const field of inputFields) {
+      console.log(field);
+      if (field.documentPreview !== "") {
+        console.log("preview");
+        documentData.push({
+          name: field.name,
+          description: field.description,
+          documents: field.document,
+          upload_date: new Date().toISOString().split("T")[0],
+          upload_by: user._id,
+        });
+      } else {
+        console.log("image");
+        const formData = new FormData();
+        formData.set("file", field.document);
+        try {
+          setLoading(true);
+          const data = await uploadFile(formData);
+          console.log(data);
+          if (data.err) {
+            setLoading(false);
+            return toast.error(data.err);
+          }
+          documentData.push({
+            name: field.name,
+            description: field.description,
+            documents: data.data[0],
+            upload_date: new Date().toISOString().split("T")[0],
+            upload_by: user._id,
+          });
+
+          setLoading(false);
+        } catch (err) {
+          console.log(err);
+          setLoading(false);
+          toast.error("Error uploading file");
+        }
+      }
+    }
+    console.log(documentData);
+    const formData1 = new FormData();
+    formData1.set("document_data", JSON.stringify(documentData));
+    formData1.set("student", student);
+    formData1.set("class", selectedClassId);
+    formData1.set("section", section);
+    formData1.set("role", "STD");
+
+    try {
+      setLoading(true);
+      const data = await uploadStaffDocuments(user.school, user._id, formData1);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        return toast.error(data.err);
+      }
+      toast.success("Documents Uploaded Successfully");
+      setChecked(!checked);
+      // setInputFields({
+      //   name: "",
+      //   date: "",
+      //   uploadBy: "",
+      //   document: "",
+      //   documentPreview: "",
+      //   description: "",
+      // });
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error("Error uploading documents");
+    }
   };
+
   useEffect(() => {
     getAllStaffs();
   }, []);
@@ -166,8 +260,6 @@ const StudentDocuments = () => {
     }
   }, [section]);
 
-
-  
   return (
     <>
       <SimpleHeader
@@ -291,8 +383,8 @@ const StudentDocuments = () => {
             {inputFields?.map((field, index) => {
               return (
                 <>
-                  <Row key={index} className="mt-4">
-                    <Col>
+                  <Row key={index}>
+                    <Col md={3}>
                       <label
                         className="form-control-label"
                         htmlFor="example4cols2Input"
@@ -309,24 +401,55 @@ const StudentDocuments = () => {
                         placeholder="Document Name"
                       />
                     </Col>
-
-                    <Col>
+                    <Col md={4}>
                       <label
                         className="form-control-label"
                         htmlFor="example4cols2Input"
                       >
-                        Upload Date
+                        Description
                       </label>
                       <Input
                         id="exampleFormControlTextarea1"
-                        type="date"
+                        type="textarea"
                         required
                         onChange={(e) => handleChange(index, e)}
-                        value={field.date}
-                        name="date"
+                        value={field.description}
+                        name="description"
+                        placeholder="description"
                       />
                     </Col>
-                    <Col>
+                    {field.documentPreview === "" ? (
+                      <>
+                        <Col md={3}>
+                          <label
+                            className="form-control-label"
+                            htmlFor="example4cols2Input"
+                          >
+                            Document
+                          </label>
+                          <Input
+                            id="exampleFormControlTextarea1"
+                            type="file"
+                            required
+                            onChange={(e) => handleChange(index, e)}
+                            name="document"
+                          />
+                        </Col>
+                      </>
+                    ) : (
+                      <>
+                        <Col md={3}>
+                          <img
+                            src={field.documentPreview}
+                            alt=""
+                            height={100}
+                            width={150}
+                          />
+                        </Col>
+                      </>
+                    )}
+
+                    {/* <Col>
                       <label
                         className="form-control-label"
                         htmlFor="example4cols2Input"
@@ -352,56 +475,46 @@ const StudentDocuments = () => {
                           );
                         })}
                       </Input>
-                    </Col>
-                    <Col style={{ marginTop: "2rem", float: "right" }}>
+                    </Col> */}
+                    <Col style={{ marginTop: "2rem", float: "right" }} md={2}>
                       <Button
                         color="danger"
                         onClick={() => handleRemoveFields(index)}
+                        style={{ padding: "0.1rem 0.7rem" }}
                       >
-                        -
+                        <span style={{ fontSize: "1.4rem" }}>-</span>
+                      </Button>
+                      <Button
+                        color="primary"
+                        onClick={handleAddFields}
+                        style={{ padding: "0.1rem 0.7rem" }}
+                      >
+                        <span style={{ fontSize: "1.4rem" }}>+</span>
                       </Button>
                     </Col>
                   </Row>
-                  <Row className="mt-4">
-                    <Col>
-                      <label
-                        className="form-control-label"
-                        htmlFor="example4cols2Input"
-                      >
-                        Document
-                      </label>
-                      <Input
-                        id="exampleFormControlTextarea1"
-                        type="file"
-                        required
-                        onChange={(e) => handleChange(index, e)}
-                        name="document"
-                      />
-                    </Col>
-                  
-                    <Col>
-                      <label
-                        className="form-control-label"
-                        htmlFor="example4cols2Input"
-                      >
-                        Document
-                      </label>
-                      <Input
-                        id="exampleFormControlTextarea1"
-                        type="textarea"
-                        required
-                        onChange={(e) => handleChange(index, e)}
-                        value={field.description}
-                        name="description"
-                        placeholder="Description"
-                      />
-                    </Col>
-                  </Row>
+                  <Row className="mt-4"></Row>
+                  {/* <hr style={{ marginTop: "1rem 0" }} /> */}
                 </>
               );
             })}
-            <Row className="mt-4">
-              <Col>
+            <Row
+              className="mt-2 float-center"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <Col
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
                 <Button color="primary" onClick={handleSubmit}>
                   Submit
                 </Button>

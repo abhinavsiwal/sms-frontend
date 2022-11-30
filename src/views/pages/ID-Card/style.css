@@ -16,8 +16,10 @@
 
 .identityCard__visual{
     padding: 0 1rem;
-    max-width: 166px;
-    min-height: 166px;
+    max-width: 140px;
+    min-height: 170px;
+    max-height: 170px;
+    border-radius: 15px;
     display: flex;
     justify-content: center;
 }
@@ -26,6 +28,7 @@
     display: block;
     width: 100%;
     filter: none;
+    border-radius: 15px;
 }
 
 img{
@@ -43,7 +46,7 @@ img{
     padding: 10px;
     text-transform: uppercase;
     color: white;
-    letter-spacing: 15px;
+    letter-spacing: 10px;
     font-family: Georgia, 'Times New Roman', Times, serif;
     background-color: #133f86;
 }
@@ -61,7 +64,7 @@ img{
     background-color: white;
 }
 
-.id__card__wrapper{
+.id__card__wrapper,.certificate__wrapper{
     border-radius:12px ;
     max-width: 500px;
     margin: auto;
@@ -77,4 +80,75 @@ img{
 .identityCard__list li span{
     font-weight: 700;
     color: black;
+}
+
+.id__card{
+    width: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+/* css for certificate generator */
+
+.schoolName{
+    display: flex;
+    justify-content: center;
+    gap:0.5rem;
+    align-items: center;
+    margin: 10px 0;
+}
+.date__signature{
+    display: flex;
+    justify-content: space-between;
+    padding: 3rem;
+}
+
+.schoolName h1{
+    margin: 0;
+    font-size: 2.4rem;
+}
+
+.logo_certificate{
+    height: 45px;
+    width: 45px;
+}
+
+.certificate__wrapper{
+    max-width: 1100px;
+    padding: 20px;
+}
+.outline__one{
+    padding: 10px;
+    border-radius:12px ;
+    border: 5px solid black;
+}
+.outline__two{
+    padding: 2rem;
+    border-radius:10px ;
+    border: 2px solid black;
+}
+.certificate{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.certificate h2{
+    font-size: 2rem;
+}
+
+.certificate h1,h3{
+    margin: 0;
+}
+
+.add__content > p{
+    font-size: 2rem;
+    text-align: center;
+    padding: 1rem;
+    font-style: italic;
+    margin-bottom: 0;
 }
