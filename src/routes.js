@@ -115,6 +115,8 @@ import StaffDashboard from "views/pages/Reports/Dashboards/StaffDashboard";
 import QuestionPaper from "views/pages/Question/question-paper.component"
 import QuestionPaperList from "views/pages/Question/question-paper-list.component";
 import CertificateGenerator from "views/pages/ID-Card/CertificateGenerator";
+import StudentView from './views/pages/TimeTable-Refactor/StudentView'
+import StaffView from './views/pages/TimeTable-Refactor/StaffView'
 
 export const adminRoutes = [
   {
@@ -283,6 +285,7 @@ export const adminRoutes = [
       }
     ]
   },
+  // Staff Managment
   {
     collapse: true,
     name: "Staff Management",
@@ -325,6 +328,7 @@ export const adminRoutes = [
    
     ],
   },
+  // Credentials Master
   {
     collapse: true,
     name: "Credential Master",
@@ -350,6 +354,7 @@ export const adminRoutes = [
       },
     ],
   },
+  // Profile
   {
     path: "/profile",
     name: "Profile",
@@ -358,6 +363,7 @@ export const adminRoutes = [
     layout: "/admin",
     module: "Staff Management",
   },
+  // Class Management
   { 
     collapse: true,
     name: "Class Management",
@@ -400,6 +406,7 @@ export const adminRoutes = [
       },
     ],
   },
+  // Department
   {
     collapse: true,
     name: "Department",
@@ -425,6 +432,7 @@ export const adminRoutes = [
       },
     ],
   },
+  // School Profile
   {
     path: "/school-profile",
     name: "School Profile",
@@ -433,6 +441,7 @@ export const adminRoutes = [
     layout: "/admin",
     module: "School Profile Module",
   },
+  // Student Management
   {
     collapse: true,
     name: "Student Management",
@@ -474,6 +483,7 @@ export const adminRoutes = [
       },
     ],
   },
+  // Session
   {
     path: "/session",
     name: "Session",
@@ -482,6 +492,7 @@ export const adminRoutes = [
     layout: "/admin",
     module: "Session",
   },
+  // Support
   {
     path: "/support",
     name: "Support",
@@ -490,6 +501,7 @@ export const adminRoutes = [
     layout: "/admin",
     module: "Support",
   },
+  // Calendar
   {
     path: "/calendar",
     name: "Calendar",
@@ -498,7 +510,7 @@ export const adminRoutes = [
     layout: "/admin",
     module: "School Calendar",
   },
-
+// Assignment
   {
     path: "/assignment",
     name: "Assignment Master",
@@ -514,7 +526,7 @@ export const adminRoutes = [
   //   component: TimeTable,
   //   layout: "/admin",
   // },
-
+// Timetable
   {
     collapse: true,
     name: "Time Table",
@@ -532,10 +544,18 @@ export const adminRoutes = [
         permission: "add",
       },
       {
-        path: "/view_time_table",
-        name: "View Time Table",
+        path: "/student_view_timetable",
+        name: "Student View",
         miniName: "V",
-        component: ViewTimeTable,
+        component: StudentView,
+        layout: "/admin",
+        permission: "view",
+      },
+      {
+        path: "/staff_view_timetable",
+        name: "Staff View",
+        miniName: "V",
+        component: StaffView,
         layout: "/admin",
         permission: "view",
       },
