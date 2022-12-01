@@ -97,7 +97,21 @@ const StudentView = () => {
       //   getSchedulesForClass(event.target.value);
     }
   };
+  useEffect(() => {
+    if (sessions.length !== 0) {
+      defaultSession1();
+    }
+  }, [sessions]);
 
+  const defaultSession1 = async () => {
+    const defaultSession = await sessions.find(
+      (session) => session.status === "current"
+    );
+    setSearchData({
+      ...searchData,
+      session: defaultSession._id,
+    });
+  };
   return (
     <>
       <SimpleHeader name="Class View" parentName="Time Table" />
