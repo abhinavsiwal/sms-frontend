@@ -141,7 +141,7 @@ function Admin() {
   return (
     <>
       <Sidebar
-        routes={adminRoutes}
+        routes={customRoutes}
         toggleSidenav={toggleSidenav}
         sidenavOpen={sidenavOpen}
         logo={{

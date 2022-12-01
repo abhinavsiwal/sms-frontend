@@ -53,6 +53,7 @@ const AllProducts = () => {
   const [editLoading, setEditLoading] = useState(false);
   const [categoriesData, setCategoriesData] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
+  const [permissions, setPermissions] = useState([])
   const [addProduct, setAddProduct] = useState({
     name: "",
     description: "",
@@ -362,6 +363,15 @@ const AllProducts = () => {
     },
   ];
 
+  let permission1 = [];
+  useEffect(() => {
+    if (user.permissions["Ecommerce"]) {
+      permission1 = user.permissions["Ecommerce"];
+      setPermissions(permission1);
+    }
+  }, [checked]);
+
+
   useEffect(() => {
     getAllProductsHandler();
     getAllCategoriesHandler();
@@ -426,38 +436,38 @@ const AllProducts = () => {
           offerPrice: data[i].offerPrice,
           publish: data[i].publish,
           description: data[i].description,
-          category: data[i].category,
+          category: data[i]?.category?.name,
           quantity: data[i].quantity,
           image_url: data[i].image_url,
           action: (
             <h5 key={i + 1} className="mb-0">
-              {/* {permission1 && permission1.includes("edit".trim()) && ( */}
-              <Button
-                className="btn-sm pull-right"
-                color="primary"
-                type="button"
-                key={"edit" + i + 1}
-                onClick={() => editHandler(data[i])}
-              >
-                <i className="fas fa-user-edit" />
-              </Button>
-              {/* )} */}
-
-              {/* {permission1 && permission1.includes("delete".trim()) && ( */}
-              <Button
-                className="btn-sm pull-right"
-                color="danger"
-                type="button"
-                key={"delete" + i + 1}
-              >
-                <Popconfirm
-                  title="Sure to delete?"
-                  onConfirm={() => deleteProductHandler(data[i]._id)}
+              {permission1 && permission1.includes("edit".trim()) && (
+                <Button
+                  className="btn-sm pull-right"
+                  color="primary"
+                  type="button"
+                  key={"edit" + i + 1}
+                  onClick={() => editHandler(data[i])}
                 >
-                  <i className="fas fa-trash" />
-                </Popconfirm>
-              </Button>
-              {/* )} */}
+                  <i className="fas fa-user-edit" />
+                </Button>
+              )}
+
+              {permission1 && permission1.includes("delete".trim()) && (
+                <Button
+                  className="btn-sm pull-right"
+                  color="danger"
+                  type="button"
+                  key={"delete" + i + 1}
+                >
+                  <Popconfirm
+                    title="Sure to delete?"
+                    onConfirm={() => deleteProductHandler(data[i]._id)}
+                  >
+                    <i className="fas fa-trash" />
+                  </Popconfirm>
+                </Button>
+              )}
             </h5>
           ),
         });
@@ -551,7 +561,7 @@ const AllProducts = () => {
         toast.error(data.err);
         return;
       }
-     
+
       toast.success("Product edited successfully");
       setChecked(!checked);
       setEditLoading(false);
@@ -627,6 +637,7 @@ const AllProducts = () => {
                       data={productList}
                       pagination={true}
                       exportFileName="StaffDetails"
+                      disabled={permissions && permissions.includes("export".trim())?false:true}
                     />
                   </div>
                 )}
@@ -635,15 +646,16 @@ const AllProducts = () => {
                     <Container className="" fluid>
                       <Row className="card-wrapper">
                         {allProducts.map((product, index) => {
-                          console.log(product);
                           return (
                             <Col md="4" key={index}>
                               <Card>
-                                {product.image_url!=="" && (
+                                {product.image_url !== "" && (
                                   <div style={{ height: "10rem" }}>
                                     <CardImg
                                       alt="..."
-                                      src={product.image_url && product.image_url}
+                                      src={
+                                        product.image_url && product.image_url
+                                      }
                                       top
                                       className="p-4"
                                     />
@@ -665,7 +677,7 @@ const AllProducts = () => {
                                     <Col align="center">
                                       <h4 className="mt-3 mb-1">Category</h4>
                                       <span className="text-md">
-                                        {product.category}
+                                        {product?.category?.name}
                                       </span>
                                     </Col>
                                     <Col align="center">

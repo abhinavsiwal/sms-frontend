@@ -46,6 +46,7 @@ function Addproduct() {
   const [editId, setEditId] = useState("");
   const [categoriesData, setCategoriesData] = useState([]);
   const [imagesPreview, setImagesPreview] = useState();
+ 
   const [addProduct, setAddProduct] = useState({
     name: "",
     description: "",

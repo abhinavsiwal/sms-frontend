@@ -487,8 +487,8 @@ let permission1=[]
           isOpen={editing}
           toggle={() => setEditing(false)}
           size="sm"
-          style={{ height: "50vh" }}
-          scrollable
+          className="modal-dialog-centered"
+  
         >
           <div className="modal-header">
             <h2 className="modal-title" id="modal-title-default">

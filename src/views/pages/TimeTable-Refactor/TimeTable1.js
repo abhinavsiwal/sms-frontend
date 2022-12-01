@@ -34,7 +34,11 @@ import {
 } from "api/Time Table";
 import { allStaffs } from "api/staff";
 import AntTable from "../tables/AntTable";
-import { updateTimeTable } from "api/Time Table";
+import {
+  updateTimeTable,
+  getPeriodsByDay,
+  updatePeriodV2,
+} from "api/Time Table";
 const TimeTable1 = () => {
   const { user, token } = isAuthenticated();
   const [classes, setClasses] = useState([]);
@@ -54,6 +58,7 @@ const TimeTable1 = () => {
   const [showBreak, setShowBreak] = useState(false);
   const [selectedClass, setSelectedClass] = useState({});
   const [timetableData, setTimetableData] = useState([]);
+  const [periods1, setPeriods1] = useState({});
   const [searchData, setSearchData] = React.useState({
     class: "",
     section: "",
@@ -162,8 +167,10 @@ const TimeTable1 = () => {
       setLoading(true);
       const data = await getTimeTableForClass(user.school, user._id, formData);
       const data1 = await getAllPeriods(user.school, user._id, formData);
-      console.log(data);
+      const data2 = await getPeriodsByDay(user.school, user._id, formData);
+      console.log(data, "data");
       console.log("data1", data1);
+      setPeriods1(data2);
       if (data.err) {
         toast.error(data.err);
         return setLoading(false);
@@ -171,6 +178,7 @@ const TimeTable1 = () => {
 
       setTimetableData(data);
       setAllPeriods(data1);
+      console.log(data2, "data2");
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -283,26 +291,23 @@ const TimeTable1 = () => {
   };
 
   const handlePeriodChange = async (periodId, staff, subject, day) => {
-    // console.log(periodId, staff, JSON.parse(subject), day);
-    const formData = [
-      {
-        period_id: periodId,
-        staff: staff,
-        subject: JSON.parse(subject).name,
-        subject_id: JSON.parse(subject)._id,
-        day: day,
-      },
-    ];
-    console.log({
+    let index = null;
+
+    if (subject !== null) {
+      index = subject.indexOf("-");
+    }
+
+    const formData = {
       period_id: periodId,
       staff: staff,
-      subject: JSON.parse(subject).name,
-      subject_id: JSON.parse(subject)._id,
+      subject: index !== null ? subject.substr(0, index) : null,
+      subject_id: index !== null ? subject.substr(index + 1) : null,
       day: day,
-    });
+    };
+    console.log(formData);
     try {
       setLoading(true);
-      const data = await updateTimeTable(user.school, user._id, formData);
+      const data = await updatePeriodV2(user.school, user._id, formData);
       console.log(data);
       if (data.err) {
         toast.error(data.err);
@@ -311,8 +316,8 @@ const TimeTable1 = () => {
       toast.success("Period Updated Successfully");
       getSchedulesForClass(searchData.section);
       setLoading(false);
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
       toast.error("Something Went Wrong!");
       setLoading(false);
     }
@@ -628,6 +633,14 @@ const TimeTable1 = () => {
                               period.end.substring(0, 5)}
                           </th>
                           {WorkingDaysList.map((day, index) => {
+                            console.log(
+                              periods1[day].find(
+                                (d) =>
+                                  period.start === d.start &&
+                                  period.end === d.end &&
+                                  d.staff != null
+                              )?.staff?._id
+                            );
                             return (
                               <td key={index}>
                                 <Input
@@ -641,23 +654,77 @@ const TimeTable1 = () => {
                                       day
                                     )
                                   }
+                                  value={
+                                    periods1[day].find(
+                                      (d) =>
+                                        d.subject !== null &&
+                                        d.subject_id !== null &&
+                                        period.start === d.start &&
+                                        period.end === d.end 
+                                    )
+                                      ? periods1[day].find(
+                                          (d) =>
+                                            d.subject !== null &&
+                                            d.subject_id !== null &&
+                                            period.start === d.start &&
+                                            period.end === d.end 
+                                        ).subject +
+                                        "-" +
+                                        periods1[day].find(
+                                          (d) =>
+                                            d.subject !== null &&
+                                            d.subject_id !== null &&
+                                            period.start === d.start &&
+                                            period.end === d.end 
+                                        ).subject_id
+                                      : ""
+                                  }
                                 >
-                                  <option value="" disabled>
+                                  <option value="" selected>
                                     Subject
                                   </option>
                                   {subjects.map((subject) => {
                                     return (
                                       <>
-                                        <option value={JSON.stringify(subject)}>
-                                          {subject.name}
-                                        </option>
+                                        {subject.list.length > 0 ? (
+                                          <>
+                                            {subject.list.map((sub) => {
+                                              return (
+                                                <option
+                                                  value={
+                                                    sub + "-" + subject._id
+                                                  }
+                                                >
+                                                  {subject.name + " - " + sub}
+                                                </option>
+                                              );
+                                            })}
+                                          </>
+                                        ) : (
+                                          <>
+                                            <option
+                                              value={
+                                                subject.name + "-" + subject._id
+                                              }
+                                            >
+                                              {subject.name}
+                                            </option>
+                                          </>
+                                        )}
                                       </>
                                     );
                                   })}
                                 </Input>
                                 <Input
                                   type="select"
-                                  defaultValue=""
+                                  value={
+                                    periods1[day].find(
+                                      (d) =>
+                                        period.start === d.start &&
+                                        period.end === d.end &&
+                                        d.staff != null
+                                    )?.staff?._id || ""
+                                  }
                                   onChange={(e) =>
                                     handlePeriodChange(
                                       period._id,
@@ -666,6 +733,7 @@ const TimeTable1 = () => {
                                       day
                                     )
                                   }
+                                  defaultValue=""
                                 >
                                   <option value="" disabled>
                                     Teacher
