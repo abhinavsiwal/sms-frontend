@@ -54,12 +54,22 @@ const AddBooks = () => {
   const [allBooks, setAllBooks] = useState([]);
   const [checked, setChecked] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
+  const [permissions, setPermissions] = useState([]);
   useEffect(() => {
     getAllSection();
     getAllShelf();
   }, []);
   useEffect(() => {
     getAllBooksHandler();
+  }, [checked]);
+
+  let permission1 = [];
+  useEffect(() => {
+    if (user.permissions["Library Management"]) {
+      permission1 = user.permissions["Library Management"];
+      // console.log(permissions);
+      setPermissions(permission1);
+    }
   }, [checked]);
 
   const columns = [
@@ -268,35 +278,39 @@ const AddBooks = () => {
           shelf_name: data[i].shelf.name,
           action: (
             <h5 key={i + 1} className="mb-0">
-              <Button
-                className="btn-sm pull-right"
-                color="primary"
-                type="button"
-                key={"edit" + i + 1}
-                onClick={() => {
-                  setEditing(true);
-                  setEditBookName(data[i].name);
-                  setEditBookSection(data[i].section._id);
-                  setEditBookShelf(data[i].shelf._id);
-                  setEditBookId(data[i]._id);
-                  setEditBookAuthor(data[i].author);
-                }}
-              >
-                <i className="fas fa-user-edit" />
-              </Button>
-              <Button
-                className="btn-sm pull-right"
-                color="danger"
-                type="button"
-                key={"delete" + i + 1}
-              >
-                <Popconfirm
-                  title="Sure to delete?"
-                  onConfirm={() => deleteBookHandler(data[i]._id)}
+              {permission1 && permission1.includes("edit") && (
+                <Button
+                  className="btn-sm pull-right"
+                  color="primary"
+                  type="button"
+                  key={"edit" + i + 1}
+                  onClick={() => {
+                    setEditing(true);
+                    setEditBookName(data[i].name);
+                    setEditBookSection(data[i].section._id);
+                    setEditBookShelf(data[i].shelf._id);
+                    setEditBookId(data[i]._id);
+                    setEditBookAuthor(data[i].author);
+                  }}
                 >
-                  <i className="fas fa-trash" />
-                </Popconfirm>
-              </Button>
+                  <i className="fas fa-user-edit" />
+                </Button>
+              )}
+              {permission1 && permission1.includes("delete") && (
+                <Button
+                  className="btn-sm pull-right"
+                  color="danger"
+                  type="button"
+                  key={"delete" + i + 1}
+                >
+                  <Popconfirm
+                    title="Sure to delete?"
+                    onConfirm={() => deleteBookHandler(data[i]._id)}
+                  >
+                    <i className="fas fa-trash" />
+                  </Popconfirm>
+                </Button>
+              )}
             </h5>
           ),
         });
@@ -434,6 +448,7 @@ const AddBooks = () => {
             <Loader />
           ) : (
             <>
+            {permissions && permissions.includes("add") && (
               <Col sm={12}>
                 <div className="card-wrapper">
                   <Card>
@@ -564,6 +579,7 @@ const AddBooks = () => {
                   </Card>
                 </div>
               </Col>
+            )}
               <Col>
                 <div className="card-wrapper">
                   <Card>
@@ -576,6 +592,7 @@ const AddBooks = () => {
                           data={allBooks}
                           pagination={true}
                           exportFileName="BookDetails"
+                          disabled={permission1 && !permission1.includes("delete")?true:false}
                         />
                       )}
                     </CardBody>

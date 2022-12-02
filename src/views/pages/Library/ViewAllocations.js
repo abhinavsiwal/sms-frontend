@@ -34,7 +34,7 @@ const ViewAllocations = () => {
   const [staffAllocations, setStaffAllocations] = useState([]);
   const [studentReturns, setStudentReturns] = useState([]);
   const [staffReturns, setStaffReturns] = useState([]);
-
+  const [permissions, setPermissions] = useState([]);
   let columns1 = [
     {
       title: "Student Name",

@@ -57,6 +57,7 @@ const AddShelf = () => {
   const [sectionEditAbbv, setSectionEditAbbv] = useState("");
   const [sectionData, setSectionData] = useState([]);
   const [editSectionLoading, setEditSectionLoading] = useState(false);
+  const [permissions, setPermissions] = useState([]);
   const columns = [
     {
       title: "S No.",
@@ -211,6 +212,15 @@ const AddShelf = () => {
     getAllShelf();
   }, [checked]);
 
+  let permission1 = [];
+  useEffect(() => {
+    if (user.permissions["Library Management"]) {
+      permission1 = user.permissions["Library Management"];
+      // console.log(permissions);
+      setPermissions(permission1);
+    }
+  }, [checked,sectionId,selectedSectionId]);
+
   const getAllSection = async () => {
     try {
       const data = await getAllLibrarySection(user.school, user._id);
@@ -346,36 +356,36 @@ const AddShelf = () => {
       abbreviation: selectedSection.abbreviation,
       action: (
         <h5 key={1} className="mb-0">
-          {/* {permission1 && permission1.includes("edit") && ( */}
-          <Button
-            className="btn-sm pull-right"
-            color="primary"
-            type="button"
-            key={"edit" + 1}
-            onClick={() => {
-              setSectionEditing(true);
-              setSectionEditName(selectedSection.name);
-              setSectionEditAbbv(selectedSection.abbreviation);
-            }}
-          >
-            <i className="fas fa-user-edit" />
-          </Button>
-          {/* )} */}
-          {/* {permission1 && permission1.includes("delete") && ( */}
-          <Button
-            className="btn-sm pull-right"
-            color="danger"
-            type="button"
-            key={"delete" + 1}
-          >
-            <Popconfirm
-              title="Sure to delete?"
-              onConfirm={() => deleteSectionHandler()}
+          {permission1 && permission1.includes("edit") && (
+            <Button
+              className="btn-sm pull-right"
+              color="primary"
+              type="button"
+              key={"edit" + 1}
+              onClick={() => {
+                setSectionEditing(true);
+                setSectionEditName(selectedSection.name);
+                setSectionEditAbbv(selectedSection.abbreviation);
+              }}
             >
-              <i className="fas fa-trash" />
-            </Popconfirm>
-          </Button>
-          {/* )} */}
+              <i className="fas fa-user-edit" />
+            </Button>
+          )}
+          {permission1 && permission1.includes("delete") && (
+            <Button
+              className="btn-sm pull-right"
+              color="danger"
+              type="button"
+              key={"delete" + 1}
+            >
+              <Popconfirm
+                title="Sure to delete?"
+                onConfirm={() => deleteSectionHandler()}
+              >
+                <i className="fas fa-trash" />
+              </Popconfirm>
+            </Button>
+          )}
         </h5>
       ),
     });
@@ -396,35 +406,39 @@ const AddShelf = () => {
         shelf_abv: selectedSection.shelf[i].abbreviation,
         action: (
           <h5 key={i + 1} className="mb-0">
-            <Button
-              className="btn-sm pull-right"
-              color="primary"
-              type="button"
-              key={"edit" + i + 1}
-              onClick={() => {
-                setEditing(true);
-                setEditShelfName(selectedSection.shelf[i].name);
-                setEditShelfAbv(selectedSection.shelf[i].abbreviation);
-                setEditShelfId(selectedSection.shelf[i]._id);
-              }}
-            >
-              <i className="fas fa-user-edit" />
-            </Button>
-            <Button
-              className="btn-sm pull-right"
-              color="danger"
-              type="button"
-              key={"delete" + i + 1}
-            >
-              <Popconfirm
-                title="Sure to delete?"
-                onConfirm={() =>
-                  deleteShelfHandler(selectedSection.shelf[i]._id)
-                }
+            {permission1 && permission1.includes("edit") && (
+              <Button
+                className="btn-sm pull-right"
+                color="primary"
+                type="button"
+                key={"edit" + i + 1}
+                onClick={() => {
+                  setEditing(true);
+                  setEditShelfName(selectedSection.shelf[i].name);
+                  setEditShelfAbv(selectedSection.shelf[i].abbreviation);
+                  setEditShelfId(selectedSection.shelf[i]._id);
+                }}
               >
-                <i className="fas fa-trash" />
-              </Popconfirm>
-            </Button>
+                <i className="fas fa-user-edit" />
+              </Button>
+            )}
+            {permission1 && permission1.includes("delete") && (
+              <Button
+                className="btn-sm pull-right"
+                color="danger"
+                type="button"
+                key={"delete" + i + 1}
+              >
+                <Popconfirm
+                  title="Sure to delete?"
+                  onConfirm={() =>
+                    deleteShelfHandler(selectedSection.shelf[i]._id)
+                  }
+                >
+                  <i className="fas fa-trash" />
+                </Popconfirm>
+              </Button>
+            )}
           </h5>
         ),
       });
@@ -490,7 +504,7 @@ const AddShelf = () => {
     if (selectedSectionId) {
       tableData();
     }
-  }, [selectedSectionId,checked]);
+  }, [selectedSectionId, checked]);
 
   const deleteSectionHandler = async () => {
     try {
@@ -532,164 +546,167 @@ const AddShelf = () => {
           <Loader />
         ) : (
           <>
-            <Row>
-              <Col lg="4">
-                <div className="card-wrapper">
-                  <Card>
-                    <CardHeader>
-                      <h3>Add Library Section</h3>
-                    </CardHeader>
-                    <CardBody>
-                      <Form className="mb-4" onSubmit={addSectionHandler}>
-                        <Row>
-                          <Col>
-                            <Label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
+            {permissions && permissions.includes("add") && (
+              <Row>
+                <Col lg="4">
+                  <div className="card-wrapper">
+                    <Card>
+                      <CardHeader>
+                        <h3>Add Library Section</h3>
+                      </CardHeader>
+                      <CardBody>
+                        <Form className="mb-4" onSubmit={addSectionHandler}>
+                          <Row>
+                            <Col>
+                              <Label
+                                className="form-control-label"
+                                htmlFor="example4cols2Input"
+                              >
+                                Section Name
+                              </Label>
+                              <Input
+                                id="example4cols2Input"
+                                placeholder="Section Name"
+                                type="text"
+                                onChange={(e) => setSectionName(e.target.value)}
+                                value={sectionName}
+                                required
+                              />
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col>
+                              <Label
+                                className="form-control-label"
+                                htmlFor="example4cols2Input"
+                              >
+                                Section Abbreviation
+                              </Label>
+                              <Input
+                                id="example4cols2Input"
+                                placeholder="Section Name"
+                                type="text"
+                                onChange={(e) => setSectionAbv(e.target.value)}
+                                value={sectionAbv}
+                                required
+                              />
+                            </Col>
+                          </Row>
+                          <Row className="mt-4">
+                            <Col
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                width: "100%",
+                              }}
                             >
-                              Section Name
-                            </Label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Section Name"
-                              type="text"
-                              onChange={(e) => setSectionName(e.target.value)}
-                              value={sectionName}
-                              required
-                            />
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>
-                            <Label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Section Abbreviation
-                            </Label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Section Name"
-                              type="text"
-                              onChange={(e) => setSectionAbv(e.target.value)}
-                              value={sectionAbv}
-                              required
-                            />
-                          </Col>
-                        </Row>
-                        <Row className="mt-4">
-                          <Col
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                              width: "100%",
-                            }}
+                              <Button color="primary" type="submit">
+                                Add Section
+                              </Button>
+                            </Col>
+                          </Row>
+                        </Form>
+                      </CardBody>
+                    </Card>
+                  </div>
+                </Col>
+                <Col lg="8">
+                  <div className="card-wrapper">
+                    <Card>
+                      <CardHeader>
+                        <h3>Add Shelf</h3>
+                      </CardHeader>
+                      <CardBody>
+                        <Form className="mb-4" onSubmit={addShelfHandler}>
+                          <Row
+                            md="4"
+                            className="d-flex justify-content-center mb-4"
                           >
-                            <Button color="primary" type="submit">
-                              Add Section
-                            </Button>
-                          </Col>
-                        </Row>
-                      </Form>
-                    </CardBody>
-                  </Card>
-                </div>
-              </Col>
-              <Col lg="8">
-                <div className="card-wrapper">
-                  <Card>
-                    <CardHeader>
-                      <h3>Add Shelf</h3>
-                    </CardHeader>
-                    <CardBody>
-                      <Form className="mb-4" onSubmit={addShelfHandler}>
-                        <Row
-                          md="4"
-                          className="d-flex justify-content-center mb-4"
-                        >
-                          <Col md="12">
-                            <Label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
+                            <Col md="12">
+                              <Label
+                                className="form-control-label"
+                                htmlFor="example4cols2Input"
+                              >
+                                Shelf Name
+                              </Label>
+                              <Input
+                                id="example4cols2Input"
+                                placeholder="Name"
+                                type="text"
+                                onChange={(e) => setShelfName(e.target.value)}
+                                value={shelfName}
+                                required
+                              />
+                            </Col>
+                            <Col md="12">
+                              <Label
+                                className="form-control-label"
+                                htmlFor="exampleFormControlSelect3"
+                              >
+                                Section
+                              </Label>
+                              <Input
+                                id="exampleFormControlSelect3"
+                                type="select"
+                                onChange={(e) => setSectionId(e.target.value)}
+                                value={sectionId}
+                                required
+                              >
+                                <option value="" selected>
+                                  Select Section
+                                </option>
+                                {allSection &&
+                                  allSection.map((section) => {
+                                    return (
+                                      <option
+                                        key={section._id}
+                                        value={section._id}
+                                        selected
+                                      >
+                                        {section.name}
+                                      </option>
+                                    );
+                                  })}
+                              </Input>
+                            </Col>
+                            <Col md="12">
+                              <Label
+                                className="form-control-label"
+                                htmlFor="example4cols2Input"
+                              >
+                                Shelf Abbreviation
+                              </Label>
+                              <Input
+                                id="example4cols2Input"
+                                placeholder="Name"
+                                type="text"
+                                onChange={(e) => setShelfAbv(e.target.value)}
+                                value={shelfAbv}
+                                required
+                              />
+                            </Col>
+                            <Col
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                width: "100%",
+                                marginTop: "2rem",
+                              }}
+                              md="12"
                             >
-                              Shelf Name
-                            </Label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Name"
-                              type="text"
-                              onChange={(e) => setShelfName(e.target.value)}
-                              value={shelfName}
-                              required
-                            />
-                          </Col>
-                          <Col md="12">
-                            <Label
-                              className="form-control-label"
-                              htmlFor="exampleFormControlSelect3"
-                            >
-                              Section
-                            </Label>
-                            <Input
-                              id="exampleFormControlSelect3"
-                              type="select"
-                              onChange={(e) => setSectionId(e.target.value)}
-                              value={sectionId}
-                              required
-                            >
-                              <option value="" selected>
-                                Select Section
-                              </option>
-                              {allSection &&
-                                allSection.map((section) => {
-                                  return (
-                                    <option
-                                      key={section._id}
-                                      value={section._id}
-                                      selected
-                                    >
-                                      {section.name}
-                                    </option>
-                                  );
-                                })}
-                            </Input>
-                          </Col>
-                          <Col md="12">
-                            <Label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Shelf Abbreviation
-                            </Label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Name"
-                              type="text"
-                              onChange={(e) => setShelfAbv(e.target.value)}
-                              value={shelfAbv}
-                              required
-                            />
-                          </Col>
-                          <Col
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                              width: "100%",
-                              marginTop: "2rem",
-                            }}
-                            md="12"
-                          >
-                            <Button color="primary" type="submit">
-                              Add Shelf
-                            </Button>
-                          </Col>
-                        </Row>
-                      </Form>
-                    </CardBody>
-                  </Card>
-                </div>
-              </Col>
-            </Row>
+                              <Button color="primary" type="submit">
+                                Add Shelf
+                              </Button>
+                            </Col>
+                          </Row>
+                        </Form>
+                      </CardBody>
+                    </Card>
+                  </div>
+                </Col>
+              </Row>
+            )}
+
             <Row>
               <Col>
                 <Container className="shadow-lg" fluid>
@@ -731,6 +748,8 @@ const AddShelf = () => {
                               columns={columns1}
                               data={sectionData}
                               exportFileName="SectionDetails"
+                              disabled={permissions && !permissions.includes("export")?true:false}
+                              pagination={true}
                             />
                           )}
                         </Col>
@@ -746,7 +765,8 @@ const AddShelf = () => {
                               columns={columns}
                               data={viewShelf}
                               pagination={true}
-                              exportFileName="StudentDetails"
+                              exportFileName="ShelfDetails"
+                              disabled={permissions && !permissions.includes("export")?true:false}
                             />
                           </>
                         ) : (

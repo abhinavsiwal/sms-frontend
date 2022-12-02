@@ -519,13 +519,7 @@ export const adminRoutes = [
     layout: "/admin",
     module: "Assignment",
   },
-  // {
-  //   path: "/timeTable",
-  //   name: "Time Table",
-  //   icon: "ni ni-calendar-grid-58 text-black",
-  //   component: TimeTable,
-  //   layout: "/admin",
-  // },
+ 
 // Timetable
   {
     collapse: true,
@@ -561,7 +555,7 @@ export const adminRoutes = [
       },
     ],
   },
-
+// Canteen Management 
   {
     collapse: true,
     name: "Canteen Management",
@@ -595,6 +589,7 @@ export const adminRoutes = [
       },
     ],
   },
+  // Roles and Permission
   {
     path: "/rolesPermissions",
     name: "Roles&Permissions",
@@ -603,7 +598,7 @@ export const adminRoutes = [
     layout: "/admin",
     module: "Role and Permissions",
   },
-
+// Transportation
   {
     collapse: true,
     name: "Transportation",
@@ -629,7 +624,7 @@ export const adminRoutes = [
       },
     ],
   },
-
+// Ecommerce
   {
     collapse: true,
     name: "Ecommerce",
@@ -663,6 +658,7 @@ export const adminRoutes = [
       },
     ],
   },
+  // Library Management
   {
     collapse: true,
     name: "Library Management",
@@ -676,7 +672,7 @@ export const adminRoutes = [
         miniName: "A",
         component: AddShelf,
         layout: "/admin",
-        permission: "add",
+        permission: "view",
       },
       {
         path: "/add-books",
@@ -684,7 +680,7 @@ export const adminRoutes = [
         miniName: "V",
         component: AddBooks,
         layout: "/admin",
-        permission: "add",
+        permission: "view",
       },
       {
         path: "/book-allocations",
@@ -704,6 +700,7 @@ export const adminRoutes = [
       },
     ],
   },
+  // Hostel Management
   {
     collapse: true,
     name: "Hostel Management",
@@ -738,14 +735,7 @@ export const adminRoutes = [
       },
     ],
   },
-  // {
-  //   path: "/collectionmaster",
-  //   name: "Collection Master",
-  //   icon: "ni ni-shop text-primary",
-  //   component: CollectionMaster,
-  //   layout: "/admin",
-  //   module:"collectionMaster"
-  // },
+// Fees Management
   {
     collapse: true,
     name: "Fees Management",
@@ -821,6 +811,7 @@ export const adminRoutes = [
       },
     ],
   },
+  // Leave Management
   {
     collapse: true,
     name: "Leave Management",
@@ -842,7 +833,7 @@ export const adminRoutes = [
         miniName: "a",
         component: ViewLeaves,
         layout: "/admin",
-        permission: "add",
+        permission: "view",
       },
       {
         path: "/view-allleaves",
@@ -854,6 +845,7 @@ export const adminRoutes = [
       },
     ],
   },
+  // Accounts Management
   {
     collapse: true,
     name: "Accounts Management",
@@ -927,6 +919,7 @@ export const adminRoutes = [
       },
     ],
   },
+  // Result Management
   {
     collapse: true,
     name: "Result Management",

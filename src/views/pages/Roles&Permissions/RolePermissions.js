@@ -116,7 +116,7 @@ function RolePermissions() {
       setPermissions2(permission1);
       // console.log(permission1);
     }
-  }, [checked]);
+  }, [checked,reload]);
 
   const [reload, setReload] = useState(1);
   const addRoleHandler = async () => {

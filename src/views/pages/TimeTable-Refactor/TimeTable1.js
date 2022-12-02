@@ -625,6 +625,7 @@ const TimeTable1 = () => {
                   </thead>
                   <tbody>
                     {allPeriods.map((period, i) => {
+                      console.log(period);
                       return (
                         <tr key={i}>
                           <th>
@@ -633,120 +634,126 @@ const TimeTable1 = () => {
                               period.end.substring(0, 5)}
                           </th>
                           {WorkingDaysList.map((day, index) => {
-                            console.log(
-                              periods1[day].find(
-                                (d) =>
-                                  period.start === d.start &&
-                                  period.end === d.end &&
-                                  d.staff != null
-                              )?.staff?._id
-                            );
                             return (
-                              <td key={index}>
-                                <Input
-                                  type="select"
-                                  defaultValue=""
-                                  onChange={(e) =>
-                                    handlePeriodChange(
-                                      period._id,
-                                      null,
-                                      e.target.value,
-                                      day
-                                    )
-                                  }
-                                  value={
-                                    periods1[day].find(
-                                      (d) =>
-                                        d.subject !== null &&
-                                        d.subject_id !== null &&
-                                        period.start === d.start &&
-                                        period.end === d.end 
-                                    )
-                                      ? periods1[day].find(
-                                          (d) =>
-                                            d.subject !== null &&
-                                            d.subject_id !== null &&
-                                            period.start === d.start &&
-                                            period.end === d.end 
-                                        ).subject +
-                                        "-" +
+                              <>
+                                {period.type === "P" ? (
+                                  <td key={index}>
+                                    <Input
+                                      type="select"
+                                      defaultValue=""
+                                      onChange={(e) =>
+                                        handlePeriodChange(
+                                          period._id,
+                                          null,
+                                          e.target.value,
+                                          day
+                                        )
+                                      }
+                                      value={
                                         periods1[day].find(
                                           (d) =>
                                             d.subject !== null &&
                                             d.subject_id !== null &&
                                             period.start === d.start &&
-                                            period.end === d.end 
-                                        ).subject_id
-                                      : ""
-                                  }
-                                >
-                                  <option value="" selected>
-                                    Subject
-                                  </option>
-                                  {subjects.map((subject) => {
-                                    return (
-                                      <>
-                                        {subject.list.length > 0 ? (
+                                            period.end === d.end
+                                        )
+                                          ? periods1[day].find(
+                                              (d) =>
+                                                d.subject !== null &&
+                                                d.subject_id !== null &&
+                                                period.start === d.start &&
+                                                period.end === d.end
+                                            ).subject +
+                                            "-" +
+                                            periods1[day].find(
+                                              (d) =>
+                                                d.subject !== null &&
+                                                d.subject_id !== null &&
+                                                period.start === d.start &&
+                                                period.end === d.end
+                                            ).subject_id
+                                          : ""
+                                      }
+                                    >
+                                      <option value="" selected>
+                                        Subject
+                                      </option>
+                                      {subjects.map((subject) => {
+                                        return (
                                           <>
-                                            {subject.list.map((sub) => {
-                                              return (
+                                            {subject.list.length > 0 ? (
+                                              <>
+                                                {subject.list.map((sub) => {
+                                                  return (
+                                                    <option
+                                                      value={
+                                                        sub + "-" + subject._id
+                                                      }
+                                                    >
+                                                      {subject.name +
+                                                        " - " +
+                                                        sub}
+                                                    </option>
+                                                  );
+                                                })}
+                                              </>
+                                            ) : (
+                                              <>
                                                 <option
                                                   value={
-                                                    sub + "-" + subject._id
+                                                    subject.name +
+                                                    "-" +
+                                                    subject._id
                                                   }
                                                 >
-                                                  {subject.name + " - " + sub}
+                                                  {subject.name}
                                                 </option>
-                                              );
-                                            })}
+                                              </>
+                                            )}
                                           </>
-                                        ) : (
-                                          <>
-                                            <option
-                                              value={
-                                                subject.name + "-" + subject._id
-                                              }
-                                            >
-                                              {subject.name}
-                                            </option>
-                                          </>
-                                        )}
-                                      </>
-                                    );
-                                  })}
-                                </Input>
-                                <Input
-                                  type="select"
-                                  value={
-                                    periods1[day].find(
-                                      (d) =>
-                                        period.start === d.start &&
-                                        period.end === d.end &&
-                                        d.staff != null
-                                    )?.staff?._id || ""
-                                  }
-                                  onChange={(e) =>
-                                    handlePeriodChange(
-                                      period._id,
-                                      e.target.value,
-                                      null,
-                                      day
-                                    )
-                                  }
-                                  defaultValue=""
-                                >
-                                  <option value="" disabled>
-                                    Teacher
-                                  </option>
-                                  {allStaff?.map((staff, i) => {
-                                    return (
-                                      <option value={staff._id}>
-                                        {staff.firstname + " " + staff.lastname}
+                                        );
+                                      })}
+                                    </Input>
+                                    <Input
+                                      type="select"
+                                      value={
+                                        periods1[day].find(
+                                          (d) =>
+                                            period.start === d.start &&
+                                            period.end === d.end &&
+                                            d.staff != null
+                                        )?.staff?._id || ""
+                                      }
+                                      onChange={(e) =>
+                                        handlePeriodChange(
+                                          period._id,
+                                          e.target.value,
+                                          null,
+                                          day
+                                        )
+                                      }
+                                      defaultValue=""
+                                    >
+                                      <option value="" disabled>
+                                        Teacher
                                       </option>
-                                    );
-                                  })}
-                                </Input>
-                              </td>
+                                      {allStaff?.map((staff, i) => {
+                                        return (
+                                          <option value={staff._id}>
+                                            {staff.firstname +
+                                              " " +
+                                              staff.lastname}
+                                          </option>
+                                        );
+                                      })}
+                                    </Input>
+                                  </td>
+                                ) : (
+                                  <td key={index}  >
+                                    <p >{period.break_name}</p>
+                                  </td>
+                                )}
+                              </>
                             );
                           })}
                         </tr>

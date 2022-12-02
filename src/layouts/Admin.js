@@ -47,7 +47,7 @@ function Admin() {
     });
     // console.log(user);
     for (const key in user.permissions) {
-      let permitted = routes.find(
+      let permitted = adminRoutes.find(
         (route) => key.toString() === route.module.toString()
       );
       // let permitted = adminRoutes
@@ -141,7 +141,7 @@ function Admin() {
   return (
     <>
       <Sidebar
-        routes={adminRoutes}
+        routes={customRoutes}
         toggleSidenav={toggleSidenav}
         sidenavOpen={sidenavOpen}
         logo={{
