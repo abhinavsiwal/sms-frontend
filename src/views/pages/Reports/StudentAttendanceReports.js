@@ -42,10 +42,10 @@ function StudentAttendanceReports() {
 
   const formData = new FormData()
 
-
     const getReports = () =>{
-      formData.append('month','10')
+      formData.append('month','8')
       formData.append('year','2022')
+      formData.append('session','6284cf333e69d6000213ae4b')
       setLoading(false)
       var config = {
         method: 'post',
@@ -58,7 +58,47 @@ function StudentAttendanceReports() {
       };
       axios(config)
       .then(function (response) {
-        console.log(response.data);
+
+        var data = [];
+          var arr = Object.keys(response.data.output)
+          for (let i = 0; i < arr.length; i++) {
+            let obj = {}
+            let totalPresent = response.data.total_days - response.data.output[arr[i]].total_absent
+
+            for(let j = 0 ; j<response.data.total_days; j++){
+
+              if(response.data.output[arr[i]].attandance[j] !== undefined){
+                obj[new Date(response.data.output[arr[i]].attandance[j].date).getDate()] = response.data.output[arr[i]].attandance[j].attendance_status
+              }
+            }
+
+            for(let k= 0;k<response.data.total_days;k++){
+              if(k+1 in obj){
+                continue
+              }else{
+                obj[k+1] = ".."
+              }
+            }
+            
+            data.push({
+              key: i+1,
+              sundays: response.data.total_sundays,
+              holidays:response.data.total_holidays,
+              total_days:response.data.total_days,
+              total_absent:response.data.output[arr[i]].total_absent,
+              total_present: totalPresent,
+              half_day_present: response.data.output[arr[i]].half_day_present,
+              full_day_present: response.data.output[arr[i]].full_day_present,
+              total_present_holidays_sundays: response.data.total_sundays+ response.data.total_holidays + totalPresent,
+              name:"",
+              class:"",
+              section:"",
+              ...obj,
+            });
+          }
+
+          setReportList(data)
+          setLoading(false)
       }).catch((error) =>{
         console.log(error)
       })
@@ -106,7 +146,7 @@ function StudentAttendanceReports() {
     const sessionHandler = (e) =>{
       setSession(e.target.value)
     }
-   
+
     useEffect(() =>{
         getReports()
         getAllClasses()
@@ -116,7 +156,7 @@ function StudentAttendanceReports() {
     const columns = [
         {
           title: "Sr No.",
-          dataIndex: "sno",
+          dataIndex: "key",
           align: "left",
         },
         {
@@ -335,8 +375,13 @@ function StudentAttendanceReports() {
             align: "left",
         },
         {
+          title: "31",
+          dataIndex: "31",
+          align: "left",
+        },
+        {
             title: "Total Days",
-            dataIndex: "tdays",
+            dataIndex: "total_days",
             align: "left",
             sorter: (a, b) => a.to > b.to,
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
@@ -366,7 +411,7 @@ function StudentAttendanceReports() {
           },
           {
             title: "Full Day Present",
-            dataIndex: "fdayp",
+            dataIndex: "full_day_present",
             align: "left",
             sorter: (a, b) => a.to > b.to,
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
@@ -396,37 +441,7 @@ function StudentAttendanceReports() {
           },
           {
             title: "Half Day Present",
-            dataIndex: "hdayp",
-            align: "left",
-            sorter: (a, b) => a.to > b.to,
-            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
-              return (
-                <>
-                  <Input
-                    autoFocus
-                    placeholder="Type text here"
-                    value={selectedKeys[0]}
-                    onChange={(e) => {
-                      setSelectedKeys(e.target.value ? [e.target.value] : []);
-                      confirm({ closeDropdown: false });
-                    }}
-                    onBlur={() => {
-                      confirm();
-                    }}
-                  ></Input>
-                </>
-              );
-            },
-            filterIcon: () => {
-              return <SearchOutlined />;
-            },
-            onFilter: (value, record) => {
-              return record.to.toLowerCase().includes(value.toLowerCase());
-            },
-          },
-          {
-            title: "Total Present",
-            dataIndex: "tp",
+            dataIndex: "half_day_present",
             align: "left",
             sorter: (a, b) => a.to > b.to,
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
@@ -456,7 +471,7 @@ function StudentAttendanceReports() {
           },
           {
             title: "Holidays (H)",
-            dataIndex: "h",
+            dataIndex: "holidays",
             align: "left",
             sorter: (a, b) => a.to > b.to,
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
@@ -486,7 +501,7 @@ function StudentAttendanceReports() {
           },
           {
             title: "Sundays (S)",
-            dataIndex: "sunday",
+            dataIndex: "sundays",
             align: "left",
             sorter: (a, b) => a.to > b.to,
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
@@ -516,7 +531,37 @@ function StudentAttendanceReports() {
           },
           {
             title: "Total Present+Holidays+Sundays",
-            dataIndex: "totalpresent",
+            dataIndex: "total_present_holidays_sundays",
+            align: "left",
+            sorter: (a, b) => a.to > b.to,
+            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+              return (
+                <>
+                  <Input
+                    autoFocus
+                    placeholder="Type text here"
+                    value={selectedKeys[0]}
+                    onChange={(e) => {
+                      setSelectedKeys(e.target.value ? [e.target.value] : []);
+                      confirm({ closeDropdown: false });
+                    }}
+                    onBlur={() => {
+                      confirm();
+                    }}
+                  ></Input>
+                </>
+              );
+            },
+            filterIcon: () => {
+              return <SearchOutlined />;
+            },
+            onFilter: (value, record) => {
+              return record.to.toLowerCase().includes(value.toLowerCase());
+            },
+          },
+          {
+            title: "Total Present",
+            dataIndex: "total_present",
             align: "left",
             sorter: (a, b) => a.to > b.to,
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
@@ -546,7 +591,7 @@ function StudentAttendanceReports() {
           },
           {
             title: "Total Absent",
-            dataIndex: "totalabsent",
+            dataIndex: "total_absent",
             align: "left",
             sorter: (a, b) => a.to > b.to,
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {

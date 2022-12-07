@@ -1,8 +1,8 @@
-import React ,{useState}from 'react'
+import React ,{useEffect, useState}from 'react'
 import SimpleHeader from "components/Headers/SimpleHeader.js";
 import Loader from "components/Loader/Loader";
 import { SearchOutlined } from "@ant-design/icons";
-
+import axios from 'axios';
 import {
     Card,
     CardHeader,
@@ -24,13 +24,19 @@ import {
     ModalFooter,
   } from "reactstrap";
   import { Table } from "ant-table-extensions";
+  import { isAuthenticated } from "api/auth";
 
 function StaffAttendanceReports() {
     const [loading, setLoading] = useState(false);
+  const { user, token } = isAuthenticated();
+  const [reportList,setReportList] = useState([])
+
+    const formData = new FormData()
+
     const columns = [
         {
           title: "Sr No.",
-          dataIndex: "sno",
+          dataIndex: "key",
           align: "left",
         },
         {
@@ -64,8 +70,8 @@ function StaffAttendanceReports() {
           },
         },
         {
-          title: "ClASS",
-          dataIndex: "class",
+          title: "Gender",
+          dataIndex: "gender",
           align: "left",
           sorter: (a, b) => a.to > b.to,
           filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
@@ -94,8 +100,8 @@ function StaffAttendanceReports() {
           },
         },
         {
-          title: "SECTION",
-          dataIndex: "section",
+          title: "DEPARTMENT",
+          dataIndex: "department",
           align: "left",
           sorter: (a, b) => a.to > b.to,
           filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
@@ -274,8 +280,13 @@ function StaffAttendanceReports() {
             align: "left",
         },
         {
+          title: "31",
+          dataIndex: "31",
+          align: "left",
+        },
+        {
             title: "Total Days",
-            dataIndex: "tdays",
+            dataIndex: "total_days",
             align: "left",
             sorter: (a, b) => a.to > b.to,
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
@@ -305,7 +316,7 @@ function StaffAttendanceReports() {
           },
           {
             title: "Full Day Present",
-            dataIndex: "fdayp",
+            dataIndex: "full_day_present",
             align: "left",
             sorter: (a, b) => a.to > b.to,
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
@@ -335,37 +346,7 @@ function StaffAttendanceReports() {
           },
           {
             title: "Half Day Present",
-            dataIndex: "hdayp",
-            align: "left",
-            sorter: (a, b) => a.to > b.to,
-            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
-              return (
-                <>
-                  <Input
-                    autoFocus
-                    placeholder="Type text here"
-                    value={selectedKeys[0]}
-                    onChange={(e) => {
-                      setSelectedKeys(e.target.value ? [e.target.value] : []);
-                      confirm({ closeDropdown: false });
-                    }}
-                    onBlur={() => {
-                      confirm();
-                    }}
-                  ></Input>
-                </>
-              );
-            },
-            filterIcon: () => {
-              return <SearchOutlined />;
-            },
-            onFilter: (value, record) => {
-              return record.to.toLowerCase().includes(value.toLowerCase());
-            },
-          },
-          {
-            title: "Total Present",
-            dataIndex: "tp",
+            dataIndex: "half_day_present",
             align: "left",
             sorter: (a, b) => a.to > b.to,
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
@@ -395,7 +376,7 @@ function StaffAttendanceReports() {
           },
           {
             title: "Holidays (H)",
-            dataIndex: "h",
+            dataIndex: "holidays",
             align: "left",
             sorter: (a, b) => a.to > b.to,
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
@@ -425,7 +406,7 @@ function StaffAttendanceReports() {
           },
           {
             title: "Sundays (S)",
-            dataIndex: "sunday",
+            dataIndex: "sundays",
             align: "left",
             sorter: (a, b) => a.to > b.to,
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
@@ -455,7 +436,37 @@ function StaffAttendanceReports() {
           },
           {
             title: "Total Present+Holidays+Sundays",
-            dataIndex: "totalpresent",
+            dataIndex: "total_present_holidays_sundays",
+            align: "left",
+            sorter: (a, b) => a.to > b.to,
+            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+              return (
+                <>
+                  <Input
+                    autoFocus
+                    placeholder="Type text here"
+                    value={selectedKeys[0]}
+                    onChange={(e) => {
+                      setSelectedKeys(e.target.value ? [e.target.value] : []);
+                      confirm({ closeDropdown: false });
+                    }}
+                    onBlur={() => {
+                      confirm();
+                    }}
+                  ></Input>
+                </>
+              );
+            },
+            filterIcon: () => {
+              return <SearchOutlined />;
+            },
+            onFilter: (value, record) => {
+              return record.to.toLowerCase().includes(value.toLowerCase());
+            },
+          },
+          {
+            title: "Total Present",
+            dataIndex: "total_present",
             align: "left",
             sorter: (a, b) => a.to > b.to,
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
@@ -485,7 +496,7 @@ function StaffAttendanceReports() {
           },
           {
             title: "Total Absent",
-            dataIndex: "totalabsent",
+            dataIndex: "total_absent",
             align: "left",
             sorter: (a, b) => a.to > b.to,
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
@@ -513,39 +524,73 @@ function StaffAttendanceReports() {
               return record.to.toLowerCase().includes(value.toLowerCase());
             },
           },
-
-          {
-            title: "Total Working Days",
-            dataIndex: "totalworking",
-            align: "left",
-            sorter: (a, b) => a.to > b.to,
-            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
-              return (
-                <>
-                  <Input
-                    autoFocus
-                    placeholder="Type text here"
-                    value={selectedKeys[0]}
-                    onChange={(e) => {
-                      setSelectedKeys(e.target.value ? [e.target.value] : []);
-                      confirm({ closeDropdown: false });
-                    }}
-                    onBlur={() => {
-                      confirm();
-                    }}
-                  ></Input>
-                </>
-              );
-            },
-            filterIcon: () => {
-              return <SearchOutlined />;
-            },
-            onFilter: (value, record) => {
-              return record.to.toLowerCase().includes(value.toLowerCase());
-            },
-          },
-
       ];
+
+
+      const getReports = () =>{
+        setLoading(true)
+        formData.append('month','10')
+        formData.append('year','2022')
+        formData.append('session','628a18e764f724cdfad91d85')
+        var config = {
+          method: 'post',
+          url: `${process.env.REACT_APP_API_URL}/api/reports/staff_attandance/${user.school}/${user._id}`,
+          headers: { 
+            'Authorization': 'Bearer ' + token,
+            'Content-Type' : 'multipart/form-data'
+          },
+          data:formData
+        };
+        axios(config)
+        .then(function (response) {
+          var data = [];
+          var arr = Object.keys(response.data.output)
+          for (let i = 0; i < arr.length; i++) {
+            let obj = {}
+            let totalPresent = response.data.total_days - response.data.output[arr[i]].total_absent
+
+            for(let j = 0 ; j<response.data.total_days; j++){
+              
+              if(response.data.output[arr[i]].attandance[j] !== undefined){
+                obj[new Date(response.data.output[arr[i]].attandance[j].date).getDate()] = response.data.output[arr[i]].attandance[j].attendance_status
+              }
+            }
+
+            for(let k= 0;k<response.data.total_days;k++){
+              if(k+1 in obj){
+                continue
+              }else{
+                obj[k+1] = ".."
+              }
+            }
+            data.push({
+              key: i+1,
+              sundays: response.data.total_sundays,
+              holidays:response.data.total_holidays,
+              total_days:response.data.total_days,
+              total_absent:response.data.output[arr[i]].total_absent,
+              total_present: totalPresent,
+              half_day_present: response.data.output[arr[i]].half_day_present,
+              full_day_present: response.data.output[arr[i]].full_day_present,
+              total_present_holidays_sundays: response.data.total_sundays+ response.data.total_holidays + totalPresent,
+              name: `${response.data.output[arr[i]].firstname} ${response.data.output[arr[i]].lastname}`,
+              gender:"",
+              department:"",
+              ...obj,
+            });
+          }
+
+          setReportList(data)
+          setLoading(false)
+        }).catch((error) =>{
+          console.log(error)
+        })
+      }
+
+      useEffect(() =>{
+        getReports()
+      },[])
+
   return (
     <>
     <SimpleHeader name="Staff Attendance" parentName="Reports" />   
@@ -625,7 +670,7 @@ function StaffAttendanceReports() {
                     >
                       <Table
                         columns={columns}
-                        // dataSource={studentList}
+                        dataSource={reportList}
                         pagination={{
                         pageSizeOptions: [
                             "5",
@@ -637,6 +682,7 @@ function StaffAttendanceReports() {
                           ],
                           showSizeChanger: true,
                         }}
+                        scroll={{x:true}}
                         style={{ whiteSpace: "pre" }}
                         exportFileName="details"
                       />
