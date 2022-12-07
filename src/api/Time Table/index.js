@@ -139,10 +139,25 @@ export const updateTimetable = async (schoolId, userId, formData) => {
     throw new err();
   }
 }
-
+// timetable list v3
 export const getPeriodsByDay = async (schoolId, userId, formData) => {
   try {
     const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/timetable/time_table_list_v3/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw new err();
+  }
+}
+// timetable list v2
+export const getPeriodsByDay1 = async (schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequestWithJson(
       `${process.env.REACT_APP_API_URL}/api/school/timetable/time_table_list_v2/${schoolId}/${userId}`,
       formData,
       "POST"
@@ -155,12 +170,30 @@ export const getPeriodsByDay = async (schoolId, userId, formData) => {
   }
 }
 
+
+
+
 export const updatePeriodV2 = async (schoolId, userId, formData) => {
   try {
     const { data } = await sendRequestWithJson(
       `${process.env.REACT_APP_API_URL}/api/school/timetable/update_time_table_v2/${schoolId}/${userId}`,
       formData,
       "PUT"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw new err();
+  }
+}
+
+export const staffPeriodList = async (schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequestWithJson(
+      `${process.env.REACT_APP_API_URL}/api/school/timetable/staff_period_list/${schoolId}/${userId}`,
+      formData,
+      "POST"
     );
     console.log(data);
     return data;

@@ -23,7 +23,11 @@ import { isAuthenticated } from "api/auth";
 import { ToastContainer, toast } from "react-toastify";
 import { allSessions } from "api/session";
 import LoadingScreen from "react-loading-screen";
-import { updateTimeTable } from "api/Time Table";
+import {
+  updateTimeTable,
+  staffPeriodList,
+  getPeriodsByDay1,
+} from "api/Time Table";
 
 const StaffView = () => {
   const { user, token } = isAuthenticated();
@@ -36,7 +40,8 @@ const StaffView = () => {
     teacher: "",
     session: "",
   });
-
+  const [allPeriods, setAllPeriods] = useState([]);
+  const [periods1, setPeriods1] = useState([]);
   const [checked, setChecked] = useState(false);
   const WorkingDaysList = [
     "Monday",
@@ -85,10 +90,45 @@ const StaffView = () => {
   const handleChange = (name) => (event) => {
     setSearchData({ ...searchData, [name]: event.target.value });
     console.log(name);
-    if(name==="teacher"){
-        setShow(true)
+    if (name === "teacher") {
+      setShow(true);
+      getSchedulesForStaff(event.target.value);
     }
   };
+
+  const getSchedulesForStaff = async (id) => {
+    const formData = { staff: id };
+    const formData1= {
+      staff: id,
+      role:"STA",
+    }
+    try {
+      setLoading(true);
+      const data = await staffPeriodList(user.school, user._id, formData);
+      const data1 = await getPeriodsByDay1(user.school, user._id, formData1);
+      console.log("data1",data1);
+      console.log(data);
+      if(data.err){
+        toast.error(data.err)
+        setLoading(false)
+        return;
+      }
+      if(data1.err){
+        toast.error(data1.err)
+        setLoading(false)
+        return;
+      }
+      setAllPeriods(data.data);
+      setPeriods1(data1);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      toast.error("Something Went Wrong!");
+      setLoading(false);
+    }
+
+  };
+
   useEffect(() => {
     if (sessions.length !== 0) {
       defaultSession1();
@@ -194,10 +234,10 @@ const StaffView = () => {
               <h2>Time Table - Class View</h2>
             </CardHeader>
             <CardBody>
-            <div className="table_div_fees">
-            <table className="fees_table">
-            <thead style={{ backgroundColor: "#d3d3d3" }}>
-            <tr>
+              <div className="table_div_fees">
+                <table className="fees_table">
+                  <thead style={{ backgroundColor: "#d3d3d3" }}>
+                    <tr>
                       <th style={{ backgroundColor: "#d3d3d3" }}>Schedule</th>
                       {WorkingDaysList.map((day, index) => {
                         return (
@@ -210,12 +250,27 @@ const StaffView = () => {
                         );
                       })}
                     </tr>
-            </thead>
-            <tbody>
-                
-            </tbody>
-            </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    { allPeriods.length>0 && allPeriods.map((period,i)=>{
+                      return(
+                        <tr key={i} >
+                          <th>
+                            {period.period_id.start.substring(0, 5) +
+                              "-" +
+                              period.period_id.end.substring(0, 5)}
+                          </th>
+                          {WorkingDaysList.map((day, index) => {
+                            return(
+                              <></>
+                            )
+                          })}
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </CardBody>
           </Card>
         </Container>

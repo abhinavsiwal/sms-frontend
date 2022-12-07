@@ -23,7 +23,17 @@ import { allClass } from "api/class";
 import { isAuthenticated } from "api/auth";
 import { ToastContainer, toast } from "react-toastify";
 import { allSessions } from "api/session";
-import { updateTimeTable } from "api/Time Table";
+import {
+  updateTimeTable,
+  getPeriodsByDay1,
+  updatePeriodV2,
+} from "api/Time Table";
+import {
+  getTimeTableForClass,
+  updatePeriod,
+  getAllPeriods,
+} from "api/Time Table";
+
 const StudentView = () => {
   const { user, token } = isAuthenticated();
   const [classes, setClasses] = useState([]);
@@ -32,6 +42,8 @@ const StudentView = () => {
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [timetableData, setTimetableData] = useState([]);
+  const [allPeriods, setAllPeriods] = useState([]);
+  const [periods1, setPeriods1] = useState({});
   const [selectedClass, setSelectedClass] = useState({});
   const [searchData, setSearchData] = React.useState({
     class: "",
@@ -94,7 +106,7 @@ const StudentView = () => {
     }
     if (name === "section") {
       setShow(true);
-      //   getSchedulesForClass(event.target.value);
+      getSchedulesForClass(event.target.value);
     }
   };
   useEffect(() => {
@@ -112,6 +124,40 @@ const StudentView = () => {
       session: defaultSession._id,
     });
   };
+
+  async function getSchedulesForClass(sect) {
+    const formData = new FormData();
+    formData.set("class", searchData.class);
+    formData.set("section", sect);
+    const formData1 = {
+      class: searchData.class,
+      section: sect,
+      role: "STD",
+    };
+    try {
+      setLoading(true);
+      const data = await getTimeTableForClass(user.school, user._id, formData);
+      const data1 = await getAllPeriods(user.school, user._id, formData);
+      const data2 = await getPeriodsByDay1(user.school, user._id, formData1);
+      console.log(data, "data");
+      console.log("data1", data1);
+      setPeriods1(data2.data);
+      if (data.err) {
+        toast.error(data.err);
+        return setLoading(false);
+      }
+
+      setTimetableData(data);
+      setAllPeriods(data1);
+      console.log(data2, "data2");
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      toast.error("Something Went Wrong!");
+      setLoading(false);
+    }
+  }
+
   return (
     <>
       <SimpleHeader name="Class View" parentName="Time Table" />
@@ -229,10 +275,10 @@ const StudentView = () => {
               <h2>Time Table - Class View</h2>
             </CardHeader>
             <CardBody>
-            <div className="table_div_fees">
-            <table className="fees_table">
-            <thead style={{ backgroundColor: "#d3d3d3" }}>
-            <tr>
+              <div className="table_div_fees">
+                <table className="fees_table">
+                  <thead style={{ backgroundColor: "#d3d3d3" }}>
+                    <tr>
                       <th style={{ backgroundColor: "#d3d3d3" }}>Schedule</th>
                       {WorkingDaysList.map((day, index) => {
                         return (
@@ -245,12 +291,72 @@ const StudentView = () => {
                         );
                       })}
                     </tr>
-            </thead>
-            <tbody>
-                
-            </tbody>
-            </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {allPeriods &&
+                      allPeriods.map((period, index) => {
+                        console.log(period);
+                        return (
+                          <tr key={index}>
+                            <th>
+                              {period.start.substring(0, 5) +
+                                "-" +
+                                period.end.substring(0, 5)}
+                            </th>
+                            {WorkingDaysList.map((day, index) => {
+                              console.log(
+                                periods1[day].find(
+                                  (d) =>
+                                    d.subject !== null &&
+                                    d.subject !== "" &&
+                                    d.subject._id !== "" &&
+                                    d.subject._id !== null &&
+                                    period.start === d.start &&
+                                    period.end === d.end
+                                )
+                              );
+                              return (
+                                <td key={index}>
+                                  <p>
+                                    {periods1[day].find(
+                                      (d) =>
+                                        (d.subject !== null ||
+                                          d.subject !== "") &&
+                                        (d.subject_id !== null ||
+                                          d.subject_id === "") &&
+                                        period.start === d.start &&
+                                        period.end === d.end
+                                    )
+                                      ? periods1[day].find(
+                                          (d) =>
+                                            (d.subject !== null ||
+                                              d.subject !== "") &&
+                                            (d.subject_id !== null ||
+                                              d.subject_id !== "") &&
+                                            period.start === d.start &&
+                                            period.end === d.end
+                                        ).subject
+                                      : ""}
+                                  </p>
+                                  <p>
+                                    {
+                                      periods1[day].find(
+                                        (d) =>
+                                          period.start === d.start &&
+                                          period.end === d.end &&
+                                          (d.staff !== null || d.staff !== {})
+                                      )?.staff?.firstname
+                                    }
+                                  </p>
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
+              </div>
             </CardBody>
           </Card>
         </Container>
