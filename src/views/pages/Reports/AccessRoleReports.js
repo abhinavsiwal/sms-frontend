@@ -50,12 +50,14 @@ function AccessRoleReports() {
         for (let i = 0; i < response.data.length; i++) {
           let arr = Object.keys(response.data[i].assign_role.permissions !==undefined && response.data[i].assign_role.permissions)
           let moduleName = arr.length !== 0 ?  arr.join(", ") : "Module Name Not Found"
-          var accessType = "" 
+          let accessType = "" 
+          var access_arr = []
           if(arr.length !== 0 ){
             for(let k = 0 ; k<arr.length ; k++){
-              console.log(k,response.data[i].assign_role.permissions[arr[k]])
-              accessType =  response.data[i].assign_role.permissions[arr[k]].join(",") + accessType
+              access_arr.push(response.data[i].assign_role.permissions[arr[k]].join(","))
             }
+            console.log(i,access_arr)
+            accessType  = access_arr.join(" / ")
           }else{
             accessType = "Access Type Not Found"
           }
@@ -68,8 +70,6 @@ function AccessRoleReports() {
             module_name:moduleName,
             access_type : accessType
           });
-
-          console.log("next iteration"+i)
         }
         setReportList(data)
         setLoading(false)
