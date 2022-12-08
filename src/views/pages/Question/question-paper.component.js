@@ -530,15 +530,26 @@ export default class QuestionPaper extends AbstractComponent {
                                     <form className="card-body" onSubmit={this.handleInitialDetailSubmit}>
                                         <div className="form-group row">
                                             <div className="col-12 col-md-4">
-
-                                            <select className="form-control"
+                                                <select className="form-control"
                                                   value={this.state.selectedClass}
                                                   onChange={event => this.handleInputChange(event, 'selectedClass')}
                                                   disabled={this.props.readOnly}>
                                                   <option selected="true" value="" disabled="true">Select Class </option>
                                                   {this.state.classes.map(item => <option value={item._id}>{item.name}</option>)}
+                                                </select>
+                                            </div>
+
+                                            <div className="col-12 col-md-4">
+                                              <select className="form-control"
+                                                  value={this.state.subject} 
+                                                  onChange={event => this.handleInputChange(event, 'subject')}
+                                                  disabled={this.props.readOnly}>
+                                                  <option selected="true" value="" disabled="true">Select Section</option>
+                                                  <option value={"English"}>English</option>
+                                                  
                                               </select>
                                             </div>
+
                                             <div className="col-12 col-md-4">
                                               <select className="form-control"
                                                   value={this.state.subject} 
@@ -550,23 +561,13 @@ export default class QuestionPaper extends AbstractComponent {
                                               </select>
                                             </div>
 
+                                            <div className="mt-3 col-12"></div>
+
                                             <div className="col-12 col-md-4">
                                                 <input type="text" placeholder="Enter Paper Set"
                                                     className="form-control" value={this.state.paperSet}
                                                     onChange={event => this.handleInputChange(event, 'paperSet')}
                                                     disabled={this.props.readOnly} />
-                                            </div>
-
-                                            <div className="mt-3 col-12"></div>
-
-                                            <div className="col-12 col-md-4">
-                                              <select className="form-control"
-                                                  value={this.state.academicYear}
-                                                  onChange={event => this.handleInputChange(event, 'session')}
-                                                  disabled={this.props.readOnly}>
-                                                  <option selected="true" value="" disabled="true">Academic Year</option>
-                                                  {this.state.sessions.map(item => <option value={item._id}>{item.name}</option>)}
-                                              </select>
                                             </div>
 
                                             <div className="col-12 col-md-4">
@@ -583,12 +584,17 @@ export default class QuestionPaper extends AbstractComponent {
                                                     disabled={this.props.readOnly}
                                                     onChange={event => this.handleInputChange(event, 'totalMarks', 'number', 100)} />
                                             </div>
-{/* 
-                                            <div className="col-12 col-md-4">
-                                                
-                                            </div> */}
                                         </div>
                                         <div className="row">
+                                            <div className="col-12 col-md-4">
+                                              <select className="form-control"
+                                                  value={this.state.academicYear}
+                                                  onChange={event => this.handleInputChange(event, 'session')}
+                                                  disabled={this.props.readOnly}>
+                                                  <option selected="true" value="" disabled="true">Academic Year</option>
+                                                  {this.state.sessions.map(item => <option value={item._id}>{item.name}</option>)}
+                                              </select>
+                                            </div>
                                             <div className="col-4">
                                                 <button type='submit' className="btn btn-primary">Next {'>>'}</button>
                                             </div>
