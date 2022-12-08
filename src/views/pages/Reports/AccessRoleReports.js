@@ -321,6 +321,7 @@ function AccessRoleReports() {
                           ],
                           showSizeChanger: true,
                         }}
+                        scroll={{x:true}}
                         style={{ whiteSpace: "pre" }}
                         exportFileName="details"
                       />

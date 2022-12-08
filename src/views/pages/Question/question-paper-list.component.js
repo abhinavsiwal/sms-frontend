@@ -6,6 +6,7 @@ import { isAuthenticated } from "api/auth";
 import Loader from 'components/Loader/Loader';
 import { Table } from "ant-table-extensions";
 import { SearchOutlined } from "@ant-design/icons";
+import { Popconfirm } from "antd";
 
 import {
   Card,
@@ -71,11 +72,42 @@ export default class QuestionPaperList extends AbstractComponent {
               data.push({
                 key: i+1,
                 total_marks : response.data[i].total_marks,
-                questions : response.data[i].questions,
                 exam_date : this.state.formatDate(response.data[i].exam_date),
                 exam_paper_set : response.data[i].exam_paper_set,
                 subject : response.data[i].subject,
-                class: response.data[i].class.name
+                class: response.data[i].class.name,
+                action:(
+                  <h5 key={i + 1} className="mb-0">
+                  <Button
+                    className="btn-sm pull-right"
+                    color="primary"
+                    type="button"
+                    key={"edit" + i + 1}
+                  >
+                    <i className="fas fa-user-edit" />
+                  </Button>
+                  <Button
+                    className="btn-sm pull-right"
+                    color="danger"
+                    type="button"
+                    key={"delete" + i + 1}
+                  >
+                    <Popconfirm
+                      title="Sure to delete?"
+                    >
+                      <i className="fas fa-trash" />
+                    </Popconfirm>
+                  </Button>
+                  <Button
+                    className="btn-sm pull-right"
+                    color="success"
+                    type="button"
+                    key={"view" + i + 1}
+                  >
+                    <i className="fas fa-eye" />
+                  </Button>
+                </h5>
+                )
               });
             }
             this.setState({questionPaperList: data})
@@ -184,36 +216,6 @@ export default class QuestionPaperList extends AbstractComponent {
           },
         },
           {
-            title: "Questions",
-            dataIndex: "questions",
-            align: "left",
-            sorter: (a, b) => a.description > b.description,
-            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
-              return (
-                <>
-                  <Input
-                    autoFocus
-                    placeholder="Type text here"
-                    value={selectedKeys[0]}
-                    onChange={(e) => {
-                      setSelectedKeys(e.target.value ? [e.target.value] : []);
-                      confirm({ closeDropdown: false });
-                    }}
-                    onBlur={() => {
-                      confirm();
-                    }}
-                  ></Input>
-                </>
-              );
-            },
-            filterIcon: () => {
-              return <SearchOutlined />;
-            },
-            onFilter: (value, record) => {
-              return record.description.toLowerCase().includes(value.toLowerCase());
-            },
-          },
-          {
             title: "Total MArks",
             dataIndex: "total_marks",
             align: "left",
@@ -272,6 +274,13 @@ export default class QuestionPaperList extends AbstractComponent {
             onFilter: (value, record) => {
               return record.to.toLowerCase().includes(value.toLowerCase());
             },
+          },
+          {
+            title: "Action",
+            align:"center",
+            key: "action",
+            dataIndex: "action",
+            fixed: "right",
           },
         ];
 

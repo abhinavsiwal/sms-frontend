@@ -43,10 +43,10 @@ function StudentAttendanceReports() {
   const formData = new FormData()
 
     const getReports = () =>{
+      setLoading(true)
       formData.append('month','8')
       formData.append('year','2022')
       formData.append('session','6284cf333e69d6000213ae4b')
-      setLoading(false)
       var config = {
         method: 'post',
         url: `${process.env.REACT_APP_API_URL}/api/reports/student_attandance/${user.school}/${user._id}`,

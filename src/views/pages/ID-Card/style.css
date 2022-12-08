@@ -17,8 +17,8 @@
 .identityCard__visual{
     padding: 0 1rem;
     max-width: 140px;
-    min-height: 170px;
-    max-height: 170px;
+    min-height: 137px;
+    max-height: 137px;
     border-radius: 15px;
     display: flex;
     justify-content: center;
