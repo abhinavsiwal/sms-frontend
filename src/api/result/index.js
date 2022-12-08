@@ -67,3 +67,17 @@ export const getExams = async (userId, schoolId, formData) => {
     throw err;
   }
 };
+
+export const studentMarksList = async (userId, schoolId, formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/grades/get_marks/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}

@@ -262,7 +262,9 @@ const StaffView = () => {
                           </th>
                           {WorkingDaysList.map((day, index) => {
                             return(
-                              <></>
+                              <td key={index} >
+                                
+                              </td>
                             )
                           })}
                         </tr>

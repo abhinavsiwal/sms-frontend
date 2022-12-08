@@ -91,6 +91,7 @@ import PendingFees from "views/pages/FeesManagement/PendingFees";
 import GradingMaster from "views/pages/Result/GradingMaster";
 import ExamMaster from "views/pages/Result/ExamMaster";
 import MarksMaster from "views/pages/Result/MarksMaster";
+import MarksMaster1 from "views/pages/Result/MarksMaster1";
 import Attendance1 from "views/pages/Attendance-Refactor/Attendance1"
 import Attendance2 from "views/pages/Attendance-Refactor/Attendance2"
 import TimeTable from 'views/pages/TimeTable-Refactor/TimeTable'
@@ -947,7 +948,7 @@ export const adminRoutes = [
         path: "/marks-master ",
         name: "Marks Master",
         miniName: "MM",
-        component: MarksMaster,
+        component: MarksMaster1,
         layout: "/admin",
         permission: "add",
       },
