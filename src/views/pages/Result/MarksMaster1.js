@@ -83,6 +83,7 @@ const MarksMaster1 = () => {
       (item) => item._id === section
     );
     console.log(selectedSection1);
+    setResultData([]);
     getExamsHandler(selectedSection1._id);
     getStudentsHandler(selectedSection1._id);
     setSelectedSection(selectedSection1);
@@ -178,31 +179,49 @@ const MarksMaster1 = () => {
     if (name === "marks") {
       obj.marks = event.target.value;
     } else if (name === "present") {
-      obj.present = event.target.value;
+      if (event.target.checked) {
+        obj.present = "Y";
+      } else if (!event.target.checked) {
+        obj.present = "N";
+        obj.marks=0
+      }
     }
     console.log(obj);
     setResult1([...result1, obj]);
     result1.map((rs) => {
       console.log(rs);
       if (
-        rs.hasOwnProperty("marks") &&
-        rs.hasOwnProperty("present") &&
-        rs.hasOwnProperty("subject") &&
-        rs.hasOwnProperty("student")
+        rs.hasOwnProperty("marks") ||
+        (rs.hasOwnProperty("present") &&
+          rs.hasOwnProperty("subject") &&
+          rs.hasOwnProperty("student"))
       ) {
         if (rs.subject === event.target.id) {
           if (name === "marks") {
             rs.marks = event.target.value;
           } else if (name === "present") {
-            rs.present = event.target.value;
+            if (event.target.checked) {
+              rs.present = "Y";
+            } else if (!event.target.checked) {
+              rs.present = "N";
+              rs.marks=0
+            }
           }
         }
 
         console.log(rs);
-        setResultData([...resultData, rs]);
+        if (result1.length > 0) {
+          setResultData([...resultData, rs]);
+        } else if (result1.length === 0) {
+          setResultData([rs]);
+        }
+
         return;
       }
     });
+    if(result1.length===0){
+      setResultData([obj]);
+    }
     console.log(resultData);
   };
   const handleSubmit = async (e) => {
@@ -217,10 +236,10 @@ const MarksMaster1 = () => {
     let customFields = [];
     resultData.map((rs) => {
       if (
-        rs.hasOwnProperty("marks") &&
-        rs.hasOwnProperty("present") &&
-        rs.hasOwnProperty("subject") &&
-        rs.hasOwnProperty("student")
+        rs.hasOwnProperty("marks") ||
+        (rs.hasOwnProperty("present") &&
+          rs.hasOwnProperty("subject") &&
+          rs.hasOwnProperty("student"))
       ) {
         customFields.push(rs);
       }
@@ -471,16 +490,6 @@ const MarksMaster1 = () => {
                               {student.firstname + " " + student.lastname}
                             </th>
                             {selectedSection?.subject.map((subject, index) => {
-                              console.log(
-                                result?.find((res) => {
-                                  // console.log(res.subject);
-                                  // console.log(subject.name);
-                                  return (
-                                    res.student._id === student._id &&
-                                    res.subject === subject.name
-                                  );
-                                })
-                              );
                               return (
                                 <React.Fragment key={index}>
                                   {subject.type === "Group" && (
@@ -551,6 +560,17 @@ const MarksMaster1 = () => {
                                                   width: "2rem",
                                                   position: "inherit",
                                                 }}
+                                                defaultChecked={
+                                                  (result?.find(
+                                                    (res) =>
+                                                      res.student._id ===
+                                                        student._id &&
+                                                      res.subject ===
+                                                        subject.name
+                                                  )?.present === "Y"
+                                                    ? true
+                                                    : false) || true
+                                                }
                                               />
                                             </td>
                                           </>
@@ -599,6 +619,16 @@ const MarksMaster1 = () => {
                                             width: "2rem",
                                             position: "inherit",
                                           }}
+                                          defaultChecked={
+                                            (result?.find(
+                                              (res) =>
+                                                res.student._id ===
+                                                  student._id &&
+                                                res.subject === subject.name
+                                            )?.present === "Y"
+                                              ? true
+                                              : false) || true
+                                          }
                                         />
                                       </td>
                                     </>
