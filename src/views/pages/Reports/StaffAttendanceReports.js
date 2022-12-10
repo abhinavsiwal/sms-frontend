@@ -552,17 +552,17 @@ function StaffAttendanceReports() {
             for(let j = 0 ; j<response.data.total_days; j++){
               
               if(response.data.output[arr[i]].attandance[j] !== undefined){
-                obj[new Date(response.data.output[arr[i]].attandance[j].date).getDate()] = response.data.output[arr[i]].attandance[j].attendance_status
+                obj[new Date(response.data.output[arr[i]].attandance[j].date).getDate()] = response.data.output[arr[i]].attandance[j].attendance_status === "" ? ".." : response.data.output[arr[i]].attandance[j].attendance_status
               }
             }
 
-            for(let k= 0;k<response.data.total_days;k++){
-              if(k+1 in obj){
-                continue
-              }else{
-                obj[k+1] = ".."
-              }
-            }
+            // for(let k= 0;k<response.data.total_days;k++){
+            //   if(k+1 in obj){
+            //     continue
+            //   }else{
+            //     obj[k+1] = ".."
+            //   }
+            // }
             data.push({
               key: i+1,
               sundays: response.data.total_sundays,

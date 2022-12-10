@@ -64,7 +64,11 @@ export default class QuestionPaper extends AbstractComponent {
 
         this.state = {
             classes: [],
-            selectedClass: "",
+            selectedClass:{},
+            clas:"",
+            section:"",
+            selectedSection:{},
+            subject_id: "",
             subject: "",
             paperSet: "",
             part:"",
@@ -85,6 +89,9 @@ export default class QuestionPaper extends AbstractComponent {
             schoolPhoto:""
         };
 
+        this.classHandler = this.classHandler.bind(this);
+        this.subjectHandler = this.subjectHandler.bind(this);
+        this.sectionHandler = this.sectionHandler.bind(this);
         this.getAllClasses = this.getAllClasses.bind(this);
         this.getSchoolInfo = this.getSchoolInfo.bind(this);
         this.getInitialContent = this.getInitialContent.bind(this);
@@ -110,18 +117,18 @@ export default class QuestionPaper extends AbstractComponent {
             </tr>
            <tr>
                 <td colspan="6">
-                  <p><b>Subject:</b> ${this.state.subject}</p>
+                    <p><b>Subject:</b> ${this.state.clas}</p>
                 </td>
                 <td colspan="6">
-                  <p><b>Paper Set:</b> ${this.state.paperSet}</p>
+                  <p><b>Subject:</b> ${this.state.subject}</p>
                 </td>
            </tr>
            <tr>
                 <td colspan="6">
-                  <p><b>Maximum Marks:</b> ${this.state.totalMarks}</p>
+                    <p><b>Paper Set:</b> ${this.state.paperSet}</p>
                 </td>
                 <td colspan="6">
-                  <p><b>Paper Duration:</b> ${this.state.examTime}</p>
+                  <p><b>Maximum Marks:</b> ${this.state.totalMarks}</p>
                 </td>
            </tr>
         </table>
@@ -297,6 +304,7 @@ export default class QuestionPaper extends AbstractComponent {
         });
     }
 
+
     getAllClasses (){
         var config = {
           method: 'get',
@@ -308,9 +316,27 @@ export default class QuestionPaper extends AbstractComponent {
         
         axios(config)
         .then((response) => {
-            console.log(response.data)
             this.setState({classes:[...response.data]})
         })
+      }
+      classHandler = (e) =>{
+        this.setState({clas:e.target.value})
+        let section = this.state.classes.find((item) => e.target.value.toString() === item._id.toString())
+        this.setState({selectedClass:section})
+      }
+
+      sectionHandler = (e) =>{
+        this.setState({section:e.target.value})
+        let subject = this.state.selectedClass.section.find(
+            (item) => item._id.toString() === e.target.value.toString()
+          );
+        this.setState({selectedSection:subject})
+      }
+
+      subjectHandler = (e) =>{
+          let a = e.target.value.split(" ")
+          this.setState({subject_id:a[0]})
+          this.setState({subject:a[1]})
       }
 
     getSchoolInfo = async () => {
@@ -531,8 +557,8 @@ export default class QuestionPaper extends AbstractComponent {
                                         <div className="form-group row">
                                             <div className="col-12 col-md-4">
                                                 <select className="form-control"
-                                                  value={this.state.selectedClass}
-                                                  onChange={event => this.handleInputChange(event, 'selectedClass')}
+                                                  value={this.state.clas}
+                                                  onChange={event => this.classHandler(event)}
                                                   disabled={this.props.readOnly}>
                                                   <option selected="true" value="" disabled="true">Select Class </option>
                                                   {this.state.classes.map(item => <option value={item._id}>{item.name}</option>)}
@@ -541,23 +567,35 @@ export default class QuestionPaper extends AbstractComponent {
 
                                             <div className="col-12 col-md-4">
                                               <select className="form-control"
-                                                  value={this.state.subject} 
-                                                  onChange={event => this.handleInputChange(event, 'subject')}
+                                                  value={this.state.section} 
+                                                  onChange={event => this.sectionHandler(event)}
                                                   disabled={this.props.readOnly}>
                                                   <option selected="true" value="" disabled="true">Select Section</option>
-                                                  <option value={"English"}>English</option>
-                                                  
+                                                  {
+                                                        this.state.selectedClass?.section?.map((item,index) =>(
+                                                        <option key={index} value={item._id}>
+                                                            {item.name}
+                                                        </option>
+                                                        ))
+                                                    }
                                               </select>
                                             </div>
 
                                             <div className="col-12 col-md-4">
                                               <select className="form-control"
                                                   value={this.state.subject} 
-                                                  onChange={event => this.handleInputChange(event, 'subject')}
+                                                  onChange={event => this.subjectHandler(event)}
                                                   disabled={this.props.readOnly}>
                                                   <option selected="true" value="" disabled="true">Select Subject</option>
-                                                  <option value={"English"}>English</option>
-                                                  
+                                                  {
+                                                    this.state.selectedSection?.subject?.map((subject) => {
+                                                        return (
+                                                        <option key={subject._id} 
+                                                            value={`${subject._id} ${subject.name}`}>
+                                                            {subject.name}
+                                                        </option>
+                                                        );
+                                                    })}                        
                                               </select>
                                             </div>
 

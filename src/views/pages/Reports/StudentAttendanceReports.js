@@ -68,17 +68,17 @@ function StudentAttendanceReports() {
             for(let j = 0 ; j<response.data.total_days; j++){
 
               if(response.data.output[arr[i]].attandance[j] !== undefined){
-                obj[new Date(response.data.output[arr[i]].attandance[j].date).getDate()] = response.data.output[arr[i]].attandance[j].attendance_status
+                obj[new Date(response.data.output[arr[i]].attandance[j].date).getDate()] = response.data.output[arr[i]].attandance[j].attendance_status === "" ? ".." : response.data.output[arr[i]].attandance[j].attendance_status
               }
             }
 
-            for(let k= 0;k<response.data.total_days;k++){
-              if(k+1 in obj){
-                continue
-              }else{
-                obj[k+1] = ".."
-              }
-            }
+            // for(let k= 0;k<response.data.total_days;k++){
+            //   if(k+1 in obj){
+            //     continue
+            //   }else{
+            //     obj[k+1] = ".."
+            //   }
+            // }
             
             data.push({
               key: i+1,
@@ -90,7 +90,7 @@ function StudentAttendanceReports() {
               half_day_present: response.data.output[arr[i]].half_day_present,
               full_day_present: response.data.output[arr[i]].full_day_present,
               total_present_holidays_sundays: response.data.total_sundays+ response.data.total_holidays + totalPresent,
-              name:"",
+              name: `${response.data.output[arr[i]].firstname} ${response.data.output[arr[i]].lastname}`,
               class:"",
               section:"",
               ...obj,
