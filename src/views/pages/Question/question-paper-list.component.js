@@ -48,8 +48,6 @@ export default class QuestionPaperList extends AbstractComponent {
         }
     }
    
-
-
     componentDidMount() {
         this.setState({ isListLoading: true });
         let data = new FormData()
@@ -66,6 +64,7 @@ export default class QuestionPaperList extends AbstractComponent {
         console.log(config)
         axios(config)
         .then((response) =>{
+          console.log(response.data)
             this.setState({ isListLoading: false });
             const data = [];
             for (let i = 0; i < response.data.length; i++) {
