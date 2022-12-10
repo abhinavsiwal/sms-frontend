@@ -66,6 +66,7 @@ export default class QuestionPaper extends AbstractComponent {
             classes: [],
             selectedClass:{},
             clas:"",
+            clas_name:"",
             section:"",
             selectedSection:{},
             subject_id: "",
@@ -75,7 +76,6 @@ export default class QuestionPaper extends AbstractComponent {
             sessions:[],
             session: "",
             examDate: "",
-            examTime: "",
             totalMarks: "",
             showEditor: false,
             currentQuestion: 1,
@@ -117,7 +117,7 @@ export default class QuestionPaper extends AbstractComponent {
             </tr>
            <tr>
                 <td colspan="6">
-                    <p><b>Subject:</b> ${this.state.clas}</p>
+                    <p><b>Class:</b> ${this.state.clas_name}</p>
                 </td>
                 <td colspan="6">
                   <p><b>Subject:</b> ${this.state.subject}</p>
@@ -319,9 +319,15 @@ export default class QuestionPaper extends AbstractComponent {
             this.setState({classes:[...response.data]})
         })
       }
+
+
       classHandler = (e) =>{
-        this.setState({clas:e.target.value})
-        let section = this.state.classes.find((item) => e.target.value.toString() === item._id.toString())
+        let a = e.target.value.split(",")
+        let id = a[0]
+        let name = a[1]
+        this.setState({clas:id})
+        this.setState({clas_name:name})
+        let section = this.state.classes.find((item) => a[0].toString() === item._id.toString())
         this.setState({selectedClass:section})
       }
 
@@ -334,9 +340,11 @@ export default class QuestionPaper extends AbstractComponent {
       }
 
       subjectHandler = (e) =>{
-          let a = e.target.value.split(" ")
-          this.setState({subject_id:a[0]})
-          this.setState({subject:a[1]})
+          let a = e.target.value.split(",")
+          let id = a[0]
+          let name = a[1]
+          this.setState({subject_id:id})
+          this.setState({subject:name})
       }
 
     getSchoolInfo = async () => {
@@ -371,29 +379,29 @@ export default class QuestionPaper extends AbstractComponent {
         this.getAllSessions()
         this.getAllClasses()
         this.getSchoolInfo()
-        const questionPaperId = this.props.match && this.props.match.params ?
-            this.props.match.params.questionPaperId : null;
-        if(questionPaperId) {
-            this.toggleLoading(true);
-            this.callServerMethod('questionpaper/'+questionPaperId)
-            .then(questionPaper => {
-                this.toggleLoading(false);
-                if (this.isErrorPresent(questionPaper)) {
-                    return;
-                }
-                this.setState({
-                    selectedClass: questionPaper.classId,
-                    subject: questionPaper.subject,
-                    paperSet: questionPaper.paperSet,
-                    academicYear: questionPaper.academicYear,
-                    examDate: this.setTimeZoneToUTC(new Date(questionPaper.examDate)),
-                    examTime: questionPaper.examTime,
-                    totalMarks: questionPaper.totalMarks,
-                    paper: questionPaper.paper,
-                    marksSum: questionPaper.marksSum
-                });
-            }).catch(err => console.log(err));
-        }
+        // const questionPaperId = this.props.match && this.props.match.params ?
+        //     this.props.match.params.questionPaperId : null;
+        // if(questionPaperId) {
+        //     this.toggleLoading(true);
+        //     this.callServerMethod('questionpaper/'+questionPaperId)
+        //     .then(questionPaper => {
+        //         this.toggleLoading(false);
+        //         if (this.isErrorPresent(questionPaper)) {
+        //             return;
+        //         }
+        //         this.setState({
+        //             selectedClass: questionPaper.classId,
+        //             subject: questionPaper.subject,
+        //             paperSet: questionPaper.paperSet,
+        //             academicYear: questionPaper.academicYear,
+        //             examDate: this.setTimeZoneToUTC(new Date(questionPaper.examDate)),
+        //             examTime: questionPaper.examTime,
+        //             totalMarks: questionPaper.totalMarks,
+        //             paper: questionPaper.paper,
+        //             marksSum: questionPaper.marksSum
+        //         });
+        //     }).catch(err => console.log(err));
+        // }
     }
 
     printQuestionPaper() {
@@ -469,68 +477,93 @@ export default class QuestionPaper extends AbstractComponent {
 
     handleSaveQuestionPaper(event) {
         event.preventDefault();
-        const questionPaperRecord = {
-            subject: this.state.subject,
-            classId: this.state.selectedClass,
-            paperSet: this.state.paperSet,
-            // examDate: this.setTimeZoneToUTC(this.state.examDate),
-            academicYear: this.state.academicYear,
-            totalMarks: this.state.totalMarks,
-            examTime: this.state.examTime,
-            createdById: this.props.userId,
-            paper: this.editor.getData(),
-            marksSum: this.state.marksSum
-        };
+        const data = new FormData()
 
-        console.log(questionPaperRecord)
+        data.append('exam_paper_set', this.state.paperSet);
+        data.append('total_marks', this.state.totalMarks);
+        data.append('exam_date', this.state.examDate);
+        data.append('questions', this.editor.getData());
+        data.append('class', this.state.clas);
+        data.append('subject', this.state.subject);
+        data.append('subject_id', this.state.subject_id);
+        data.append('session', this.state.section);
 
-        this.toggleLoading(true);
-        const questionPaperId = this.props.match && this.props.match.params ?
-            this.props.match.params.questionPaperId : null;
-        if(!questionPaperId) {
-            this.callServerMethod(`grades/update_question/${isAuthenticated().user.school}/${isAuthenticated().user._id}`, 'PUT', {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + isAuthenticated().token
-            }, JSON.stringify(questionPaperRecord))
-            .then(response => {
-                if (this.isErrorPresent(response)) {
-                    return;
-                }
-                if(response.success) {
-                    toast.show({ title: response.message,
-                        position: 'bottomright', type: 'success' });
-                    this.setState({
-                        showEditor: false,
-                        paper: questionPaperRecord.paper
-                    });
-                    this.props.history.push('/question-paper/list-view');
-                } else {
-                    toast.show({ title: response.message,
-                        position: 'bottomright', type: 'error' });
-                }
-            });
-        } else {
-            questionPaperRecord.id = questionPaperId;
-            this.callServerMethod('questionpaper/update', 'POST', {
-                'Content-Type': 'application/json'
-            }, JSON.stringify(questionPaperRecord))
-            .then(response => {
-                if (this.isErrorPresent(response)) {
-                    return;
-                }
-                if(response.success) {
-                    toast.show({ title: response.message,
-                        position: 'bottomright', type: 'success' });
-                        this.setState({
-                            showEditor: false,
-                            paper: questionPaperRecord.paper
-                        });
-                } else {
-                    toast.show({ title: response.message,
-                        position: 'bottomright', type: 'error' });
-                }
-            });
-        }
+        var config = {
+            method: 'put',
+            url: `${process.env.REACT_APP_API_URL}/api/grades/update_question/${isAuthenticated().user.school}/${isAuthenticated().user._id}`,
+            headers: { 
+                'Authorization': 'Bearer '+ isAuthenticated().token, 
+                'Content-Type' : 'multipart/form-data'
+            },
+            data : data
+          };
+
+        axios(config)
+        .then((response) => {
+            console.log(response.data)
+        })
+
+        // const questionPaperRecord = {
+        //     subject: this.state.subject_id,
+        //     classId: this.state.selectedClass,
+        //     paperSet: this.state.paperSet,
+        //     // examDate: this.setTimeZoneToUTC(this.state.examDate),
+        //     academicYear: this.state.academicYear,
+        //     totalMarks: this.state.totalMarks,
+        //     examTime: this.state.examTime,
+        //     createdById: this.props.userId,
+        //     paper: this.editor.getData(),
+        //     marksSum: this.state.marksSum
+        // };
+
+
+        // this.toggleLoading(true);
+        // const questionPaperId = this.props.match && this.props.match.params ?
+        //     this.props.match.params.questionPaperId : null;
+        // if(!questionPaperId) {
+        //     this.callServerMethod(`grades/update_question/${isAuthenticated().user.school}/${isAuthenticated().user._id}`, 'PUT', {
+        //         'Content-Type': 'application/json',
+        //         'Authorization': 'Bearer ' + isAuthenticated().token
+        //     }, JSON.stringify(questionPaperRecord))
+        //     .then(response => {
+        //         if (this.isErrorPresent(response)) {
+        //             return;
+        //         }
+        //         if(response.success) {
+        //             toast.show({ title: response.message,
+        //                 position: 'bottomright', type: 'success' });
+        //             this.setState({
+        //                 showEditor: false,
+        //                 paper: questionPaperRecord.paper
+        //             });
+        //             this.props.history.push('/question-paper/list-view');
+        //         } else {
+        //             toast.show({ title: response.message,
+        //                 position: 'bottomright', type: 'error' });
+        //         }
+        //     });
+        // } else {
+        //     questionPaperRecord.id = questionPaperId;
+        //     this.callServerMethod('questionpaper/update', 'POST', {
+        //         'Content-Type': 'application/json'
+        //     }, JSON.stringify(questionPaperRecord))
+        //     .then(response => {
+        //         if (this.isErrorPresent(response)) {
+        //             return;
+        //         }
+        //         if(response.success) {
+        //             toast.show({ title: response.message,
+        //                 position: 'bottomright', type: 'success' });
+        //                 this.setState({
+        //                     showEditor: false,
+        //                     paper: questionPaperRecord.paper
+        //                 });
+        //         } else {
+        //             toast.show({ title: response.message,
+        //                 position: 'bottomright', type: 'error' });
+        //         }
+        //     });
+        // }
     }
 
     render() {
@@ -557,11 +590,13 @@ export default class QuestionPaper extends AbstractComponent {
                                         <div className="form-group row">
                                             <div className="col-12 col-md-4">
                                                 <select className="form-control"
-                                                  value={this.state.clas}
                                                   onChange={event => this.classHandler(event)}
                                                   disabled={this.props.readOnly}>
                                                   <option selected="true" value="" disabled="true">Select Class </option>
-                                                  {this.state.classes.map(item => <option value={item._id}>{item.name}</option>)}
+                                                  {this.state.classes.map(item => 
+                                                    <option value={`${item._id},${item.name}`}>
+                                                        {item.name}
+                                                    </option>)}
                                                 </select>
                                             </div>
 
@@ -583,7 +618,6 @@ export default class QuestionPaper extends AbstractComponent {
 
                                             <div className="col-12 col-md-4">
                                               <select className="form-control"
-                                                  value={this.state.subject} 
                                                   onChange={event => this.subjectHandler(event)}
                                                   disabled={this.props.readOnly}>
                                                   <option selected="true" value="" disabled="true">Select Subject</option>
@@ -591,7 +625,7 @@ export default class QuestionPaper extends AbstractComponent {
                                                     this.state.selectedSection?.subject?.map((subject) => {
                                                         return (
                                                         <option key={subject._id} 
-                                                            value={`${subject._id} ${subject.name}`}>
+                                                            value={`${subject._id},${subject.name}`}>
                                                             {subject.name}
                                                         </option>
                                                         );
@@ -971,7 +1005,8 @@ export default class QuestionPaper extends AbstractComponent {
                                     : null}
                                     <div className="btn-group">
                                         {!this.props.readOnly ?
-                                            <button className="btn btn-primary" onClick={this.handleSaveQuestionPaper}><i className="fa fa-save" />&nbsp;&nbsp;Save</button>
+                                            <button className="btn btn-primary" onClick={this.handleSaveQuestionPaper}><i className="fa fa-save" />&nbsp;&nbsp;Save
+                                            </button>
                                         : null}
                                         <button className="btn btn-dark" onClick={this.printQuestionPaper}><i className="fa fa-print" />&nbsp;&nbsp;Print</button>
                                     </div>
