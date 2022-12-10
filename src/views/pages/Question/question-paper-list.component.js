@@ -57,7 +57,6 @@ export default class QuestionPaperList extends AbstractComponent {
           url: `${process.env.REACT_APP_API_URL}/api/grades/get_question/${isAuthenticated().user.school}/${isAuthenticated().user._id}`,
           headers: { 
             'Authorization': 'Bearer ' + isAuthenticated().token,
-            'Content-Type' : 'multipart/form-data'
           },
           data : data
         };

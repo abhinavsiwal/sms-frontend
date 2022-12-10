@@ -1,8 +1,6 @@
 import React from 'react';
-import { apiurl } from '../shared/baseurl';
 import { toast } from 'toast-notification-alert';
 import Excel from 'excel4node';
-import axios from 'axios';
 class AbstractComponent extends React.Component {
     constructor() {
         super();
@@ -15,39 +13,6 @@ class AbstractComponent extends React.Component {
         this.mobileRegexForInput = /^(\+91 )[0-9]{0,10}$/;
         this.telephoneNumberForInput = /^(\+|\+9|\+91|\+91 ){0,1}(\d*( )*)*$/;
         this.emailRegex = "^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$";
-    }
-
-    callServerMethod(endpoint, method='GET', head=null, body=null,callback) {
-        // const payload = {
-        //     method: method
-        // };
-        // if(headers) {
-        //     payload.headers = headers;
-        // }
-        // if(body) {
-        //     payload.body = body;
-        // }
-        // // var currentTime = new Date().getTime();
-        // // while(new Date()>new Date('7-1-2021')&&currentTime+1000>=new Date().getTime()){}
-        // return fetch(apiurl + endpoint, payload)
-        // .then(response => {
-        //     console.log(response)
-        //     return response.json()
-        // });
-        // const config = {
-        //     url : apiurl + endpoint,
-        //     method:method,
-        //     headers:head,
-        // }
-        // console.log(config)
-        // axios(config)
-        // .then((response) =>{
-        //     console.log(response)
-        //     callback(response.data)
-        // }).catch((error) =>{
-        //     console.log(error)
-        //     callback(error)
-        // })
     }
 
     toggleLoading(showLoading) {

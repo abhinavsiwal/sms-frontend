@@ -100,6 +100,7 @@ export default class QuestionPaper extends AbstractComponent {
         this.clearQuestionForm = this.clearQuestionForm.bind(this);
         this.printQuestionPaper = this.printQuestionPaper.bind(this);
         this.handleSaveQuestionPaper = this.handleSaveQuestionPaper.bind(this);
+        this.addQuestionPart = this.addQuestionPart.bind(this);
     }
     
     getInitialContent() {
@@ -110,9 +111,9 @@ export default class QuestionPaper extends AbstractComponent {
             <tr>
                 <td colspan="12"'>
                     <img width='20px' height='20px' src=${this.state.schoolPhoto} />
-                    <p style="text-align: center;"><b><u>${this.state.schoolName}</u></b></p>
-                    <p style="text-align: center;"><b>${this.state.schoolAddress}</b></p>
-                    <p style="text-align: center;"><b>${this.state.schoolPhone}</b></p>
+                    <p><b><u>${this.state.schoolName}</u></b></p>
+                    <p><b>${this.state.schoolAddress}</b></p>
+                    <p><b>${this.state.schoolPhone}</b></p>
                 </td>
             </tr>
            <tr>
@@ -295,6 +296,16 @@ export default class QuestionPaper extends AbstractComponent {
             });
         }
         this.clearQuestionForm();
+    }
+
+    addQuestionPart = () =>{
+        var templateQuestionPart = `<p style="text-align: center;"><strong>Part - ${this.state.part}</strong></p>`;
+        if(templateQuestionPart) {
+            this.editor.setData(this.editor.getData()+templateQuestionPart);
+            this.setState({
+              part: "",
+            });
+        }
     }
 
     clearQuestionForm() {
@@ -704,295 +715,294 @@ export default class QuestionPaper extends AbstractComponent {
                                                             </div>
                                                         </div>
                                                         <div className='col-6 d-flex align-items-end'>
-                                                            <button className="btn btn-primary"><i className="fa fa-check" />&nbsp;&nbsp;Submit</button>
+                                                            <button onClick={this.addQuestionPart} className="btn btn-primary">
+                                                                <i className="fa fa-check" />
+                                                                &nbsp;&nbsp;Submit
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <form onSubmit={this.addQuestion}>
-                                            {this.state.questionType === questionTypes[0] ?
-                                            <>
-                                                <div className="row">
-                                                    <div className="col-1">
-                                                        <label className="font-weight-bold">Q.No.</label>
-                                                        <input className="form-control" required="true"
-                                                            value={this.state.currentQuestion}
-                                                            onChange={event => this.handleInputChange(event, 'currentQuestion', 'number')} />
-                                                    </div>
-                                                    <div className="col-9">
-                                                        <label className="font-weight-bold">Question</label>
-                                                        <textarea style={{resize:"none",height:"46px"}} required placeholder="Enter Question Here" className="form-control"
-                                                            resizable='none' value={this.state[questionTypes[0]].question}
-                                                            onChange={event => this.handleInputChange(event, questionTypes[0]+'.question')}>
-                                                        </textarea>
-                                                    </div>
-                                                    <div className="col-1">
-                                                        <label className="font-weight-bold">Choices</label>
-                                                        <input className="form-control" required="true"
-                                                            value={this.state[questionTypes[0]].choices}
-                                                            onChange={event => this.handleInputChange(event, questionTypes[0]+'.choices', 'number', this.maxChoices)} />
-                                                    </div>
-                                                    <div className="col-1">
-                                                        <label className="font-weight-bold">Marks</label>
-                                                        <input className="form-control"
-                                                            value={this.state[questionTypes[0]].marks}
-                                                            onChange={event => this.handleInputChange(event, questionTypes[0]+'.marks', 'number', Number(this.state.totalMarks-this.state.marksSum))} />
-                                                    </div>
-                                                    {this.state[questionTypes[0]].choiceLabels.map((choice, index) => {
-                                                        if(index >= this.state[questionTypes[0]].choices) {
-                                                            return null;
-                                                        }
-                                                        return (
-                                                            <div className="col-12 col-md-6 mt-2">
-                                                                <label className="font-weight-bold">Choice {index+1}</label>
-                                                                <input className="form-control" required="true" value={choice}
-                                                                    placeholder="Enter choice text here"
-                                                                    onChange={event => this.handleInputChange(event, questionTypes[0]+'.choiceLabels.'+index)} />
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </>: null}
-
-                                            {this.state.questionType === questionTypes[1] ?
-                                            <>
-                                                <div className="row">
-                                                    <div className="col-1">
-                                                        <label className="font-weight-bold">Q.No.</label>
-                                                        <input className="form-control" required="true"
-                                                            value={this.state.currentQuestion}
-                                                            onChange={event => this.handleInputChange(event, 'currentQuestion', 'number')} />
-                                                    </div>
-                                                    <div className="col-10">
-                                                        <label className="font-weight-bold">Question</label>
-                                                        <textarea style={{resize:"none",height:"46px"}} required placeholder="Enter Question Here" className="form-control"
-                                                            resizable={false} value={this.state[questionTypes[1]].question}
-                                                            onChange={event => this.handleInputChange(event, questionTypes[1]+'.question')}>
-                                                        </textarea>
-                                                    </div>
-                                                    <div className="col-1">
-                                                        <label className="font-weight-bold">Marks</label>
-                                                        <input className="form-control" required="true"
-                                                            value={this.state[questionTypes[1]].marks}
-                                                            onChange={event => this.handleInputChange(event, questionTypes[1]+'.marks', 'number', Number(this.state.totalMarks-this.state.marksSum))} />
-                                                    </div>
-                                                    {this.state[questionTypes[1]].choiceLabels.map((choice, index) => {
-                                                        return (
-                                                            <div className="col-12 col-md-6 mt-2">
-                                                                <label className="font-weight-bold">For {!index ? "True" : "False"}</label>
-                                                                <input className="form-control" required="true" value={choice}
-                                                                    placeholder="Enter choice text here"
-                                                                    onChange={event => this.handleInputChange(event, questionTypes[1]+'.choiceLabels.'+index)} />
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </> : null}
-
-                                            {this.state.questionType === questionTypes[2] ?
-                                            <>
-                                                <div className="row">
-                                                    <div className="col-1">
-                                                        <label className="font-weight-bold">Q.No.</label>
-                                                        <input className="form-control" required="true"
-                                                            value={this.state.currentQuestion}
-                                                            onChange={event => this.handleInputChange(event, 'currentQuestion', 'number')} />
-                                                    </div>
-                                                    <div className="col-10">
-                                                        <label className="font-weight-bold">Question</label>
-                                                        <textarea style={{resize:"none",height:"46px"}} required placeholder="Enter Question Here" className="form-control"
-                                                            resizable={false} value={this.state[questionTypes[2]].question}
-                                                            onChange={event => this.handleInputChange(event, questionTypes[2]+'.question')}>
-                                                        </textarea>
-                                                    </div>
-                                                    <div className="col-1">
-                                                        <label className="font-weight-bold">Marks</label>
-                                                        <input className="form-control" required="true"
-                                                            value={this.state[questionTypes[2]].marks}
-                                                            onChange={event => this.handleInputChange(event, questionTypes[2]+'.marks', 'number', Number(this.state.totalMarks-this.state.marksSum))} />
-                                                    </div>
-                                                </div>
-                                            </> : null}
-
-                                            {this.state.questionType === questionTypes[3] ?
-                                            <>
-                                                <div className="row">
-                                                    <div className="col-1">
-                                                        <label className="font-weight-bold">Q.No.</label>
-                                                        <input className="form-control" required="true"
-                                                            value={this.state.currentQuestion}
-                                                            onChange={event => this.handleInputChange(event, 'currentQuestion', 'number')} />
-                                                    </div>
-                                                    <div className="col-10">
-                                                        <label className="font-weight-bold">Question</label>
-                                                        <textarea style={{resize:"none",height:"46px"}} required placeholder="Enter Question Here" className="form-control"
-                                                            resizable={false} value={this.state[questionTypes[3]].question}
-                                                            onChange={event => this.handleInputChange(event, questionTypes[3]+'.question')}>
-                                                        </textarea>
-                                                    </div>
-                                                    <div className="col-1">
-                                                        <label className="font-weight-bold">Marks</label>
-                                                        <input className="form-control" required="true"
-                                                            value={this.state[questionTypes[3]].marks}
-                                                            onChange={event => this.handleInputChange(event, questionTypes[3]+'.marks', 'number', Number(this.state.totalMarks-this.state.marksSum))} />
-                                                    </div>
-                                                    <div className="col-12 custom-control custom-checkbox my-2 ml-4">
-                                                        <input type="checkbox" className="custom-control-input" id="does-has-choice"
-                                                            checked={this.state[questionTypes[3]].doesHasChoice} style={{cursor: 'pointer', zIndex: 10}}
-                                                            onChange={event => this.handleInputChange({target: {value: event.target.checked}}, questionTypes[3]+'.doesHasChoice')} />
-                                                        <label className="custom-control-label" for="does-has-choice" style={{cursor: 'pointer', zIndex: 10}}>
-                                                            Does this question has choice?
-                                                        </label>
-                                                    </div>
-                                                    {this.state[questionTypes[3]].doesHasChoice ?
-                                                    <div className="col-12 row">
-                                                        <label className="font-weight-bold col-2">(OR) Question</label>
-                                                        <textarea style={{resize:"none",height:"46px"}} required placeholder="Enter Question Here" className="form-control col"
-                                                            resizable={false} value={this.state[questionTypes[3]].choiceQuestion}
-                                                            onChange={event => this.handleInputChange(event, questionTypes[3]+'.choiceQuestion')}>
-                                                        </textarea>
-                                                    </div> : null}
-                                                </div>
-                                            </> : null}
-
-                                            {this.state.questionType === questionTypes[4] ?
-                                            <>
-                                                <div className="row">
-                                                    <div className="col-1">
-                                                        <label className="font-weight-bold">Q.No.</label>
-                                                        <input className="form-control" required="true"
-                                                            value={this.state.currentQuestion}
-                                                            onChange={event => this.handleInputChange(event, 'currentQuestion', 'number')} />
-                                                    </div>
-                                                    <div className="col-9">
-                                                        <label className="font-weight-bold">Question</label>
-                                                        <textarea style={{resize:"none",height:"46px"}} required placeholder="Enter Passage Here" className="form-control"
-                                                            resizable={false} value={this.state[questionTypes[4]].passage} rows="10"
-                                                            onChange={event => this.handleInputChange(event, questionTypes[4]+'.passage')}>
-                                                        </textarea>
-                                                    </div>
-                                                    <div className="col-1">
-                                                        <label className="font-weight-bold">Questions</label>
-                                                        <input className="form-control" required="true"
-                                                            value={this.state[questionTypes[4]].questionsCount}
-                                                            onChange={event => this.handleInputChange(event, questionTypes[4]+'.questionsCount', 'number', this.maxQuestionsForPassage)} />
-                                                    </div>
-                                                    <div className="col-1">
-                                                        <label className="font-weight-bold">Marks</label>
-                                                        <input className="form-control" required="true"
-                                                            value={this.state[questionTypes[4]].marks}
-                                                            onChange={event => this.handleInputChange(event, questionTypes[4]+'.marks', 'number', Number(this.state.totalMarks-this.state.marksSum))} />
-                                                    </div>
-                                                    {this.state[questionTypes[4]].questions.map((question, index) => {
-                                                        if(index >= this.state[questionTypes[4]].questionsCount) {
-                                                            return null;
-                                                        }
-                                                        return (
-                                                            <div className="col-12">
-                                                                <label className="font-weight-bold">Question No. {index+1}</label>
-                                                                <textarea style={{resize:"none",height:"46px"}} className="form-control" required="true" value={question}
-                                                                    placeholder="Enter Question here"
-                                                                    onChange={event => this.handleInputChange(event, questionTypes[4]+'.questions.'+index)} />
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </> : null}
-                                            {this.state.questionType === questionTypes[5] ?
-                                            <>
-                                                <div className="row">
-                                                    <div className="col-1">
-                                                        <label className="font-weight-bold">Q.No.</label>
-                                                        <input className="form-control" required="true"
-                                                            value={this.state.currentQuestion}
-                                                            onChange={event => this.handleInputChange(event, 'currentQuestion', 'number')} />
-                                                    </div>
-                                                    <div className="col-9">
-                                                        <label className="font-weight-bold">Question</label>
-                                                        <textarea required placeholder="Enter Passage Here" className="form-control"
-                                                            resizable={false} value={this.state[questionTypes[5]].passage} rows="10"
-                                                            onChange={event => this.handleInputChange(event, questionTypes[5]+'.passage')}>
-                                                        </textarea>
-                                                    </div>
-                                                    <div className="col-1">
-                                                        <label className="font-weight-bold">Questions</label>
-                                                        <input className="form-control" required="true"
-                                                            value={this.state[questionTypes[5]].questionsCount}
-                                                            onChange={event => this.handleInputChange(event, questionTypes[5]+'.questionsCount', 'number', this.maxQuestionsForPassage)} />
-                                                    </div>
-                                                    <div className="col-1">
-                                                        <label className="font-weight-bold">Marks</label>
-                                                        <input className="form-control" required="true"
-                                                            value={this.state[questionTypes[5]].marks}
-                                                            onChange={event => this.handleInputChange(event, questionTypes[5]+'.marks', 'number', Number(this.state.totalMarks-this.state.marksSum))} />
-                                                    </div>
-                                                    {this.state[questionTypes[5]].questions.map((question, index) => {
-                                                        if(index >= this.state[questionTypes[5]].questionsCount) {
-                                                            return null;
-                                                        }
-                                                        return (
-                                                            <div className="col-12">
-                                                                <label className="font-weight-bold">Question No. {index+1}</label>
-                                                                <textarea style={{resize:"none",height:"46px"}} className="form-control" required="true" value={question}
-                                                                    placeholder="Enter Question here"
-                                                                    onChange={event => this.handleInputChange(event, questionTypes[5]+'.questions.'+index)} />
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </> : null}
-                                            {this.state.questionType === questionTypes[6] ?
-                                            <>
-                                                <div className="row">
-                                                    <div className="col-1">
-                                                        <label className="font-weight-bold">Q.No.</label>
-                                                        <input className="form-control" required="true"
-                                                            value={this.state.currentQuestion}
-                                                            onChange={event => this.handleInputChange(event, 'currentQuestion', 'number')} />
-                                                    </div>
-                                                    <div className="col-9">
-                                                        <label className="font-weight-bold">Question</label>
-                                                        <textarea style={{resize:"none",height:"46px"}} required placeholder="Enter Question Here" className="form-control"
-                                                            resizable={false} value={this.state[questionTypes[6]].question}
-                                                            onChange={event => this.handleInputChange(event, questionTypes[6]+'.question')}>
-                                                        </textarea>
-                                                    </div>
-                                                    <div className="col-1">
-                                                        <label className="font-weight-bold">Choices</label>
-                                                        <input className="form-control" required="true"
-                                                            value={this.state[questionTypes[6]].subQuestionsCount}
-                                                            onChange={event => this.handleInputChange(event, questionTypes[6]+'.subQuestionsCount', 'number', this.maxChoices)} />
-                                                    </div>
-                                                    <div className="col-1">
-                                                        <label className="font-weight-bold">Marks</label>
-                                                        <input className="form-control" required="true"
-                                                            value={this.state[questionTypes[6]].marks}
-                                                            onChange={event => this.handleInputChange(event, questionTypes[6]+'.marks', 'number', Number(this.state.totalMarks))} />
-                                                    </div>
-                                                    {this.state[questionTypes[6]].subQuestions.map((subQuestionSet, index) => {
-                                                        if(index >= this.state[questionTypes[6]].subQuestionsCount) {
-                                                            return null;
-                                                        }
-                                                        return (
-                                                            <div className="col-12 row mt-2">
-                                                                <div className="col-6 mt-2 row">
-                                                                    <label className="font-weight-bold col-auto">{index+1}.</label>
-                                                                    <input className="form-control col" required="true" value={subQuestionSet[0]}
-                                                                        placeholder="Enter option here"
-                                                                        onChange={event => this.handleInputChange(event, questionTypes[6]+'.subQuestions.'+index+'.0')} />
+                                                {this.state.questionType === questionTypes[0] ?
+                                                <>
+                                                    <div className="row">
+                                                        <div className="col-1">
+                                                            <label className="font-weight-bold">Q.No.</label>
+                                                            <input className="form-control" required="true"
+                                                                value={this.state.currentQuestion}
+                                                                onChange={event => this.handleInputChange(event, 'currentQuestion', 'number')} />
+                                                        </div>
+                                                        <div className="col-9">
+                                                            <label className="font-weight-bold">Question</label>
+                                                            <textarea style={{resize:"none",height:"46px"}} required placeholder="Enter Question Here" className="form-control"
+                                                                resizable='none' value={this.state[questionTypes[0]].question}
+                                                                onChange={event => this.handleInputChange(event, questionTypes[0]+'.question')}>
+                                                            </textarea>
+                                                        </div>
+                                                        <div className="col-1">
+                                                            <label className="font-weight-bold">Choices</label>
+                                                            <input className="form-control" required="true"
+                                                                value={this.state[questionTypes[0]].choices}
+                                                                onChange={event => this.handleInputChange(event, questionTypes[0]+'.choices', 'number', this.maxChoices)} />
+                                                        </div>
+                                                        <div className="col-1">
+                                                            <label className="font-weight-bold">Marks</label>
+                                                            <input className="form-control"
+                                                                value={this.state[questionTypes[0]].marks}
+                                                                onChange={event => this.handleInputChange(event, questionTypes[0]+'.marks', 'number', Number(this.state.totalMarks-this.state.marksSum))} />
+                                                        </div>
+                                                        {this.state[questionTypes[0]].choiceLabels.map((choice, index) => {
+                                                            if(index >= this.state[questionTypes[0]].choices) {
+                                                                return null;
+                                                            }
+                                                            return (
+                                                                <div className="col-12 col-md-6 mt-2">
+                                                                    <label className="font-weight-bold">Choice {index+1}</label>
+                                                                    <input className="form-control" required="true" value={choice}
+                                                                        placeholder="Enter choice text here"
+                                                                        onChange={event => this.handleInputChange(event, questionTypes[0]+'.choiceLabels.'+index)} />
                                                                 </div>
-                                                                <div className="col-6 mt-2 row">
-                                                                    <label className="font-weight-bold col-auto">{mcqIdentifiers[index]}.</label>
-                                                                    <input className="form-control col" required="true" value={subQuestionSet[1]}
-                                                                        placeholder="Enter option here"
-                                                                        onChange={event => this.handleInputChange(event, questionTypes[6]+'.subQuestions.'+index+'.1')} />
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </>: null}
+                                                {this.state.questionType === questionTypes[1] ?
+                                                <>
+                                                    <div className="row">
+                                                        <div className="col-1">
+                                                            <label className="font-weight-bold">Q.No.</label>
+                                                            <input className="form-control" required="true"
+                                                                value={this.state.currentQuestion}
+                                                                onChange={event => this.handleInputChange(event, 'currentQuestion', 'number')} />
+                                                        </div>
+                                                        <div className="col-10">
+                                                            <label className="font-weight-bold">Question</label>
+                                                            <textarea style={{resize:"none",height:"46px"}} required placeholder="Enter Question Here" className="form-control"
+                                                                resizable={false} value={this.state[questionTypes[1]].question}
+                                                                onChange={event => this.handleInputChange(event, questionTypes[1]+'.question')}>
+                                                            </textarea>
+                                                        </div>
+                                                        <div className="col-1">
+                                                            <label className="font-weight-bold">Marks</label>
+                                                            <input className="form-control" required="true"
+                                                                value={this.state[questionTypes[1]].marks}
+                                                                onChange={event => this.handleInputChange(event, questionTypes[1]+'.marks', 'number', Number(this.state.totalMarks-this.state.marksSum))} />
+                                                        </div>
+                                                        {this.state[questionTypes[1]].choiceLabels.map((choice, index) => {
+                                                            return (
+                                                                <div className="col-12 col-md-6 mt-2">
+                                                                    <label className="font-weight-bold">For {!index ? "True" : "False"}</label>
+                                                                    <input className="form-control" required="true" value={choice}
+                                                                        placeholder="Enter choice text here"
+                                                                        onChange={event => this.handleInputChange(event, questionTypes[1]+'.choiceLabels.'+index)} />
                                                                 </div>
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </>: null}
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </> : null}
+                                                {this.state.questionType === questionTypes[2] ?
+                                                <>
+                                                    <div className="row">
+                                                        <div className="col-1">
+                                                            <label className="font-weight-bold">Q.No.</label>
+                                                            <input className="form-control" required="true"
+                                                                value={this.state.currentQuestion}
+                                                                onChange={event => this.handleInputChange(event, 'currentQuestion', 'number')} />
+                                                        </div>
+                                                        <div className="col-10">
+                                                            <label className="font-weight-bold">Question</label>
+                                                            <textarea style={{resize:"none",height:"46px"}} required placeholder="Enter Question Here" className="form-control"
+                                                                resizable={false} value={this.state[questionTypes[2]].question}
+                                                                onChange={event => this.handleInputChange(event, questionTypes[2]+'.question')}>
+                                                            </textarea>
+                                                        </div>
+                                                        <div className="col-1">
+                                                            <label className="font-weight-bold">Marks</label>
+                                                            <input className="form-control" required="true"
+                                                                value={this.state[questionTypes[2]].marks}
+                                                                onChange={event => this.handleInputChange(event, questionTypes[2]+'.marks', 'number', Number(this.state.totalMarks-this.state.marksSum))} />
+                                                        </div>
+                                                    </div>
+                                                </> : null}
+                                                {this.state.questionType === questionTypes[3] ?
+                                                <>
+                                                    <div className="row">
+                                                        <div className="col-1">
+                                                            <label className="font-weight-bold">Q.No.</label>
+                                                            <input className="form-control" required="true"
+                                                                value={this.state.currentQuestion}
+                                                                onChange={event => this.handleInputChange(event, 'currentQuestion', 'number')} />
+                                                        </div>
+                                                        <div className="col-10">
+                                                            <label className="font-weight-bold">Question</label>
+                                                            <textarea style={{resize:"none",height:"46px"}} required placeholder="Enter Question Here" className="form-control"
+                                                                resizable={false} value={this.state[questionTypes[3]].question}
+                                                                onChange={event => this.handleInputChange(event, questionTypes[3]+'.question')}>
+                                                            </textarea>
+                                                        </div>
+                                                        <div className="col-1">
+                                                            <label className="font-weight-bold">Marks</label>
+                                                            <input className="form-control" required="true"
+                                                                value={this.state[questionTypes[3]].marks}
+                                                                onChange={event => this.handleInputChange(event, questionTypes[3]+'.marks', 'number', Number(this.state.totalMarks-this.state.marksSum))} />
+                                                        </div>
+                                                        <div className="col-12 custom-control custom-checkbox my-2 ml-4">
+                                                            <input type="checkbox" className="custom-control-input" id="does-has-choice"
+                                                                checked={this.state[questionTypes[3]].doesHasChoice} style={{cursor: 'pointer', zIndex: 10}}
+                                                                onChange={event => this.handleInputChange({target: {value: event.target.checked}}, questionTypes[3]+'.doesHasChoice')} />
+                                                            <label className="custom-control-label" for="does-has-choice" style={{cursor: 'pointer', zIndex: 10}}>
+                                                                Does this question has choice?
+                                                            </label>
+                                                        </div>
+                                                        {this.state[questionTypes[3]].doesHasChoice ?
+                                                        <div className="col-12 row">
+                                                            <label className="font-weight-bold col-2">(OR) Question</label>
+                                                            <textarea style={{resize:"none",height:"46px"}} required placeholder="Enter Question Here" className="form-control col"
+                                                                resizable={false} value={this.state[questionTypes[3]].choiceQuestion}
+                                                                onChange={event => this.handleInputChange(event, questionTypes[3]+'.choiceQuestion')}>
+                                                            </textarea>
+                                                        </div> : null}
+                                                    </div>
+                                                </> : null}
+                                                {this.state.questionType === questionTypes[4] ?
+                                                <>
+                                                    <div className="row">
+                                                        <div className="col-1">
+                                                            <label className="font-weight-bold">Q.No.</label>
+                                                            <input className="form-control" required="true"
+                                                                value={this.state.currentQuestion}
+                                                                onChange={event => this.handleInputChange(event, 'currentQuestion', 'number')} />
+                                                        </div>
+                                                        <div className="col-9">
+                                                            <label className="font-weight-bold">Question</label>
+                                                            <textarea style={{resize:"none",height:"46px"}} required placeholder="Enter Passage Here" className="form-control"
+                                                                resizable={false} value={this.state[questionTypes[4]].passage} rows="10"
+                                                                onChange={event => this.handleInputChange(event, questionTypes[4]+'.passage')}>
+                                                            </textarea>
+                                                        </div>
+                                                        <div className="col-1">
+                                                            <label className="font-weight-bold">Questions</label>
+                                                            <input className="form-control" required="true"
+                                                                value={this.state[questionTypes[4]].questionsCount}
+                                                                onChange={event => this.handleInputChange(event, questionTypes[4]+'.questionsCount', 'number', this.maxQuestionsForPassage)} />
+                                                        </div>
+                                                        <div className="col-1">
+                                                            <label className="font-weight-bold">Marks</label>
+                                                            <input className="form-control" required="true"
+                                                                value={this.state[questionTypes[4]].marks}
+                                                                onChange={event => this.handleInputChange(event, questionTypes[4]+'.marks', 'number', Number(this.state.totalMarks-this.state.marksSum))} />
+                                                        </div>
+                                                        {this.state[questionTypes[4]].questions.map((question, index) => {
+                                                            if(index >= this.state[questionTypes[4]].questionsCount) {
+                                                                return null;
+                                                            }
+                                                            return (
+                                                                <div className="col-12">
+                                                                    <label className="font-weight-bold">Question No. {index+1}</label>
+                                                                    <textarea style={{resize:"none",height:"46px"}} className="form-control" required="true" value={question}
+                                                                        placeholder="Enter Question here"
+                                                                        onChange={event => this.handleInputChange(event, questionTypes[4]+'.questions.'+index)} />
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </> : null}
+                                                {this.state.questionType === questionTypes[5] ?
+                                                <>
+                                                    <div className="row">
+                                                        <div className="col-1">
+                                                            <label className="font-weight-bold">Q.No.</label>
+                                                            <input className="form-control" required="true"
+                                                                value={this.state.currentQuestion}
+                                                                onChange={event => this.handleInputChange(event, 'currentQuestion', 'number')} />
+                                                        </div>
+                                                        <div className="col-9">
+                                                            <label className="font-weight-bold">Question</label>
+                                                            <textarea required placeholder="Enter Passage Here" className="form-control"
+                                                                resizable={false} value={this.state[questionTypes[5]].passage} rows="10"
+                                                                onChange={event => this.handleInputChange(event, questionTypes[5]+'.passage')}>
+                                                            </textarea>
+                                                        </div>
+                                                        <div className="col-1">
+                                                            <label className="font-weight-bold">Questions</label>
+                                                            <input className="form-control" required="true"
+                                                                value={this.state[questionTypes[5]].questionsCount}
+                                                                onChange={event => this.handleInputChange(event, questionTypes[5]+'.questionsCount', 'number', this.maxQuestionsForPassage)} />
+                                                        </div>
+                                                        <div className="col-1">
+                                                            <label className="font-weight-bold">Marks</label>
+                                                            <input className="form-control" required="true"
+                                                                value={this.state[questionTypes[5]].marks}
+                                                                onChange={event => this.handleInputChange(event, questionTypes[5]+'.marks', 'number', Number(this.state.totalMarks-this.state.marksSum))} />
+                                                        </div>
+                                                        {this.state[questionTypes[5]].questions.map((question, index) => {
+                                                            if(index >= this.state[questionTypes[5]].questionsCount) {
+                                                                return null;
+                                                            }
+                                                            return (
+                                                                <div className="col-12">
+                                                                    <label className="font-weight-bold">Question No. {index+1}</label>
+                                                                    <textarea style={{resize:"none",height:"46px"}} className="form-control" required="true" value={question}
+                                                                        placeholder="Enter Question here"
+                                                                        onChange={event => this.handleInputChange(event, questionTypes[5]+'.questions.'+index)} />
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </> : null}
+                                                {this.state.questionType === questionTypes[6] ?
+                                                <>
+                                                    <div className="row">
+                                                        <div className="col-1">
+                                                            <label className="font-weight-bold">Q.No.</label>
+                                                            <input className="form-control" required="true"
+                                                                value={this.state.currentQuestion}
+                                                                onChange={event => this.handleInputChange(event, 'currentQuestion', 'number')} />
+                                                        </div>
+                                                        <div className="col-9">
+                                                            <label className="font-weight-bold">Question</label>
+                                                            <textarea style={{resize:"none",height:"46px"}} required placeholder="Enter Question Here" className="form-control"
+                                                                resizable={false} value={this.state[questionTypes[6]].question}
+                                                                onChange={event => this.handleInputChange(event, questionTypes[6]+'.question')}>
+                                                            </textarea>
+                                                        </div>
+                                                        <div className="col-1">
+                                                            <label className="font-weight-bold">Choices</label>
+                                                            <input className="form-control" required="true"
+                                                                value={this.state[questionTypes[6]].subQuestionsCount}
+                                                                onChange={event => this.handleInputChange(event, questionTypes[6]+'.subQuestionsCount', 'number', this.maxChoices)} />
+                                                        </div>
+                                                        <div className="col-1">
+                                                            <label className="font-weight-bold">Marks</label>
+                                                            <input className="form-control" required="true"
+                                                                value={this.state[questionTypes[6]].marks}
+                                                                onChange={event => this.handleInputChange(event, questionTypes[6]+'.marks', 'number', Number(this.state.totalMarks))} />
+                                                        </div>
+                                                        {this.state[questionTypes[6]].subQuestions.map((subQuestionSet, index) => {
+                                                            if(index >= this.state[questionTypes[6]].subQuestionsCount) {
+                                                                return null;
+                                                            }
+                                                            return (
+                                                                <div className="col-12 row mt-2">
+                                                                    <div className="col-6 mt-2 row">
+                                                                        <label className="font-weight-bold col-auto">{index+1}.</label>
+                                                                        <input className="form-control col" required="true" value={subQuestionSet[0]}
+                                                                            placeholder="Enter option here"
+                                                                            onChange={event => this.handleInputChange(event, questionTypes[6]+'.subQuestions.'+index+'.0')} />
+                                                                    </div>
+                                                                    <div className="col-6 mt-2 row">
+                                                                        <label className="font-weight-bold col-auto">{mcqIdentifiers[index]}.</label>
+                                                                        <input className="form-control col" required="true" value={subQuestionSet[1]}
+                                                                            placeholder="Enter option here"
+                                                                            onChange={event => this.handleInputChange(event, questionTypes[6]+'.subQuestions.'+index+'.1')} />
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </>: null}
                                                 <div className="mt-3 ml-1 row btn-group">
                                                     <button className="btn btn-primary col-auto"><i className="fa fa-check" />&nbsp;&nbsp;Submit</button>
                                                     <button type="button" className="btn btn-secondary col-auto" onClick={this.clearQuestionForm}>
