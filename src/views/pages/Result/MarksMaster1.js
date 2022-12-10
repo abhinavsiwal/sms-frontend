@@ -40,7 +40,10 @@ const MarksMaster1 = () => {
   const [students, setStudents] = useState([]);
   const [resultData, setResultData] = useState([]);
   const [result, setResult] = useState([]);
+  const [result1, setResult1] = useState([]);
   const [examList, setExamList] = useState([]);
+
+  const [marks, setMarks] = useState([]);
 
   const getAllClasses = async () => {
     try {
@@ -81,26 +84,9 @@ const MarksMaster1 = () => {
     );
     console.log(selectedSection1);
     getExamsHandler(selectedSection1._id);
+    getStudentsHandler(selectedSection1._id);
     setSelectedSection(selectedSection1);
   }, [section]);
-
-  const filterStudentHandler = async (id) => {
-    const formData = {
-      section: id,
-      class: clas,
-    };
-    try {
-      setLoading(true);
-      const data = await filterStudent(user.school, user._id, formData);
-      console.log(data);
-      setStudents(data);
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-      toast.error("Fetching Students Failed");
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     if (examId === "") {
@@ -110,7 +96,7 @@ const MarksMaster1 = () => {
   }, [examId]);
 
   const getMarksHandler = async () => {
-  const formData = new FormData();
+    const formData = new FormData();
     formData.set("exam_id", examId);
     try {
       setLoading(true);
@@ -120,7 +106,36 @@ const MarksMaster1 = () => {
         toast.error(data.err);
         return setLoading(false);
       }
+
+      let marksData = [];
+      if (data.length > 0) {
+        students.forEach((student) => {
+          marksData.push({
+            roll: student.roll_number,
+            name: student.firstname + " " + student.lastname,
+          });
+        });
+      }
+      setShowTable(true);
       setResult(data);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      toast.error("Fetching Students Failed");
+      setLoading(false);
+    }
+  };
+
+  const getStudentsHandler = async (id) => {
+    const formData = {
+      section: id,
+      class: clas,
+    };
+    try {
+      setLoading(true);
+      const data = await filterStudent(user.school, user._id, formData);
+      console.log(data);
+      setStudents(data);
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -148,6 +163,94 @@ const MarksMaster1 = () => {
       console.log(err);
       toast.error("Fetching Exams Failed");
       setLoading(false);
+    }
+  };
+
+  const handleChange = (name, student) => async (event) => {
+    console.log(name, event.target.value);
+    console.log(event.target.id);
+
+    let obj = {
+      present: "Y",
+      subject: event.target.id,
+      student: student,
+    };
+    if (name === "marks") {
+      obj.marks = event.target.value;
+    } else if (name === "present") {
+      obj.present = event.target.value;
+    }
+    console.log(obj);
+    setResult1([...result1, obj]);
+    result1.map((rs) => {
+      console.log(rs);
+      if (
+        rs.hasOwnProperty("marks") &&
+        rs.hasOwnProperty("present") &&
+        rs.hasOwnProperty("subject") &&
+        rs.hasOwnProperty("student")
+      ) {
+        if (rs.subject === event.target.id) {
+          if (name === "marks") {
+            rs.marks = event.target.value;
+          } else if (name === "present") {
+            rs.present = event.target.value;
+          }
+        }
+
+        console.log(rs);
+        setResultData([...resultData, rs]);
+        return;
+      }
+    });
+    console.log(resultData);
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (examId === "") {
+      return toast.error("Please select Exam first");
+    }
+
+    setShowTable(true);
+    console.log(resultData);
+    let customFields = [];
+    resultData.map((rs) => {
+      if (
+        rs.hasOwnProperty("marks") &&
+        rs.hasOwnProperty("present") &&
+        rs.hasOwnProperty("subject") &&
+        rs.hasOwnProperty("student")
+      ) {
+        customFields.push(rs);
+      }
+    });
+    console.log(customFields);
+    const filtered = customFields.filter(
+      (v, i, a) =>
+        a.findIndex((v2) => JSON.stringify(v2) === JSON.stringify(v)) === i
+    );
+    console.log(filtered);
+    const formData = new FormData();
+    formData.set("exam_data", JSON.stringify(filtered));
+    formData.set("exam_id", examId);
+
+    try {
+      setLoading(true);
+      const data = await updateMarks(user._id, user.school, formData);
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        return toast.error(data.err);
+      }
+      toast.success("Marks Updated Successfully");
+      setLoading(false);
+      setExamId("");
+      setClas("");
+      setSection("");
+      setShowTable(false);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -220,7 +323,6 @@ const MarksMaster1 = () => {
                     type="select"
                     onChange={(e) => {
                       setSection(e.target.value);
-                      setShowTable(true);
                     }}
                     value={section}
                     name="section"
@@ -269,6 +371,262 @@ const MarksMaster1 = () => {
             </Form>
           </CardBody>
         </Card>
+      </Container>
+      <Container className="mt--0 shadow-lg table-responsive" fluid>
+        {showTable && (
+          <Card>
+            <CardHeader>
+              <h2>Marks Distribution</h2>
+            </CardHeader>
+            <CardBody style={{ overflow: "scroll" }}>
+              <form>
+                <div className="table_div_fees" style={{ overflow: "scroll" }}>
+                  <table className="fees_table" style={{ overflow: "scroll" }}>
+                    <thead style={{ backgroundColor: "#c0c0c0" }}>
+                      <tr>
+                        <th
+                          style={{ backgroundColor: "#c0c0c0", width: "4rem" }}
+                        >
+                          Roll No.
+                        </th>
+                        <th
+                          style={{ backgroundColor: "#c0c0c0", width: "12rem" }}
+                        >
+                          Name
+                        </th>
+                        {selectedSection?.subject.map((subject, index) => {
+                          return (
+                            <React.Fragment key={index}>
+                              <>
+                                {subject.type === "Group" && (
+                                  <>
+                                    <th
+                                      style={{
+                                        backgroundColor: "#c0c0c0",
+                                        fontWeight: "900",
+                                        width: "9rem",
+                                      }}
+                                    >
+                                      {subject.name + "(Group)"}
+                                    </th>
+                                    <th style={{ backgroundColor: "#c0c0c0" }}>
+                                      Attendance
+                                    </th>
+                                    {subject.list.map((sub, index) => {
+                                      return (
+                                        <React.Fragment key={index}>
+                                          <th
+                                            style={{
+                                              backgroundColor: "#c0c0c0",
+                                              width: "9rem",
+                                            }}
+                                          >
+                                            {sub}
+                                          </th>
+                                          <th
+                                            style={{
+                                              backgroundColor: "#c0c0c0",
+                                              width: "9rem",
+                                            }}
+                                          >
+                                            Attendance
+                                          </th>
+                                        </React.Fragment>
+                                      );
+                                    })}
+                                  </>
+                                )}
+                                {subject.type === "Single" && (
+                                  <React.Fragment key={index}>
+                                    <th
+                                      style={{
+                                        backgroundColor: "#c0c0c0",
+                                        width: "9rem",
+                                      }}
+                                    >
+                                      {subject.name}
+                                    </th>
+                                    <th
+                                      style={{
+                                        backgroundColor: "#c0c0c0",
+                                        width: "9rem",
+                                      }}
+                                    >
+                                      Attendance
+                                    </th>
+                                  </React.Fragment>
+                                )}
+                              </>
+                            </React.Fragment>
+                          );
+                        })}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {students.map((student, index) => {
+                        return (
+                          <tr key={index}>
+                            <th>{student.roll_number}</th>
+                            <th>
+                              {student.firstname + " " + student.lastname}
+                            </th>
+                            {selectedSection?.subject.map((subject, index) => {
+                              console.log(
+                                result?.find((res) => {
+                                  // console.log(res.subject);
+                                  // console.log(subject.name);
+                                  return (
+                                    res.student._id === student._id &&
+                                    res.subject === subject.name
+                                  );
+                                })
+                              );
+                              return (
+                                <React.Fragment key={index}>
+                                  {subject.type === "Group" && (
+                                    <>
+                                      <td>
+                                        <Input
+                                          id={subject.name}
+                                          type="number"
+                                          required
+                                          onChange={handleChange(
+                                            "marks",
+                                            student._id
+                                          )}
+                                          // value={inputfield.min}
+                                          defaultValue={
+                                            result?.find(
+                                              (res) =>
+                                                res.student._id ===
+                                                  student._id &&
+                                                res.subject === subject.name
+                                            )?.marks || ""
+                                          }
+                                          name="marks"
+                                          placeholder="Enter Marks"
+                                          min={0}
+                                        />
+                                      </td>
+                                      <td></td>
+                                      {subject.list.map((sub, index) => {
+                                        return (
+                                          <>
+                                            <td>
+                                              <Input
+                                                id={sub}
+                                                type="number"
+                                                required
+                                                onChange={handleChange(
+                                                  "marks",
+                                                  student._id
+                                                )}
+                                                // value={inputfield.min}
+                                                name="marks"
+                                                placeholder="Enter Marks"
+                                                defaultValue={
+                                                  result?.find(
+                                                    (res) =>
+                                                      res.student._id ===
+                                                        student._id &&
+                                                      res.subject ===
+                                                        subject.name
+                                                  )?.marks || ""
+                                                }
+                                              />
+                                            </td>
+                                            <td>
+                                              <Input
+                                                id={subject.name}
+                                                type="checkbox"
+                                                required
+                                                onChange={handleChange(
+                                                  "present",
+                                                  student._id
+                                                )}
+                                                // value={inputfield.min}
+                                                name="present"
+                                                // placeholder="Enter Marks"
+                                                style={{
+                                                  width: "2rem",
+                                                  position: "inherit",
+                                                }}
+                                              />
+                                            </td>
+                                          </>
+                                        );
+                                      })}
+                                    </>
+                                  )}
+                                  {subject.type === "Single" && (
+                                    <>
+                                      <td>
+                                        <Input
+                                          id={subject.name}
+                                          type="number"
+                                          required
+                                          onChange={handleChange(
+                                            "marks",
+                                            student._id
+                                          )}
+                                          defaultValue={
+                                            result?.find(
+                                              (res) =>
+                                                res.student._id ===
+                                                  student._id &&
+                                                res.subject === subject.name
+                                            )?.marks || ""
+                                          }
+                                          // value={inputfield.min}
+                                          name="marks"
+                                          placeholder="Enter Marks"
+                                          min={0}
+                                        />
+                                      </td>
+                                      <td>
+                                        <Input
+                                          id={subject.name}
+                                          type="checkbox"
+                                          required
+                                          onChange={handleChange(
+                                            "present",
+                                            student._id
+                                          )}
+                                          // value={inputfield.min}
+                                          name="present"
+                                          // placeholder="Enter Marks"
+                                          style={{
+                                            width: "2rem",
+                                            position: "inherit",
+                                          }}
+                                        />
+                                      </td>
+                                    </>
+                                  )}
+                                </React.Fragment>
+                              );
+                            })}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+                <Row className="mt-4 float-right">
+                  <Col>
+                    <Button
+                      color="primary"
+                      type="submit"
+                      onClick={handleSubmit}
+                    >
+                      Submit
+                    </Button>
+                  </Col>
+                </Row>
+              </form>
+            </CardBody>
+          </Card>
+        )}
       </Container>
     </>
   );
