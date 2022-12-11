@@ -42,11 +42,19 @@ function StudentAttendanceReports() {
 
   const formData = new FormData()
 
+  useEffect(() =>{
+    setLoading(true)
+    if(sessions.length === 0){
+      getAllSessions()
+      getAllClasses()
+    }
+  },[])
+
     const getReports = () =>{
       setLoading(true)
-      formData.append('month','8')
-      formData.append('year','2022')
-      formData.append('session','6284cf333e69d6000213ae4b')
+      formData.append('month',(new Date().getMonth() + 1).toString())
+      formData.append('year',(new Date().getFullYear()).toString())
+      formData.append('session',session)
       var config = {
         method: 'post',
         url: `${process.env.REACT_APP_API_URL}/api/reports/student_attandance/${user.school}/${user._id}`,
@@ -91,8 +99,8 @@ function StudentAttendanceReports() {
               full_day_present: response.data.output[arr[i]].full_day_present,
               total_present_holidays_sundays: response.data.total_sundays+ response.data.total_holidays + totalPresent,
               name: `${response.data.output[arr[i]].firstname} ${response.data.output[arr[i]].lastname}`,
-              class:"",
-              section:"",
+              class:response.data.output[arr[i]].class && response.data.output[arr[i]].class.name,
+              section:response.data.output[arr[i]].section && response.data.output[arr[i]].section.name,
               ...obj,
             });
           }
@@ -130,7 +138,9 @@ function StudentAttendanceReports() {
       
       axios(config)
       .then(function (response) {
-        setSessions(response.data);
+        let currentSession = response.data.find((item) => (item.status === "current"))
+          setSession(currentSession._id)
+          setSessions(response.data);
       })
     }
 
@@ -147,11 +157,6 @@ function StudentAttendanceReports() {
       setSession(e.target.value)
     }
 
-    useEffect(() =>{
-        getReports()
-        getAllClasses()
-        getAllSessions()
-    },[])
 
     const columns = [
         {
@@ -621,6 +626,12 @@ function StudentAttendanceReports() {
           },
 
       ];
+
+      useEffect(() =>{
+        if(session !== ""){
+          getReports()
+        }
+      },[session])
   return (
     <>
     <SimpleHeader name="Student Attendance" parentName="Reports" />   

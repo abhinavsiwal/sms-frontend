@@ -30,6 +30,15 @@ function StaffAttendanceReports() {
     const [loading, setLoading] = useState(false);
   const { user, token } = isAuthenticated();
   const [reportList,setReportList] = useState([])
+  const [session,setSession] = useState("")
+  const [sessions,setSessions] = useState([])
+
+  useEffect(() =>{
+    setLoading(true)
+    if(sessions.length === 0){
+      getAllSessions()
+    }
+  },[])
 
     const formData = new FormData()
 
@@ -70,36 +79,6 @@ function StaffAttendanceReports() {
           },
         },
         {
-          title: "Gender",
-          dataIndex: "gender",
-          align: "left",
-          sorter: (a, b) => a.to > b.to,
-          filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
-            return (
-              <>
-                <Input
-                  autoFocus
-                  placeholder="Type text here"
-                  value={selectedKeys[0]}
-                  onChange={(e) => {
-                    setSelectedKeys(e.target.value ? [e.target.value] : []);
-                    confirm({ closeDropdown: false });
-                  }}
-                  onBlur={() => {
-                    confirm();
-                  }}
-                ></Input>
-              </>
-            );
-          },
-          filterIcon: () => {
-            return <SearchOutlined />;
-          },
-          onFilter: (value, record) => {
-            return record.to.toLowerCase().includes(value.toLowerCase());
-          },
-        },
-        {
           title: "DEPARTMENT",
           dataIndex: "department",
           align: "left",
@@ -129,6 +108,66 @@ function StaffAttendanceReports() {
             return record.to.toLowerCase().includes(value.toLowerCase());
           },
         },
+        {
+          title: "JOB",
+          dataIndex: "job",
+          align: "left",
+          sorter: (a, b) => a.to > b.to,
+          filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+            return (
+              <>
+                <Input
+                  autoFocus
+                  placeholder="Type text here"
+                  value={selectedKeys[0]}
+                  onChange={(e) => {
+                    setSelectedKeys(e.target.value ? [e.target.value] : []);
+                    confirm({ closeDropdown: false });
+                  }}
+                  onBlur={() => {
+                    confirm();
+                  }}
+                ></Input>
+              </>
+            );
+          },
+          filterIcon: () => {
+            return <SearchOutlined />;
+          },
+          onFilter: (value, record) => {
+            return record.to.toLowerCase().includes(value.toLowerCase());
+          },
+      },
+      {
+        title: "JOB DESCRIPTION",
+        dataIndex: "job_description",
+        align: "left",
+        sorter: (a, b) => a.to > b.to,
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+          return (
+            <>
+              <Input
+                autoFocus
+                placeholder="Type text here"
+                value={selectedKeys[0]}
+                onChange={(e) => {
+                  setSelectedKeys(e.target.value ? [e.target.value] : []);
+                  confirm({ closeDropdown: false });
+                }}
+                onBlur={() => {
+                  confirm();
+                }}
+              ></Input>
+            </>
+          );
+        },
+        filterIcon: () => {
+          return <SearchOutlined />;
+        },
+        onFilter: (value, record) => {
+          return record.to.toLowerCase().includes(value.toLowerCase());
+        },
+      },
         {
             title: "1",
             dataIndex: "1",
@@ -527,11 +566,30 @@ function StaffAttendanceReports() {
       ];
 
 
+
+      const getAllSessions = () =>{
+        var config = {
+          method: 'get',
+          url: `${process.env.REACT_APP_API_URL}/api/school/session/all/${user.school}/${user._id}`,
+          headers: { 
+            'Authorization': 'Bearer ' + token
+          }
+        };
+        
+        axios(config)
+        .then(function (response) {
+          let currentSession = response.data.find((item) => (item.status === "current"))
+          setSession(currentSession._id)
+          setSessions(response.data);
+        })
+      }
+
       const getReports = () =>{
         setLoading(true)
+        // formData.append('month',(new Date().getMonth() + 1).toString())
         formData.append('month','10')
-        formData.append('year','2022')
-        formData.append('session','628a18e764f724cdfad91d85')
+        formData.append('year',(new Date().getFullYear()).toString())
+        formData.append('session',session)
         var config = {
           method: 'post',
           url: `${process.env.REACT_APP_API_URL}/api/reports/staff_attandance/${user.school}/${user._id}`,
@@ -575,11 +633,12 @@ function StaffAttendanceReports() {
               total_present_holidays_sundays: response.data.total_sundays+ response.data.total_holidays + totalPresent,
               name: `${response.data.output[arr[i]].firstname} ${response.data.output[arr[i]].lastname}`,
               gender:"",
-              department:"",
+              job_description: response.data.output[arr[i]].job_description,
+              job: response.data.output[arr[i]].job,
+              department:response.data.output[arr[i]].department && response.data.output[arr[i]].department.name,
               ...obj,
             });
           }
-
           setReportList(data)
           setLoading(false)
         }).catch((error) =>{
@@ -588,8 +647,14 @@ function StaffAttendanceReports() {
       }
 
       useEffect(() =>{
-        getReports()
-      },[])
+        if(session !== ""){
+          getReports()
+        }
+      },[session])
+
+      const sessionHandler = (e) =>{
+        setSession(e.target.value)
+      }
 
   return (
     <>
@@ -602,12 +667,20 @@ function StaffAttendanceReports() {
                     <Input
                       id="exampleFormControlSelect3"
                       type="select"
-                      value={""}
+                      value={session}
                       required
+                      onChange={sessionHandler}
                     >
                         <option value="" disabled selected>
                            Select Session
                         </option>
+                        {
+                            sessions && sessions.map((item,index) =>(
+                              <option key={index} value={item._id}  >
+                                {item.name}
+                              </option>
+                            ))
+                          }
                     </Input>
                   </Col>
                   <Col md="3">
