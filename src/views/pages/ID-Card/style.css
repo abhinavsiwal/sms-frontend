@@ -49,6 +49,7 @@ img{
     letter-spacing: 10px;
     font-family: Georgia, 'Times New Roman', Times, serif;
     background-color: #133f86;
+    z-index: 1111;
 }
 
 .identityCard .filled {

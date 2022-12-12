@@ -389,29 +389,35 @@ export default class QuestionPaper extends AbstractComponent {
         this.getAllSessions()
         this.getAllClasses()
         this.getSchoolInfo()
-        // const questionPaperId = this.props.match && this.props.match.params ?
-        //     this.props.match.params.questionPaperId : null;
-        // if(questionPaperId) {
-        //     this.toggleLoading(true);
-        //     this.callServerMethod('questionpaper/'+questionPaperId)
-        //     .then(questionPaper => {
-        //         this.toggleLoading(false);
-        //         if (this.isErrorPresent(questionPaper)) {
-        //             return;
-        //         }
-        //         this.setState({
-        //             selectedClass: questionPaper.classId,
-        //             subject: questionPaper.subject,
-        //             paperSet: questionPaper.paperSet,
-        //             academicYear: questionPaper.academicYear,
-        //             examDate: this.setTimeZoneToUTC(new Date(questionPaper.examDate)),
-        //             examTime: questionPaper.examTime,
-        //             totalMarks: questionPaper.totalMarks,
-        //             paper: questionPaper.paper,
-        //             marksSum: questionPaper.marksSum
-        //         });
-        //     }).catch(err => console.log(err));
-        // }
+        const questionPaperId = this.props.match && this.props.match.params ?
+            this.props.match.params.id : null;
+            console.log(questionPaperId)
+        if(questionPaperId === ":id") {
+            console.log("Abhishek")
+            return
+        }else{
+            var data = new FormData();
+            data.append('_id', questionPaperId);
+            var config = {
+                method: 'post',
+                url: `${process.env.REACT_APP_API_URL}/api/grades/question_paper_by_id/${isAuthenticated().user.school}/${isAuthenticated().user._id}`,
+                headers: { 
+                    'Authorization': 'Bearer ' + isAuthenticated().token,
+                    'Content-Type' : 'multipart/form-data'
+                },
+                data:data
+              };
+              
+              axios(config)
+                .then(response => {
+                    console.log(response.data)
+                    this.setState({
+                        showEditor: true,
+                        paper:true
+                    });
+
+                }).catch(err => console.log(err));
+        }
     }
 
     printQuestionPaper() {
@@ -496,7 +502,7 @@ export default class QuestionPaper extends AbstractComponent {
         data.append('class', this.state.clas);
         data.append('subject', this.state.subject);
         data.append('subject_id', this.state.subject_id);
-        data.append('session', this.state.section);
+        data.append('session', this.state.session);
 
         var config = {
             method: 'put',

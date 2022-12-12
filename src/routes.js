@@ -133,7 +133,7 @@ export const adminRoutes = [
     module: "Question",
     views: [
       {
-        path: "/question-builder",
+        path: "/question-builder/:id",
         name: "Question Paper Builder",
         miniName: "Q",
         component: QuestionPaper,

@@ -525,13 +525,13 @@ function GenerateIdCard() {
                         backgroundSize:"contain",
                         backgroundOrigin:"center"
                     }}> 
-                          <header className='identityCard__header d-flex'>
-                          <img className='logo' src={logo} alt='logo'/>
-                          <div className='d-flex flex-column text-center ml-3'>
-                            <div>{IDdataSchool.schoolname}</div>
-                            <div>Identity Card</div>
-                          </div>
-                        </header>
+                        <header className='identityCard__header d-flex'>
+                                  <img className='logo' src={logo} alt='logo'/>
+                                  <div className='d-flex flex-column text-center ml-3'>
+                                    <div>{IDdataSchool.schoolname}</div>
+                                    <div>Identity Card</div>
+                                  </div>
+                                </header>
                         <div className="identityCard__profile" style={{
                                       backgroundImage: checked ? `linear-gradient(rgba(${hexToRgb(color1).r},${hexToRgb(color1).g},${hexToRgb(color1).b},70%) 46%, ${color2} 100%), url(${logo})`: null,
                                       backgroundPosition:"center",
