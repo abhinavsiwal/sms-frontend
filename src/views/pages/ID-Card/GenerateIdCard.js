@@ -546,8 +546,8 @@ function GenerateIdCard() {
                           </div>
                           <ul className="identityCard__list list-unstyled">
                             <li><strong>Name :</strong> <span>{stuData.firstname + " " + stuData.lastname}</span></li>
-                            <li><strong>Class :</strong> <span>Class-{className}</span></li>
-                            <li><strong>Section :</strong> <span>Section-{section}</span></li>
+                            <li><strong>Class :</strong> <span>{className}</span></li>
+                            <li><strong>Section :</strong> <span>{section}</span></li>
                             <li><strong>Roll No. :</strong> <span>{stuData.roll_number}</span></li>
                             <li><strong>Gender :</strong> <span>{stuData.gender}</span></li>
                             <li><strong>Date of birth :</strong> <span>{formatDate(dob)}</span></li>

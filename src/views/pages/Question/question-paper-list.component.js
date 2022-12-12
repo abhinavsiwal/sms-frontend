@@ -72,7 +72,7 @@ export default class QuestionPaperList extends AbstractComponent {
     }
 
     upDateQuestion = (id) =>{
-
+      this.props.history.push("question-builder/"+id)  
     }
 
     getAllQuestions = () =>{
@@ -99,13 +99,14 @@ export default class QuestionPaperList extends AbstractComponent {
               class: response.data[i].class.name,
               action:(
                 <h5 key={i + 1} className="mb-0">
-                <Link
+                <Button
+                  color="primary"
                   className="btn-sm pull-right"
-                  to={"question-builder/"+response.data[i]._id}
                   key={"edit" + i + 1}
+                  onClick={() => this.upDateQuestion(response.data[i]._id)}
                 >
                   <i className="fas fa-user-edit" />
-                </Link>
+                </Button>
                 <Button
                   className="btn-sm pull-right"
                   color="danger"

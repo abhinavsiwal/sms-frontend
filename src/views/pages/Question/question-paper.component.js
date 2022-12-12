@@ -72,6 +72,8 @@ export default class QuestionPaper extends AbstractComponent {
             subject: "",
             paperSet: "",
             part:"",
+            exam_date: "",
+            questions:"",
             sessions:[],
             session: "",
             examDate: "",
@@ -104,7 +106,7 @@ export default class QuestionPaper extends AbstractComponent {
     
     getInitialContent() {
         if(this.state.paper) {
-            return this.state.paper;
+            return this.state.questions;
         }
         const initialContent = `<table border="1">
             <tr>
@@ -298,7 +300,7 @@ export default class QuestionPaper extends AbstractComponent {
     }
 
     addQuestionPart = () =>{
-        var templateQuestionPart = `<p><strong>Part - ${this.state.part}</strong></p>`;
+        var templateQuestionPart = `<p><h3>Part - ${this.state.part}</h3></p>`;
         if(templateQuestionPart) {
             this.editor.setData(this.editor.getData()+templateQuestionPart);
             this.setState({
@@ -391,9 +393,11 @@ export default class QuestionPaper extends AbstractComponent {
         this.getSchoolInfo()
         const questionPaperId = this.props.match && this.props.match.params ?
             this.props.match.params.id : null;
-            console.log(questionPaperId)
         if(questionPaperId === ":id") {
-            console.log("Abhishek")
+            this.setState({
+                showEditor: false,
+                paper:false
+            })
             return
         }else{
             var data = new FormData();
@@ -407,15 +411,21 @@ export default class QuestionPaper extends AbstractComponent {
                 },
                 data:data
               };
-              
               axios(config)
                 .then(response => {
-                    console.log(response.data)
+                    console.log(response.data.exam_date)
                     this.setState({
                         showEditor: true,
-                        paper:true
+                        paper:true,
+                        paperSet: response.data.exam_paper_set,
+                        totalMarks: response.data.total_marks,
+                        exam_date:response.data.exam_date,
+                        clas: response.data.class._id,
+                        subject: response.data.subject,
+                        subject_id: response.data.subject_id,
+                        session : response.data.class.session,
+                        questions: response.data.questions
                     });
-
                 }).catch(err => console.log(err));
         }
     }
@@ -468,6 +478,9 @@ export default class QuestionPaper extends AbstractComponent {
                 ul p{
                     text-align:center;
                 }
+                h3{
+                    text-align:center;
+                }
             </style>`,
             false
         );
@@ -493,94 +506,65 @@ export default class QuestionPaper extends AbstractComponent {
 
     handleSaveQuestionPaper(event) {
         event.preventDefault();
-        const data = new FormData()
+        const questionPaperId = this.props.match && this.props.match.params ?
+        this.props.match.params.id : null;
 
-        data.append('exam_paper_set', this.state.paperSet);
-        data.append('total_marks', this.state.totalMarks);
-        data.append('exam_date', this.state.examDate);
-        data.append('questions', this.editor.getData());
-        data.append('class', this.state.clas);
-        data.append('subject', this.state.subject);
-        data.append('subject_id', this.state.subject_id);
-        data.append('session', this.state.session);
+        if(questionPaperId === ":id"){
+            const data = new FormData()
+            data.append('exam_paper_set', this.state.paperSet);
+            data.append('total_marks', this.state.totalMarks);
+            data.append('exam_date', this.state.examDate);
+            data.append('questions', this.editor.getData());
+            data.append('class', this.state.clas);
+            data.append('subject', this.state.subject);
+            data.append('subject_id', this.state.subject_id);
+            data.append('session', this.state.session);
 
-        var config = {
-            method: 'put',
-            url: `${process.env.REACT_APP_API_URL}/api/grades/update_question/${isAuthenticated().user.school}/${isAuthenticated().user._id}`,
-            headers: { 
-                'Authorization': 'Bearer '+ isAuthenticated().token, 
-                'Content-Type' : 'multipart/form-data'
-            },
-            data : data
-          };
+            const config = {
+                method: 'put',
+                url: `${process.env.REACT_APP_API_URL}/api/grades/update_question/${isAuthenticated().user.school}/${isAuthenticated().user._id}`,
+                headers: { 
+                    'Authorization': 'Bearer '+ isAuthenticated().token, 
+                    'Content-Type' : 'multipart/form-data'
+                },
+                data : data
+            };
 
-        axios(config)
-        .then((response) => {
-            console.log(response.data)
-            toast.success("Question Paper added Successfully");
-        })
+            axios(config)
+            .then((response) => {
+                console.log(response.data)
+                toast.success("Question Paper added Successfully");
+            })
+        }else{
+            const data = new FormData()
 
-        // const questionPaperRecord = {
-        //     subject: this.state.subject_id,
-        //     classId: this.state.selectedClass,
-        //     paperSet: this.state.paperSet,
-        //     // examDate: this.setTimeZoneToUTC(this.state.examDate),
-        //     academicYear: this.state.academicYear,
-        //     totalMarks: this.state.totalMarks,
-        //     examTime: this.state.examTime,
-        //     createdById: this.props.userId,
-        //     paper: this.editor.getData(),
-        //     marksSum: this.state.marksSum
-        // };
+            data.append('_id', questionPaperId);
+            data.append('exam_paper_set', this.state.paperSet);
+            data.append('total_marks', this.state.totalMarks);
+            data.append('exam_date', this.state.exam_date);
+            data.append('questions', this.editor.getData());
+            data.append('class', this.state.clas);
+            data.append('subject', this.state.subject);
+            data.append('subject_id', this.state.subject_id);
+            data.append('session', this.state.session);
 
+            const config = {
+                method: 'put',
+                url: `${process.env.REACT_APP_API_URL}/api/grades/update_question/${isAuthenticated().user.school}/${isAuthenticated().user._id}`,
+                headers: { 
+                    'Authorization': 'Bearer '+ isAuthenticated().token, 
+                    'Content-Type' : 'multipart/form-data'
+                },
+                data : data
+            };
 
-        // this.toggleLoading(true);
-        // const questionPaperId = this.props.match && this.props.match.params ?
-        //     this.props.match.params.questionPaperId : null;
-        // if(!questionPaperId) {
-        //     this.callServerMethod(`grades/update_question/${isAuthenticated().user.school}/${isAuthenticated().user._id}`, 'PUT', {
-        //         'Content-Type': 'application/json',
-        //         'Authorization': 'Bearer ' + isAuthenticated().token
-        //     }, JSON.stringify(questionPaperRecord))
-        //     .then(response => {
-        //         if (this.isErrorPresent(response)) {
-        //             return;
-        //         }
-        //         if(response.success) {
-        //             toast.show({ title: response.message,
-        //                 position: 'bottomright', type: 'success' });
-        //             this.setState({
-        //                 showEditor: false,
-        //                 paper: questionPaperRecord.paper
-        //             });
-        //             this.props.history.push('/question-paper/list-view');
-        //         } else {
-        //             toast.show({ title: response.message,
-        //                 position: 'bottomright', type: 'error' });
-        //         }
-        //     });
-        // } else {
-        //     questionPaperRecord.id = questionPaperId;
-        //     this.callServerMethod('questionpaper/update', 'POST', {
-        //         'Content-Type': 'application/json'
-        //     }, JSON.stringify(questionPaperRecord))
-        //     .then(response => {
-        //         if (this.isErrorPresent(response)) {
-        //             return;
-        //         }
-        //         if(response.success) {
-        //             toast.show({ title: response.message,
-        //                 position: 'bottomright', type: 'success' });
-        //                 this.setState({
-        //                     showEditor: false,
-        //                     paper: questionPaperRecord.paper
-        //                 });
-        //         } else {
-        //             toast.show({ title: response.message,
-        //                 position: 'bottomright', type: 'error' });
-        //         }
-        //     });
-        // }
+            axios(config)
+            .then((response) => {
+                console.log(response.data)
+                toast.success("Question Paper Updated Successfully");
+            })
+
+        }
     }
 
     render() {
