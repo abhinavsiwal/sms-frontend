@@ -153,6 +153,36 @@ export default class QuestionPaperList extends AbstractComponent {
           align: "left",
         },
         {
+          title: "ClASS",
+          dataIndex: "class",
+          align: "left",
+          sorter: (a, b) => a.to > b.to,
+          filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+            return (
+              <>
+                <Input
+                  autoFocus
+                  placeholder="Type text here"
+                  value={selectedKeys[0]}
+                  onChange={(e) => {
+                    setSelectedKeys(e.target.value ? [e.target.value] : []);
+                    confirm({ closeDropdown: false });
+                  }}
+                  onBlur={() => {
+                    confirm();
+                  }}
+                ></Input>
+              </>
+            );
+          },
+          filterIcon: () => {
+            return <SearchOutlined />;
+          },
+          onFilter: (value, record) => {
+            return record.to.toLowerCase().includes(value.toLowerCase());
+          },
+        },
+        {
           title: "Subject",
           dataIndex: "subject",
           align: "left",
@@ -273,8 +303,8 @@ export default class QuestionPaperList extends AbstractComponent {
             },
           },
           {
-            title: "ClASS",
-            dataIndex: "class",
+            title: "QUESTION COUNT",
+            dataIndex: "question_count",
             align: "left",
             sorter: (a, b) => a.to > b.to,
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {

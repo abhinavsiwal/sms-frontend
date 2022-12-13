@@ -11,6 +11,7 @@ import { isAuthenticated } from "api/auth";
 import axios from 'axios';
 import {schoolProfile} from "api/school"
 import { ToastContainer, toast } from "react-toastify";
+import ReactHtmlParser from "react-html-parser"
 
 const mcqIdentifiers = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
@@ -413,7 +414,6 @@ export default class QuestionPaper extends AbstractComponent {
               };
               axios(config)
                 .then(response => {
-                    console.log(response.data.exam_date)
                     this.setState({
                         showEditor: true,
                         paper:true,

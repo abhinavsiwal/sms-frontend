@@ -45,6 +45,7 @@ function AdminDashboard() {
     const [loading, setLoading] = useState(false);
     const [activeNav, setActiveNav] = React.useState(1);
     const [reportData,setReportData] = useState({})
+    const [leave,setLeave] = useState([])
     const [chartExample1Data, setChartExample1Data] = React.useState("data1");
     const toggleNavs = (e, index) => {
       e.preventDefault();
@@ -70,6 +71,7 @@ function AdminDashboard() {
         .then(function (response) {
           console.log(response.data)
           setReportData(response.data)
+          setLeave([...response.data.student_leave,...response.data.staff_leave])
           setLoading(false)
         })
         .catch(function (error) {
@@ -279,6 +281,7 @@ function AdminDashboard() {
                                 ],
                                 showSizeChanger: true,
                                 }}
+                                scroll={{x:true}}
                                 style={{ whiteSpace: "pre" }}
                                 exportFileName="details"
                             />
@@ -344,37 +347,24 @@ function AdminDashboard() {
                                 <CardHeader>
                                     <h2>On Leave Today</h2>
                                 </CardHeader>
-                                <CardBody style={{padding:"0"}}>
-                                    <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
-                                        <div className="checklist-item checklist-item-info">
-                                            <div className="checklist-info">
-                                                <h5 className="checklist-title mb-0">
-                                                    <strong>Santosh Kumar</strong>
-                                                </h5>
-                                                <small>Teaching Staff</small>
-                                            </div>
-                                        </div>
-                                    </ListGroupItem>
-                                    <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
-                                        <div className="checklist-item checklist-item-success">
-                                        <div className="checklist-info">
-                                            <h5 className="checklist-title mb-0">
-                                                <strong>Jennifer Kuo</strong>
-                                            </h5>
-                                            <small>Finance and Account</small>
-                                        </div>
-                                        </div>
-                                    </ListGroupItem>
-                                    <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
-                                        <div className="checklist-item checklist-item-danger">
-                                        <div className="checklist-info">
-                                            <h5 className="checklist-title mb-0">
-                                                <strong>Sudhir Singh</strong>
-                                            </h5>
-                                            <small>Librarian</small>
-                                        </div>
-                                        </div>
-                                    </ListGroupItem>
+                                <CardBody style={{padding:"0",height:'315px',overflowY:'auto'}}>
+                                {
+                                    leave.length === 0 ? 
+                                    <h3 style={{paddingLeft:"1.5rem"}}>No data Found</h3>
+                                    :
+                                    leave.map((item) => (
+                                                <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
+                                                    <div className="checklist-item checklist-item-info">
+                                                        <div className="checklist-info">
+                                                            <h5 className="checklist-title mb-0">
+                                                                <strong>Santosh Kumar</strong>
+                                                            </h5>
+                                                            <small>Teaching Staff</small>
+                                                        </div>
+                                                    </div>
+                                                </ListGroupItem>
+                                        ))
+                                }
                                 </CardBody>
                             </Card>
                         </Col>
@@ -383,37 +373,25 @@ function AdminDashboard() {
                                 <CardHeader>
                                     <h2>Today's Birth Day</h2>
                                 </CardHeader>
-                                <CardBody style={{padding:"0"}}>
-                                    <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
-                                        <div className="checklist-item checklist-item-info">
-                                            <div className="checklist-info">
-                                                <h5 className="checklist-title mb-0">
-                                                    <strong>Megha Sinha </strong>
-                                                </h5>
-                                                <small>(Class II-A)</small>
-                                            </div>
-                                        </div>
-                                    </ListGroupItem>
-                                    <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
-                                        <div className="checklist-item checklist-item-success">
-                                        <div className="checklist-info">
-                                            <h5 className="checklist-title mb-0">
-                                                <strong>Mercy Haokip</strong>
-                                            </h5>
-                                            <small>(Class IX-B)</small>
-                                        </div>
-                                        </div>
-                                    </ListGroupItem>
-                                    <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
-                                        <div className="checklist-item checklist-item-danger">
-                                        <div className="checklist-info">
-                                            <h5 className="checklist-title mb-0">
-                                                <strong>Aveenet Singh</strong>
-                                            </h5>
-                                            <small>(Teaching Staff)</small>
-                                        </div>
-                                        </div>
-                                    </ListGroupItem>
+                                <CardBody style={{padding:"0",height:'315px',overflowY:'auto'}}>
+                                {
+                                    reportData?.today_birthday?.length === 0 ? 
+                                    <h3 style={{paddingLeft:"1.5rem"}}>No data Found</h3>
+                                    :
+                                    leave.map((item) => (
+                                                <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
+                                                    <div className="checklist-item checklist-item-success">
+                                                        <div className="checklist-info">
+                                                            <h5 className="checklist-title mb-0">
+                                                                <strong>Santosh Kumar</strong>
+                                                            </h5>
+                                                            <small>Teaching Staff</small>
+                                                        </div>
+                                                    </div>
+                                                </ListGroupItem>
+                                        ))
+                                }
+                                 
                                 </CardBody>
                             </Card>
                         </Col>
@@ -422,7 +400,7 @@ function AdminDashboard() {
                                 <CardHeader>
                                     <h2>Holidays August</h2>
                                 </CardHeader>
-                                <CardBody style={{padding:"0"}}>
+                                <CardBody style={{padding:"0",height:'315px',overflowY:'auto'}}>
                                 <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
                                         <div className="checklist-item checklist-item-info">
                                             <div className="checklist-info">
@@ -461,7 +439,7 @@ function AdminDashboard() {
                                 <CardHeader>
                                     <h2>Examinations</h2>
                                 </CardHeader>
-                                <CardBody style={{padding:"0"}}>
+                                <CardBody style={{padding:"0",height:'315px',overflowY:'auto'}}>
                                     <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
                                         <div className="checklist-item checklist-item-info">
                                             <div className="checklist-info">
@@ -509,7 +487,7 @@ function AdminDashboard() {
                     <Row className='mt-4'>
                         <Col md='3'>
                             <Card>
-                                <CardHeader>
+                                <CardHeader style={{height:'90px'}}>
                                     <h3>Pending One Time Payment</h3>
                                 </CardHeader>
                                 <CardBody style={{padding:"0"}}>
@@ -537,7 +515,7 @@ function AdminDashboard() {
                         </Col>
                         <Col md='3'>
                             <Card>
-                                <CardHeader>
+                                <CardHeader style={{height:'90px'}}>
                                     <h3>Pending Tution Fee</h3>
                                 </CardHeader>
                                 <CardBody  style={{padding:"0"}}>
@@ -565,7 +543,7 @@ function AdminDashboard() {
                         </Col>
                         <Col md='3'>
                             <Card>
-                                <CardHeader>
+                                <CardHeader style={{height:'90px'}}>
                                     <h3>Pending Hostel/Boarding Fee</h3>
                                 </CardHeader>
                                 <CardBody  style={{padding:"0"}}>
@@ -593,7 +571,7 @@ function AdminDashboard() {
                         </Col>
                         <Col md='3'>
                             <Card>
-                                <CardHeader>
+                                <CardHeader style={{height:'90px'}}>
                                     <h3>Pending Transportation Fee</h3>
                                 </CardHeader>
                                 <CardBody  style={{padding:"0"}}>
@@ -627,89 +605,31 @@ function AdminDashboard() {
                                     <h2 style={{textAlign:"center",color:"white"}}>Notice Board</h2>
                                 </CardHeader>
                                 <CardBody>
-                                    <div style={{display:"grid",gridTemplateColumns:'1fr 1fr 1fr 1fr'}}>
-                                        
-                                        <ListGroupItem style={{background:'transparent',border:'none'}} className="checklist-entry flex-column align-items-start py-4 px-4">
-                                            <div className="checklist-item checklist-item-info">
-                                            <div className="checklist-info">
-                                                <h5 className="checklist-title mb-0">
-                                                    <strong style={{color:'white'}}>15. August</strong>
-                                                </h5>
-                                                <small style={{color:'white'}}>There will be no classes</small>
+                                 
+
+                                            {
+                                            reportData?.notice_board?.length === 0 ? 
+                                            <div style={{display:"grid",gridTemplateColumns:'1fr'}}>
+                                            <h3 style={{textAlign:"center",color:"white"}}>No data Found</h3>
                                             </div>
+                                            :
+                                            <div style={{display:"grid",gridTemplateColumns:'1fr 1fr 1fr 1fr'}}>
+                                                {
+                                                    leave.map((item) => (
+                                                            <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
+                                                                <div className="checklist-item checklist-item-success">
+                                                                    <div className="checklist-info">
+                                                                        <h5 className="checklist-title mb-0">
+                                                                            <strong>Santosh Kumar</strong>
+                                                                        </h5>
+                                                                        <small>Teaching Staff</small>
+                                                                    </div>
+                                                                </div>
+                                                            </ListGroupItem>
+                                                    ))
+                                                }
                                             </div>
-                                        </ListGroupItem>
-                                        <ListGroupItem style={{background:'transparent',border:'none'}} className="checklist-entry flex-column align-items-start py-4 px-4">
-                                            <div className="checklist-item checklist-item-success">
-                                            <div className="checklist-info">
-                                                <h5 className="checklist-title mb-0">
-                                                    <strong style={{color:'white'}}>18. August</strong>
-                                                </h5>
-                                                <small style={{color:'white'}}>All students must attend the meeting</small>
-                                            </div>
-                                            </div>
-                                        </ListGroupItem>
-                                        <ListGroupItem style={{background:'transparent',border:'none'}} className="checklist-entry flex-column align-items-start py-4 px-4">
-                                            <div className="checklist-item checklist-item-success">
-                                            <div className="checklist-info">
-                                                <h5 className="checklist-title mb-0">
-                                                    <strong style={{color:'white'}}>18. August</strong>
-                                                </h5>
-                                                <small style={{color:'white'}}>All students must attend the meeting</small>
-                                            </div>
-                                            </div>
-                                        </ListGroupItem>
-                                        <ListGroupItem style={{background:'transparent',border:'none'}} className="checklist-entry flex-column align-items-start py-4 px-4">
-                                            <div className="checklist-item checklist-item-success">
-                                            <div className="checklist-info">
-                                                <h5 className="checklist-title mb-0">
-                                                    <strong style={{color:'white'}}>18. August</strong>
-                                                </h5>
-                                                <small style={{color:'white'}}>All students must attend the meeting</small>
-                                            </div>
-                                            </div>
-                                        </ListGroupItem>
-                                        <ListGroupItem style={{background:'transparent',border:'none'}} className="checklist-entry flex-column align-items-start py-4 px-4">
-                                            <div className="checklist-item checklist-item-success">
-                                            <div className="checklist-info">
-                                                <h5 className="checklist-title mb-0">
-                                                    <strong style={{color:'white'}}>18. August</strong>
-                                                </h5>
-                                                <small style={{color:'white'}}>All students must attend the meeting</small>
-                                            </div>
-                                            </div>
-                                        </ListGroupItem>
-                                        <ListGroupItem style={{background:'transparent',border:'none'}} className="checklist-entry flex-column align-items-start py-4 px-4">
-                                            <div className="checklist-item checklist-item-success">
-                                            <div className="checklist-info">
-                                                <h5 className="checklist-title mb-0">
-                                                    <strong style={{color:'white'}}>18. August</strong>
-                                                </h5>
-                                                <small style={{color:'white'}}>All students must attend the meeting</small>
-                                            </div>
-                                            </div>
-                                        </ListGroupItem>
-                                        <ListGroupItem style={{background:'transparent',border:'none'}} className="checklist-entry flex-column align-items-start py-4 px-4">
-                                            <div className="checklist-item checklist-item-success">
-                                            <div className="checklist-info">
-                                                <h5 className="checklist-title mb-0">
-                                                    <strong style={{color:'white'}}>18. August</strong>
-                                                </h5>
-                                                <small style={{color:'white'}}>All students must attend the meeting</small>
-                                            </div>
-                                            </div>
-                                        </ListGroupItem>
-                                        <ListGroupItem style={{background:'transparent',border:'none'}} className="checklist-entry flex-column align-items-start py-4 px-4">
-                                            <div className="checklist-item checklist-item-success">
-                                            <div className="checklist-info">
-                                                <h5 className="checklist-title mb-0">
-                                                    <strong style={{color:'white'}}>18. August</strong>
-                                                </h5>
-                                                <small style={{color:'white'}}>All students must attend the meeting</small>
-                                            </div>
-                                            </div>
-                                        </ListGroupItem>
-                                    </div>
+                                        }
                                 </CardBody>
                             </Card>
                         </Col>
