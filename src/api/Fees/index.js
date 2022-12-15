@@ -131,7 +131,7 @@ export const deleteCoupon = async (schoolId, userId, formData) => {
     console.log(err);
     return err;
   }
-}
+};
 
 export const updateSiblingMaster = async (schoolId, userId, formData) => {
   try {
@@ -152,6 +152,50 @@ export const updateSiblingStudents = async (schoolId, userId, formData) => {
   try {
     const { data } = await sendRequest(
       `${process.env.REACT_APP_API_URL}/api/school/fees_management/update_sub_sibling/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+
+export const updatePendingFees = async (schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/fees_management/update_pending_fees/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+export const getPendingFees = async (schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/fees_management/pending_fees/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+
+export const getPendingFeesByStudent = async (schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/fees_management/pending_fees_by_student/${schoolId}/${userId}`,
       formData,
       "POST"
     );

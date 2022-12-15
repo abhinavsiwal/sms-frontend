@@ -84,6 +84,7 @@ const MarksMaster1 = () => {
     );
     console.log(selectedSection1);
     setResultData([]);
+    setResult1([]);
     getExamsHandler(selectedSection1._id);
     getStudentsHandler(selectedSection1._id);
     setSelectedSection(selectedSection1);
@@ -267,6 +268,8 @@ const MarksMaster1 = () => {
       setExamId("");
       setClas("");
       setSection("");
+      setResultData([]);
+      setResult1([]);
       setShowTable(false);
     } catch (err) {
       console.log(err);
@@ -539,7 +542,7 @@ const MarksMaster1 = () => {
                                                       res.student._id ===
                                                         student._id &&
                                                       res.subject ===
-                                                        subject.name
+                                                        sub
                                                   )?.marks || ""
                                                 }
                                               />

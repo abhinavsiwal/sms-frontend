@@ -26,7 +26,12 @@ import AntTable from "../tables/AntTable";
 import Loader from "components/Loader/Loader";
 import { Popconfirm } from "antd";
 import { toast, ToastContainer } from "react-toastify";
-import { getCouponList } from "api/Fees";
+import {
+  getCouponList,
+  getPendingFees,
+  updatePendingFees,
+  getPendingFeesByStudent,
+} from "api/Fees";
 const PendingFees = () => {
   const { user } = isAuthenticated();
   const [loading, setLoading] = useState(false);
@@ -266,6 +271,79 @@ const PendingFees = () => {
     },
   ];
 
+  const getPendingFeesHandler = async () => {
+    try {
+      setLoading(true);
+      const data = await getPendingFees(user.school, user._id, null);
+      if (data.err) {
+        setLoading(false);
+        toast.error(data.err);
+        return;
+      }
+
+      const table = [];
+      data.forEach((fees) => {
+        table.push({
+          sid: fees?.student.SID,
+          name: fees?.student?.firstname + " " + fees?.student?.lastname,
+          class: fees?.student?.class?.name,
+          section: fees?.student?.section?.name,
+          roll: fees?.student?.roll_number,
+          total: fees?.total_amount,
+          contact: fees?.student?.phone,
+          action: (
+            <>
+              <Button
+                color="primary"
+                onClick={() => {
+                  setView(1);
+                  getFeesByStudent(fees?.student._id);
+                }}
+              >
+                Pay
+              </Button>
+            </>
+          ),
+        });
+      });
+      setTableData(table);
+      setLoading(false);
+    } catch (error) {}
+  };
+  const getFeesByStudent = async (id) => {
+    const formData = new FormData();
+    formData.set("student", id);
+    try {
+      setLoading(true);
+      const data = await getPendingFeesByStudent(
+        user.school,
+        user._id,
+        formData
+      );
+      console.log(data);
+      if (data.err) {
+        setLoading(false);
+        toast.error(data.err);
+        return;
+      }
+      const table = [];
+      data.forEach((fees, index) => {
+        table.push({
+          sno: index + 1,
+          particular: fees?.fees_sub_id?.name,
+          amount: fees.amount,
+          penalty: fees.penalty,
+          total: fees.total_amount,
+        });
+      });
+      setPayTableData(table);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+      toast.error("Something went wrong");
+    }
+  };
   const payColumns = [
     {
       title: "SNo",
@@ -355,6 +433,66 @@ const PendingFees = () => {
       },
       onFilter: (value, record) => {
         return record.amount.toLowerCase().includes(value.toLowerCase());
+      },
+    },
+    {
+      title: "Penalty",
+      dataIndex: "penalty",
+      align: "left",
+      sorter: (a, b) => a.penalty > b.penalty,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+        return (
+          <>
+            <Input
+              autoFocus
+              placeholder="Type text here"
+              value={selectedKeys[0]}
+              onChange={(e) => {
+                setSelectedKeys(e.target.value ? [e.target.value] : []);
+                confirm({ closeDropdown: false });
+              }}
+              onBlur={() => {
+                confirm();
+              }}
+            ></Input>
+          </>
+        );
+      },
+      filterIcon: () => {
+        return <SearchOutlined />;
+      },
+      onFilter: (value, record) => {
+        return record.penalty.toLowerCase().includes(value.toLowerCase());
+      },
+    },
+    {
+      title: "Total Amount",
+      dataIndex: "total",
+      align: "left",
+      sorter: (a, b) => a.total > b.total,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+        return (
+          <>
+            <Input
+              autoFocus
+              placeholder="Type text here"
+              value={selectedKeys[0]}
+              onChange={(e) => {
+                setSelectedKeys(e.target.value ? [e.target.value] : []);
+                confirm({ closeDropdown: false });
+              }}
+              onBlur={() => {
+                confirm();
+              }}
+            ></Input>
+          </>
+        );
+      },
+      filterIcon: () => {
+        return <SearchOutlined />;
+      },
+      onFilter: (value, record) => {
+        return record.total.toLowerCase().includes(value.toLowerCase());
       },
     },
     {
@@ -513,7 +651,13 @@ const PendingFees = () => {
           desc: element.description,
           amount: element.amount,
           action: (
-            <div style={{display:"flex",justifyContent:"center",alignItems:"center"}} >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <Input type="checkbox" />
             </div>
           ),
@@ -540,29 +684,8 @@ const PendingFees = () => {
     setPayTableData(data);
   };
 
-  const getPendingHandler = async () => {
-    const data = [
-      {
-        sid: "1",
-        name: "John",
-        class: "1",
-        section: "A",
-        roll: "1",
-        total: "100",
-        contact: "1234567890",
-        action: (
-          <>
-            <Button color="primary" onClick={() => setView(1)}>
-              Pay
-            </Button>
-          </>
-        ),
-      },
-    ];
-    setTableData(data);
-  };
   useEffect(() => {
-    getPendingHandler();
+    getPendingFeesHandler();
     getPayData();
     getCoupons();
   }, []);

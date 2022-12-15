@@ -308,11 +308,13 @@ function AddStaff() {
 
     try {
       setloading(true);
-      const formData1 = new FormData();
-      formData1.set("file", image);
-      const data1 = await uploadFile(formData1);
-      console.log(data1);
-      formData.set("photo", data1.data[0]);
+      if(image){
+        const formData1 = new FormData();
+        formData1.set("file", image);
+        const data1 = await uploadFile(formData1);
+        console.log(data1);
+        formData.set("photo", data1.data[0]);
+      }
       const resp = await addStaff(user._id, token, formData);
       if (resp.err) {
         setloading(false);

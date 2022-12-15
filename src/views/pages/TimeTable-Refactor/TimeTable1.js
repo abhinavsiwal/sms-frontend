@@ -722,7 +722,7 @@ const TimeTable1 = () => {
                                             period.start === d.start &&
                                             period.end === d.end &&
                                             d.staff != null
-                                        )?.staff?._id || ""
+                                        )?.staff || ""
                                       }
                                       onChange={(e) =>
                                         handlePeriodChange(
