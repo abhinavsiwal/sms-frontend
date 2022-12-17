@@ -304,17 +304,6 @@ const StudentView = () => {
                                 period.end.substring(0, 5)}
                             </th>
                             {WorkingDaysList.map((day, index) => {
-                              console.log(
-                                periods1[day].find(
-                                  (d) =>
-                                    d.subject !== null &&
-                                    d.subject !== "" &&
-                                    d.subject._id !== "" &&
-                                    d.subject._id !== null &&
-                                    period.start === d.start &&
-                                    period.end === d.end
-                                )
-                              );
                               return (
                                 <td key={index}>
                                   <p>

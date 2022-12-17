@@ -98,35 +98,34 @@ const StaffView = () => {
 
   const getSchedulesForStaff = async (id) => {
     const formData = { staff: id };
-    const formData1= {
+    const formData1 = {
       staff: id,
-      role:"STA",
-    }
+      role: "STA",
+    };
     try {
       setLoading(true);
       const data = await staffPeriodList(user.school, user._id, formData);
       const data1 = await getPeriodsByDay1(user.school, user._id, formData1);
-      console.log("data1",data1);
+      console.log("data1", data1);
       console.log(data);
-      if(data.err){
-        toast.error(data.err)
-        setLoading(false)
+      setPeriods1(data1.data);
+      if (data.err) {
+        toast.error(data.err);
+        setLoading(false);
         return;
       }
-      if(data1.err){
-        toast.error(data1.err)
-        setLoading(false)
+      if (data1.err) {
+        toast.error(data1.err);
+        setLoading(false);
         return;
       }
       setAllPeriods(data.data);
-      setPeriods1(data1);
       setLoading(false);
     } catch (error) {
       console.log(error);
       toast.error("Something Went Wrong!");
       setLoading(false);
     }
-
   };
 
   useEffect(() => {
@@ -252,24 +251,56 @@ const StaffView = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    { allPeriods.length>0 && allPeriods.map((period,i)=>{
-                      return(
-                        <tr key={i} >
-                          <th>
-                            {period.period_id.start.substring(0, 5) +
-                              "-" +
-                              period.period_id.end.substring(0, 5)}
-                          </th>
-                          {WorkingDaysList.map((day, index) => {
-                            return(
-                              <td key={index} >
-                                
-                              </td>
-                            )
-                          })}
-                        </tr>
-                      )
-                    })}
+                    {allPeriods.length > 0 &&
+                      allPeriods.map((period, i) => {
+                        return (
+                          <tr key={i}>
+                            <th>
+                              {period.period_id.start.substring(0, 5) +
+                                "-" +
+                                period.period_id.end.substring(0, 5)}
+                            </th>
+                            {WorkingDaysList.map((day, index) => {
+                            
+                              return (
+                                <td key={index}>
+                                  <p>
+                                    {periods1[day].find(
+                                      (d) =>
+                                        (d.subject !== null ||
+                                          d.subject !== "") &&
+                                        (d.subject_id !== null ||
+                                          d.subject_id === "") &&
+                                        period.period_id.start === d.start &&
+                                        period.period_id.end === d.end
+                                    )
+                                      ? periods1[day].find(
+                                          (d) =>
+                                            (d.subject !== null ||
+                                              d.subject !== "") &&
+                                            (d.subject_id !== null ||
+                                              d.subject_id !== "") &&
+                                            period.period_id.start === d.start &&
+                                            period.period_id.end === d.end
+                                        ).subject
+                                      : ""}
+                                  </p>
+                                  <p>
+                                    {
+                                      periods1[day].find(
+                                        (d) =>
+                                          period.period_id.start === d.start &&
+                                          period.period_id.end === d.end &&
+                                          (d.staff !== null || d.staff !== {})
+                                      )?.staff?.firstname
+                                    }
+                                  </p>
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        );
+                      })}
                   </tbody>
                 </table>
               </div>

@@ -206,3 +206,18 @@ export const getPendingFeesByStudent = async (schoolId, userId, formData) => {
     return err;
   }
 };
+
+export const payFees = async (schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/fees_management/update_fees_transactions/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};

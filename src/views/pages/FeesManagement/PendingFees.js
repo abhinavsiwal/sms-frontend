@@ -31,6 +31,7 @@ import {
   getPendingFees,
   updatePendingFees,
   getPendingFeesByStudent,
+  payFees,
 } from "api/Fees";
 const PendingFees = () => {
   const { user } = isAuthenticated();
@@ -41,6 +42,9 @@ const PendingFees = () => {
   const [payTableData, setPayTableData] = useState([]);
   const [modal, setModal] = useState(false);
   const [coupons, setCoupons] = useState([]);
+  const [selectedCoupon, setSelectedCoupon] = useState(null);
+  const [selectedFees, setSelectedFees] = useState(null);
+  const [amount, setAmount] = useState("");
   const [payData, setPayData] = useState({
     type: "",
     date: "",
@@ -52,6 +56,57 @@ const PendingFees = () => {
     pay_by: "",
     transaction_id: "",
   });
+
+  const handlePayFees = async (e) => {
+    e.preventDefault();
+    console.log(payData);
+
+    const formData = new FormData();
+    formData.set("type", payData.type);
+    formData.set("transaction_date", payData.date);
+    formData.set("pay_to", payData.pay_to);
+    formData.set("cheque_number", payData.cheque_number);
+    formData.set("bank_name", payData.bank_name);
+    formData.set("account_number", payData.account_number);
+    formData.set("pay_by", payData.pay_by);
+    formData.set("transaction_id", payData.transaction_id);
+    formData.set("total_amount", selectedFees.total_amount);
+    formData.set("discount_amount",selectedCoupon? amount:null);
+    formData.set("coupon_id", selectedCoupon ?selectedCoupon._id:null);
+    formData.set("student", selectedFees?.student._id);
+    formData.set("school", user.school);
+    formData.set("collected_by", user._id);
+    formData.set("month",JSON.stringify([payTableData[0].month]));
+
+    try {
+      setLoading(true);
+      const data = await payFees(user.school, user._id, formData);
+      if (data.err) {
+        setLoading(false);
+        return toast.error(data.err);
+      }
+      toast.success("Fees Paid Successfully");
+      setPayData({
+        type: "",
+        date: "",
+        pay_to: "",
+        cheque_number: "",
+        bank_name: "",
+        account_number: "",
+        transaction_date: "",
+        pay_by: "",
+        transaction_id: "",
+      });
+      setLoading(false);
+      setView(0);
+      setChecked(!checked);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error("Something went wrong");
+    }
+  };
+
   const columns = [
     {
       title: "SID",
@@ -297,7 +352,9 @@ const PendingFees = () => {
                 color="primary"
                 onClick={() => {
                   setView(1);
+                  setAmount(fees.total_amount);
                   getFeesByStudent(fees?.student._id);
+                  setSelectedFees(fees);
                 }}
               >
                 Pay
@@ -334,6 +391,7 @@ const PendingFees = () => {
           amount: fees.amount,
           penalty: fees.penalty,
           total: fees.total_amount,
+          month: fees.month,
         });
       });
       setPayTableData(table);
@@ -631,6 +689,15 @@ const PendingFees = () => {
       fixed: "right",
     },
   ];
+  // console.log(amount);
+  const handleCheckChange = (value) => {
+    setSelectedCoupon(JSON.parse(value));
+  };
+
+  useEffect(() => {
+    let finalAmount = selectedFees?.total_amount - selectedCoupon?.amount;
+    setAmount(finalAmount);
+  }, [selectedCoupon]);
 
   const getCoupons = async () => {
     try {
@@ -658,7 +725,13 @@ const PendingFees = () => {
                 alignItems: "center",
               }}
             >
-              <Input type="checkbox" />
+              <Input
+                type="radio"
+                name="coupon"
+                id={element._id}
+                // checked={selectedCoupon === element}
+                onChange={() => handleCheckChange(JSON.stringify(element))}
+              />
             </div>
           ),
         });
@@ -688,7 +761,7 @@ const PendingFees = () => {
     getPendingFeesHandler();
     getPayData();
     getCoupons();
-  }, []);
+  }, [checked]);
 
   const handleChange = (name) => (event) => {
     setPayData({ ...payData, [name]: event.target.value });
@@ -817,225 +890,91 @@ const PendingFees = () => {
                   </Row>
                   {payData.type && payData.type === "Cash" && (
                     <>
-                      <Row>
-                        <Col>
-                          <label
-                            className="form-control-label"
-                            htmlFor="example3cols3Input"
-                          >
-                            Total Amount
-                          </label>
-                          <Input
-                            onChange={handleChange("total_amount")}
-                            value={payData.total_amount}
-                            id="example3cols1Input"
-                            placeholder="Amount"
-                            disabled
-                            required
-                            type="number"
-                          />
-                        </Col>
-                        <Col>
-                          <label
-                            className="form-control-label"
-                            htmlFor="example3cols3Input"
-                          >
-                            Date
-                          </label>
-                          <Input
-                            onChange={handleChange("date")}
-                            value={payData.date}
-                            id="example3cols1Input"
-                            placeholder="Amount"
-                            required
-                            type="date"
-                          />
-                        </Col>
-                        <Col>
-                          <label
-                            className="form-control-label"
-                            htmlFor="example3cols3Input"
-                          >
-                            Collected By
-                          </label>
-                          <Input
-                            onChange={handleChange("collected_by")}
-                            value={payData.collected_by}
-                            id="example3cols1Input"
-                            placeholder="Vaibhav Pathak"
-                            disabled
-                            required
-                            type="text"
-                          />
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col>
-                          <Button
-                            className="btn btn-primary btn-lg float-right"
-                            color="primary"
-                            size="lg"
-                            type="submit"
-                          >
-                            Submit
-                          </Button>
-                        </Col>
-                      </Row>
-                    </>
-                  )}
-                  {payData.type && payData.type === "Cheque" && (
-                    <>
-                      <Row>
-                        <Col>
-                          <label
-                            className="form-control-label"
-                            htmlFor="example3cols3Input"
-                          >
-                            Cheque Number
-                          </label>
-                          <Input
-                            onChange={handleChange("cheque_number")}
-                            value={payData.cheque_number}
-                            id="example3cols1Input"
-                            required
-                            placeholder="e.g 3243432423"
-                            type="text"
-                          />
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col>
-                          <label
-                            className="form-control-label"
-                            htmlFor="example3cols3Input"
-                          >
-                            Bank Name
-                          </label>
-                          <Input
-                            onChange={handleChange("bank_name")}
-                            value={payData.bank_name}
-                            id="example3cols1Input"
-                            required
-                            placeholder="e.g SBI"
-                            type="text"
-                          />
-                        </Col>
-                        <Col>
-                          <label
-                            className="form-control-label"
-                            htmlFor="example3cols3Input"
-                          >
-                            Account Number
-                          </label>
-                          <Input
-                            onChange={handleChange("account_number")}
-                            value={payData.account_number}
-                            id="example3cols1Input"
-                            placeholder="Number"
-                            required
-                            type="number"
-                          />
-                        </Col>
-
-                        <Col>
-                          <label
-                            className="form-control-label"
-                            htmlFor="example3cols3Input"
-                          >
-                            Total Amount
-                          </label>
-                          <Input
-                            onChange={handleChange("total_amount")}
-                            value={payData.total_amount}
-                            id="example3cols1Input"
-                            placeholder="Amount"
-                            required
-                            disabled
-                            type="number"
-                          />
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col>
-                          <label
-                            className="form-control-label"
-                            htmlFor="example3cols3Input"
-                          >
-                            Transaction Date
-                          </label>
-                          <Input
-                            onChange={handleChange("transaction_date")}
-                            value={payData.transaction_date}
-                            id="example3cols1Input"
-                            required
-                            type="date"
-                          />
-                        </Col>
-                        <Col>
-                          <label
-                            className="form-control-label"
-                            htmlFor="example3cols3Input"
-                          >
-                            Pay To
-                          </label>
-                          <Input
-                            onChange={handleChange("pay_to")}
-                            value={payData.pay_to}
-                            id="example3cols1Input"
-                            placeholder="Vaibhav Pathak"
-                            required
-                            type="text"
-                          />
-                        </Col>
-                        <Col>
-                          <label
-                            className="form-control-label"
-                            htmlFor="example3cols3Input"
-                          >
-                            Pay By
-                          </label>
-                          <Input
-                            onChange={handleChange("pay_by")}
-                            value={payData.pay_by}
-                            id="example3cols1Input"
-                            placeholder="Abhinav"
-                            required
-                            type="text"
-                          />
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col>
-                          <Button
-                            className="btn btn-primary btn-lg float-right"
-                            color="primary"
-                            size="lg"
-                            type="submit"
-                          >
-                            Submit
-                          </Button>
-                        </Col>
-                      </Row>
-                    </>
-                  )}
-                  {payData.type &&
-                    (payData.type === "NEFT" ||
-                      payData.type === "NET Banking") && (
-                      <>
+                      <form onSubmit={handlePayFees}>
                         <Row>
                           <Col>
                             <label
                               className="form-control-label"
                               htmlFor="example3cols3Input"
                             >
-                              Transaction ID
+                              Total Amount
                             </label>
                             <Input
-                              onChange={handleChange("transaction_id")}
-                              value={payData.transaction_id}
+                              onChange={handleChange("total_amount")}
+                              id="example3cols1Input"
+                              placeholder="Amount"
+                              disabled
+                              required
+                              type="number"
+                              value={amount}
+                            />
+                          </Col>
+                          <Col>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example3cols3Input"
+                            >
+                              Date
+                            </label>
+                            <Input
+                              onChange={handleChange("date")}
+                              value={payData.date}
+                              id="example3cols1Input"
+                              placeholder="Amount"
+                              required
+                              type="date"
+                            />
+                          </Col>
+                          <Col>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example3cols3Input"
+                            >
+                              Collected By
+                            </label>
+                            <Input
+                              onChange={handleChange("collected_by")}
+                              value={payData.collected_by}
+                              id="example3cols1Input"
+                              placeholder="Vaibhav Pathak"
+                              disabled
+                              required
+                              type="text"
+                            />
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col>
+                            <Button
+                              className="btn btn-primary btn-md float-right mt-3"
+                              color="primary"
+                              size="md"
+                              type="submit"
+                            >
+                              Submit
+                            </Button>
+                          </Col>
+                        </Row>
+                      </form>
+                    </>
+                  )}
+                  {payData.type && payData.type === "Cheque" && (
+                    <>
+                      <form onSubmit={handlePayFees}>
+                        <Row>
+                          <Col>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example3cols3Input"
+                            >
+                              Cheque Number
+                            </label>
+                            <Input
+                              onChange={handleChange("cheque_number")}
+                              value={payData.cheque_number}
                               id="example3cols1Input"
                               required
-                              placeholder="ID"
+                              placeholder="e.g 3243432423"
                               type="text"
                             />
                           </Col>
@@ -1083,7 +1022,7 @@ const PendingFees = () => {
                             </label>
                             <Input
                               onChange={handleChange("total_amount")}
-                              value={payData.total_amount}
+                              value={amount}
                               id="example3cols1Input"
                               placeholder="Amount"
                               required
@@ -1117,8 +1056,251 @@ const PendingFees = () => {
                             </label>
                             <Input
                               onChange={handleChange("pay_to")}
-                              id="example3cols1Input"
                               value={payData.pay_to}
+                              id="example3cols1Input"
+                              placeholder="Vaibhav Pathak"
+                              required
+                              type="text"
+                            />
+                          </Col>
+                          <Col>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example3cols3Input"
+                            >
+                              Pay By
+                            </label>
+                            <Input
+                              onChange={handleChange("pay_by")}
+                              value={payData.pay_by}
+                              id="example3cols1Input"
+                              placeholder="Abhinav"
+                              required
+                              type="text"
+                            />
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col>
+                            <Button
+                              className="btn btn-primary btn-md mt-3 float-right"
+                              color="primary"
+                              size="md"
+                              type="submit"
+                            >
+                              Submit
+                            </Button>
+                          </Col>
+                        </Row>
+                      </form>
+                    </>
+                  )}
+                  {payData.type &&
+                    (payData.type === "NEFT" ||
+                      payData.type === "NET Banking") && (
+                      <>
+                        <form onSubmit={handlePayFees}>
+                          <Row>
+                            <Col>
+                              <label
+                                className="form-control-label"
+                                htmlFor="example3cols3Input"
+                              >
+                                Transaction ID
+                              </label>
+                              <Input
+                                onChange={handleChange("transaction_id")}
+                                value={payData.transaction_id}
+                                id="example3cols1Input"
+                                required
+                                placeholder="ID"
+                                type="text"
+                              />
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col>
+                              <label
+                                className="form-control-label"
+                                htmlFor="example3cols3Input"
+                              >
+                                Bank Name
+                              </label>
+                              <Input
+                                onChange={handleChange("bank_name")}
+                                value={payData.bank_name}
+                                id="example3cols1Input"
+                                required
+                                placeholder="e.g SBI"
+                                type="text"
+                              />
+                            </Col>
+                            <Col>
+                              <label
+                                className="form-control-label"
+                                htmlFor="example3cols3Input"
+                              >
+                                Account Number
+                              </label>
+                              <Input
+                                onChange={handleChange("account_number")}
+                                value={payData.account_number}
+                                id="example3cols1Input"
+                                placeholder="Number"
+                                required
+                                type="number"
+                              />
+                            </Col>
+
+                            <Col>
+                              <label
+                                className="form-control-label"
+                                htmlFor="example3cols3Input"
+                              >
+                                Total Amount
+                              </label>
+                              <Input
+                                onChange={handleChange("total_amount")}
+                                value={amount}
+                                id="example3cols1Input"
+                                placeholder="Amount"
+                                required
+                                disabled
+                                type="number"
+                              />
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col>
+                              <label
+                                className="form-control-label"
+                                htmlFor="example3cols3Input"
+                              >
+                                Transaction Date
+                              </label>
+                              <Input
+                                onChange={handleChange("transaction_date")}
+                                value={payData.transaction_date}
+                                id="example3cols1Input"
+                                required
+                                type="date"
+                              />
+                            </Col>
+                            <Col>
+                              <label
+                                className="form-control-label"
+                                htmlFor="example3cols3Input"
+                              >
+                                Pay To
+                              </label>
+                              <Input
+                                onChange={handleChange("pay_to")}
+                                id="example3cols1Input"
+                                value={payData.pay_to}
+                                placeholder="Vaiabhav Pathak"
+                                required
+                                type="text"
+                              />
+                            </Col>
+                            <Col>
+                              <label
+                                className="form-control-label"
+                                htmlFor="example3cols3Input"
+                              >
+                                Pay By
+                              </label>
+                              <Input
+                                onChange={handleChange("pay_by")}
+                                id="example3cols1Input"
+                                placeholder="e.g Sanjay Suthar"
+                                value={payData.pay_by}
+                                required
+                                type="text"
+                              />
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col>
+                              <Button
+                                className="btn btn-primary btn-md mt-3 float-right"
+                                color="primary"
+                                size="md"
+                                type="submit"
+                              >
+                                Submit
+                              </Button>
+                            </Col>
+                          </Row>
+                        </form>
+                      </>
+                    )}
+                  {payData.type && payData.type === "Payment gateway" && (
+                    <>
+                      <form onSubmit={handlePayFees}>
+                        <Row>
+                          <Col>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example3cols3Input"
+                            >
+                              Transaction ID
+                            </label>
+                            <Input
+                              onChange={handleChange("transaction_id")}
+                              id="example3cols1Input"
+                              value={payData.transaction_id}
+                              required
+                              placeholder="ID"
+                              type="text"
+                            />
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example3cols3Input"
+                            >
+                              Total Amount
+                            </label>
+                            <Input
+                              onChange={handleChange("total_amount")}
+                              value={amount}
+                              id="example3cols1Input"
+                              placeholder="Amount"
+                              required
+                              disabled
+                              type="number"
+                            />
+                          </Col>
+                          <Col>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example3cols3Input"
+                            >
+                              Transaction Date
+                            </label>
+                            <Input
+                              value={payData.transaction_date}
+                              onChange={handleChange("transaction_date")}
+                              id="example3cols1Input"
+                              required
+                              type="date"
+                            />
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example3cols3Input"
+                            >
+                              Pay To
+                            </label>
+                            <Input
+                              value={payData.pay_to}
+                              onChange={handleChange("pay_to")}
+                              id="example3cols1Input"
                               placeholder="Vaiabhav Pathak"
                               required
                               type="text"
@@ -1133,9 +1315,9 @@ const PendingFees = () => {
                             </label>
                             <Input
                               onChange={handleChange("pay_by")}
-                              id="example3cols1Input"
-                              placeholder="e.g Sanjay Suthar"
                               value={payData.pay_by}
+                              id="example3cols1Input"
+                              placeholder="Abhinav Siwal"
                               required
                               type="text"
                             />
@@ -1144,117 +1326,16 @@ const PendingFees = () => {
                         <Row>
                           <Col>
                             <Button
-                              className="btn btn-primary btn-lg float-right"
+                              className="btn btn-primary btn-md mt-3 float-right"
                               color="primary"
-                              size="lg"
+                              size="md"
                               type="submit"
                             >
                               Submit
                             </Button>
                           </Col>
                         </Row>
-                      </>
-                    )}
-                  {payData.type && payData.type === "Payment gateway" && (
-                    <>
-                      <Row>
-                        <Col>
-                          <label
-                            className="form-control-label"
-                            htmlFor="example3cols3Input"
-                          >
-                            Transaction ID
-                          </label>
-                          <Input
-                            onChange={handleChange("transaction_id")}
-                            id="example3cols1Input"
-                            value={payData.transaction_id}
-                            required
-                            placeholder="ID"
-                            type="text"
-                          />
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col>
-                          <label
-                            className="form-control-label"
-                            htmlFor="example3cols3Input"
-                          >
-                            Total Amount
-                          </label>
-                          <Input
-                            onChange={handleChange("total_amount")}
-                            value={payData.total_amount}
-                            id="example3cols1Input"
-                            placeholder="Amount"
-                            required
-                            disabled
-                            type="number"
-                          />
-                        </Col>
-                        <Col>
-                          <label
-                            className="form-control-label"
-                            htmlFor="example3cols3Input"
-                          >
-                            Transaction Date
-                          </label>
-                          <Input
-                            value={payData.transaction_date}
-                            onChange={handleChange("transaction_date")}
-                            id="example3cols1Input"
-                            required
-                            type="date"
-                          />
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col>
-                          <label
-                            className="form-control-label"
-                            htmlFor="example3cols3Input"
-                          >
-                            Pay To
-                          </label>
-                          <Input
-                            value={payData.pay_to}
-                            onChange={handleChange("pay_to")}
-                            id="example3cols1Input"
-                            placeholder="Vaiabhav Pathak"
-                            required
-                            type="text"
-                          />
-                        </Col>
-                        <Col>
-                          <label
-                            className="form-control-label"
-                            htmlFor="example3cols3Input"
-                          >
-                            Pay By
-                          </label>
-                          <Input
-                            onChange={handleChange("pay_by")}
-                            value={payData.pay_by}
-                            id="example3cols1Input"
-                            placeholder="Abhinav Siwal"
-                            required
-                            type="text"
-                          />
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col>
-                          <Button
-                            className="btn btn-primary btn-lg float-right"
-                            color="primary"
-                            size="lg"
-                            type="submit"
-                          >
-                            Submit
-                          </Button>
-                        </Col>
-                      </Row>
+                      </form>
                     </>
                   )}
                 </CardBody>

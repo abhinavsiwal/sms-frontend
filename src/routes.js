@@ -952,14 +952,7 @@ export const adminRoutes = [
         layout: "/admin",
         permission: "add",
       },
-      {
-        path: "/marks-master1 ",
-        name: "Marks Master1",
-        miniName: "MM",
-        component: MarksMaster,
-        layout: "/admin",
-        permission: "add",
-      },
+
       {
         path: "/promotions ",
         name: "Promotions",
