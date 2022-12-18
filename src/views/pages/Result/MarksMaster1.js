@@ -223,7 +223,7 @@ const MarksMaster1 = () => {
     if(result1.length===0){
       setResultData([obj]);
     }
-    console.log(resultData);
+    console.log(resultData); 
   };
   const handleSubmit = async (e) => {
     e.preventDefault();

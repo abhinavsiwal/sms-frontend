@@ -113,7 +113,7 @@ function Staffdetails({ data, backHandle }) {
                             Details
                           </NavLink>
                         </NavItem>
-                        <NavItem>
+                        {/* <NavItem>
                           <NavLink
                             className={activeTab === "2" ? "active" : ""}
                             onClick={() => setActiveTab("2")}
@@ -128,7 +128,7 @@ function Staffdetails({ data, backHandle }) {
                           >
                             Attendance
                           </NavLink>
-                        </NavItem>
+                        </NavItem> */}
                         <NavItem>
                           <NavLink
                             className={activeTab === "4" ? "active" : ""}

@@ -191,3 +191,18 @@ export const updateSalaryBreakup = async (schoolId, userId, formData) => {
     throw new err();
   }
 }
+
+export const staffSalaryList = async (schoolId, userId, formData) => {
+  try {
+    const { data } = await sendRequest(
+      `${process.env.REACT_APP_API_URL}/api/school/accounts/staff_salary_list/${schoolId}/${userId}`,
+      formData,
+      "POST"
+    );
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw new err();
+  }
+}

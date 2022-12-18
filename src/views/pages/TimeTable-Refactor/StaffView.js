@@ -290,7 +290,7 @@ const StaffView = () => {
                               );
                             })}
                           </tr>
-                        );
+                        ); 
                       })}
                   </tbody>
                 </table>

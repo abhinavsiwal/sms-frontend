@@ -23,6 +23,7 @@ import AntTable from "../tables/AntTable";
 import { Popconfirm } from "antd";
 import { toast, ToastContainer } from "react-toastify"; 
 import LoadingScreen from "react-loading-screen";
+import { staffSalaryList } from "api/Budget";
 // import { PDFDownloadLink } from "@react-pdf/renderer";
 // import SalarySlip from "./SalarySlip";
 
@@ -204,44 +205,49 @@ const PaySalary = () => {
   }, [checked]);
 
   const getSalaryHandler = async () => {
-    let data = [];
-    data.push({
-      SNo: 1,
-      name: "John Doe",
-      department: "IT",
-      month: "January",
-      amount: "30000",
-      status: "Due",
-      action: (
-        <Button
-          className="btn-sm pull-right"
-          color="primary"
-          type="button"
-          key={"edit" + 1}
-        
-        >
-          {/* <i className="fas fa-user-edit" /> */}
-          Generate
-        </Button>
-        // <PDFDownloadLink document={<SalarySlip />} fileName="SalarySlip.pdf">
-        //   {({ blob, url, loading, error }) =>
-        //     loading ? (
-        //       "Loading document..."
-        //     ) : (
-        //       <Button
-        //         className="btn-sm pull-right"
-        //         color="primary"
-        //         type="button"
-        //         key={"edit" + 1}
-        //       >
-        //         Reshare
-        //       </Button>
-        //     )
-        //   }
-        // </PDFDownloadLink>
-      ), 
-    });
-    setTableData(data);
+
+    try {
+      setLoading(true);
+      const data = await staffSalaryList(user.school,user._id,null);
+      console.log(data);
+      if (data.err){
+        setLoading(false);
+        return toast.error(data.err);
+      } 
+      let data1 = [];
+      data.forEach((element,index) => {
+        data1.push({
+          SNo: index+1,
+          name: element?.staff?.firstname+" "+element?.staff?.lastname,
+          department: element?.staff?.department?.name,
+          month: element?.month,
+          amount:element?.total_salary,
+          status: element?.paid==="Y"?"Paid":"Due",
+          action: (
+            <a
+            className="btn-sm pull-right"
+            color="primary"
+            href={element?.url}
+            key={"edit" + 1}
+            target="_blank"
+          
+          >
+            
+            Generate
+          </a>
+          )
+        })
+      });
+      setTableData(data1);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error("Something went wrong");
+    }
+
+
+  
   };
 
   return (

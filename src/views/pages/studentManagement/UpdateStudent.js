@@ -1474,7 +1474,7 @@ function UpdateStudent({ studentDetails }) {
                               onChange={(date) => setFatherDOB(date)}
                               //  value={dateOfBirth}
                               selected={fatherDOB}
-                              required
+                          
                               className="datePicker"
                             />
                           </Col>
@@ -1491,7 +1491,7 @@ function UpdateStudent({ studentDetails }) {
                               placeholder="Phone Number"
                               type="number"
                               onChange={handleChange("father_phone")}
-                              required
+                       
                               value={student.father_phone}
                               onBlur={fatherPhoneBlurHandler}
                               invalid={fatherPhoneError}
@@ -1558,7 +1558,7 @@ function UpdateStudent({ studentDetails }) {
                               onChange={(date) => setMotherDOB(date)}
                               //  value={dateOfBirth}
                               selected={motherDOB}
-                              required
+                        
                               className="datePicker"
                             />
                           </Col>

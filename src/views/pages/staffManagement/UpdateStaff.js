@@ -43,7 +43,7 @@ import { fetchingSubjectError } from "constants/errors";
 import { fetchingDepartmentError } from "constants/errors";
 import { allSessions } from "api/session";
 import Staffdetails from "./Staffdetails";
-
+import {uploadFile} from "api/upload"
 function UpdateStaff({ staffDetails }) {
   const [step, setStep] = useState(0);
   const dispatch = useDispatch();
@@ -144,7 +144,7 @@ function UpdateStaff({ staffDetails }) {
   // console.log("sub", subject);
   const [a, setA] = useState([]);
   const [assignRole, setAssignRole] = useState(staffData.assign_role);
-  const [assignRoleId, setAssignRoleId] = useState(staffData.assign_role._id);
+  const [assignRoleId, setAssignRoleId] = useState(staffData?.assign_role?staffData.assign_role._id:"");
   const roleChangeHandler = (value) => {
     setAssignRoleId(value);
     console.log(value);
@@ -177,7 +177,7 @@ function UpdateStaff({ staffDetails }) {
 
   const handleFileChange = (name) => (event) => {
     formData.set(name, event.target.files[0]);
-    setStaffData({ ...staffData, [name]: event.target.files[0].name });
+    setStaffData({ ...staffData, [name]: event.target.files[0] });
     const reader = new FileReader();
     reader.onload = () => {
       if (reader.readyState === 2) {
@@ -273,6 +273,13 @@ function UpdateStaff({ staffDetails }) {
     }
     try {
       setLoading(true);
+      if(staffData.photo){
+        const formData1 = new FormData(); 
+        formData1.set("file", staffData.photo);
+        const data1 = await uploadFile(formData1);
+        console.log(data1);
+        formData.set("photo", data1.data[0]);
+      }
       const resp = await updateStaff(staffData._id, user._id, formData);
       // console.log(resp);
       if (resp.err) {
@@ -1352,6 +1359,7 @@ function UpdateStaff({ staffDetails }) {
                             value={assignRoleId}
                             required
                           >
+                            <option value="" disabled selected>Select Role</ option>
                             {allRoles &&
                               allRoles.map((role) => {
                                 return (
