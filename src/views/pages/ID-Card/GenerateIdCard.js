@@ -518,7 +518,7 @@ function GenerateIdCard() {
                       {loadingID ?
                       <Loader />
                       :
-                      <div className='id__card__wrapper' style={{
+                      <div ref={componentRef} className='id__card__wrapper' style={{
                         backgroundImage:`linear-gradient(rgba(${hexToRgb(color1).r},${hexToRgb(color1).g},${hexToRgb(color1).b},70%) 46%, ${color2} 80%)`,
                         backgroundPosition:"center",
                         backgroundRepeat:"no-repeat",
