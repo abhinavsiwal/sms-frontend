@@ -356,14 +356,16 @@ function SummaryReport() {
           { label: "Sr No.", key: "key" },
           { label: "Class", key: "class" },
           { label: "Section", key: "section" },
+          { label: "Class Fee", key: "class_fee" },
           { label: "Total Fee Due", key: "total_fee_due" },
-          { label: "Total Fee Due", key: "total_fee_due" },
+          { label: "Fee Received", key: "fee_received" },
+          { label: "Outstanding Summary", key: "outstanding_summary" },
         ];
   
         return {
           data: csvData,
           headers: headers,
-          filename: 'Bus_Student_Report.csv'
+          filename: 'Summary_Report.csv'
         };
       }
 

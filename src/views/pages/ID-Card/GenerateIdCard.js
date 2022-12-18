@@ -528,7 +528,7 @@ function GenerateIdCard() {
                         <header className='identityCard__header d-flex'>
                           <img className='logo' src={logo} alt='logo'/>
                           <div className='d-flex flex-column text-center ml-3'>
-                            <div>YOUR SCHOOL NAME HERE</div>
+                            <div>{IDdataSchool.schoolname}</div>
                             <div>Identity Card</div>
                           </div>
                         </header>
