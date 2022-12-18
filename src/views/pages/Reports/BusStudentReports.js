@@ -25,6 +25,7 @@ import {
     ModalFooter,
   } from "reactstrap";
   import { Table } from "ant-table-extensions";
+  import { CSVLink } from "react-csv";
 
 function BusStudentReports() {
   const { user, token } = isAuthenticated();
@@ -246,7 +247,28 @@ function BusStudentReports() {
         getReports()
         getAllClasses()
         getAllSessions()
-      },[])
+      },[]) 
+
+
+      const csvHandler = () =>{
+        const csvData = [
+          ...reportList
+        ]
+  
+        const headers = [
+          { label: "Sr No.", key: "key" },
+          { label: "Student ID", key: "sid" },
+          { label: "Name", key: "name" },
+          { label: "Class", key: "class" },
+          { label: "Section", key: "section" },
+        ];
+  
+        return {
+          data: csvData,
+          headers: headers,
+          filename: 'Bus_Student_Report.csv'
+        };
+      }
 
       const searchHHandler = () =>{
         formData.append("section",sec)
@@ -359,9 +381,9 @@ function BusStudentReports() {
                 </Row>
                 <Row className='mt-4'>
                     <Col md="12">
-                      <Button color='primary'>
-                        Export To CSV
-                      </Button>
+                        <Button color='primary' onClick={csvHandler}>
+                          <CSVLink {...csvHandler()} style={{color:"white"}}>Export to CSV</CSVLink>
+                        </Button>
                   </Col>
                 </Row>
                 <Row className='mt-4'>

@@ -204,9 +204,8 @@ function StudentReports() {
         setReportList(data)
         setLoading(false)
       })
-
-
     }
+    
     const csvHandler = () =>{
       const csvData = [
         ...reportList

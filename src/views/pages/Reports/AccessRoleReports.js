@@ -2,7 +2,7 @@ import React ,{useState}from 'react'
 import SimpleHeader from "components/Headers/SimpleHeader.js";
 import Loader from "components/Loader/Loader";
 import { SearchOutlined } from "@ant-design/icons";
-
+import { CSVLink } from "react-csv";
 import {
     Card,
     CardHeader,
@@ -82,6 +82,28 @@ function AccessRoleReports() {
     useEffect(() =>{
       getReports()
     },[])
+
+
+    const csvHandler = () =>{
+      const csvData = [
+        ...reportList
+      ]
+
+      const headers = [
+        { label: "Sr No.", key: "key" },
+        { label: "Student ID", key: "sid" },
+        { label: "Name", key: "name" },
+        { label: "Department", key: "department" },
+        { label: "Access Type", key: "access_type" },
+        { label: "Module Name", key: "module_name" },
+      ];
+
+      return {
+        data: csvData,
+        headers: headers,
+        filename: 'Access_Role_Report.csv'
+      };
+    }
 
     const columns = [
       {
@@ -295,9 +317,9 @@ function AccessRoleReports() {
                 </Row>
                 <Row className='mt-4'>
                     <Col md="12">
-                      <Button color='primary'>
-                        Export To CSV
-                      </Button>
+                        <Button color='primary' onClick={csvHandler}>
+                          <CSVLink {...csvHandler()} style={{color:"white"}}>Export to CSV</CSVLink>
+                        </Button>
                   </Col>
                 </Row>
                 <Row className='mt-4'>

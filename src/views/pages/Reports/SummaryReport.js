@@ -24,6 +24,7 @@ import {
     ModalFooter,
   } from "reactstrap";
   import { Table } from "ant-table-extensions";
+  import { CSVLink } from "react-csv";
   import { isAuthenticated } from "api/auth";
 
 function SummaryReport() {
@@ -345,6 +346,26 @@ function SummaryReport() {
           getReports()
         }
       },[session])
+
+      const csvHandler = () =>{
+        const csvData = [
+          ...reportList
+        ]
+  
+        const headers = [
+          { label: "Sr No.", key: "key" },
+          { label: "Class", key: "class" },
+          { label: "Section", key: "section" },
+          { label: "Total Fee Due", key: "total_fee_due" },
+          { label: "Total Fee Due", key: "total_fee_due" },
+        ];
+  
+        return {
+          data: csvData,
+          headers: headers,
+          filename: 'Bus_Student_Report.csv'
+        };
+      }
 
   return (
     <>

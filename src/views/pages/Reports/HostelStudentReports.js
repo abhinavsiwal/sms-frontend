@@ -4,6 +4,7 @@ import Loader from "components/Loader/Loader";
 import { SearchOutlined } from "@ant-design/icons";
 import axios from 'axios';
 import { isAuthenticated } from "api/auth";
+import { CSVLink } from "react-csv";
 
 import {
     Card,
@@ -420,8 +421,30 @@ function HostelStudentReports() {
           setReportList(data)
           setLoading(false)
         })
+      }
+
+      const csvHandler = () =>{
+        const csvData = [
+          ...reportList
+        ]
   
+        const headers = [
+          { label: "Sr No.", key: "key" },
+          { label: "Student ID", key: "sid" },
+          { label: "Name", key: "name" },
+          { label: "Class", key: "class" },
+          { label: "Section", key: "section" },
+          { label: "Roll No", key: "rollno" },
+          { label: "Building", key: "building" },
+          { label: "Allocation Date", key: "allocation_date" },
+          { label: "Allocated By", key: "allocated_by" },
+        ];
   
+        return {
+          data: csvData,
+          headers: headers,
+          filename: 'Hostel_Student_Report.csv'
+        };
       }
 
   return (
@@ -501,9 +524,9 @@ function HostelStudentReports() {
                 </Row>
                 <Row className='mt-4'>
                     <Col md="12">
-                      <Button color='primary'>
-                        Export To CSV
-                      </Button>
+                        <Button color='primary' onClick={csvHandler}>
+                          <CSVLink {...csvHandler()} style={{color:"white"}}>Export to CSV</CSVLink>
+                        </Button>
                   </Col>
                 </Row>
                 <Row className='mt-4'>
