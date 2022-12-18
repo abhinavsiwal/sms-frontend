@@ -130,6 +130,8 @@ function StudentReports() {
       
       axios(config)
       .then(function (response) {
+        let currentSession = response.data.find((item) => (item.status === "current"))
+        setSession(currentSession._id)
         setSessions(response.data);
       })
     }
@@ -202,9 +204,8 @@ function StudentReports() {
         setReportList(data)
         setLoading(false)
       })
-
-
     }
+    
     const csvHandler = () =>{
       const csvData = [
         ...reportList

@@ -518,36 +518,36 @@ function GenerateIdCard() {
                       {loadingID ?
                       <Loader />
                       :
-                      <div ref={componentRef} className='id__card__wrapper' style={{
+                      <div className='id__card__wrapper' style={{
                         backgroundImage:`linear-gradient(rgba(${hexToRgb(color1).r},${hexToRgb(color1).g},${hexToRgb(color1).b},70%) 46%, ${color2} 80%)`,
                         backgroundPosition:"center",
                         backgroundRepeat:"no-repeat",
                         backgroundSize:"contain",
                         backgroundOrigin:"center"
                     }}> 
-                          <header className='identityCard__header d-flex'>
+                        <header className='identityCard__header d-flex'>
                           <img className='logo' src={logo} alt='logo'/>
                           <div className='d-flex flex-column text-center ml-3'>
-                            <div>{IDdataSchool.schoolname}</div>
+                            <div>YOUR SCHOOL NAME HERE</div>
                             <div>Identity Card</div>
                           </div>
                         </header>
                         <div className="identityCard__profile" style={{
-                                      backgroundImage: checked ? `linear-gradient(rgba(${hexToRgb(color1).r},${hexToRgb(color1).g},${hexToRgb(color1).b},70%) 46%, ${color2} 100%), url(${logo})`: null,
-                                      backgroundPosition:"center",
-                                      backgroundRepeat:"no-repeat",
-                                      backgroundSize:"contain",
-                                      backgroundOrigin:"center"
-                                  }}>
+                              backgroundImage: checked ? `linear-gradient(rgba(${hexToRgb(color1).r},${hexToRgb(color1).g},${hexToRgb(color1).b},70%) 46%, ${color2} 100%), url(${logo})`: null,
+                              backgroundPosition:"center",
+                              backgroundRepeat:"no-repeat",
+                              backgroundSize:"contain",
+                              backgroundOrigin:"center"
+                          }}>
                           <div className='id__card'>
                             <div className="identityCard__visual">
-                              <img src={stuData.tempPhoto} alt="profile_image" />
+                            <img  src={stuData.tempPhoto} alt='logo'/>
                             </div>
                           </div>
                           <ul className="identityCard__list list-unstyled">
                             <li><strong>Name :</strong> <span>{stuData.firstname + " " + stuData.lastname}</span></li>
-                            <li><strong>Class :</strong> <span>Class-{className}</span></li>
-                            <li><strong>Section :</strong> <span>Section-{section}</span></li>
+                            <li><strong>Class :</strong> <span>{className}</span></li>
+                            <li><strong>Section :</strong> <span>{section}</span></li>
                             <li><strong>Roll No. :</strong> <span>{stuData.roll_number}</span></li>
                             <li><strong>Gender :</strong> <span>{stuData.gender}</span></li>
                             <li><strong>Date of birth :</strong> <span>{formatDate(dob)}</span></li>
@@ -562,7 +562,7 @@ function GenerateIdCard() {
                             </span>
                           </div>
                         </footer>
-                      </div> 
+                    </div>
                       }
                   </ModalBody>
                   <ModalFooter className='d-flex justify-content-center'>

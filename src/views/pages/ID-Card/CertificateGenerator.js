@@ -29,8 +29,7 @@ import {
   Modal,
   ModalBody,
 } from "reactstrap";
-import IDCard from './IDCard';
-import axios from 'axios';
+
 
 function CertificateGenerator() {
   const [content,setContent] = useState(`This is to certify that <strong>Mr./Ms./Mrs.</strong> _ _ _ _ _ _ _ _ _ _ _ _ has successfully secured _ _ _ _ _ _ position  

@@ -304,7 +304,7 @@ function SetIdCard() {
                                 backgroundOrigin:"center"
                             }}> 
                                 <header className='identityCard__header d-flex'>
-                                  <img className='logo' src='https://bethesda.edumanager.in/uploads/2021-04-17T16-09-33Bethesda-Logo.jpeg' alt='logo'/>
+                                  <img className='logo' src='https://smsproject-bucket.s3.amazonaws.com/tRIAUgyQ4gES0b3IXYYM.png?AWSAccessKeyId=AKIA4C5LUTOBOVJHFUHQ&Expires=1671459793&Signature=a91hUmUnKkF%2FgObF6wpjiG%2FmsWM%3D' alt='logo'/>
                                   <div className='d-flex flex-column text-center ml-3'>
                                     <div>YOUR SCHOOL NAME HERE</div>
                                     <div>Identity Card</div>
@@ -319,7 +319,7 @@ function SetIdCard() {
                                   }}>
                                   <div className='id__card'>
                                     <div className="identityCard__visual">
-                                    <img  src='https://bethesda.edumanager.in/uploads/2021-04-17T16-09-33Bethesda-Logo.jpeg' alt='logo'/>
+                                    <img  src='https://smsproject-bucket.s3.amazonaws.com/47BLwqISuhw39dZ8NDAl.png?AWSAccessKeyId=AKIA4C5LUTOBOVJHFUHQ&Expires=1671459588&Signature=URb2Q%2FLYvq%2BXnxpts0hINVElPOU%3D' alt='logo'/>
                                     </div>
                                   </div>
                                   <ul className="identityCard__list list-unstyled">

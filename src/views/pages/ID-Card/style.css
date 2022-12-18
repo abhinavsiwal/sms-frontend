@@ -17,8 +17,8 @@
 .identityCard__visual{
     padding: 0 1rem;
     max-width: 140px;
-    min-height: 170px;
-    max-height: 170px;
+    min-height: 137px;
+    max-height: 137px;
     border-radius: 15px;
     display: flex;
     justify-content: center;
@@ -49,6 +49,7 @@ img{
     letter-spacing: 10px;
     font-family: Georgia, 'Times New Roman', Times, serif;
     background-color: #133f86;
+    z-index: 1111;
 }
 
 .identityCard .filled {
