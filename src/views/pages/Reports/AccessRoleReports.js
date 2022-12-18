@@ -48,7 +48,7 @@ function AccessRoleReports() {
         console.log(response.data)
         const data = [];
         for (let i = 0; i < response.data.length; i++) {
-          let arr = Object.keys(response.data[i].assign_role.permissions !==undefined && response.data[i].assign_role.permissions)
+          let arr = Object.keys(response.data[i].assign_role?.permissions !==undefined && response.data[i].assign_role?.permissions)
           let moduleName = arr.length !== 0 ?  arr.join(", ") : "Module Name Not Found"
           let accessType = "" 
           var access_arr = []

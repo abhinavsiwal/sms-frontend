@@ -61,7 +61,7 @@ function AdminDashboard() {
         setLoading(true)
         var config = {
           method: 'post',
-          url: `${process.env.REACT_APP_API_URL}/api/reports/admin_dashboard/${user.school}/${user._id}`,
+          url: `${process.env.REACT_APP_API_URL}/api/reports/dashboard/${user.school}/${user._id}`,
           headers: { 
             'Authorization': 'Bearer ' + token
           }
@@ -148,7 +148,7 @@ function AdminDashboard() {
                         <Col md='3'>
                             <Card style={{background:'#f4b083'}}>
                                 <CardBody className='d-flex justify-content-center align-items-center flex-column'>
-                                    <h2 style={{margin:"0"}}>130000</h2>
+                                    <h2 style={{margin:"0"}}>{reportData.budget_used}</h2>
                                     <h3>Expenses</h3>
                                 </CardBody>
                             </Card>
@@ -156,7 +156,7 @@ function AdminDashboard() {
                         <Col md='3'>
                             <Card style={{background:'#a8d08d'}}>
                                 <CardBody className='d-flex justify-content-center align-items-center flex-column'>
-                                    <h2 style={{margin:"0"}}>560000</h2>
+                                    <h2 style={{margin:"0"}}>{reportData.revenue}</h2>
                                     <h3>Revenue</h3>
                                 </CardBody>
                             </Card>
@@ -293,23 +293,28 @@ function AdminDashboard() {
                                 <tbody>
                                     <tr style={{border:"1px solid black"}}>
                                         <td style={{textAlign:"start",border:"1px solid black"}}>One time</td>
-                                        <td style={{textAlign:"start",border:"1px solid black"}}>50000</td>
+                                        <td style={{textAlign:"start",border:"1px solid black"}}>{reportData?.pending_fees?.one_time_fees}</td>
                                     </tr>
                                     <tr style={{border:"1px solid black"}}>
                                         <td style={{textAlign:"start",border:"1px solid black"}}>Tuition Fee</td>
-                                        <td style={{textAlign:"start",border:"1px solid black"}}>50000</td>
+                                        <td style={{textAlign:"start",border:"1px solid black"}}>{reportData?.pending_fees?.tution_fees}</td>
                                     </tr>
                                     <tr style={{border:"1px solid black"}}>
                                         <td style={{textAlign:"start",border:"1px solid black"}}>Transport Fee</td>
-                                        <td style={{textAlign:"start",border:"1px solid black"}}>50000</td>
+                                        <td style={{textAlign:"start",border:"1px solid black"}}>{reportData?.pending_fees?.transport_fees}</td>
                                     </tr>
                                     <tr style={{border:"1px solid black"}}>
                                         <td style={{textAlign:"start",border:"1px solid black"}}>Hostel Fee</td>
-                                        <td style={{textAlign:"start",border:"1px solid black"}}>50000</td>
+                                        <td style={{textAlign:"start",border:"1px solid black"}}>{reportData?.pending_fees?.hostel_fees}</td>
                                     </tr>
                                     <tr style={{border:"1px solid black"}}>
                                         <td style={{textAlign:"start",border:"2px solid black"}}><strong>Total Pending</strong></td>
-                                        <td style={{textAlign:"start",border:"2px solid black"}}><strong>265000</strong></td>
+                                        <td style={{textAlign:"start",border:"2px solid black"}}><strong>{
+                                                   reportData?.pending_fees?.one_time_fees +
+                                                   reportData?.pending_fees?.tution_fees +
+                                                   reportData?.pending_fees?.transport_fees +
+                                                   reportData?.pending_fees?.hostel_fees
+                                            }</strong></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -319,23 +324,28 @@ function AdminDashboard() {
                                 <tbody>
                                     <tr style={{border:"1px solid black"}}>
                                         <td style={{textAlign:"start",border:"1px solid black"}}>One time</td>
-                                        <td style={{textAlign:"start",border:"1px solid black"}}>50000</td>
+                                        <td style={{textAlign:"start",border:"1px solid black"}}>{reportData?.collected_fees?.one_time_fees}</td>
                                     </tr>
                                     <tr style={{border:"1px solid black"}}>
                                         <td style={{textAlign:"start",border:"1px solid black"}}>Tuition Fee</td>
-                                        <td style={{textAlign:"start",border:"1px solid black"}}>50000</td>
+                                        <td style={{textAlign:"start",border:"1px solid black"}}>{reportData?.collected_fees?.tution_fees}</td>
                                     </tr>
                                     <tr style={{border:"1px solid black"}}>
                                         <td style={{textAlign:"start",border:"1px solid black"}}>Transport Fee</td>
-                                        <td style={{textAlign:"start",border:"1px solid black"}}>50000</td>
+                                        <td style={{textAlign:"start",border:"1px solid black"}}>{reportData?.collected_fees?.transport_fees}</td>
                                     </tr>
                                     <tr style={{border:"1px solid black"}}>
                                         <td style={{textAlign:"start",border:"1px solid black"}}>Hostel Fee</td>
-                                        <td style={{textAlign:"start",border:"1px solid black"}}>50000</td>
+                                        <td style={{textAlign:"start",border:"1px solid black"}}>{reportData?.collected_fees?.hostel_fees}</td>
                                     </tr>
                                     <tr style={{border:"1px solid black"}}>
                                         <td style={{textAlign:"start",border:"2px solid black"}}><strong>Total Pending</strong></td>
-                                        <td style={{textAlign:"start",border:"2px solid black"}}><strong>265000</strong></td>
+                                        <td style={{textAlign:"start",border:"2px solid black"}}><strong>{
+                                            reportData?.collected_fees?.one_time_fees +
+                                            reportData?.collected_fees?.tution_fees +
+                                            reportData?.collected_fees?.transport_fees +
+                                            reportData?.collected_fees?.hostel_fees
+                                            }</strong></td>
                                     </tr>
                                 </tbody>
                             </table>

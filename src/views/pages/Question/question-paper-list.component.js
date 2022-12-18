@@ -97,6 +97,7 @@ export default class QuestionPaperList extends AbstractComponent {
               exam_paper_set : response.data[i].exam_paper_set,
               subject : response.data[i].subject,
               class: response.data[i].class.name,
+              question_count: response.data[i].question_count,
               action:(
                 <h5 key={i + 1} className="mb-0">
                 <Button

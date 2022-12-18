@@ -424,7 +424,8 @@ export default class QuestionPaper extends AbstractComponent {
                         subject: response.data.subject,
                         subject_id: response.data.subject_id,
                         session : response.data.class.session,
-                        questions: response.data.questions
+                        questions: response.data.questions,
+                        currentQuestion: response.data.question_count + 1
                     });
                 }).catch(err => console.log(err));
         }
@@ -519,6 +520,7 @@ export default class QuestionPaper extends AbstractComponent {
             data.append('subject', this.state.subject);
             data.append('subject_id', this.state.subject_id);
             data.append('session', this.state.session);
+            data.append('question_count', this.state.currentQuestion);
 
             const config = {
                 method: 'put',
@@ -547,6 +549,7 @@ export default class QuestionPaper extends AbstractComponent {
             data.append('subject', this.state.subject);
             data.append('subject_id', this.state.subject_id);
             data.append('session', this.state.session);
+            data.append('question_count', this.state.currentQuestion);
 
             const config = {
                 method: 'put',
