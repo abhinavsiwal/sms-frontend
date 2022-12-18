@@ -285,16 +285,7 @@ const StaffView = () => {
                                         ).subject
                                       : ""}
                                   </p>
-                                  <p>
-                                    {
-                                      periods1[day].find(
-                                        (d) =>
-                                          period.period_id.start === d.start &&
-                                          period.period_id.end === d.end &&
-                                          (d.staff !== null || d.staff !== {})
-                                      )?.staff?.firstname
-                                    }
-                                  </p>
+                           
                                 </td>
                               );
                             })}
