@@ -31,13 +31,16 @@ import {
 } from "reactstrap";
 
 function GenerateIdCard() {
+  const [classes,setClasses] = useState([])
+  const [clas,setClas] = useState("")
+  const [sec,setSec] = useState("")
+  const [session,setSession] = useState("")
+  const [selectClass,setSelectClass] = useState({})
   const [checked,setChecked] = useState(false) 
   const componentRef = useRef();
   const [loading, setLoading] = useState(false);
   const [loadingID, setLoadingID] = useState(false);
-  const [pageCount, setPageCount] = useState(0);
   const [studentList, setStudentList] = useState([]);
-  const [currentItems, setCurrentItems] = useState(null);
   const itemsPerPage = 9;
   const [itemOffset, setItemOffset] = useState(0);
   const { user, token } = isAuthenticated();
@@ -108,45 +111,49 @@ function GenerateIdCard() {
         });
       }
       setStudentList(data);
-      setCurrentItems(data.slice(itemOffset, endOffset));
-      setPageCount(Math.ceil(data.length / itemsPerPage));
       setLoading(false);
     }
   };
 
   const printChecked = (e,id,pos) =>{
   }
+  const getAllClasses = () =>{
+    var config = {
+      method: 'get',
+      url: `${process.env.REACT_APP_API_URL}/api/school/class/all/${user.school}/${user._id}`,
+      headers: { 
+        'Authorization': 'Bearer ' + token
+      }
+    };
+    
+    axios(config)
+    .then(function (response) {
+      setClasses(response.data);
+    })
+  }
+
+  const classHandler = (e) =>{
+    setClas(e.target.value)
+    var section = classes.find((item) => e.target.value.toString() === item._id.toString())
+    setSelectClass(section)
+  }
+
+  const sectionHandler = (e) =>{
+    setSec(e.target.value)
+  }
+
 
   useEffect(() => {
     fetchStudents();
-  }, [itemOffset, itemsPerPage]);
+    getAllClasses()
+  }, []);
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current, 
   });
 
-  // const genImg = async () =>{
-  //   const element = componentRef.current;
-  //   const canvas = await html2canvas(element);
-
-  //   const data = canvas.toDataURL('image/jpg');
-  //   const link = document.createElement('a');
-
-  //   if (typeof link.download === 'string') {
-  //     link.href = data;
-  //     link.download = 'image.jpg';
-
-  //     document.body.appendChild(link);
-  //     link.click();
-  //     document.body.removeChild(link);
-  //   } else {
-  //     window.open(data);
-  //   }
-  // }
-
   const handlePrintAndImg = () =>{
     handlePrint()
-    // genImg()
   }
 
   const columns = [
@@ -410,52 +417,58 @@ function GenerateIdCard() {
                         <Input
                           id="example4cols2Input"
                           placeholder="Student Name"
-                          type="number"
+                          type="text"
                           required
+                          disabled
                         />
                       </Col>
                       <Col md="2">
                         <Input
                           id="example4cols2Input"
                           placeholder="Student ID"
-                          type="number"
+                          type="text"
                           required
+                          disabled
                         />
                       </Col>
                       <Col md="2">
                         <Input
                           id="exampleFormControlSelect3"
                           type="select"
-                          value={""}
+                          value={clas}
+                          onChange={classHandler}
                           required
                         >
                           <option value="" disabled selected>
                             Select Class
                           </option>
-                          <option>Class A</option>
-                          <option>Class B</option>
-                          <option>Class I</option>
-                          <option>Class II</option>
-                          <option>Class III</option>
-                          <option>Class IV</option>
-                          <option>Class V</option>
-                          <option>Class VI</option>
-                          <option>Class VII</option>
-                          <option>Class VIII</option>
-                          <option>Class IX</option>
-                          <option>Class X</option>
+                          {
+                            classes && classes.map((item,index) =>(
+                              <option key={index} value={item._id}  >
+                                {item.name}
+                              </option>
+                            ))
+                          }
                         </Input>
                       </Col>
                       <Col md="3">
                         <Input
                           id="exampleFormControlSelect3"
                           type="select"
-                          value={""}
+                          value={sec}
+                          onChange={sectionHandler}
                           required
                         >
-                          <option value="" disabled selected>
+                         <option value="" disabled selected>
                             Select Section
                           </option>
+                          {
+                            selectClass.section && selectClass.section.map((item,index) =>(
+                              <option key={index} value={item._id}>
+                                {item.name}
+                              </option>
+                            ))
+                          }
                         </Input>
                       </Col>
                       <Col md="2" className='d-flex justify-content-end align-items-center'>
