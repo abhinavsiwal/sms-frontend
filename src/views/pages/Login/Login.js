@@ -48,7 +48,9 @@ function Login() {
   const [focusedEmail, setfocusedEmail] = useState(false);
   const [focusedPassword, setfocusedPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { loading, error, token } = useSelector((state) => state.authReducer);
+  const { loading, error, token, userDetails } = useSelector(
+    (state) => state.authReducer
+  );
 
   useEffect(() => {
     if (!localStorage.getItem("persist:root")) {
@@ -59,6 +61,16 @@ function Login() {
       setError("");
       return;
     }
+
+    // if ( userDetails.schoolStatus !== "Active") {
+    //   console.log("here");
+    //   dispatch(setToken(""));
+    //   dispatch(setExpiry(""));
+    //   dispatch(setUserDetails({}));
+    //   setError("");
+    //   toast.error("Your school is not active");
+    //   return;
+    // }
 
     if (token) {
       // console.log(token);
@@ -160,7 +172,7 @@ function Login() {
                     htmlFor="example4cols2Input"
                   >
                     Password
-                  </label> 
+                  </label>
                   <FormGroup
                     className={classnames("mb-3", {
                       focused: focusedPassword,

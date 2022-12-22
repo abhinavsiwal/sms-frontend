@@ -36,7 +36,7 @@ import {
   addClassSuccess,
   deleteClassSuccess,
 } from "constants/success";
-
+import LoadingScreen from "react-loading-screen";
 import { allSessions } from "api/session";
 import { useReactToPrint } from "react-to-print";
 
@@ -44,7 +44,7 @@ const AddClass = () => {
   const [classList, setClassList] = useState([]);
   const [reload, setReload] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [addLoading, setAddLoading] = useState(false);
+
   const [editing, setEditing] = useState(false);
   const [editClassName, setEditClassName] = useState("");
   const [classId, setClassId] = useState("");
@@ -93,17 +93,18 @@ const AddClass = () => {
 
   const getAllClasses = async () => {
     try {
+      setLoading(true);
       const res = await allClass(user._id, user.school, token);
 
       console.log("allClass", res);
       dispatch(setClass(res));
       setClassList(res);
 
-      setLoading(true);
+      setLoading(false);
     } catch (err) {
       console.log(err);
       toast.error(fetchingClassError);
-      setLoading(true);
+      setLoading(false);
     }
   };
 
@@ -263,12 +264,12 @@ const AddClass = () => {
     e.preventDefault();
     const { user, token } = isAuthenticated();
     formData.set("school", user.school);
-    formData.set("session",classData.session);
+    formData.set("session", classData.session);
     try {
-      setAddLoading(true);
+      setLoading(true);
       const data = await addClass(user._id, token, formData);
       if (data.err) {
-        setAddLoading(false);
+        setLoading(false);
         return toast.error(data.err);
       }
       setClassData({
@@ -277,16 +278,16 @@ const AddClass = () => {
         abbreviation: "",
       });
       toast.success(addClassSuccess);
-      setAddLoading(false);
+      setLoading(false);
       setReload(!reload);
     } catch (err) {
       toast.error(addClassError);
-      setAddLoading(false);
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    if(sessions.length!==0){
+    if (sessions.length !== 0) {
       defaultSession1();
     }
   }, [sessions]);
@@ -299,7 +300,7 @@ const AddClass = () => {
       ...classData,
       session: defaultSession._id,
     });
-    setSelectedSessionId(defaultSession._id)
+    setSelectedSessionId(defaultSession._id);
   };
 
   const handleOnChange = (e) => {
@@ -325,8 +326,8 @@ const AddClass = () => {
     }
     console.log(classList);
     let res = classList.filter((item) => {
-      if(!item.session){
-        return
+      if (!item.session) {
+        return;
       }
       return item.session._id === selectedSessionId;
     });
@@ -391,107 +392,109 @@ const AddClass = () => {
         pauseOnHover
         theme="colored"
       />
+      <LoadingScreen
+        loading={loading}
+        bgColor="#f1f1f1"
+        spinnerColor="#9ee5f8"
+        textColor="#676767"
+        text="Please Wait..."
+      ></LoadingScreen>
       <Container className="mt--6" fluid>
         <Row>
           <Col lg="4">
-            {!addLoading ? (
-              permissions &&
-              permissions.includes("add") && (
-                <div className="card-wrapper">
-                  <Card>
-                    <CardHeader>
-                      <h2>Create Class Master</h2>
-                    </CardHeader>
-                    <Form onSubmit={handleFormChange} className="mb-4">
-                      <CardBody>
-                        <Row>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Session
-                            </label>
-
-                            <select
-                              className="form-control"
-                              onChange={handleChange("session")}
-                              value={classData.session}
-                            >
-                              <option>Select Session</option>
-                              {sessions &&
-                                sessions.map((data) => {
-                                  return (
-                                    <option key={data._id} value={data._id}>
-                                      {data.name}
-                                    </option>
-                                  );
-                                })}
-                            </select>
-                          </Col>
-                        </Row>
-                        <br />
-                        <Row>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Class
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Class"
-                              type="text"
-                              onChange={handleChange("name")}
-                              value={classData.name}
-                              required
-                            />
-                          </Col>
-                        </Row>
-
-                        <Row className="mt-4">
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Class Abbreviation
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Class Abbreviation"
-                              type="text"
-                              onChange={handleChange("abbreviation")}
-                              value={classData.abbreviation}
-                              required
-                            />
-                          </Col>
-                        </Row>
-                        <Row className="mt-4">
-                          <Col
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                              width: "100%",
-                            }}
+            {permissions && permissions.includes("add") && (
+              <div className="card-wrapper">
+                <Card>
+                  <CardHeader>
+                    <h2>Create Class Master</h2>
+                  </CardHeader>
+                  <Form onSubmit={handleFormChange} className="mb-4">
+                    <CardBody>
+                      <Row>
+                        <Col>
+                          <label
+                            className="form-control-label"
+                            htmlFor="example4cols2Input"
                           >
-                            <Button color="primary" type="submit">
-                              Submit
-                            </Button>
-                          </Col>
-                        </Row>
-                      </CardBody>
-                    </Form>
-                  </Card>
-                </div>
-              )
-            ) : (
-              <Loader />
+                            Session
+                          </label>
+
+                          <select
+                            className="form-control"
+                            onChange={handleChange("session")}
+                            value={classData.session}
+                          >
+                            <option>Select Session</option>
+                            {sessions &&
+                              sessions.map((data) => {
+                                return (
+                                  <option key={data._id} value={data._id}>
+                                    {data.name}
+                                  </option>
+                                );
+                              })}
+                          </select>
+                        </Col>
+                      </Row>
+                      <br />
+                      <Row>
+                        <Col>
+                          <label
+                            className="form-control-label"
+                            htmlFor="example4cols2Input"
+                          >
+                            Class
+                          </label>
+                          <Input
+                            id="example4cols2Input"
+                            placeholder="Class"
+                            type="text"
+                            onChange={handleChange("name")}
+                            value={classData.name}
+                            required
+                          />
+                        </Col>
+                      </Row>
+
+                      <Row className="mt-4">
+                        <Col>
+                          <label
+                            className="form-control-label"
+                            htmlFor="example4cols2Input"
+                          >
+                            Class Abbreviation
+                          </label>
+                          <Input
+                            id="example4cols2Input"
+                            placeholder="Class Abbreviation"
+                            type="text"
+                            onChange={handleChange("abbreviation")}
+                            value={classData.abbreviation}
+                            required
+                          />
+                        </Col>
+                      </Row>
+                      <Row className="mt-4">
+                        <Col
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            width: "100%",
+                          }}
+                        >
+                          <Button color="primary" type="submit">
+                            Submit
+                          </Button>
+                        </Col>
+                      </Row>
+                    </CardBody>
+                  </Form>
+                </Card>
+              </div>
             )}
           </Col>
 
-          <Col lg={permissions && permissions.includes("add")?8:12} >
+          <Col lg={permissions && permissions.includes("add") ? 8 : 12}>
             <div className="card-wrapper">
               <Card>
                 <CardHeader>
@@ -530,18 +533,15 @@ const AddClass = () => {
                           >
                             Print
                           </Button>
-                          {loading && classList ? (
-                            <div ref={componentRef}>
-                              <AntTable
-                                columns={columns}
-                                data={tableData}
-                                pagination={true}
-                                exportFileName="ClassDetails"
-                              />
-                            </div>
-                          ) : (
-                            <Loader />
-                          )}
+
+                          <div ref={componentRef}>
+                            <AntTable
+                              columns={columns}
+                              data={tableData}
+                              pagination={true}
+                              exportFileName="ClassDetails"
+                            />
+                          </div>
                         </>
                       ) : (
                         <Table
@@ -614,7 +614,7 @@ const AddClass = () => {
               </Col>
             </Row>
           </ModalBody>
-          <ModalFooter style={{margin:"0 auto"}} >
+          <ModalFooter style={{ margin: "0 auto" }}>
             <Button color="success" type="button" onClick={handleEdit}>
               Save changes
             </Button>

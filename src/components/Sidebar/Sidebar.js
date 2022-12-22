@@ -27,11 +27,19 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import { Collapse, NavbarBrand, Navbar, NavItem, NavLink, Nav } from 'reactstrap';
 import { schoolProfile} from "api/school";
 import { isAuthenticated } from "api/auth";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setToken,
+  setExpiry,
+  setUserDetails,
+  setError,
+} from "../../store/reducers/auth";
 function Sidebar({ toggleSidenav, sidenavOpen, routes, logo, rtlActive }) {
   const [state, setState] = React.useState({});
   const [schoolDetails, setSchoolDetails] = useState({});
   const location = useLocation();
   const { user } = isAuthenticated();
+  const dispatch = useDispatch();
   React.useEffect(() => {
     setState(getCollapseStates(routes));
     // eslint-disable-next-line
@@ -104,6 +112,15 @@ function Sidebar({ toggleSidenav, sidenavOpen, routes, logo, rtlActive }) {
         console.log(data.err);
         return;
       }
+      if(data.status!=="Active"){
+        console.log("here");
+        dispatch(setToken(""));
+        dispatch(setExpiry(""));
+        dispatch(setUserDetails({}));
+        setError("");
+        return;
+      }
+
       setSchoolDetails(data);
     
       // setImagesPreview(data.photo);
@@ -195,7 +212,7 @@ function Sidebar({ toggleSidenav, sidenavOpen, routes, logo, rtlActive }) {
       <div className="sidenav-header d-flex align-items-center">
         {logo ? (
           <NavbarBrand {...navbarBrandProps}>
-            <img alt={logo.imgAlt} className="navbar-brand-img" src={ schoolDetails?schoolDetails.photo: "/img/logo1.jpeg"} />
+            <img alt={logo.imgAlt} className="navbar-brand-img" src={ schoolDetails.photo?schoolDetails.photo: "/img/logo1.jpeg"} />
           </NavbarBrand>
         ) : null}
         <div className="ml-auto">

@@ -19,9 +19,12 @@ export const login = createAsyncThunk(
     if (username && password) {
       try { 
         const data = await signIn(username, password);
-        // console.log(data);
+        console.log(data);
         if(data.err){
          return rejectWithValue(data.err);
+        }
+        if(data.user.schoolStatus!=="Active"){
+          return rejectWithValue("Your School is not active. Please contact your school admin.");
         }
         return data;
       } catch (err) {

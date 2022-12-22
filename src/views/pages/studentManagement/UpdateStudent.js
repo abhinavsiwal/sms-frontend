@@ -237,7 +237,7 @@ function UpdateStudent({ studentDetails }) {
   };
 
   const motherPhoneBlurHandler = () => {
-    let regex = /^[5-9]{2}[0-9]{8}$/;
+    let regex = /^[5-9]{1}[0-9]{9}$/;
     if (regex.test(student.mother_phone)) {
       setMotherPhoneError(false);
       setDisableButton(false);
