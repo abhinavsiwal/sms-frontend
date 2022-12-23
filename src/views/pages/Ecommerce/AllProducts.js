@@ -969,8 +969,8 @@ const AllProducts = () => {
                     </Input>
                   </Col>
                 </Row>
-                <Row className="mt-4 float-right">
-                  <Col>
+                <Row className="mt-4 ">
+                  <Col style={{display:"flex",justifyContent:"center"}} >
                     <Button color="primary" type="submit">
                       Add Product
                     </Button>

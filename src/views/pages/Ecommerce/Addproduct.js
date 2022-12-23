@@ -30,12 +30,11 @@ import {
   deleteCategory,
   updateCategory,
 } from "api/category";
+import LoadingScreen from "react-loading-screen";
 function Addproduct() {
   //Value for image
-  const [categoryLoading, setCategoryLoading] = useState(false);
-  const [addCategoryLoading, setAddCategoryLoading] = useState(false);
-  const [editCategoryLoading, setEditCategoryLoading] = useState(false);
-  const [addProductLoading, setAddProductLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+ 
   const [categoryName, setCategoryName] = useState("");
   const [categoryAbbv, setCategoryAbbv] = useState("");
   const [allCategories, setAllCategories] = useState([]);
@@ -46,7 +45,6 @@ function Addproduct() {
   const [editId, setEditId] = useState("");
   const [categoriesData, setCategoriesData] = useState([]);
   const [imagesPreview, setImagesPreview] = useState();
- 
   const [addProduct, setAddProduct] = useState({
     name: "",
     description: "",
@@ -155,12 +153,12 @@ function Addproduct() {
 
   const getAllCategoriesHandler = async () => {
     try {
-      setCategoryLoading(true);
+      setLoading(true);
       const data = await getAllCategories(user._id, user.school);
       console.log(data);
       if (data.err) {
         toast.error(data.err);
-        setCategoryLoading(false);
+        setLoading(false);
         return;
       }
       setCategoriesData(data);
@@ -211,30 +209,32 @@ function Addproduct() {
       }
 
       setAllCategories(tableData);
-      setCategoryLoading(false);
+      setLoading(false);
     } catch (err) {
       console.log(err);
+      
+      setLoading(false);
       toast.error("Get Category Failed");
     }
   };
 
   const deleteCategoryHandler = async (categoryId) => {
     try {
-      setCategoryLoading(true);
+      setLoading(true);
       const data = await deleteCategory(user._id, categoryId);
       console.log(data);
       if (data.err) {
         toast.error(data.err);
-        setCategoryLoading(false);
+        setLoading(false);
         return;
       }
       toast.success("Category Deleted Successfully");
-      setCategoryLoading(false);
+      setLoading(false);
       setChecked(!checked);
     } catch (err) {
       console.log(err);
       toast.error("Delete Category Failed");
-      setCategoryLoading(false);
+      setLoading(false);
     }
   };
 
@@ -245,22 +245,22 @@ function Addproduct() {
     formData.set("abbreviation", editAbbv);
     formData.set("id", editId);
     try {
-      setEditCategoryLoading(true);
+      setLoading(true);
       const data = await updateCategory(user._id, formData);
       console.log(data);
       if (data.err) {
         toast.error(data.err);
-        setEditCategoryLoading(false);
+        setLoading(false);
         return;
       }
-      setEditCategoryLoading(false);
+      setLoading(false);
       setEditing(false);
       setChecked(!checked);
       toast.success("Category Edited Successfully");
     } catch (err) {
       console.log(err);
       toast.error("Edit Category Failed");
-      setEditCategoryLoading(false);
+      setLoading(false);
     }
   };
 
@@ -272,23 +272,23 @@ function Addproduct() {
     formData.set("school", user.school);
 
     try {
-      setAddCategoryLoading(true);
+      setLoading(true);
       const data = await addCategory(user._id, formData);
       console.log(data);
       if (data.err) {
         toast.error(data.err);
-        setAddCategoryLoading(false);
+        setLoading(false);
         return;
       }
       toast.success("Category added successfully");
       setCategoryName("");
       setCategoryAbbv("");
-      setAddCategoryLoading(false);
+      setLoading(false);
       setChecked(!checked);
     } catch (err) {
       console.log(err);
       toast.error("Add Category Failed");
-      setAddCategoryLoading(false);
+      setLoading(false);
     }
   };
 
@@ -320,7 +320,7 @@ function Addproduct() {
     formData.set("quantity", addProduct.quantity);
     formData.set("publish", addProduct.publish);
     try {
-      setAddProductLoading(true);
+      setLoading(true);
       const formData1 = new FormData();
       formData1.set("file", addProduct.image);
       const data1 = await uploadFile(formData1);
@@ -330,27 +330,27 @@ function Addproduct() {
       console.log(data);
       if (data.err) {
         toast.error(data.err);
-        setAddProductLoading(false);
+        setLoading(false);
         return;
       }
       toast.success("Product added successfully");
-      setAddProductLoading(false);
+      setLoading(false);
       setAddProduct({
         name: "",
         category: "",
         description: "",
         sellingPrice: "",
         offerPrice: "",
-        discountType: "", 
+        discountType: "",
         discountValue: "",
         quantity: "",
         publish: "",
       });
-      setImagesPreview(undefined)
+      setImagesPreview(undefined);
     } catch (err) {
       console.log(err);
       toast.error("Add Product Failed");
-      setAddProductLoading(false);
+      setLoading(false);
     }
   };
 
@@ -369,12 +369,17 @@ function Addproduct() {
         pauseOnHover
         theme="colored"
       />
+       <LoadingScreen
+        loading={loading}
+        bgColor="#f1f1f1"
+        spinnerColor="#9ee5f8"
+        textColor="#676767"
+        text="Please Wait..."
+      ></LoadingScreen>
       <Container className="mt-6 mb-6" fluid>
         <Row>
           <Col lg="4">
-            {addCategoryLoading ? (
-              <Loader />
-            ) : (
+        
               <div className="card-wrapper">
                 <Card>
                   <CardHeader>
@@ -435,14 +440,12 @@ function Addproduct() {
                   </CardBody>
                 </Card>
               </div>
-            )}
+            
           </Col>
           <Col>
             <div className="card-wrapper">
               <Card>
-                {categoryLoading ? (
-                  <Loader />
-                ) : (
+            
                   <CardBody>
                     <Table
                       style={{ whiteSpace: "pre" }}
@@ -454,16 +457,14 @@ function Addproduct() {
                       }}
                     />
                   </CardBody>
-                )}
+                
               </Card>
             </div>
           </Col>
         </Row>
       </Container>
       <Container className="mt--6" fluid>
-        {addProductLoading ? (
-          <Loader />
-        ) : (
+   
           <Row>
             <Col lg="12">
               <div className="card-wrapper">
@@ -677,14 +678,22 @@ function Addproduct() {
                             value={addProduct.publish}
                             required
                           >
-                            <option value="" disabled>Publish</option>
+                            <option value="" disabled>
+                              Publish
+                            </option>
                             <option value="Yes">Yes</option>
                             <option value="No">No</option>
                           </Input>
                         </Col>
                       </Row>
-                      <Row className="mt-4 float-right">
-                        <Col>
+                      <Row className="mt-4 ">
+                        <Col
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
                           <Button color="primary" type="submit">
                             Add Product
                           </Button>
@@ -696,7 +705,7 @@ function Addproduct() {
               </div>
             </Col>
           </Row>
-        )}
+        
 
         <Modal
           className="modal-dialog-centered"
@@ -706,7 +715,7 @@ function Addproduct() {
         >
           <div className="modal-header">
             <h2 className="modal-title" id="modal-title-default">
-              Edit Category
+              Edit Category 
             </h2>
             <button
               aria-label="Close"
@@ -745,7 +754,12 @@ function Addproduct() {
             </Row>
           </ModalBody>
           <ModalFooter>
-            <Button color="success" type="button" onClick={editCategoryHandler} style={{margin:"0 auto"}} > 
+            <Button
+              color="success"
+              type="button"
+              onClick={editCategoryHandler}
+              style={{ margin: "0 auto" }}
+            >
               Save changes
             </Button>
           </ModalFooter>
