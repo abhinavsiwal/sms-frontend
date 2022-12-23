@@ -30,6 +30,7 @@ import { fetchingSessionError } from "constants/errors";
 import { addSessionError } from "constants/errors";
 import { deleteSessionError } from "constants/errors";
 import { deleteSessionSuccess, addSessionSuccess } from "constants/success";
+import LoadingScreen from "react-loading-screen";
 
 //React Datepicker
 import DatePicker from "react-datepicker";
@@ -107,6 +108,7 @@ const AddSession = () => {
   useEffect(() => {
     const getAllSessions = () => {
       // All Sections
+      setLoading(true)
       allSessions(user._id, user.school, token)
         .then((res) => {
           console.log(res);
@@ -115,8 +117,8 @@ const AddSession = () => {
             data.push({
               key: i,
               session: res[i].name,
-              start_date: moment(res[i].start_date).format("DD-MM-YYYY"),
-              end_date: moment(res[i].end_date).format("DD-MM-YYYY"),
+              start_date: moment(res[i].start_date).format("DD/MM/YYYY"),
+              end_date: moment(res[i].end_date).format("DD/MM/YYYY"),
               working_days: res[i].working_days,
               working_time: res[i].paid_leaves,
               year: res[i].year,
@@ -179,10 +181,11 @@ const AddSession = () => {
             setCheck(true);
           }
           setSessionList(data);
-          setLoading(true);
+          setLoading(false);
         })
         .catch((err) => {
           console.log(err);
+          setLoading(false);
           toast.error(fetchingSessionError);
         });
     };
@@ -564,6 +567,13 @@ const AddSession = () => {
         pauseOnHover
         theme="colored"
       />
+         <LoadingScreen
+        loading={loading}
+        bgColor="#f1f1f1"
+        spinnerColor="#9ee5f8"
+        textColor="#676767"
+        text="Please Wait..."
+      ></LoadingScreen>
       <Container className="mt--6" fluid>
         <Row>
           {/* {permissions && permissions.includes("add") && (
@@ -738,7 +748,7 @@ const AddSession = () => {
                     Print
                   </Button>
                   <Row className="ml-2">
-                    {loading && sessionList ? (
+                
                       <div ref={componentRef} style={{ overflowX: "auto" }}>
                         <AntTable
                           columns={columns}
@@ -747,9 +757,7 @@ const AddSession = () => {
                           exportFileName="SessionDetails"
                         />
                       </div>
-                    ) : (
-                      <Loader />
-                    )}
+                
                   </Row>
                 </CardBody>
               </Card>

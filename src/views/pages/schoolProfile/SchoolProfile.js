@@ -85,7 +85,7 @@ function SchoolProfile() {
   const phoneBlurHandler = () => {
     console.log("here");
 
-    let regex = /^[5-9]{2}[0-9]{8}$/;
+    let regex = /^[5-9]{1}[0-9]{9}$/;
     if (regex.test(editSchoolProfile.primary_contact_no)) {
       setPhoneError(false);
       setDisableButton(false);
@@ -95,7 +95,7 @@ function SchoolProfile() {
     }
   };
   const altPhoneBlurHandler = () => {
-    let regex = /^[5-9]{2}[0-9]{8}$/;
+    let regex = /^[0-9]{1}[0-9]{9}$/;
     if (regex.test(editSchoolProfile.telephone)) {
       setAltPhoneError(false);
       setDisableButton(false);

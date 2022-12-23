@@ -116,7 +116,7 @@ function RolePermissions() {
       setPermissions2(permission1);
       // console.log(permission1);
     }
-  }, [checked,reload]);
+  }, [checked, reload]);
 
   const [reload, setReload] = useState(1);
   const addRoleHandler = async () => {
@@ -284,7 +284,7 @@ function RolePermissions() {
       setMappingRoleMain("");
     } else {
       var data = JSON.parse(e.target.value);
-      setMappingRoleId(data._id)
+      setMappingRoleId(data._id);
       if (data.permissions) {
         for (const key in data.permissions) {
           var temp = data.permissions[key];
@@ -293,7 +293,6 @@ function RolePermissions() {
           data.permissions[key] = permissionData;
         }
         setMappingRoleMain(data);
-        
       } else {
         data["permissions"] = {};
         setMappingRoleMain(data);
@@ -369,20 +368,31 @@ function RolePermissions() {
                             <Col className="d-flex justify-content-between">
                               <div>{role.name}</div>
                               <div className="d-flex justify-content-between">
-                                {permissions2 && permissions2.includes("edit") && (
-                                  <Button
-                                    className="btn-sm pull-right"
-                                    color="primary"
-                                    type="button"
-                                    onClick={() =>
-                                      editRoleHandler(role.name, role._id)
-                                    }
-                                  >
-                                    <i className="fas fa-user-edit" />
-                                  </Button>
-                                )}
                                 {permissions2 &&
-                                  permissions2.includes("delete") && (
+                                  permissions2.includes("edit") &&
+                                  role.name !== "Accounts" &&
+                                  role.name !== "Canteen" &&
+                                  role.name !== "Library" &&
+                                  role.name !== "Transportation" &&
+                                  role.name !== "Teacher" && (
+                                    <Button
+                                      className="btn-sm pull-right"
+                                      color="primary"
+                                      type="button"
+                                      onClick={() =>
+                                        editRoleHandler(role.name, role._id)
+                                      }
+                                    >
+                                      <i className="fas fa-user-edit" />
+                                    </Button>
+                                  )}
+                                {permissions2 &&
+                                  permissions2.includes("delete") &&
+                                  role.name !== "Accounts" &&
+                                  role.name !== "Canteen" &&
+                                  role.name !== "Library" &&
+                                  role.name !== "Transportation" &&
+                                  role.name !== "Teacher" && (
                                     <Button
                                       className="btn-sm pull-right"
                                       color="danger"
@@ -415,7 +425,6 @@ function RolePermissions() {
               <CardHeader>
                 <div className="d-flex justify-content-between Role-Permissions">
                   <p>Manage Permissions</p>
-                 
                 </div>
               </CardHeader>
               <CardBody>
@@ -439,7 +448,6 @@ function RolePermissions() {
                         <ListGroupItem>
                           <Col className="d-flex justify-content-between">
                             <div>{Permissions}</div>
-                    
                           </Col>
                         </ListGroupItem>
                       </>
@@ -455,7 +463,6 @@ function RolePermissions() {
               <CardHeader>
                 <div className="d-flex justify-content-between Role-Permissions">
                   <p>Manage Applications</p>
-
                 </div>
               </CardHeader>
               <CardBody>
@@ -481,7 +488,6 @@ function RolePermissions() {
                           <ListGroupItem>
                             <Col className="d-flex justify-content-between">
                               <div>{application}</div>
-                            
                             </Col>
                           </ListGroupItem>
                         </>
@@ -613,7 +619,13 @@ function RolePermissions() {
                     </tbody>
                   </Table>
                 </ModalBody>
-                <ModalFooter>
+                <ModalFooter
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
                   <Button
                     color="success"
                     type="button"
@@ -661,7 +673,13 @@ function RolePermissions() {
               </Col>
             </Row>
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Button color="success" type="button" onClick={addRoleHandler}>
               Add Role
             </Button>
@@ -701,7 +719,13 @@ function RolePermissions() {
               </Col>
             </Row>
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Button color="success" type="button" onClick={addPermissionName}>
               Add Permission
             </Button>
@@ -741,7 +765,13 @@ function RolePermissions() {
               </Col>
             </Row>
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Button color="success" type="button" onClick={addApplicationName}>
               Add Application
             </Button>

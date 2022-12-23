@@ -25,3 +25,9 @@
 .fc .fc-toolbar.fc-header-toolbar{
     padding: 0.5rem 1rem;
 }
+.fv-event a{
+    color: #d3d3d3 !important;
+}
+/* a{
+    color: #ffffff !important;
+} */
