@@ -43,6 +43,20 @@ const GradingMaster = () => {
         setLoading(false);
         return;
       }
+
+      if(data.length===0){
+        setInputFields([
+          {
+            min: "",
+            max: "",
+            grade: "",
+            description: "",
+          },
+        ]);
+        setLoading(false);
+        return;
+      }
+
       let fields = [];
       data.map((grade) => {
         fields.push({
@@ -76,6 +90,7 @@ const GradingMaster = () => {
     ]);
   };
   const handleRemoveFields = (index) => {
+    if(inputFields.length === 1) return;
     const values = [...inputFields];
     values.splice(index, 1);
     setInputFields(values);
@@ -149,7 +164,8 @@ const GradingMaster = () => {
                 <th style={{ backgroundColor: "#d3d3d3" }}>Remove</th>
               </thead>
               <tbody>
-                {inputFields?.map((inputfield, index) => {
+                {inputFields.map((inputfield, index) => {
+                  console.log(inputfield);
                   return (
                     <tr key={index}>
                       <td>

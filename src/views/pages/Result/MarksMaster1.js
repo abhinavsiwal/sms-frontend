@@ -184,7 +184,7 @@ const MarksMaster1 = () => {
         obj.present = "Y";
       } else if (!event.target.checked) {
         obj.present = "N";
-        obj.marks=0
+        obj.marks = 0;
       }
     }
     console.log(obj);
@@ -205,7 +205,7 @@ const MarksMaster1 = () => {
               rs.present = "Y";
             } else if (!event.target.checked) {
               rs.present = "N";
-              rs.marks=0
+              rs.marks = 0;
             }
           }
         }
@@ -220,10 +220,10 @@ const MarksMaster1 = () => {
         return;
       }
     });
-    if(result1.length===0){
+    if (result1.length === 0) {
       setResultData([obj]);
     }
-    console.log(resultData); 
+    console.log(resultData);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -541,8 +541,7 @@ const MarksMaster1 = () => {
                                                     (res) =>
                                                       res.student._id ===
                                                         student._id &&
-                                                      res.subject ===
-                                                        sub
+                                                      res.subject === sub
                                                   )?.marks || ""
                                                 }
                                               />
@@ -645,8 +644,8 @@ const MarksMaster1 = () => {
                     </tbody>
                   </table>
                 </div>
-                <Row className="mt-4 float-right">
-                  <Col>
+                <Row className="mt-4 ">
+                  <Col style={{ display: "flex", justifyContent: "center" }}>
                     <Button
                       color="primary"
                       type="submit"
