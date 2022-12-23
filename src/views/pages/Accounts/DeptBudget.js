@@ -523,10 +523,9 @@ const DeptBudgetMaster = () => {
                     placeholder="Enter Allocated Amount"
                   />
                 </Col>
-              </Row>
-              <Row className="mt-2 float-right">
-                <Col>
-                  <Button color="primary" type="submit">
+              
+                <Col style={{display:"flex",alignItems:"center",justifyContent:"center"}}  >
+                  <Button color="primary" type="submit" style={{marginTop:"2rem"}} >
                     Add
                   </Button>
                 </Col>
@@ -639,8 +638,8 @@ const DeptBudgetMaster = () => {
                 />
               </Col>
             </Row>
-            <Row className="mt-2 float-right">
-              <Col>
+            <Row className="mt-2">
+              <Col style={{display:"flex",justifyContent:"center"}} >
                 <Button color="primary" type="submit">
                   Update
                 </Button>

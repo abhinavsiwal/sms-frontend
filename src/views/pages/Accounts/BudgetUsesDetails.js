@@ -18,7 +18,7 @@ import SimpleHeader from "components/Headers/SimpleHeader";
 import LoadingScreen from "react-loading-screen";
 import { isAuthenticated } from "api/auth";
 import { toast, ToastContainer } from "react-toastify";
-
+import { uploadFile } from "api/upload";
 import { getStaffByDepartment, allStaffs } from "api/staff";
 import { getDepartment } from "api/department";
 import { addUsedBudget } from "api/Budget";
@@ -53,13 +53,13 @@ const BudgetUsesDetails = () => {
   const [imagePreview, setImagePreview] = useState();
   const [showReimburseType, setShowReimburseType] = useState(false);
   const imageChangeHandler = (e) => {
-    // setImage(e.target.files[0]);
+    setImage(e.target.files[0]);
     // console.log(e.target);
     const reader = new FileReader();
     reader.onload = () => {
       if (reader.readyState === 2) {
         setImagePreview(reader.result);
-        setImage(reader.result);
+        // setImage(reader.result);
       }
     };
     reader.readAsDataURL(e.target.files[0]);
@@ -200,15 +200,21 @@ const BudgetUsesDetails = () => {
     formData.set("advance", budgetData.advance);
     formData.set("amount_paid", budgetData.paidAmount);
     formData.set("amount_collected", budgetData.amountCollected);
-    if (budgetData.type === "yes") {
-      {
-        image && formData.set("bill", image);
-      }
-    }
     formData.set("reimburse", budgetData.reimburse);
+    if (budgetData.type === "yes" && !image) {
+      return toast.error("Please Upload Bill");
+    }
 
     try {
       setLoading(true);
+      if (budgetData.type === "yes" && image) {
+        const formData1 = new FormData();
+        formData1.set("file", image);
+        const data1 = await uploadFile(formData1);
+        console.log(data1);
+        formData.set("document_name", data1.data[0]);
+      }
+
       const data = await addUsedBudget(user.school, user._id, formData);
       console.log(data);
       if (data.err) {
@@ -240,7 +246,7 @@ const BudgetUsesDetails = () => {
     }
   };
   useEffect(() => {
-    if(sessions.length!==0){
+    if (sessions.length !== 0) {
       defaultSession1();
     }
   }, [sessions]);
@@ -253,7 +259,6 @@ const BudgetUsesDetails = () => {
       ...budgetData,
       session: defaultSession._id,
     });
-   
   };
   return (
     <>
@@ -633,8 +638,8 @@ const BudgetUsesDetails = () => {
                   />
                 </Col>
               </Row>
-              <Row className="mt-4 float-right">
-                <Col>
+              <Row className="mt-4">
+                <Col style={{ display: "flex", justifyContent: "center" }}>
                   <Button color="primary" type="submit">
                     Submit
                   </Button>

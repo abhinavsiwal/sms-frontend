@@ -7,10 +7,11 @@ const AntTable = ({
   exportFileName,
   disabled = false,
   showPagination = true,
+  showOverFlow = false,
 }) => {
   return (
     <div
-    // style={{ overflowX: "auto" }}
+    style={{  overflowX: `${showOverFlow ?"auto":""}` }}
     >
       <Table
         style={{ whiteSpace: "pre" }}

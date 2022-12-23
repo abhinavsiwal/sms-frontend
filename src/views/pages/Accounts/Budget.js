@@ -56,9 +56,9 @@ const BudgetMaster = () => {
   const [checked, setChecked] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [editing, setEditing] = useState(false);
-  
+
   useEffect(() => {
-    if(sessions.length!==0){
+    if (sessions.length !== 0) {
       defaultSession1();
     }
   }, [sessions]);
@@ -71,7 +71,6 @@ const BudgetMaster = () => {
       ...allocationData,
       session: defaultSession._id,
     });
-   
   };
 
   const getAllDepartment = async () => {
@@ -186,13 +185,12 @@ const BudgetMaster = () => {
       setLoading(false);
       setChecked(!checked);
       toast.success("Budget Deleted Successfully");
-
     } catch (err) {
       console.log(err);
       toast.error("Error in Deleting Budget");
       setLoading(false);
     }
-  }
+  };
 
   const columns = [
     {
@@ -411,7 +409,7 @@ const BudgetMaster = () => {
                 type="button"
                 onClick={() => {
                   setEditing(true);
-                  filterStaffHandler(data[i].staff.department._id)
+                  filterStaffHandler(data[i].staff.department._id);
                   setEditData({
                     id: data[i]._id,
                     department: data[i].staff.department._id,
@@ -419,7 +417,6 @@ const BudgetMaster = () => {
                     session: data[i].session._id,
                     allocated: data[i].allocated,
                   });
-                  
                 }}
                 key={"edit" + 1}
               >
@@ -609,8 +606,8 @@ const BudgetMaster = () => {
                   />
                 </Col>
               </Row>
-              <Row className="mt-4 float-right">
-                <Col>
+              <Row className="mt-4 ">
+                <Col style={{ display: "flex", justifyContent: "center" }}>
                   <Button color="primary" type="submit">
                     Submit
                   </Button>
@@ -623,12 +620,13 @@ const BudgetMaster = () => {
       <Container className="mt--0 shadow-lg table-responsive" fluid>
         <Card className="mb-4">
           <CardHeader>Staff Budget List</CardHeader>
-          <CardBody>
+          <CardBody style={{overflow:"auto"}} >
             <AntTable
               columns={columns}
               data={tableData}
               pagination={true}
               exportFileName="staffBudget"
+              showOverFlow={true}
             />
           </CardBody>
         </Card>
@@ -749,8 +747,8 @@ const BudgetMaster = () => {
                 />
               </Col>
             </Row>
-            <Row className="mt-4 float-right">
-              <Col>
+            <Row className="mt-4">
+              <Col style={{ display: "flex", justifyContent: "center" }}>
                 <Button color="primary" type="submit">
                   Submit
                 </Button>
