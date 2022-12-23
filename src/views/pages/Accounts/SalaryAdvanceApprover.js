@@ -321,7 +321,7 @@ const SalaryAdvanceApprover = () => {
         toggle={() => setEditing(false)}
         size="sm"
       >
-        <div className="modal-header">
+        <div className="modal-header" style={{paddingBottom:"0.5rem"}} >
           <h2 className="modal-title" id="modal-title-default">
             Edit Status
           </h2>
@@ -335,7 +335,7 @@ const SalaryAdvanceApprover = () => {
             <span aria-hidden={true}>×</span>
           </button>
         </div>
-        <ModalBody>
+        <ModalBody  style={{paddingTop:"0.5rem"}} >
           <Row>
             <Col>
               <label className="form-control-label">Status</label>
@@ -357,11 +357,12 @@ const SalaryAdvanceApprover = () => {
             </Col>
           </Row>
           <Row>
-            <Col>
+            <Col style={{display:"flex",justifyContent:"center"}} >
               <Button
                 color="primary"
                 type="button"
-                className="mt-2 float-right"
+                size="md"
+                className="mt-4"
                 onClick={handleSubmit}
               >
                 Save changes
