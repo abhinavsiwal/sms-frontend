@@ -825,7 +825,7 @@ const AddSubject = () => {
           className="modal-dialog-centered"
           isOpen={editing}
           toggle={() => setEditing(false)}
-          size="lg"
+          size="sm"
         >
           <div className="modal-header">
             <h2 className="modal-title" id="modal-title-default">
@@ -855,7 +855,13 @@ const AddSubject = () => {
               </Col>
             </Row>
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Button color="success" type="button" onClick={handleEdit}>
               Save changes
             </Button>
@@ -865,7 +871,7 @@ const AddSubject = () => {
           className="modal-dialog-centered"
           isOpen={groupEditing}
           toggle={() => setGroupEditing(false)}
-          size="lg"
+          size="sm"
         >
           <div className="modal-header">
             <h2 className="modal-title" id="modal-title-default">
@@ -955,7 +961,13 @@ const AddSubject = () => {
               </Col>
             </Row>
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Button
               color="success"
               type="button"

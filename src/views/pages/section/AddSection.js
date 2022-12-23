@@ -82,7 +82,7 @@ const AddSection = () => {
       // console.log(permissions);
       setPermissions(permissions1);
     }
-  }, [checked, tableClassSelectId,isData,sectionList]);
+  }, [checked, tableClassSelectId, isData, sectionList]);
 
   useEffect(() => {
     getSession();
@@ -610,8 +610,14 @@ const AddSection = () => {
                               />
                             </Col>
                           </Row>
-                          <Row className="mt-4 float-right">
-                            <Col>
+                          <Row className="mt-4">
+                            <Col
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
                               <Button color="primary" type="submit">
                                 Submit
                               </Button>
@@ -672,7 +678,11 @@ const AddSection = () => {
                         data={sectionList}
                         pagination={true}
                         exportFileName="SectionDetails"
-                        disabled={permissions && permissions.includes("export".trim())?false:true}
+                        disabled={
+                          permissions && permissions.includes("export".trim())
+                            ? false
+                            : true
+                        }
                       />
                     ) : (
                       <h3 style={{ width: "100%" }}>No section found</h3>
@@ -689,7 +699,7 @@ const AddSection = () => {
           className="modal-dialog-centered"
           isOpen={editing}
           toggle={() => setEditing(false)}
-          size="lg"
+          size="sm"
         >
           <div className="modal-header">
             <h2 className="modal-title" id="modal-title-default">
@@ -754,7 +764,13 @@ const AddSection = () => {
               </Col>
             </Row>
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Button color="success" type="button" onClick={handleEditSubmit}>
               Save changes
             </Button>

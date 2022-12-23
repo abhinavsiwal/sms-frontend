@@ -42,7 +42,7 @@ import {
 import { allSessions } from "api/session";
 import { useReactToPrint } from "react-to-print";
 import { allStaffs } from "api/staff";
-
+import LoadingScreen from "react-loading-screen";
 const DepartmentList = () => {
   const { user, token } = isAuthenticated();
   const [editing, setEditing] = useState(false);
@@ -63,19 +63,19 @@ const DepartmentList = () => {
   const [primaryHeadId, setPrimaryHeadId] = useState("");
   const [secondaryHeadId, setSecondaryHeadId] = useState("");
   // console.log("id", deparmentId);
-  const [addLoading, setAddLoading] = useState(false);
+
   const [permissions, setPermissions] = useState([]);
   const [staff, setStaff] = useState([]);
 
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
-    content: () => componentRef.current, 
+    content: () => componentRef.current,
   });
-let permission1=[]
+  let permission1 = [];
   useEffect(() => {
     // console.log(user);
     if (user.permissions["Department"]) {
-       permission1 = user.permissions["Department"];
+      permission1 = user.permissions["Department"];
       // console.log(permission1);
       setPermissions(permission1);
     }
@@ -186,32 +186,32 @@ let permission1=[]
             action: (
               <h5 key={i + 1} className="mb-0">
                 {permission1 && permission1.includes("edit") && (
-                <Button
-                  className="btn-sm pull-right"
-                  color="primary"
-                  type="button"
-                  onClick={() =>
-                    rowHandler(res[i]._id, res[i].name, res[i].module)
-                  }
-                  key={"edit" + i + 1}
-                >
-                  <i className="fas fa-user-edit" />
-                </Button>
-                 )}
-                {permission1 && permission1.includes("delete") && (
-                <Button
-                  className="btn-sm pull-right"
-                  color="danger"
-                  type="button"
-                  key={"delete" + i + 1}
-                >
-                  <Popconfirm
-                    title="Sure to delete?"
-                    onConfirm={() => handleDelete(res[i]._id)}
+                  <Button
+                    className="btn-sm pull-right"
+                    color="primary"
+                    type="button"
+                    onClick={() =>
+                      rowHandler(res[i]._id, res[i].name, res[i].module)
+                    }
+                    key={"edit" + i + 1}
                   >
-                    <i className="fas fa-trash" />
-                  </Popconfirm>
-                </Button>
+                    <i className="fas fa-user-edit" />
+                  </Button>
+                )}
+                {permission1 && permission1.includes("delete") && (
+                  <Button
+                    className="btn-sm pull-right"
+                    color="danger"
+                    type="button"
+                    key={"delete" + i + 1}
+                  >
+                    <Popconfirm
+                      title="Sure to delete?"
+                      onConfirm={() => handleDelete(res[i]._id)}
+                    >
+                      <i className="fas fa-trash" />
+                    </Popconfirm>
+                  </Button>
                 )}
               </h5>
             ),
@@ -308,13 +308,13 @@ let permission1=[]
       formData.set("session", sessionID);
       // formData.set("role", JSON.stringify(role));
       // formData.set("module", JSON.stringify(data));
-      setAddLoading(true);
+      setLoading(true);
       const createDepartment = await addDepartment(user._id, token, formData);
       if (createDepartment.err) {
-        setAddLoading(false);
+        setLoading(false);
         return toast.error(createDepartment.err);
       }
-      setAddLoading(false);
+      setLoading(false);
       setChecked(!checked);
       setName("");
       setSessionID("");
@@ -323,7 +323,7 @@ let permission1=[]
       setSelectSessionId("");
       toast.success("Deparment Added Successfully");
     } catch (err) {
-      setAddLoading(false);
+      setLoading(false);
       toast.error("Something Went Wrong!");
     }
   };
@@ -355,126 +355,125 @@ let permission1=[]
         pauseOnHover
         theme="colored"
       />
+      <LoadingScreen
+        loading={loading}
+        bgColor="#f1f1f1"
+        spinnerColor="#9ee5f8"
+        textColor="#676767"
+        text="Please Wait..."
+      ></LoadingScreen>
       <Container className="mt--6" fluid>
         <Row>
-          {addLoading ? (
-            <Loader />
-          ) : (
-            permissions &&
-            permissions.includes("add") && (
-              <Col lg="4">
-                <div className="card-wrapper">
-                  <Card>
-                    <Form onSubmit={handleFormChange} className="mb-4">
-                      <CardBody>
-                        <Row>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                              value={sessionID}
-                            >
-                              Session
-                            </label>
+          {permissions && permissions.includes("add") && (
+            <Col lg="4">
+              <div className="card-wrapper">
+                <Card>
+                  <Form onSubmit={handleFormChange} className="mb-4">
+                    <CardBody>
+                      <Row>
+                        <Col>
+                          <label
+                            className="form-control-label"
+                            htmlFor="example4cols2Input"
+                            value={sessionID}
+                          >
+                            Session
+                          </label>
 
-                            <Input
-                              type="select"
-                              className="form-control"
-                              required
-                              onChange={(e) => setSessionID(e.target.value)}
-                            >
-                              <option value="">Select Session</option>
-                              {sessions &&
-                                sessions.map((data) => {
-                                  return (
-                                    <option key={data._id} value={data._id}>
-                                      {data.name}
-                                    </option>
-                                  );
-                                })}
-                            </Input>
-                          </Col>
-                        </Row>
-                        <br />
-                        <Row>
-                          <Col>
-                            <label
-                              className="form-control-label"
-                              htmlFor="example4cols2Input"
-                            >
-                              Department Name
-                            </label>
-                            <Input
-                              id="example4cols2Input"
-                              placeholder="Department Name"
-                              type="text"
-                              onChange={(e) => setName(e.target.value)}
-                              required
-                            />
-                          </Col>
-                        </Row>
-                        <Row className="mt-4 float">
-                          <Col
+                          <Input
+                            type="select"
+                            className="form-control"
+                            required
+                            onChange={(e) => setSessionID(e.target.value)}
+                            value={sessionID}
+                          >
+                            <option value="">Select Session</option>
+                            {sessions &&
+                              sessions.map((data) => {
+                                return (
+                                  <option key={data._id} value={data._id}>
+                                    {data.name}
+                                  </option>
+                                );
+                              })}
+                          </Input>
+                        </Col>
+                      </Row>
+                      <br />
+                      <Row>
+                        <Col>
+                          <label
+                            className="form-control-label"
+                            htmlFor="example4cols2Input"
+                          >
+                            Department Name
+                          </label>
+                          <Input
+                            id="example4cols2Input"
+                            placeholder="Department Name"
+                            type="text"
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                          />
+                        </Col>
+                      </Row>
+                      <Row className="mt-4 float">
+                        <Col
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            width: "100%",
+                          }}
+                        >
+                          <Button
+                            color="primary"
+                            type="submit"
                             style={{
                               display: "flex",
                               justifyContent: "center",
-                              width: "100%",
                             }}
                           >
-                            <Button
-                              color="primary"
-                              type="submit"
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                              }}
-                            >
-                              Submit
-                            </Button>
-                          </Col>
-                        </Row>
-                      </CardBody>
-                    </Form>
-                  </Card>
-                </div>
-              </Col>
-            )
+                            Submit
+                          </Button>
+                        </Col>
+                      </Row>
+                    </CardBody>
+                  </Form>
+                </Card>
+              </div>
+            </Col>
           )}
 
           <Col>
             <div className="card-wrapper">
               <Card>
                 <CardBody>
-                  {!loading && classList ? (
-                    permissions && permissions.includes("export") ? (
-                      <>
-                        <Button
-                          color="primary"
-                          className="mb-2"
-                          onClick={handlePrint}
-                          style={{ float: "right" }}
-                        >
-                          Print
-                        </Button>
-                        <div ref={componentRef}>
-                          <AntTable
-                            columns={columns}
-                            data={classList}
-                            pagination={true}
-                            exportFileName="ClassDetails"
-                          />
-                        </div>
-                      </>
-                    ) : (
-                      <Table
-                        style={{ whiteSpace: "pre" }}
-                        columns={columns}
-                        dataSource={classList}
-                        pagination={true}
-                      />
-                    )
+                  {permissions && permissions.includes("export") ? (
+                    <>
+                      <Button
+                        color="primary"
+                        className="mb-2"
+                        onClick={handlePrint}
+                        style={{ float: "right" }}
+                      >
+                        Print
+                      </Button>
+                      <div ref={componentRef}>
+                        <AntTable
+                          columns={columns}
+                          data={classList}
+                          pagination={true}
+                          exportFileName="ClassDetails"
+                        />
+                      </div>
+                    </>
                   ) : (
-                    <Loader />
+                    <Table
+                      style={{ whiteSpace: "pre" }}
+                      columns={columns}
+                      dataSource={classList}
+                      pagination={true}
+                    />
                   )}
                 </CardBody>
               </Card>
@@ -488,7 +487,6 @@ let permission1=[]
           toggle={() => setEditing(false)}
           size="sm"
           className="modal-dialog-centered"
-  
         >
           <div className="modal-header">
             <h2 className="modal-title" id="modal-title-default">
@@ -518,7 +516,13 @@ let permission1=[]
               </Col>
             </Row>
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Button color="success" type="button" onClick={handleEdit}>
               Save changes
             </Button>

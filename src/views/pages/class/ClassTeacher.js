@@ -6,7 +6,7 @@ import { allClass, assignClassTeacher, nonClassTeachers } from "api/class";
 import { toast, ToastContainer } from "react-toastify";
 import { isAuthenticated } from "api/auth";
 import { allStaffs, updateStaff1 } from "api/staff";
-
+import LoadingScreen from "react-loading-screen";
 import {
   fetchingClassError,
   classTeacherAssignError,
@@ -164,9 +164,16 @@ const ClassTeacher = () => {
         pauseOnHover
         theme="colored"
       />
+       <LoadingScreen
+        loading={loading}
+        bgColor="#f1f1f1"
+        spinnerColor="#9ee5f8"
+        textColor="#676767"
+        text="Please Wait..."
+      ></LoadingScreen>
       <Container fluid className="mt--6">
         <Card className="mb-4">
-          {!loading ? (
+        
             <Table className="my-table mt-2">
               <tbody>
                 {classList.map((clas) => (
@@ -231,9 +238,7 @@ const ClassTeacher = () => {
                 ))}
               </tbody>
             </Table>
-          ) : (
-            <Loader />
-          )}
+         
         </Card>
       </Container>
     </>
