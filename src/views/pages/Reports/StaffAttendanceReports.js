@@ -91,6 +91,7 @@ function StaffAttendanceReports() {
     const getDays = (year, month) => {
       return new Date(year, month, 0).getDate();
     }; 
+
     const columns = [
         {
           title: "Sr No.",
@@ -635,8 +636,7 @@ function StaffAttendanceReports() {
 
       const getReports = () =>{
         setLoading(true)
-        // formData.append('month',(new Date().getMonth() + 1).toString())
-        formData.append('month','10')
+        formData.append('month',(new Date().getMonth() + 1).toString())
         formData.append('year',(new Date().getFullYear()).toString())
         formData.append('session',session)
         var config = {

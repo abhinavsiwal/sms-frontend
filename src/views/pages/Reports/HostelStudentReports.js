@@ -324,7 +324,7 @@ function HostelStudentReports() {
               name: `${response.data[i].student ? response.data[i].student.firstname : ""}  ${response.data[i].student !== undefined ? response.data[i].student.lastname : ""}`,
               class :  response.data[i].class &&  response.data[i].class.name,
               section : response.data[i].section && response.data[i].section.name,
-              building : response.data[i].building,
+              building: response.data[i].building && response.data[i].building.name,
               rollno:response.data[i].student && response.data[i].student.roll_number,
               allocation_date: formatDate(response.data[i].allocationDate),
               allocated_by : `${response.data[i].allocatedBy !== null ? response.data[i].allocatedBy.firstname : ""} ${response.data[i].allocatedBy !== null ?  response.data[i].allocatedBy.lastname : ""}`,
@@ -413,9 +413,9 @@ function HostelStudentReports() {
               rollno:response.data[i].student && response.data[i].student.roll_number,
               class :  response.data[i].class &&  response.data[i].class.name,
               section : response.data[i].section && response.data[i].section.name,
-              building : response.data[i].building,
               allocation_date: formatDate(response.data[i].allocationDate),
               allocated_by : response.data[i].allocatedBy && response.data[i].allocatedBy.firstname +" " + response.data[i].allocatedBy &&  response.data[i].allocatedBy.lastname,
+              building: response.data[i].building && response.data[i].building.name 
             });
           }
           setReportList(data)

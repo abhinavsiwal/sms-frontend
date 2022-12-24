@@ -34,7 +34,6 @@ function GenerateIdCard() {
   const [classes,setClasses] = useState([])
   const [clas,setClas] = useState("")
   const [sec,setSec] = useState("")
-  const [session,setSession] = useState("")
   const [selectClass,setSelectClass] = useState({})
   const [checked,setChecked] = useState(false) 
   const componentRef = useRef();
@@ -413,7 +412,7 @@ function GenerateIdCard() {
                 <Card>
                   <CardBody>
                   <Row>
-                      <Col md="3">
+                      {/* <Col md="3">
                         <Input
                           id="example4cols2Input"
                           placeholder="Student Name"
@@ -430,8 +429,8 @@ function GenerateIdCard() {
                           required
                           disabled
                         />
-                      </Col>
-                      <Col md="2">
+                      </Col> */}
+                      <Col md="4">
                         <Input
                           id="exampleFormControlSelect3"
                           type="select"
@@ -451,7 +450,7 @@ function GenerateIdCard() {
                           }
                         </Input>
                       </Col>
-                      <Col md="3">
+                      <Col md="4">
                         <Input
                           id="exampleFormControlSelect3"
                           type="select"
@@ -471,7 +470,7 @@ function GenerateIdCard() {
                           }
                         </Input>
                       </Col>
-                      <Col md="2" className='d-flex justify-content-end align-items-center'>
+                      <Col md="4" className='d-flex justify-content-end align-items-center'>
                         <Button color="primary">
                           <SearchOutlined />
                           &nbsp;
@@ -539,8 +538,10 @@ function GenerateIdCard() {
                         backgroundOrigin:"center"
                     }}> 
                         <header className='identityCard__header d-flex'>
-                          <img className='logo' src={logo} alt='logo'/>
-                          <div className='d-flex flex-column text-center ml-3'>
+                          <div className='logo__container'>
+                            <img className='logo' src={logo} alt='logo'/>
+                          </div>
+                          <div className='school__heading'>
                             <div>{IDdataSchool.schoolname}</div>
                             <div>Identity Card</div>
                           </div>

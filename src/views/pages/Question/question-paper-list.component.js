@@ -8,6 +8,7 @@ import { Table } from "ant-table-extensions";
 import { SearchOutlined } from "@ant-design/icons";
 import { Popconfirm } from "antd";
 import { ToastContainer, toast } from "react-toastify";
+import SimpleHeader from "components/Headers/SimpleHeader.js";
 
 
 import {
@@ -121,14 +122,14 @@ export default class QuestionPaperList extends AbstractComponent {
                     <i className="fas fa-trash" />
                   </Popconfirm>
                 </Button>
-                <Button
+                {/* <Button
                   className="btn-sm pull-right"
                   color="success"
                   type="button"
                   key={"view" + i + 1}
                 >
                   <i className="fas fa-eye" />
-                </Button>
+                </Button> */}
               </h5>
               )
             });
@@ -360,53 +361,60 @@ export default class QuestionPaperList extends AbstractComponent {
               pauseOnHover
               theme="colored"
             />  
-          <div className="page">
-            {/* Start Page title and tab */}
-            <div className="section-body">
-              <div className="container-fluid">
-                <div className="d-flex justify-content-between align-items-center ">
-                  <div className="header-action">
-                    <ol className="breadcrumb page-breadcrumb align-items-center mt-4">
-                      <li className="breadcrumb-item active" aria-current="page">List View</li>
-                      <li className="breadcrumb-item active text-dark" aria-current="page">Question Paper</li>
-                    </ol>
+          <SimpleHeader name="Question List" parentName="Question" />   
+          <Container className="mt--6 shadow-lg" fluid>
+            <Card>
+              <CardBody>
+                <div className="page">
+                  {/* Start Page title and tab */}
+                  <div className="section-body">
+                    <div className="container-fluid">
+                      <div className="d-flex justify-content-between align-items-center ">
+                        <div className="header-action">
+                          <ol className="breadcrumb page-breadcrumb align-items-center mt-4">
+                            <li className="breadcrumb-item active" aria-current="page">List View</li>
+                            <li className="breadcrumb-item active text-dark" aria-current="page">Question Paper</li>
+                          </ol>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="section-body mt-4">
+                    <div className="container-fluid">
+                      {
+                          this.state.isListLoading ? <Loader />
+
+                          :
+
+                          <div style={{ overflowX: "auto" }}
+                            >
+                              <Table
+                                columns={this.getColumnList()}
+                                dataSource={this.state.questionPaperList}
+                                pagination={{
+                                pageSizeOptions: [
+                                    "5",
+                                    "10",
+                                    "30",
+                                    "60",
+                                    "100",
+                                    "1000",
+                                  ],
+                                  showSizeChanger: true,
+                                }}
+                                scroll={{x:true}}
+                                style={{ whiteSpace: "pre" }}
+                                exportFileName="details"
+                              />
+                            </div>
+                      }
+
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className="section-body mt-4">
-              <div className="container-fluid">
-                {
-                    this.state.isListLoading ? <Loader />
-
-                    :
-
-                    <div style={{ overflowX: "auto" }}
-                      >
-                        <Table
-                          columns={this.getColumnList()}
-                          dataSource={this.state.questionPaperList}
-                          pagination={{
-                          pageSizeOptions: [
-                              "5",
-                              "10",
-                              "30",
-                              "60",
-                              "100",
-                              "1000",
-                            ],
-                            showSizeChanger: true,
-                          }}
-                          scroll={{x:true}}
-                          style={{ whiteSpace: "pre" }}
-                          exportFileName="details"
-                        />
-                      </div>
-                }
-
-              </div>
-            </div>
-          </div>
+              </CardBody>
+            </Card>
+          </Container>
         </>
       );
     }
