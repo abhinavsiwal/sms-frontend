@@ -49,6 +49,18 @@ const CouponMaster = () => {
     applicableOnFees: [],
     session: "",
   });
+
+  const [permissions, setPermissions] = useState([]);
+  let permission1 = [];
+  useEffect(() => {
+    if (user.permissions["Fees Management Module"]) {
+      permission1 = user.permissions["Fees Management Module"];
+      // console.log(permission1);
+      setPermissions(permission1);
+      // console.log(permissions);
+    }
+  }, [checked]);
+
   useEffect(() => {
     getCouponsHandler();
   }, [checked]);
@@ -361,48 +373,54 @@ const CouponMaster = () => {
           status: null,
           action: (
             <>
-              <Button
-                className="btn-sm pull-right"
-                color="primary"
-                type="button"
-                onClick={() => {
-                  setEditing(true);
-                  let applicable = [];
-                  coupon.fees_applicable.forEach((fee) => {
-                    applicable.push(fee._id);
-                  });
-                  setEditData({
-                    id: coupon._id,
-                    couponName: coupon.name,
-                    amount: coupon.amount,
-                    description: coupon.description,
-                    applicableFrom: new Date(
-                      coupon.applicable_from
-                    ).toLocaleDateString("en-CA"),
-                    applicableTo: new Date(
-                      coupon.applicable_to
-                    ).toLocaleDateString("en-CA"),
-                    type: coupon.type,
-                    applicableOnFees: applicable,
-                  });
-                }}
-                key={"edit" + 1}
-              >
-                <i className="fas fa-user-edit" />
-              </Button>
-              <Button
-                className="btn-sm pull-right"
-                color="danger"
-                type="button"
-                key={"delete" + 1}
-              >
-                <Popconfirm
-                  title="Sure to delete?"
-                  onConfirm={() => deleteCouponHandler(coupon._id)}
+              {permission1 && permission1.includes("edit") && (
+                <>
+                  <Button
+                    className="btn-sm pull-right"
+                    color="primary"
+                    type="button"
+                    onClick={() => {
+                      setEditing(true);
+                      let applicable = [];
+                      coupon.fees_applicable.forEach((fee) => {
+                        applicable.push(fee._id);
+                      });
+                      setEditData({
+                        id: coupon._id,
+                        couponName: coupon.name,
+                        amount: coupon.amount,
+                        description: coupon.description,
+                        applicableFrom: new Date(
+                          coupon.applicable_from
+                        ).toLocaleDateString("en-CA"),
+                        applicableTo: new Date(
+                          coupon.applicable_to
+                        ).toLocaleDateString("en-CA"),
+                        type: coupon.type,
+                        applicableOnFees: applicable,
+                      });
+                    }}
+                    key={"edit" + 1}
+                  >
+                    <i className="fas fa-user-edit" />
+                  </Button>
+                </>
+              )}
+              {permission1 && permission1.includes("delete") && (
+                <Button
+                  className="btn-sm pull-right"
+                  color="danger"
+                  type="button"
+                  key={"delete" + 1}
                 >
-                  <i className="fas fa-trash" />
-                </Popconfirm>
-              </Button>
+                  <Popconfirm
+                    title="Sure to delete?"
+                    onConfirm={() => deleteCouponHandler(coupon._id)}
+                  >
+                    <i className="fas fa-trash" />
+                  </Popconfirm>
+                </Button>
+              )}
             </>
           ),
         });
@@ -571,201 +589,206 @@ const CouponMaster = () => {
         textColor="#676767"
         text="Please Wait..."
       ></LoadingScreen>
-      <Container className="mt--6" fluid>
-        <Card>
-          <CardHeader>
-            <h2>Coupon Master</h2>
-          </CardHeader>
+      {permissions && permissions.includes("add") && (
+        <Container className="mt--6" fluid>
+          <Card>
+            <CardHeader>
+              <h2>Coupon Master</h2>
+            </CardHeader>
 
-          <CardBody>
-            <form onSubmit={submitHandler}>
-              <Row>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="example4cols2Input"
-                  >
-                    Coupon Name
-                  </label>
-                  <Input
-                    id="example4cols2Input"
-                    type="text"
-                    onChange={handleChange("couponName")}
-                    required
-                    placeholder="Coupon Name"
-                    value={couponData.couponName}
-                  />
-                </Col>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="example4cols2Input"
-                  >
-                    Coupon Amount
-                  </label>
-                  <Input
-                    id="example4cols2Input"
-                    type="number"
-                    onChange={handleChange("amount")}
-                    required
-                    placeholder="Amount"
-                    value={couponData.amount}
-                  />
-                </Col>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="example4cols2Input"
-                  >
-                    Description
-                  </label>
-                  <Input
-                    id="example4cols2Input"
-                    type="textarea"
-                    onChange={handleChange("description")}
-                    required
-                    placeholder="Description"
-                    value={couponData.description}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="example4cols2Input"
-                  >
-                    Applicable From
-                  </label>
-                  <Input
-                    id="example4cols2Input"
-                    type="date"
-                    onChange={handleChange("applicableFrom")}
-                    required
-                    placeholder="Applicable From"
-                    value={couponData.applicableFrom}
-                  />
-                </Col>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="example4cols2Input"
-                  >
-                    Applicable To
-                  </label>
-                  <Input
-                    id="example4cols2Input"
-                    type="date"
-                    onChange={handleChange("applicableTo")}
-                    required
-                    placeholder="Applicable To"
-                    value={couponData.applicableTo}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="example4cols2Input"
-                  >
-                    Select Session
-                  </label>
+            <CardBody>
+              <form onSubmit={submitHandler}>
+                <Row>
+                  <Col>
+                    <label
+                      className="form-control-label"
+                      htmlFor="example4cols2Input"
+                    >
+                      Coupon Name
+                    </label>
+                    <Input
+                      id="example4cols2Input"
+                      type="text"
+                      onChange={handleChange("couponName")}
+                      required
+                      placeholder="Coupon Name"
+                      value={couponData.couponName}
+                    />
+                  </Col>
+                  <Col>
+                    <label
+                      className="form-control-label"
+                      htmlFor="example4cols2Input"
+                    >
+                      Coupon Amount
+                    </label>
+                    <Input
+                      id="example4cols2Input"
+                      type="number"
+                      onChange={handleChange("amount")}
+                      required
+                      placeholder="Amount"
+                      value={couponData.amount}
+                    />
+                  </Col>
+                  <Col>
+                    <label
+                      className="form-control-label"
+                      htmlFor="example4cols2Input"
+                    >
+                      Description
+                    </label>
+                    <Input
+                      id="example4cols2Input"
+                      type="textarea"
+                      onChange={handleChange("description")}
+                      required
+                      placeholder="Description"
+                      value={couponData.description}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <label
+                      className="form-control-label"
+                      htmlFor="example4cols2Input"
+                    >
+                      Applicable From
+                    </label>
+                    <Input
+                      id="example4cols2Input"
+                      type="date"
+                      onChange={handleChange("applicableFrom")}
+                      required
+                      placeholder="Applicable From"
+                      value={couponData.applicableFrom}
+                    />
+                  </Col>
+                  <Col>
+                    <label
+                      className="form-control-label"
+                      htmlFor="example4cols2Input"
+                    >
+                      Applicable To
+                    </label>
+                    <Input
+                      id="example4cols2Input"
+                      type="date"
+                      onChange={handleChange("applicableTo")}
+                      required
+                      placeholder="Applicable To"
+                      value={couponData.applicableTo}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <label
+                      className="form-control-label"
+                      htmlFor="example4cols2Input"
+                    >
+                      Select Session
+                    </label>
 
-                  <select
-                    required
-                    className="form-control"
-                    onChange={(e) => setSession(e.target.value)}
-                    value={session}
-                  >
-                    <option value="">Select Session</option>
-                    {sessions &&
-                      sessions.map((data) => {
+                    <select
+                      required
+                      className="form-control"
+                      onChange={(e) => setSession(e.target.value)}
+                      value={session}
+                    >
+                      <option value="">Select Session</option>
+                      {sessions &&
+                        sessions.map((data) => {
+                          return (
+                            <option key={data._id} value={data._id}>
+                              {data.name}
+                            </option>
+                          );
+                        })}
+                    </select>
+                  </Col>
+                  <Col>
+                    <label
+                      className="form-control-label"
+                      htmlFor="exampleFormControlSelect3"
+                    >
+                      Class
+                    </label>
+                    <Input
+                      id="exampleFormControlTextarea1"
+                      type="select"
+                      required
+                      onChange={(e) => setClas(e.target.value)}
+                      value={clas}
+                      name="class"
+                    >
+                      <option value="" disabled>
+                        Select Class
+                      </option>
+                      {classList?.map((classs) => {
                         return (
-                          <option key={data._id} value={data._id}>
-                            {data.name}
+                          <option value={classs._id} key={classs._id}>
+                            {classs.name}
                           </option>
                         );
                       })}
-                  </select>
-                </Col>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="exampleFormControlSelect3"
-                  >
-                    Class
-                  </label>
-                  <Input
-                    id="exampleFormControlTextarea1"
-                    type="select"
-                    required
-                    onChange={(e) => setClas(e.target.value)}
-                    value={clas}
-                    name="class"
-                  >
-                    <option value="" disabled>
-                      Select Class
-                    </option>
-                    {classList?.map((classs) => {
-                      return (
-                        <option value={classs._id} key={classs._id}>
-                          {classs.name}
-                        </option>
-                      );
-                    })}
-                  </Input>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <label
-                    className="form-control-label"
-                    htmlFor="example4cols2Input"
-                  >
-                    Select Fees
-                  </label>
-                  <Row>
-                    {fees &&
-                      fees.map((penalty, index) => {
-                        return (
-                          <Col key={index} md={4}>
-                            <div className="custom-control custom-checkbox mb-3">
-                              <Input
-                                className="custom-control-input"
-                                id={`customCheck${index}`}
-                                type="checkbox"
-                                onChange={handleFees}
-                                value={penalty._id}
-                              />
-                              <label
-                                className="custom-control-label"
-                                htmlFor={`customCheck${index}`}
-                              >
-                                {penalty.name}
-                              </label>
-                            </div>
-                          </Col>
-                        );
-                      })}
-                  </Row>
-                </Col>
-              </Row>
+                    </Input>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <label
+                      className="form-control-label"
+                      htmlFor="example4cols2Input"
+                    >
+                      Select Fees
+                    </label>
+                    <Row>
+                      {fees &&
+                        fees.map((penalty, index) => {
+                          return (
+                            <Col key={index} md={4}>
+                              <div className="custom-control custom-checkbox mb-3">
+                                <Input
+                                  className="custom-control-input"
+                                  id={`customCheck${index}`}
+                                  type="checkbox"
+                                  onChange={handleFees}
+                                  value={penalty._id}
+                                />
+                                <label
+                                  className="custom-control-label"
+                                  htmlFor={`customCheck${index}`}
+                                >
+                                  {penalty.name}
+                                </label>
+                              </div>
+                            </Col>
+                          );
+                        })}
+                    </Row>
+                  </Col>
+                </Row>
 
-              <Row className="mt-4 float-right">
-                <Col>
-                  <Button color="primary" type="submit">
-                    Submit
-                  </Button>
-                </Col>
-              </Row>
-            </form>
-          </CardBody>
-        </Card>
-      </Container>
+                <Row className="mt-4 float-right">
+                  <Col>
+                    <Button color="primary" type="submit">
+                      Submit
+                    </Button>
+                  </Col>
+                </Row>
+              </form>
+            </CardBody>
+          </Card>
+        </Container>
+      )}
+
       <Container className="mt--0 shadow-lg table-responsive" fluid>
         <Card className="mb-4">
-          <CardHeader>Coupons</CardHeader>
+          <CardHeader>
+            <h2>Coupons</h2>
+          </CardHeader>
           <CardBody>
             <AntTable
               columns={columns}

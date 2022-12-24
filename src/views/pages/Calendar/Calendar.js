@@ -87,10 +87,13 @@ const Calendar = () => {
   useEffect(() => {
     // console.log(user);
     if (user.permissions["School Calendar"]) {
-      permission1 = user.role["School Calendar"];
+      permission1 = user.permissions["School Calendar"];
       setPermissions(permission1);
       // console.log(permissions);
     }
+  }, [calendarView]);
+
+  useEffect(() => {
     getAllStaff();
     getSession();
   }, []);
@@ -103,7 +106,11 @@ const Calendar = () => {
 
   const getAllStaff = async () => {
     try {
+      console.log(user.school, user._id, "allStaff");
       const { data } = await allStaffs(user.school, user._id);
+      if (data.err) {
+        return toast.error(data.err);
+      }
       // console.log(data, "@@@@@@@@");
       setStaff(data);
     } catch (err) {
@@ -348,6 +355,7 @@ const Calendar = () => {
       title: "Event Name",
       dataIndex: "event_name",
       width: 150,
+      align: "center",
       sorter: (a, b) => a.event_name > b.event_name,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -378,6 +386,7 @@ const Calendar = () => {
       title: "Start Date",
       dataIndex: "start_date",
       width: 150,
+      align: "center",
       sorter: (a, b) => a.start_date > b.start_date,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -408,6 +417,7 @@ const Calendar = () => {
       title: "End Date",
       dataIndex: "end_date",
       width: 150,
+      align: "center",
       sorter: (a, b) => a.end_date > b.end_date,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -437,6 +447,7 @@ const Calendar = () => {
     {
       title: "Action",
       key: "action",
+      align: "center",
       dataIndex: "action",
       fixed: "right",
     },
@@ -578,6 +589,9 @@ const Calendar = () => {
                     left: "title",
                   }}
                   dateClick={(info) => {
+                    if (permissions && !permissions.includes("add")) {
+                      return;
+                    }
                     console.log("info", info);
                     let date = new Date();
                     let yesterday = new Date(
@@ -600,6 +614,9 @@ const Calendar = () => {
                     setRadios("bg-info");
                   }}
                   eventClick={({ event }) => {
+                    if (permissions && !permissions.includes("edit")) {
+                      return;
+                    }
                     console.log("event", event);
                     setEventId(event.id);
                     setEventTitle(event.title);
@@ -995,15 +1012,18 @@ const Calendar = () => {
                     <Button color="primary" onClick={changeEvent}>
                       Update
                     </Button>
-                    <Button
-                      color="danger"
-                      onClick={() => {
-                        setModalChange(false);
-                        deleteEvent();
-                      }}
-                    >
-                      Delete
-                    </Button>
+                    {permissions && permissions.includes("delete") && (
+                      <Button
+                        color="danger"
+                        onClick={() => {
+                          setModalChange(false);
+                          deleteEvent();
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    )}
+
                     <Button
                       className="ml-auto"
                       color="link"

@@ -92,18 +92,18 @@ import GradingMaster from "views/pages/Result/GradingMaster";
 import ExamMaster from "views/pages/Result/ExamMaster";
 import MarksMaster from "views/pages/Result/MarksMaster";
 import MarksMaster1 from "views/pages/Result/MarksMaster1";
-import Attendance1 from "views/pages/Attendance-Refactor/Attendance1"
-import Attendance2 from "views/pages/Attendance-Refactor/Attendance2"
-import TimeTable from 'views/pages/TimeTable-Refactor/TimeTable'
-import TimeTable1 from 'views/pages/TimeTable-Refactor/TimeTable1'
-import Assignment from 'views/pages/Assignment/Assignment'
-import Promotion from 'views/pages/Result/Promotion'
+import Attendance1 from "views/pages/Attendance-Refactor/Attendance1";
+import Attendance2 from "views/pages/Attendance-Refactor/Attendance2";
+import TimeTable from "views/pages/TimeTable-Refactor/TimeTable";
+import TimeTable1 from "views/pages/TimeTable-Refactor/TimeTable1";
+import Assignment from "views/pages/Assignment/Assignment";
+import Promotion from "views/pages/Result/Promotion";
 import GenerateIdCard from "views/pages/ID-Card/GenerateIdCard";
 import SetIdCard from "views/pages/ID-Card/SetIdCard";
 import Hostel from "views/pages/FeesManagement/Hostel";
 import Transport from "views/pages/FeesManagement/Transport";
-import StaffAttendance from 'views/pages/Staff-Attendance/StaffAttendance'
-import StudentReports from "views/pages/Reports/StudentReports"
+import StaffAttendance from "views/pages/Staff-Attendance/StaffAttendance";
+import StudentReports from "views/pages/Reports/StudentReports";
 import StaffReports from "views/pages/Reports/StaffReports";
 import StudentAttendanceReports from "views/pages/Reports/StudentAttendanceReports";
 import StaffAttendanceReports from "views/pages/Reports/StaffAttendanceReports";
@@ -113,11 +113,11 @@ import BusStudentReports from "views/pages/Reports/BusStudentReports";
 import HostelStudentReports from "views/pages/Reports/HostelStudentReports";
 import AdminDashboard from "views/pages/Reports/Dashboards/AdminDashboard";
 import StaffDashboard from "views/pages/Reports/Dashboards/StaffDashboard";
-import QuestionPaper from "views/pages/Question/question-paper.component"
+import QuestionPaper from "views/pages/Question/question-paper.component";
 import QuestionPaperList from "views/pages/Question/question-paper-list.component";
 import CertificateGenerator from "views/pages/ID-Card/CertificateGenerator";
-import StudentView from './views/pages/TimeTable-Refactor/StudentView'
-import StaffView from './views/pages/TimeTable-Refactor/StaffView'
+import StudentView from "./views/pages/TimeTable-Refactor/StudentView";
+import StaffView from "./views/pages/TimeTable-Refactor/StaffView";
 
 export const adminRoutes = [
   {
@@ -130,7 +130,7 @@ export const adminRoutes = [
   },
 
   {
-    collapse:true,
+    collapse: true,
     name: "Question",
     icon: "fa fa-print text-primary",
     state: "Question",
@@ -155,7 +155,7 @@ export const adminRoutes = [
     ],
   },
   {
-    collapse:true,
+    collapse: true,
     name: "Document Store",
     icon: "fa fa-file text-primary",
     state: "Document",
@@ -188,7 +188,7 @@ export const adminRoutes = [
     ],
   },
   {
-    collapse:true,
+    collapse: true,
     name: "Reports",
     icon: "fa fa-file text-primary",
     state: "Reports",
@@ -209,7 +209,7 @@ export const adminRoutes = [
         component: StaffReports,
         layout: "/admin",
         permission: "view",
-      }, 
+      },
       {
         path: "/student-attendance-reports",
         name: "Student Attendance Reports",
@@ -283,8 +283,8 @@ export const adminRoutes = [
         component: StaffDashboard,
         layout: "/admin",
         permission: "view",
-      }
-    ]
+      },
+    ],
   },
   // Staff Managment
   {
@@ -326,7 +326,6 @@ export const adminRoutes = [
         layout: "/admin",
         permission: "add",
       },
-   
     ],
   },
   // Credentials Master
@@ -365,7 +364,7 @@ export const adminRoutes = [
     module: "Staff Management",
   },
   // Class Management
-  { 
+  {
     collapse: true,
     name: "Class Management",
     icon: "fa fa-users",
@@ -380,7 +379,7 @@ export const adminRoutes = [
         layout: "/admin",
         permission: "view",
       },
-     
+
       {
         path: "/add-subject",
         name: "Add Subject",
@@ -470,7 +469,7 @@ export const adminRoutes = [
         path: "/attendance",
         name: "Attendance",
         miniName: "A",
-        component:Attendance1,
+        component: Attendance1,
         layout: "/admin",
         permission: "add",
       },
@@ -511,7 +510,7 @@ export const adminRoutes = [
     layout: "/admin",
     module: "School Calendar",
   },
-// Assignment
+  // Assignment
   {
     path: "/assignment",
     name: "Assignment Master",
@@ -520,8 +519,8 @@ export const adminRoutes = [
     layout: "/admin",
     module: "Assignment",
   },
- 
-// Timetable
+
+  // Timetable
   {
     collapse: true,
     name: "Time Table",
@@ -529,7 +528,6 @@ export const adminRoutes = [
     state: "timetableCollapse",
     module: "Time table Management",
     views: [
-   
       {
         path: "/time_table",
         name: "Time Table",
@@ -556,7 +554,7 @@ export const adminRoutes = [
       },
     ],
   },
-// Canteen Management 
+  // Canteen Management
   {
     collapse: true,
     name: "Canteen Management",
@@ -599,7 +597,7 @@ export const adminRoutes = [
     layout: "/admin",
     module: "Role and Permissions",
   },
-// Transportation
+  // Transportation
   {
     collapse: true,
     name: "Transportation",
@@ -625,7 +623,7 @@ export const adminRoutes = [
       },
     ],
   },
-// Ecommerce
+  // Ecommerce
   {
     collapse: true,
     name: "Ecommerce",
@@ -736,13 +734,13 @@ export const adminRoutes = [
       },
     ],
   },
-// Fees Management
+  // Fees Management
   {
     collapse: true,
-    name: "Fees Management",
+    name: "Fees Management Module",
     icon: "ni ni-single-02 text-orange",
     state: "feesCollapse",
-    module: "feesManagement",
+    module: "Fees Management Module",
     views: [
       {
         path: "/feesmaster",
@@ -750,7 +748,7 @@ export const adminRoutes = [
         miniName: "FM",
         component: FeesMaster,
         layout: "/admin",
-        permission: "view",
+        permission: "add",
       },
 
       // {
@@ -784,7 +782,7 @@ export const adminRoutes = [
         miniName: "CM",
         component: CouponMaster,
         layout: "/admin",
-        permission: "add",
+        permission: "view",
       },
       {
         path: "/pending-fees",
@@ -826,7 +824,7 @@ export const adminRoutes = [
         miniName: "a",
         component: ApplyLeave,
         layout: "/admin",
-        permission: "add",
+        permission: "staff",
       },
       {
         path: "/view-leaves",
@@ -834,7 +832,7 @@ export const adminRoutes = [
         miniName: "a",
         component: ViewLeaves,
         layout: "/admin",
-        permission: "view",
+        permission: "staff",
       },
       {
         path: "/view-allleaves",
@@ -842,7 +840,7 @@ export const adminRoutes = [
         miniName: "a",
         component: ViewAllLeaves,
         layout: "/admin",
-        permission: "edit",
+        permission: "admin",
       },
     ],
   },
@@ -961,11 +959,10 @@ export const adminRoutes = [
         layout: "/admin",
         permission: "add",
       },
-     
     ],
   },
 ];
- const routes = [
+const routes = [
   {
     path: "/dashboard",
     name: "Dashboard",
@@ -1013,7 +1010,6 @@ export const adminRoutes = [
         layout: "/admin",
         permission: "add",
       },
-   
     ],
   },
   {
@@ -1049,7 +1045,7 @@ export const adminRoutes = [
     layout: "/admin",
     module: "Staff Management",
   },
-  { 
+  {
     collapse: true,
     name: "Class Management",
     icon: "fa fa-users",
@@ -1064,7 +1060,7 @@ export const adminRoutes = [
         layout: "/admin",
         permission: "view",
       },
-     
+
       {
         path: "/add-subject",
         name: "Add Subject",
@@ -1151,7 +1147,7 @@ export const adminRoutes = [
         path: "/attendance",
         name: "Attendance",
         miniName: "A",
-        component:Attendance1,
+        component: Attendance1,
         layout: "/admin",
         permission: "add",
       },
@@ -1213,7 +1209,6 @@ export const adminRoutes = [
     state: "timetableCollapse",
     module: "Time table Management",
     views: [
-   
       {
         path: "/time_table",
         name: "Time Table",
@@ -1637,14 +1632,8 @@ export const adminRoutes = [
         layout: "/admin",
         permission: "add",
       },
-     
     ],
   },
- 
 ];
-
-
-
-
 
 export default routes;

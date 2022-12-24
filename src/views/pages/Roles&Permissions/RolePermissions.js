@@ -61,6 +61,8 @@ function RolePermissions() {
     "Delete",
     "Export",
     "Import",
+    "Staff",
+    "Admin",
   ]);
   const [application, setApplication] = React.useState([
     "Pricing",
@@ -100,6 +102,14 @@ function RolePermissions() {
     {
       value: "import",
       label: "import",
+    },
+    {
+      value: "staff",
+      label: "staff",
+    },
+    {
+      value: "admin",
+      label: "admin",
     },
   ];
 

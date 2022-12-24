@@ -42,6 +42,9 @@ const FeesMaster1 = () => {
   const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
   const { user, token } = isAuthenticated();
 
+  
+
+
   useEffect(() => {
     getSession();
     getAllClasses();
