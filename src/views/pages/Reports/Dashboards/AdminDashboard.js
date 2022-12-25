@@ -46,6 +46,10 @@ function AdminDashboard() {
     const [activeNav, setActiveNav] = React.useState(1);
     const [reportData,setReportData] = useState({})
     const [leave,setLeave] = useState([])
+    const [notice,setNotice] = useState([])
+    const [birthDay,setBirthDay] = useState([])
+    const [exam,setExam] = useState([])
+    const [holiday,setHoliday] = useState([])
     const [chartExample1Data, setChartExample1Data] = React.useState("data1");
     const toggleNavs = (e, index) => {
       e.preventDefault();
@@ -72,6 +76,10 @@ function AdminDashboard() {
           console.log(response.data)
           setReportData(response.data)
           setLeave([...response.data.student_leave,...response.data.staff_leave])
+          setBirthDay([...response.data.today_birthday])
+          setExam([...response.data.exam_list])
+          setHoliday([...response.data.holiday_list])
+          setNotice([...response.data.notice_board])
           setLoading(false)
         })
         .catch(function (error) {
@@ -122,6 +130,17 @@ function AdminDashboard() {
             align: "left",
           },
       ];
+
+      const formatDate = (changeDate) =>{
+        const date = new Date(changeDate);
+        const yyyy = date.getFullYear();
+        let mm = date.getMonth() + 1;
+        let dd = date.getDate();
+        if (dd < 10) dd = '0' + dd;
+        if (mm < 10) mm = '0' + mm;
+        const formattedDate = dd + '-' + mm + '-' + yyyy;
+        return formattedDate
+      }
   return (
     <>
     <SimpleHeader name="Admin Dashboard" parentName="Dashboard" />   
@@ -385,17 +404,17 @@ function AdminDashboard() {
                                 </CardHeader>
                                 <CardBody style={{padding:"0",height:'315px',overflowY:'auto'}}>
                                 {
-                                    reportData?.today_birthday?.length === 0 ? 
+                                    birthDay.length === 0 ? 
                                     <h3 style={{paddingLeft:"1.5rem"}}>No data Found</h3>
                                     :
-                                    leave.map((item) => (
+                                    birthDay.map((item) => (
                                                 <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
                                                     <div className="checklist-item checklist-item-success">
                                                         <div className="checklist-info">
                                                             <h5 className="checklist-title mb-0">
-                                                                <strong>Santosh Kumar</strong>
+                                                                <strong>{`${item.firstname} ${item.lastname}`}</strong>
                                                             </h5>
-                                                            <small>Teaching Staff</small>
+                                                            <small>{formatDate(item.date_of_birth)}</small>
                                                         </div>
                                                     </div>
                                                 </ListGroupItem>
@@ -408,88 +427,58 @@ function AdminDashboard() {
                         <Col md='3'>
                             <Card>
                                 <CardHeader>
-                                    <h2>Holidays August</h2>
+                                    <h2>Holidays {new Date().toLocaleString('default', { month: 'long' })}</h2>
                                 </CardHeader>
                                 <CardBody style={{padding:"0",height:'315px',overflowY:'auto'}}>
-                                <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
-                                        <div className="checklist-item checklist-item-info">
-                                            <div className="checklist-info">
-                                                <h5 className="checklist-title mb-0">
-                                                    <strong>Independent Day </strong>
-                                                </h5>
-                                                <small>15 August</small>
-                                            </div>
-                                        </div>
-                                    </ListGroupItem>
-                                    <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
-                                        <div className="checklist-item checklist-item-success">
-                                        <div className="checklist-info">
-                                            <h5 className="checklist-title mb-0">
-                                                <strong>Ganesh Festival</strong>
-                                            </h5>
-                                            <small>31 August</small>
-                                        </div>
-                                        </div>
-                                    </ListGroupItem>
-                                    <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
-                                        <div className="checklist-item checklist-item-danger">
-                                        <div className="checklist-info">
-                                            <h5 className="checklist-title mb-0">
-                                                <strong></strong>
-                                            </h5>
-                                            <small></small>
-                                        </div>
-                                        </div>
-                                    </ListGroupItem>
+                                {
+                                    holiday.length === 0 ? 
+                                    <h3 style={{paddingLeft:"1.5rem"}}>No data Found</h3>
+                                    :
+                                    holiday.map((item) => (
+                                                <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
+                                                    <div className="checklist-item checklist-item-success">
+                                                        <div className="checklist-info">
+                                                            <h5 className="checklist-title mb-0">
+                                                                <strong>{item.name}</strong>
+                                                            </h5>
+                                                            <div>
+                                                                <small> from {formatDate(item.event_from)}</small> - 
+                                                                <small> to {formatDate(item.event_to)}</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </ListGroupItem>
+                                        ))
+                                }
+                                 
                                 </CardBody>
+                               
                             </Card>
                         </Col>
                         <Col md='3'>
-                            <Card>
+                        <Card>
                                 <CardHeader>
                                     <h2>Examinations</h2>
                                 </CardHeader>
                                 <CardBody style={{padding:"0",height:'315px',overflowY:'auto'}}>
-                                    <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
-                                        <div className="checklist-item checklist-item-info">
-                                            <div className="checklist-info">
-                                                <h5 className="checklist-title mb-0">
-                                                    <strong>First Terminal Exam</strong>
-                                                </h5>
-                                                <small>(08.03.2022-16.03.2022)</small>
-                                            </div>
-                                        </div>
-                                    </ListGroupItem>
-                                    <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
-                                        <div className="checklist-item checklist-item-success">
-                                        <div className="checklist-info">
-                                            <h5 className="checklist-title mb-0">
-                                                <strong>Mid Term Exam</strong>
-                                            </h5>
-                                            <small>(01.06.2022-10.06.2022)</small>
-                                        </div>
-                                        </div>
-                                    </ListGroupItem>
-                                    <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
-                                        <div className="checklist-item checklist-item-danger">
-                                        <div className="checklist-info">
-                                            <h5 className="checklist-title mb-0">
-                                                <strong>Second Terminal Exam</strong>
-                                            </h5>
-                                            <small>(19.09.2022-28.09.2022)</small>
-                                        </div>
-                                        </div>
-                                    </ListGroupItem>
-                                    <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
-                                        <div className="checklist-item checklist-item-danger">
-                                        <div className="checklist-info">
-                                            <h5 className="checklist-title mb-0">
-                                                <strong>Final Exam</strong>
-                                            </h5>
-                                            <small>(01.12.2022-16.12.2022)</small>
-                                        </div>
-                                        </div>
-                                    </ListGroupItem>
+                                {
+                                    exam.length === 0 ? 
+                                    <h3 style={{paddingLeft:"1.5rem"}}>No data Found</h3>
+                                    :
+                                    exam.map((item) => (
+                                                <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
+                                                    <div className="checklist-item checklist-item-success">
+                                                        <div className="checklist-info">
+                                                            <h5 className="checklist-title mb-0">
+                                                                <strong>{item.name}</strong>
+                                                            </h5>
+                                                            {/* <small>{item.class.name}</small> */}
+                                                        </div>
+                                                    </div>
+                                                </ListGroupItem>
+                                        ))
+                                }
+                                 
                                 </CardBody>
                             </Card>
                         </Col>
@@ -623,16 +612,25 @@ function AdminDashboard() {
                                             <h3 style={{textAlign:"center",color:"white"}}>No data Found</h3>
                                             </div>
                                             :
-                                            <div style={{display:"grid",gridTemplateColumns:'1fr 1fr 1fr 1fr'}}>
+                                            <div style={{display:"grid",gridTemplateColumns:'1fr'}}>
                                                 {
-                                                    leave.map((item) => (
-                                                            <ListGroupItem className="checklist-entry flex-column align-items-start py-4 px-4">
+                                                    notice.map((item) => (
+                                                            <ListGroupItem style={{width:'100%'}} className="checklist-entry flex-column align-items-start py-4 px-4">
                                                                 <div className="checklist-item checklist-item-success">
                                                                     <div className="checklist-info">
                                                                         <h5 className="checklist-title mb-0">
-                                                                            <strong>Santosh Kumar</strong>
+                                                                            <strong>{item.name}</strong>
                                                                         </h5>
-                                                                        <small>Teaching Staff</small>
+                                                                        <div>
+                                                                            <small>{item.description}</small>
+                                                                        </div>
+                                                                        <div>
+                                                                            <small> from {formatDate(item.event_from)}</small> - 
+                                                                            <small> to {formatDate(item.event_to)}</small>
+                                                                        </div>
+                                                                        <div>
+                                                                            <small>{item.event_type}</small>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </ListGroupItem>

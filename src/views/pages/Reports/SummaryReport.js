@@ -356,18 +356,53 @@ function SummaryReport() {
           { label: "Sr No.", key: "key" },
           { label: "Class", key: "class" },
           { label: "Section", key: "section" },
-          { label: "Class Fee", key: "class_fee" },
           { label: "Total Fee Due", key: "total_fee_due" },
           { label: "Fee Received", key: "fee_received" },
+          { label: "Class Fee", key: "class_fee" },
           { label: "Outstanding Summary", key: "outstanding_summary" },
         ];
   
         return {
           data: csvData,
           headers: headers,
-          filename: 'Summary_Report.csv'
+          filename: 'Summery_Report.csv'
         };
+      } 
+
+      const searchHHandler = () =>{
+        formData.append("section",sec)
+        formData.append("class",clas)
+        formData.append("session",session)
+        setLoading(true)
+        var config = {
+          method: 'post',
+          url: `${process.env.REACT_APP_API_URL}/api/reports/summary_report/${user.school}/${user._id}`,
+          headers: { 
+            'Authorization': 'Bearer ' + token,
+            'Content-Type' : 'multipart/form-data'
+          },
+          data : formData
+        };
+        axios(config)
+        .then(function (response) {
+          const data = [];
+          for (let i = 0; i < response.data.length; i++) {
+            let outStanding = parseInt(response.data[i].total) - parseInt(response.data[i].fee_received)
+            data.push({
+              key: i+1,
+              class: response.data[i].name,
+              section: "N/A",
+              total_fee_due: "Rs. " + response.data[i].fee_due,
+              fee_received : "Rs " + response.data[i].fee_received,
+              class_fee: "Rs " + response.data[i].total,
+              outstanding_summary : "Rs " + outStanding
+            });
+          }
+          setReportList(data)
+          setLoading(false)
+        })
       }
+
 
   return (
     <>
@@ -437,7 +472,7 @@ function SummaryReport() {
                         </Input>
                       </Col>
                   <Col md="3" className='d-flex justify-content-end align-items-center'>
-                    <Button color="primary">
+                    <Button color="primary" onClick={searchHHandler}>
                       <SearchOutlined />
                       &nbsp;
                       Search
@@ -446,9 +481,9 @@ function SummaryReport() {
                 </Row>
                 <Row className='mt-4'>
                     <Col md="12">
-                      <Button color='primary'>
-                        Export To CSV
-                      </Button>
+                      <Button color='primary' onClick={csvHandler}>
+                            <CSVLink {...csvHandler()} style={{color:"white"}}>Export to CSV</CSVLink>
+                          </Button>
                   </Col>
                 </Row>
     

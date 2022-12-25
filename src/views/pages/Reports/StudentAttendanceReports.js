@@ -55,6 +55,7 @@ function StudentAttendanceReports() {
       formData.append('month',(new Date().getMonth() + 1).toString())
       formData.append('year',(new Date().getFullYear()).toString())
       formData.append('session',session)
+
       var config = {
         method: 'post',
         url: `${process.env.REACT_APP_API_URL}/api/reports/student_attandance/${user.school}/${user._id}`,
@@ -66,47 +67,45 @@ function StudentAttendanceReports() {
       };
       axios(config)
       .then(function (response) {
-
         var data = [];
-          var arr = Object.keys(response.data.output)
-          for (let i = 0; i < arr.length; i++) {
-            let obj = {}
-            let totalPresent = response.data.total_days - response.data.output[arr[i]].total_absent
+        var arr = Object.keys(response.data.output)
+        for (let i = 0; i < arr.length; i++) {
+          let obj = {}
+          let totalPresent = response.data.total_days - response.data.output[arr[i]].total_absent
 
-            for(let j = 0 ; j<response.data.total_days; j++){
+          for(let j = 0 ; j<response.data.total_days; j++){
 
-              if(response.data.output[arr[i]].attandance[j] !== undefined){
-                obj[new Date(response.data.output[arr[i]].attandance[j].date).getDate()] = response.data.output[arr[i]].attandance[j].attendance_status === "" ? ".." : response.data.output[arr[i]].attandance[j].attendance_status
-              }
+            if(response.data.output[arr[i]].attandance[j] !== undefined){
+              obj[new Date(response.data.output[arr[i]].attandance[j].date).getDate()] = response.data.output[arr[i]].attandance[j].attendance_status === "" ? ".." : response.data.output[arr[i]].attandance[j].attendance_status
             }
-
-            // for(let k= 0;k<response.data.total_days;k++){
-            //   if(k+1 in obj){
-            //     continue
-            //   }else{
-            //     obj[k+1] = ".."
-            //   }
-            // }
-            
-            data.push({
-              key: i+1,
-              sundays: response.data.total_sundays,
-              holidays:response.data.total_holidays,
-              total_days:response.data.total_days,
-              total_absent:response.data.output[arr[i]].total_absent,
-              total_present: totalPresent,
-              half_day_present: response.data.output[arr[i]].half_day_present,
-              full_day_present: response.data.output[arr[i]].full_day_present,
-              total_present_holidays_sundays: response.data.total_sundays+ response.data.total_holidays + totalPresent,
-              name: `${response.data.output[arr[i]].firstname} ${response.data.output[arr[i]].lastname}`,
-              class:response.data.output[arr[i]].class && response.data.output[arr[i]].class.name,
-              section:response.data.output[arr[i]].section && response.data.output[arr[i]].section.name,
-              ...obj,
-            });
           }
 
-          setReportList(data)
-          setLoading(false)
+          // for(let k= 0;k<response.data.total_days;k++){
+          //   if(k+1 in obj){
+          //     continue
+          //   }else{
+          //     obj[k+1] = ".."
+          //   }
+          // }
+          
+          data.push({
+            key: i+1,
+            sundays: response.data.total_sundays,
+            holidays:response.data.total_holidays,
+            total_days:response.data.total_days,
+            total_absent:response.data.output[arr[i]].total_absent,
+            total_present: totalPresent,
+            half_day_present: response.data.output[arr[i]].half_day_present,
+            full_day_present: response.data.output[arr[i]].full_day_present,
+            total_present_holidays_sundays: response.data.total_sundays+ response.data.total_holidays + totalPresent,
+            name: `${response.data.output[arr[i]].firstname} ${response.data.output[arr[i]].lastname}`,
+            class:response.data.output[arr[i]].class && response.data.output[arr[i]].class.name,
+            section:response.data.output[arr[i]].section && response.data.output[arr[i]].section.name,
+            ...obj,
+          });
+        }
+        setReportList(data)
+        setLoading(false)
       }).catch((error) =>{
         console.log(error)
       })
@@ -157,6 +156,9 @@ function StudentAttendanceReports() {
       setSession(e.target.value)
     }
 
+    const getDays = (year, month) => {
+      return new Date(year, month, 0).getDate();
+    };
 
     const columns = [
         {
@@ -379,7 +381,8 @@ function StudentAttendanceReports() {
             dataIndex: "30",
             align: "left",
         },
-        {
+        
+        getDays(new Date().getFullYear(), new Date().getMonth() + 1) === 31 && {
           title: "31",
           dataIndex: "31",
           align: "left",
@@ -632,6 +635,132 @@ function StudentAttendanceReports() {
           getReports()
         }
       },[session])
+
+
+      const csvHandler = () =>{
+        const csvData = [
+          ...reportList
+        ]
+      
+        const headers = [
+          { label: "Sr No.", key: "key" },
+          { label: "Name", key: "name" },
+          { label: "Class", key: "class" },
+          { label: "Section", key: "section" },
+          { label: "1", key: "1" },
+          { label: "2", key: "2" },
+          { label: "3", key: "3" },
+          { label: "4", key: "4" },
+          { label: "5", key: "5" },
+          { label: "6", key: "6" },
+          { label: "7", key: "7" },
+          { label: "8", key: "8" },
+          { label: "9", key: "9" },
+          { label: "10", key: "10" },
+          { label: "11", key: "11" },
+          { label: "12", key: "12" },
+          { label: "13", key: "13" },
+          { label: "14", key: "14" },
+          { label: "15", key: "15" },
+          { label: "16", key: "16" },
+          { label: "17", key: "17" },
+          { label: "18", key: "18" },
+          { label: "19", key: "19" },
+          { label: "20", key: "20" },
+          { label: "21", key: "21" },
+          { label: "22", key: "22" },
+          { label: "23", key: "23" },
+          { label: "24", key: "24" },
+          { label: "25", key: "25" },
+          { label: "26", key: "26" },
+          { label: "27", key: "27" },
+          { label: "28", key: "28" },
+          { label: "29", key: "29" },
+          { label: "30", key: "30" },
+          getDays(new Date().getFullYear(), new Date().getMonth() + 1) === 31 && { label: "31", key: "31" },
+          { label: "Total Days", key: "total_days" },
+          { label: "Full Day", key: "full_day_present" },
+          { label: "Half Day", key: "half_day_present" },
+          { label: "Holiday", key: "holidays" },
+          { label: "Sunday", key: "sundays" },
+          { label: "Total Present Holidays Sundays", key: "total_present_holidays_sundays" },
+          { label: "Total Present", key: "total_present" },
+          { label: "Total Absent", key: "total_absent" },
+        ];
+  
+        return {
+          data: csvData,
+          headers: headers,
+          filename: 'Student_Attendance_Report.csv'
+        };
+      }
+
+
+      const searchHHandler = () =>{
+        formData.append('month',(new Date().getMonth() + 1).toString())
+        formData.append('year',(new Date().getFullYear()).toString())
+        formData.append("session",session)
+        formData.append("section",sec)
+        formData.append("class",clas)
+
+        setLoading(true)
+        var config = {
+          method: 'post',
+          url: `${process.env.REACT_APP_API_URL}/api/reports/student_attandance/${user.school}/${user._id}`,
+          headers: { 
+            'Authorization': 'Bearer ' + token,
+            'Content-Type' : 'multipart/form-data'
+          },
+          data : formData
+        };
+        axios(config)
+        .then(function (response) {
+          let data = [];
+        var arr = Object.keys(response.data.output)
+        for (let i = 0; i < arr.length; i++) {
+          let obj = {}
+          let totalPresent = response.data.total_days - response.data.output[arr[i]].total_absent
+
+          for(let j = 0 ; j<response.data.total_days; j++){
+
+            if(response.data.output[arr[i]].attandance[j] !== undefined){
+              obj[new Date(response.data.output[arr[i]].attandance[j].date).getDate()] = response.data.output[arr[i]].attandance[j].attendance_status === "" ? ".." : response.data.output[arr[i]].attandance[j].attendance_status
+            }
+          }
+
+          // for(let k= 0;k<response.data.total_days;k++){
+          //   if(k+1 in obj){
+          //     continue
+          //   }else{
+          //     obj[k+1] = ".."
+          //   }
+          // }
+          
+          data.push({
+            key: i+1,
+            sundays: response.data.total_sundays,
+            holidays:response.data.total_holidays,
+            total_days:response.data.total_days,
+            total_absent:response.data.output[arr[i]].total_absent,
+            total_present: totalPresent,
+            half_day_present: response.data.output[arr[i]].half_day_present,
+            full_day_present: response.data.output[arr[i]].full_day_present,
+            total_present_holidays_sundays: response.data.total_sundays+ response.data.total_holidays + totalPresent,
+            name: `${response.data.output[arr[i]].firstname} ${response.data.output[arr[i]].lastname}`,
+            class:response.data.output[arr[i]].class && response.data.output[arr[i]].class.name,
+            section:response.data.output[arr[i]].section && response.data.output[arr[i]].section.name,
+            ...obj,
+          });
+        }
+         
+          setReportList(data)
+          setLoading(false)
+        })
+  
+  
+      }
+
+
   return (
     <>
     <SimpleHeader name="Student Attendance" parentName="Reports" />   
@@ -700,7 +829,7 @@ function StudentAttendanceReports() {
                     </Input>
                   </Col>
                   <Col md="3" className='d-flex justify-content-end align-items-center'>
-                    <Button color="primary">
+                    <Button color="primary" onClick={searchHHandler}>
                       <SearchOutlined />
                       &nbsp;
                       Search
@@ -709,9 +838,9 @@ function StudentAttendanceReports() {
                 </Row>
                 <Row className='mt-4'>
                     <Col md="12">
-                      <Button color='primary'>
-                        Export To CSV
-                      </Button>
+                    <Button color='primary' onClick={csvHandler}>
+                          <CSVLink {...csvHandler()} style={{color:"white"}}>Export to CSV</CSVLink>
+                        </Button>
                   </Col>
                 </Row>
                 <Row className='mt-4'>

@@ -33,7 +33,7 @@ import {
 
 function CertificateGenerator() {
   const [content,setContent] = useState(`This is to certify that <strong>Mr./Ms./Mrs.</strong> _ _ _ _ _ _ _ _ _ _ _ _ has successfully secured _ _ _ _ _ _ position  
-      in _ _ _ _ _ _ _ _ competition .`)
+      in _ _ _ _ _ _ _ _ competition.`)
   const componentRef = useRef();
 
   const [color1,setColor1] = useState("#ffffff")

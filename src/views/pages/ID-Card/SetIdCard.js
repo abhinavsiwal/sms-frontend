@@ -257,7 +257,7 @@ function SetIdCard() {
                           placeholder="School Name"
                           type="text"
                           onChange={nameHandler}
-                          value={data.schoolname || dataSchool.schoolname}
+                          value={data.schoolname}
                           required
                         />
                       </Col>
@@ -272,7 +272,7 @@ function SetIdCard() {
                           placeholder="School Address"
                           type="text"
                           onChange={addressHandler}
-                          value={data.address || dataSchool.address}
+                          value={data.address}
                           required
                         />
                       </Col>
@@ -287,7 +287,7 @@ function SetIdCard() {
                           placeholder="School Contact"
                           type="text"
                           onChange={contactHandler}
-                          value={data.phone || dataSchool.phone}
+                          value={data.phone}
                           required
                         />
                       </Col>
@@ -304,8 +304,10 @@ function SetIdCard() {
                                 backgroundOrigin:"center"
                             }}> 
                                 <header className='identityCard__header d-flex'>
-                                  <img className='logo' src='https://smsproject-bucket.s3.amazonaws.com/tRIAUgyQ4gES0b3IXYYM.png?AWSAccessKeyId=AKIA4C5LUTOBOVJHFUHQ&Expires=1671459793&Signature=a91hUmUnKkF%2FgObF6wpjiG%2FmsWM%3D' alt='logo'/>
-                                  <div className='d-flex flex-column text-center ml-3'>
+                                  <div className='logo__container'>
+                                    <img className='logo' src='https://smsproject-bucket.s3.amazonaws.com/gVuhD1P1QDuhYgCbRDhv.jpg?AWSAccessKeyId=AKIA4C5LUTOBOVJHFUHQ&Expires=1672340167&Signature=NZh6%2BRgQGmVuIHtMmUqjarqiK40%3D' alt='logo'/>
+                                  </div>
+                                  <div className='school__heading'>
                                     <div>YOUR SCHOOL NAME HERE</div>
                                     <div>Identity Card</div>
                                   </div>
@@ -319,7 +321,7 @@ function SetIdCard() {
                                   }}>
                                   <div className='id__card'>
                                     <div className="identityCard__visual">
-                                    <img  src='https://smsproject-bucket.s3.amazonaws.com/47BLwqISuhw39dZ8NDAl.png?AWSAccessKeyId=AKIA4C5LUTOBOVJHFUHQ&Expires=1671459588&Signature=URb2Q%2FLYvq%2BXnxpts0hINVElPOU%3D' alt='logo'/>
+                                    <img  src='https://smsproject-bucket.s3.amazonaws.com/ftmMw4QDxKrqpQcR6Eu7.jpg?AWSAccessKeyId=AKIA4C5LUTOBOVJHFUHQ&Expires=1672320137&Signature=KWrZKttUUwXRgcC5MpgPy1F%2FAgw%3D' alt='logo'/>
                                     </div>
                                   </div>
                                   <ul className="identityCard__list list-unstyled">
