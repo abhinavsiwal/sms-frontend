@@ -53,6 +53,7 @@ const Attendance1 = () => {
     today.getMonth() + 1,
     0
   );
+  const [permissions, setPermissions] = useState([]);
   const [attendanceList, setAttendanceList] = useState([]);
   const [oldAttendanceList, setOldAttendanceList] = useState([]);
   const [holidays, setHolidays] = useState([]);
@@ -73,6 +74,17 @@ const Attendance1 = () => {
     selectSection: "",
   });
   const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
+
+  let permission=[]
+  useEffect(() => {
+    if (user.permissions["Student Management"]) {
+      permission = user.permissions["Studet Management"];
+      // console.log(permissions);
+      setPermissions(permission);
+    }
+  }, [checked]);
+
+
   const getAllClass = async () => {
     const { user, token } = isAuthenticated();
     const classes = await allClass(user._id, user.school, token);
@@ -300,6 +312,10 @@ const Attendance1 = () => {
     return columns;
   };
   const changeAttendance = (studentIndex, dateIndex) => {
+    console.log(permissions);
+    if(permissions && !permissions.includes("add".trim())){
+      return;
+    }
     console.log(studentIndex, dateIndex);
     const attendanceList1 = attendanceList;
     const student = attendanceList1[studentIndex];
@@ -637,15 +653,17 @@ const Attendance1 = () => {
                   </div>
                 </Col>
                 <Col className="buttons" md={3}>
-                  <div className="col-sm">
-                    <Button
-                      className="attendance-button"
-                      onClick={commitAttendance}
-                      color="primary"
-                    >
-                      Save
-                    </Button>
-                  </div>
+                {permissions && permissions.includes("add".trim()) && (
+                    <div className="col-sm">
+                      <Button
+                        className="attendance-button"
+                        onClick={commitAttendance}
+                        color="primary"
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  )}
                 </Col>
               </Row>
             </CardHeader>

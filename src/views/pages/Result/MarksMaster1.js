@@ -168,63 +168,67 @@ const MarksMaster1 = () => {
     }
   };
 
-  const handleChange = (name, student) => async (event) => {
-    console.log(name, event.target.value);
-    console.log(event.target.id);
+  const handleChange =
+    (name, student, marksId = null) =>
+    async (event) => {
+      console.log(name, event.target.value);
+      console.log(event.target.id);
 
-    let obj = {
-      present: "Y",
-      subject: event.target.id,
-      student: student,
-    };
-    if (name === "marks") {
-      obj.marks = event.target.value;
-    } else if (name === "present") {
-      if (event.target.checked) {
-        obj.present = "Y";
-      } else if (!event.target.checked) {
-        obj.present = "N";
-        obj.marks = 0;
+      let obj = {
+        present: "Y",
+        subject: event.target.id,
+        student: student,
+        _id: marksId,
+      };
+      if (name === "marks") {
+        obj.marks = event.target.value;
+      } else if (name === "present") {
+        if (event.target.checked) {
+          obj.present = "Y";
+        } else if (!event.target.checked) {
+          obj.present = "N";
+          obj.marks = 0;
+        }
       }
-    }
-    console.log(obj);
-    setResult1([...result1, obj]);
-    result1.map((rs) => {
-      console.log(rs);
-      if (
-        rs.hasOwnProperty("marks") ||
-        (rs.hasOwnProperty("present") &&
-          rs.hasOwnProperty("subject") &&
-          rs.hasOwnProperty("student"))
-      ) {
-        if (rs.subject === event.target.id) {
-          if (name === "marks") {
-            rs.marks = event.target.value;
-          } else if (name === "present") {
-            if (event.target.checked) {
-              rs.present = "Y";
-            } else if (!event.target.checked) {
-              rs.present = "N";
-              rs.marks = 0;
+      console.log(obj);
+      setResult1([...result1, obj]);
+      result1.map((rs) => {
+        console.log(rs);
+        if (
+          rs.hasOwnProperty("marks") ||
+          (rs.hasOwnProperty("present") &&
+            rs.hasOwnProperty("subject") &&
+            rs.hasOwnProperty("student")) &&
+            rs.hasOwnProperty("_id")
+        ) {
+          if (rs.subject === event.target.id) {
+            if (name === "marks") {
+              rs.marks = event.target.value;
+            } else if (name === "present") {
+              if (event.target.checked) {
+                rs.present = "Y";
+              } else if (!event.target.checked) {
+                rs.present = "N";
+                rs.marks = 0;
+              }
             }
           }
-        }
 
-        console.log(rs);
-        if (result1.length > 0) {
-          setResultData([...resultData, rs]);
-        } else if (result1.length === 0) {
-          setResultData([rs]);
-        }
+          console.log(rs);
+          if (result1.length > 0) {
+            setResultData([...resultData, rs]);
+          } else if (result1.length === 0) {
+            setResultData([rs]);
+          }
 
-        return;
+          return;
+        }
+      });
+      if (result1.length === 0) {
+        setResultData([obj]);
       }
-    });
-    if (result1.length === 0) {
-      setResultData([obj]);
-    }
-    console.log(resultData);
-  };
+      console.log(resultData);
+    };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -240,7 +244,8 @@ const MarksMaster1 = () => {
         rs.hasOwnProperty("marks") ||
         (rs.hasOwnProperty("present") &&
           rs.hasOwnProperty("subject") &&
-          rs.hasOwnProperty("student"))
+          rs.hasOwnProperty("student")) &&
+          rs.hasOwnProperty("_id")
       ) {
         customFields.push(rs);
       }
@@ -504,7 +509,20 @@ const MarksMaster1 = () => {
                                           required
                                           onChange={handleChange(
                                             "marks",
-                                            student._id
+                                            student._id,
+                                            result?.find(
+                                              (res) =>
+                                                res.student._id ===
+                                                  student._id &&
+                                                res.subject === subject.name
+                                            )
+                                              ? result?.find(
+                                                  (res) =>
+                                                    res.student._id ===
+                                                      student._id &&
+                                                    res.subject === subject.name
+                                                )?._id
+                                              : null
                                           )}
                                           // value={inputfield.min}
                                           defaultValue={
@@ -531,7 +549,22 @@ const MarksMaster1 = () => {
                                                 required
                                                 onChange={handleChange(
                                                   "marks",
-                                                  student._id
+                                                  student._id,
+                                                  result?.find(
+                                                    (res) =>
+                                                      res.student._id ===
+                                                        student._id &&
+                                                      res.subject ===
+                                                        subject.name
+                                                  )
+                                                    ? result?.find(
+                                                        (res) =>
+                                                          res.student._id ===
+                                                            student._id &&
+                                                          res.subject ===
+                                                            subject.name
+                                                      )?._id
+                                                    : null
                                                 )}
                                                 // value={inputfield.min}
                                                 name="marks"
@@ -553,7 +586,22 @@ const MarksMaster1 = () => {
                                                 required
                                                 onChange={handleChange(
                                                   "present",
-                                                  student._id
+                                                  student._id,
+                                                  result?.find(
+                                                    (res) =>
+                                                      res.student._id ===
+                                                        student._id &&
+                                                      res.subject ===
+                                                        subject.name
+                                                  )
+                                                    ? result?.find(
+                                                        (res) =>
+                                                          res.student._id ===
+                                                            student._id &&
+                                                          res.subject ===
+                                                            subject.name
+                                                      )?._id
+                                                    : null
                                                 )}
                                                 // value={inputfield.min}
                                                 name="present"
@@ -589,7 +637,20 @@ const MarksMaster1 = () => {
                                           required
                                           onChange={handleChange(
                                             "marks",
-                                            student._id
+                                            student._id,
+                                            result?.find(
+                                              (res) =>
+                                                res.student._id ===
+                                                  student._id &&
+                                                res.subject === subject.name
+                                            )
+                                              ? result?.find(
+                                                  (res) =>
+                                                    res.student._id ===
+                                                      student._id &&
+                                                    res.subject === subject.name
+                                                )?._id
+                                              : null
                                           )}
                                           defaultValue={
                                             result?.find(
@@ -612,7 +673,20 @@ const MarksMaster1 = () => {
                                           required
                                           onChange={handleChange(
                                             "present",
-                                            student._id
+                                            student._id,
+                                            result?.find(
+                                              (res) =>
+                                                res.student._id ===
+                                                  student._id &&
+                                                res.subject === subject.name
+                                            )
+                                              ? result?.find(
+                                                  (res) =>
+                                                    res.student._id ===
+                                                      student._id &&
+                                                    res.subject === subject.name
+                                                )?._id
+                                              : null
                                           )}
                                           // value={inputfield.min}
                                           name="present"

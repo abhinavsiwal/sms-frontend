@@ -471,7 +471,7 @@ export const adminRoutes = [
         miniName: "A",
         component: Attendance1,
         layout: "/admin",
-        permission: "add",
+        permission: "view",
       },
       {
         path: "/student-documents",
