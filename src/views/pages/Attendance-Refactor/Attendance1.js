@@ -368,8 +368,8 @@ const Attendance1 = () => {
       setViewAttendance(false);
       setSearchData({
         
-        dateFrom: "",
-        dateTo: "",
+        dateFrom: startDate,
+        dateTo: endDate,
         session: "",
         selectClass: "",
         selectSection: "",

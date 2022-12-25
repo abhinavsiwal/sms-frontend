@@ -108,7 +108,7 @@ const AddSession = () => {
   useEffect(() => {
     const getAllSessions = () => {
       // All Sections
-      setLoading(true)
+      setLoading(true);
       allSessions(user._id, user.school, token)
         .then((res) => {
           console.log(res);
@@ -126,43 +126,43 @@ const AddSession = () => {
               fees_method: res[i].fees_method,
               action: (
                 <h5 key={i + 1} className="mb-0">
-                  {/* {permission1 && permission1.includes("edit") && ( */}
-                  <Button
-                    className="btn-sm pull-right"
-                    color="primary"
-                    type="button"
-                    key={"edit" + i + 1}
-                    onClick={() =>
-                      rowHandler(
-                        res[i]._id,
-                        res[i].name,
-                        res[i].fees_method,
-                        res[i].start_date.split("T")[0],
-                        res[i].end_date.split("T")[0],
-                        res[i].working_days,
-                        res[i].earned_leaves
-                      )
-                    }
-                  >
-                    <i className="fas fa-user-edit" />
-                  </Button>
-                  {/* )} */}
-
-                  {/* {permissions && permissions.includes("delete") && ( */}
-                  <Button
-                    className="btn-sm pull-right"
-                    color="danger"
-                    type="button"
-                    key={"delete" + 1}
-                  >
-                    <Popconfirm
-                      title="Sure to delete?"
-                      onConfirm={() => handleDelete(res[i]._id)}
+                  {permission1 && permission1.includes("edit") && (
+                    <Button
+                      className="btn-sm pull-right"
+                      color="primary"
+                      type="button"
+                      key={"edit" + i + 1}
+                      onClick={() =>
+                        rowHandler(
+                          res[i]._id,
+                          res[i].name,
+                          res[i].fees_method,
+                          res[i].start_date.split("T")[0],
+                          res[i].end_date.split("T")[0],
+                          res[i].working_days,
+                          res[i].earned_leaves
+                        )
+                      }
                     >
-                      <i className="fas fa-trash" />
-                    </Popconfirm>
-                  </Button>
-                  {/* )} */}
+                      <i className="fas fa-user-edit" />
+                    </Button>
+                  )}
+
+                  {permission1 && permission1.includes("delete") && (
+                    <Button
+                      className="btn-sm pull-right"
+                      color="danger"
+                      type="button"
+                      key={"delete" + 1}
+                    >
+                      <Popconfirm
+                        title="Sure to delete?"
+                        onConfirm={() => handleDelete(res[i]._id)}
+                      >
+                        <i className="fas fa-trash" />
+                      </Popconfirm>
+                    </Button>
+                  )}
                 </h5>
               ),
             });
@@ -567,7 +567,7 @@ const AddSession = () => {
         pauseOnHover
         theme="colored"
       />
-         <LoadingScreen
+      <LoadingScreen
         loading={loading}
         bgColor="#f1f1f1"
         spinnerColor="#9ee5f8"
@@ -576,164 +576,163 @@ const AddSession = () => {
       ></LoadingScreen>
       <Container className="mt--6" fluid>
         <Row>
-          {/* {permissions && permissions.includes("add") && (
-              
-            )} */}
-          <Col>
-            <div className="card-wrapper">
-              <Card>
-                <CardHeader>
-                  <h2>Session Master</h2>
-                </CardHeader>
-                <Form onSubmit={handleFormChange} className="mb-4">
-                  <CardBody>
-                    <Row>
-                      <Col>
-                        <label
-                          className="form-control-label"
-                          htmlFor="example4cols2Input"
-                        >
-                          Session
-                        </label>
-                        <Input
-                          id="example4cols2Input"
-                          placeholder="Session"
-                          type="text"
-                          onChange={handleChange("name")}
-                          value={sessionData.name}
-                          required
-                        />
-                      </Col>
+          {permissions && permissions.includes("add") && (
+            <Col>
+              <div className="card-wrapper">
+                <Card>
+                  <CardHeader>
+                    <h2>Session Master</h2>
+                  </CardHeader>
+                  <Form onSubmit={handleFormChange} className="mb-4">
+                    <CardBody>
+                      <Row>
+                        <Col>
+                          <label
+                            className="form-control-label"
+                            htmlFor="example4cols2Input"
+                          >
+                            Session
+                          </label>
+                          <Input
+                            id="example4cols2Input"
+                            placeholder="Session"
+                            type="text"
+                            onChange={handleChange("name")}
+                            value={sessionData.name}
+                            required
+                          />
+                        </Col>
 
-                      {/* Starting DAte */}
+                        {/* Starting DAte */}
 
-                      <Col>
-                        <label
-                          className="form-control-label"
-                          htmlFor="example-date-input"
-                        >
-                          Starting Date
-                        </label>
-                        <Input
-                          id="example-date-input"
-                          type="date"
-                          onChange={handleDate("start_date")}
-                          required
-                          placeholder="dd-mm-yyyy"
-                          value={sessionData.start_date}
-                        />
-                      </Col>
-                       {/* Ending Date */}
+                        <Col>
+                          <label
+                            className="form-control-label"
+                            htmlFor="example-date-input"
+                          >
+                            Starting Date
+                          </label>
+                          <Input
+                            id="example-date-input"
+                            type="date"
+                            onChange={handleDate("start_date")}
+                            required
+                            placeholder="dd-mm-yyyy"
+                            value={sessionData.start_date}
+                          />
+                        </Col>
+                        {/* Ending Date */}
 
-                       <Col>
-                        <label
-                          className="form-control-label"
-                          htmlFor="example-date-input"
+                        <Col>
+                          <label
+                            className="form-control-label"
+                            htmlFor="example-date-input"
+                          >
+                            Ending Date
+                          </label>
+                          <Input
+                            id="example-date-input"
+                            value={sessionData.end_date}
+                            type="date"
+                            min={moment(date).format("YYYY-MM-DD")}
+                            placeholder="dd-mm-yyyy"
+                            onChange={handleChange("end_date")}
+                            required
+                          />
+                        </Col>
+                      </Row>
+                      <Row className="mt-4">
+                        <Col>
+                          <label
+                            className="form-control-label"
+                            htmlFor="example-date-input"
+                          >
+                            Working Days (Week)
+                          </label>
+                          <Input
+                            id="example-date-input"
+                            type="number"
+                            max="7"
+                            min="1"
+                            onChange={handleChange("working_days")}
+                            value={sessionData.working_days}
+                            placeholder="Working Days"
+                            required
+                            onBlur={workingDaysBlurHandler}
+                          />
+                          {workingDaysError && (
+                            <div style={{ color: "red", fontSize: "0.7rem" }}>
+                              Value must be smaller or equal to Working Days
+                            </div>
+                          )}
+                        </Col>
+
+                        <Col>
+                          <label
+                            className="form-control-label"
+                            htmlFor="example-date-input"
+                          >
+                            No of Paid Leaves
+                          </label>
+                          <Input
+                            id="example-date-input"
+                            type="number"
+                            min="1"
+                            onChange={handleChange("paid_leaves")}
+                            value={sessionData.paid_leaves}
+                            placeholder="Leaves"
+                            required
+                          />
+                          {paidLeavesError && (
+                            <div style={{ color: "red", fontSize: "0.7rem" }}>
+                              Value must be smaller or equal to 7
+                            </div>
+                          )}
+                        </Col>
+                        <Col>
+                          <label
+                            className="form-control-label"
+                            htmlFor="example-date-input"
+                          >
+                            Fees Method
+                          </label>
+                          <select
+                            required
+                            value={sessionData.fees_method}
+                            className="form-control"
+                            onChange={handleChange("fees_method")}
+                          >
+                            <option value="">Select Fees Method</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="quarterly">Quarterly</option>
+                            <option value="half_yearly">Half-Yearly</option>
+                            <option value="yearly">Yearly</option>
+                          </select>
+                        </Col>
+                      </Row>
+                      <Row className="mt-4">
+                        <Col
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            width: "100%",
+                          }}
                         >
-                          Ending Date
-                        </label>
-                        <Input
-                          id="example-date-input"
-                          value={sessionData.end_date}
-                          type="date"
-                          min={moment(date).format("YYYY-MM-DD")}
-                          placeholder="dd-mm-yyyy"
-                          onChange={handleChange("end_date")}
-                          required
-                        />
-                      </Col>
-                    </Row>
-                    <Row className="mt-4">
-                    <Col>
-                        <label
-                          className="form-control-label"
-                          htmlFor="example-date-input"
-                        >
-                          Working Days (Week)
-                        </label>
-                        <Input
-                          id="example-date-input"
-                          type="number"
-                          max="7"
-                          min="1"
-                          onChange={handleChange("working_days")}
-                          value={sessionData.working_days}
-                          placeholder="Working Days"
-                          required
-                          onBlur={workingDaysBlurHandler}
-                        />
-                        {workingDaysError && (
-                          <div style={{ color: "red", fontSize: "0.7rem" }}>
-                            Value must be smaller or equal to Working Days
-                          </div>
-                        )}
-                      </Col>
-               
-                      <Col>
-                        <label
-                          className="form-control-label"
-                          htmlFor="example-date-input"
-                        >
-                          No of Paid Leaves
-                        </label>
-                        <Input
-                          id="example-date-input"
-                          type="number"
-                          min="1"
-                          onChange={handleChange("paid_leaves")}
-                          value={sessionData.paid_leaves}
-                          placeholder="Leaves"
-                          required
-                        />
-                        {paidLeavesError && (
-                          <div style={{ color: "red", fontSize: "0.7rem" }}>
-                            Value must be smaller or equal to 7
-                          </div>
-                        )}
-                      </Col>
-                      <Col>
-                        <label
-                          className="form-control-label"
-                          htmlFor="example-date-input"
-                        >
-                          Fees Method
-                        </label>
-                        <select
-                          required
-                          value={sessionData.fees_method}
-                          className="form-control"
-                          onChange={handleChange("fees_method")}
-                        >
-                          <option value="">Select Fees Method</option>
-                          <option value="monthly">Monthly</option>
-                          <option value="quarterly">Quarterly</option>
-                          <option value="half_yearly">Half-Yearly</option>
-                          <option value="yearly">Yearly</option>
-                        </select>
-                      </Col>
-                    </Row>
-                    <Row className="mt-4">
-                      <Col
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          width: "100%",
-                        }}
-                      >
-                        <Button
-                          color="primary"
-                          type="submit"
-                          disabled={disableButton}
-                        >
-                          Submit
-                        </Button>
-                      </Col>
-                    </Row>
-                  </CardBody>
-                </Form>
-              </Card>
-            </div>
-          </Col>
+                          <Button
+                            color="primary"
+                            type="submit"
+                            disabled={disableButton}
+                          >
+                            Submit
+                          </Button>
+                        </Col>
+                      </Row>
+                    </CardBody>
+                  </Form>
+                </Card>
+              </div>
+            </Col>
+          )}
 
           <Col>
             <div className="card-wrapper">
@@ -748,16 +747,14 @@ const AddSession = () => {
                     Print
                   </Button>
                   <Row className="ml-2">
-                
-                      <div ref={componentRef} style={{ overflowX: "auto" }}>
-                        <AntTable
-                          columns={columns}
-                          data={sessionList}
-                          pagination={true}
-                          exportFileName="SessionDetails"
-                        />
-                      </div>
-                
+                    <div ref={componentRef} style={{ overflowX: "auto" }}>
+                      <AntTable
+                        columns={columns}
+                        data={sessionList}
+                        pagination={true}
+                        exportFileName="SessionDetails"
+                      />
+                    </div>
                   </Row>
                 </CardBody>
               </Card>
@@ -942,7 +939,11 @@ const AddSession = () => {
               </Row>
             </ModalBody>
             <ModalFooter>
-              <Button color="success" type="submit" style={{margin:"0 auto"}} >
+              <Button
+                color="success"
+                type="submit"
+                style={{ margin: "0 auto" }}
+              >
                 Save changes
               </Button>
             </ModalFooter>

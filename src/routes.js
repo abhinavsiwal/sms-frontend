@@ -316,7 +316,7 @@ export const adminRoutes = [
         miniName: "S",
         component: StaffAttendance,
         layout: "/admin",
-        permission: "add",
+        permission: "view",
       },
       {
         path: "/staff-documents",

@@ -78,7 +78,7 @@ const StaffAttendance = () => {
     if (sessions.length !== 0) {
       defaultSession1();
     }
-  }, [sessions]);
+  }, [sessions, checked]);
 
   const defaultSession1 = async () => {
     const defaultSession = await sessions.find(
@@ -165,6 +165,7 @@ const StaffAttendance = () => {
   };
 
   const processAbsentList = (attendance) => {
+    console.log(searchData.dateFrom, searchData.dateTo);
     console.log(new Date(searchData.dateFrom), new Date(searchData.dateTo));
     const start = new Date(searchData.dateFrom);
     const end = new Date(searchData.dateTo);
@@ -362,8 +363,8 @@ const StaffAttendance = () => {
       toast.success("Attendance Updated Successfully");
       setViewAttendance(false);
       setSearchData({
-        dateFrom: "",
-        dateTo: "",
+        dateFrom: new Date(today.getFullYear(), today.getMonth(), 1),
+        dateTo: new Date(today.getFullYear(), today.getMonth() + 1, 1),
         session: "",
         department: "",
       });
