@@ -30,6 +30,7 @@ import {
 function AccessRoleReports() {
     const [loading, setLoading] = useState(false);
     const [reportList,setReportList] = useState([])
+    const [csvList,setCsvList] = useState([])
 
     const { user, token } = isAuthenticated();
     
@@ -45,19 +46,25 @@ function AccessRoleReports() {
       
       axios(config)
       .then(function (response) {
-        console.log(response.data)
         const data = [];
+        const data1 = [];
+        let acee = [];
+        
         for (let i = 0; i < response.data.length; i++) {
           let arr = Object.keys(response.data[i].assign_role?.permissions !==undefined && response.data[i].assign_role?.permissions)
-          let moduleName = arr.length !== 0 ?  arr.join(", ") : "Module Name Not Found"
+          let moduleName = arr.length !== 0 &&  arr.join(", ") 
           let accessType = "" 
           var access_arr = []
           if(arr.length !== 0 ){
+            acee = []
             for(let k = 0 ; k<arr.length ; k++){
               access_arr.push(response.data[i].assign_role.permissions[arr[k]].join(","))
+              accessType  = access_arr.join(" / ")
+              acee.push({
+                module_name : arr[k],
+                access_type : response.data[i].assign_role.permissions[arr[k]].join(",")
+              })
             }
-            console.log(i,access_arr)
-            accessType  = access_arr.join(" / ")
           }else{
             accessType = "Access Type Not Found"
           }
@@ -67,11 +74,26 @@ function AccessRoleReports() {
             sid: response.data[i].SID,
             name:`${response.data[i].firstname} ${response.data[i].lastname}`,
             department:response.data[i].department.name,
-            module_name:moduleName,
-            access_type : accessType
+            access_role:(
+              <Table 
+                columns={access}
+                dataSource={acee}
+              />
+            ),
+          });
+
+
+          data1.push({
+            key: i+1,
+            sid: response.data[i].SID,
+            name:`${response.data[i].firstname} ${response.data[i].lastname}`,
+            department:response.data[i].department.name,
+            module_name : moduleName,
+            access_type : accessType,
           });
         }
-        setReportList(data)
+        setReportList(data) 
+        setCsvList(data1)
         setLoading(false)
       })
       .catch(function (error) {
@@ -86,7 +108,7 @@ function AccessRoleReports() {
 
     const csvHandler = () =>{
       const csvData = [
-        ...reportList
+        ...csvList
       ]
 
       const headers = [
@@ -104,6 +126,70 @@ function AccessRoleReports() {
         filename: 'Access_Role_Report.csv'
       };
     }
+
+
+    const access = [
+      {
+        title: "MODULE NAME",
+        dataIndex: "module_name",
+        align: "left",
+        sorter: (a, b) => a.to > b.to,
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+          return (
+            <>
+              <Input
+                autoFocus
+                placeholder="Type text here"
+                value={selectedKeys[0]}
+                onChange={(e) => {
+                  setSelectedKeys(e.target.value ? [e.target.value] : []);
+                  confirm({ closeDropdown: false });
+                }}
+                onBlur={() => {
+                  confirm();
+                }}
+              ></Input>
+            </>
+          );
+        },
+        filterIcon: () => {
+          return <SearchOutlined />;
+        },
+        onFilter: (value, record) => {
+          return record.to.toLowerCase().includes(value.toLowerCase());
+        },
+      },
+      {
+          title: "ACCESS TYPE",
+          dataIndex: "access_type",
+          align: "left",
+          sorter: (a, b) => a.to > b.to,
+          filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+            return (
+              <>
+                <Input
+                  autoFocus
+                  placeholder="Type text here"
+                  value={selectedKeys[0]}
+                  onChange={(e) => {
+                    setSelectedKeys(e.target.value ? [e.target.value] : []);
+                    confirm({ closeDropdown: false });
+                  }}
+                  onBlur={() => {
+                    confirm();
+                  }}
+                ></Input>
+              </>
+            );
+          },
+          filterIcon: () => {
+            return <SearchOutlined />;
+          },
+          onFilter: (value, record) => {
+            return record.to.toLowerCase().includes(value.toLowerCase());
+          },
+      },    
+    ]
 
     const columns = [
       {
@@ -200,41 +286,11 @@ function AccessRoleReports() {
             onFilter: (value, record) => {
               return record.to.toLowerCase().includes(value.toLowerCase());
             },
-          },
-        {
-          title: "MODULE NAME",
-          dataIndex: "module_name",
-          align: "left",
-          sorter: (a, b) => a.to > b.to,
-          filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
-            return (
-              <>
-                <Input
-                  autoFocus
-                  placeholder="Type text here"
-                  value={selectedKeys[0]}
-                  onChange={(e) => {
-                    setSelectedKeys(e.target.value ? [e.target.value] : []);
-                    confirm({ closeDropdown: false });
-                  }}
-                  onBlur={() => {
-                    confirm();
-                  }}
-                ></Input>
-              </>
-            );
-          },
-          filterIcon: () => {
-            return <SearchOutlined />;
-          },
-          onFilter: (value, record) => {
-            return record.to.toLowerCase().includes(value.toLowerCase());
-          },
-        },
-        {
-            title: "ACCESS TYPE",
-            dataIndex: "access_type",
-            align: "left",
+          }, 
+          {
+            title: "ACCESS ROLE",
+            dataIndex: "access_role",
+            align: "center",
             sorter: (a, b) => a.to > b.to,
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
               return (
@@ -260,8 +316,7 @@ function AccessRoleReports() {
             onFilter: (value, record) => {
               return record.to.toLowerCase().includes(value.toLowerCase());
             },
-          },
-        
+          },    
       ];
 
   return (

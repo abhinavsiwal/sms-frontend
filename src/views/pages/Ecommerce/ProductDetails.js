@@ -6,6 +6,7 @@ import { addItemsToCart } from "../../../store/reducers/cart";
 import ovaltick from "./assets/oval_tick.png";
 import { toast, ToastContainer } from "react-toastify";
 import discountBadge from "./assets/discount_badge_icon.png";
+
 const ProductDetails = ({ product,backHandle }) => {
   const dispatch = useDispatch();
   const addToCart = () => {
@@ -97,9 +98,9 @@ const ProductDetails = ({ product,backHandle }) => {
                   <h4>₹{product.offerPrice}</h4>
                 </div>
               </div>
-              <div className="detais-buttons-container container-fluid">
+              {/* <div className="d-flex justify-content-center mt-4">
                 <button className="btn btn-primary " onClick={addToCart} >Add to Cart</button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

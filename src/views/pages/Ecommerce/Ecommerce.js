@@ -72,13 +72,13 @@ function Ecommerce() {
         <>
           <SimpleHeader name="Student" parentName="Time Table" />
           <Container className="mt--6" fluid>
-            <Row>
+            {/* <Row>
               <Col className="mt-4 ">
                 <Button className="float-right" color="success" onClick={Cart}>
                   <i className="ni ni-cart">Cart</i>
                 </Button>
               </Col>
-            </Row>
+            </Row> */}
 
             <div className="items ">
               {cartItems.map((product, index) => {

@@ -114,7 +114,7 @@ function Viewproduct() {
         ) : (
           <>
             <Container className="mt--6" fluid>
-              <Row>
+              {/* <Row>
                 <Col className="mt--3 ">
                   <Button
                     className="float-right"
@@ -125,7 +125,7 @@ function Viewproduct() {
                     <span>{cartItems && cartItems.length}</span>
                   </Button>
                 </Col>
-              </Row>
+              </Row> */}
               {view && view === 1 && (
                 <div className="items ">
                   {productList &&
@@ -134,7 +134,6 @@ function Viewproduct() {
                         return (
                           <Card className="mt-4" key={index}>
                             <CardBody
-                              onClick={() => viewProductDetail(product)}
                               style={{ cursor: "pointer", padding: "0" }}
                             >
                               <CardImg
@@ -159,9 +158,10 @@ function Viewproduct() {
                             <Button
                               // value={cardItems.key}
                               color="success"
-                              onClick={() => addToCart(product)}
+                              // onClick={() => addToCart(product)}
+                              onClick={() => viewProductDetail(product)}
                             >
-                              Add Cart
+                              View More
                             </Button>
                           </Card>
                         );

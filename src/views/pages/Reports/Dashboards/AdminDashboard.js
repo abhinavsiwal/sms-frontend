@@ -612,7 +612,7 @@ function AdminDashboard() {
                                             <h3 style={{textAlign:"center",color:"white"}}>No data Found</h3>
                                             </div>
                                             :
-                                            <div style={{display:"grid",gridTemplateColumns:'1fr'}}>
+                                            <div style={{display:"grid",gridTemplateColumns:'1fr 1fr'}}>
                                                 {
                                                     notice.map((item) => (
                                                             <ListGroupItem style={{width:'100%'}} className="checklist-entry flex-column align-items-start py-4 px-4">

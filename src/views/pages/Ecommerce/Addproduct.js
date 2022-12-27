@@ -30,6 +30,7 @@ import {
   deleteCategory,
   updateCategory,
 } from "api/category";
+
 function Addproduct() {
   //Value for image
   const [categoryLoading, setCategoryLoading] = useState(false);
@@ -371,15 +372,16 @@ function Addproduct() {
       <Container className="mt-6 mb-6" fluid>
         <Row>
           <Col lg="4">
-            {addCategoryLoading ? (
-              <Loader />
-            ) : (
+        
               <div className="card-wrapper">
                 <Card>
                   <CardHeader>
                     <h3>Add Category</h3>
                   </CardHeader>
                   <CardBody>
+                  {addCategoryLoading ? (
+                      <Loader />
+                    ) : (
                     <Form className="mb-4" onSubmit={addCategoryHandler}>
                       <Row>
                         <Col>
@@ -431,10 +433,10 @@ function Addproduct() {
                         </Col>
                       </Row>
                     </Form>
+                     )}
                   </CardBody>
                 </Card>
               </div>
-            )}
           </Col>
           <Col>
             <div className="card-wrapper">
@@ -476,14 +478,18 @@ function Addproduct() {
                         md="4"
                         className="d-flex justify-content-center mb-4"
                       >
-                        <img
-                          src={imagesPreview && imagesPreview}
-                          alt=""
-                          className="mt-3 me-2"
-                          width="80"
-                          height="80"
-                        />
-                        <Col md="6">
+                          <Col md="3">
+                              <img
+                                src={
+                                  imagesPreview ? imagesPreview : "/img/images.jpeg"
+                                }
+                                alt="Preview"
+                                className="me-2"
+                                width="80"
+                                height="80"
+                              />
+                        </Col>
+                        <Col md="9">
                           <label
                             className="form-control-label"
                             htmlFor="example3cols2Input"
@@ -682,8 +688,8 @@ function Addproduct() {
                           </Input>
                         </Col>
                       </Row>
-                      <Row className="mt-4 float-right">
-                        <Col>
+                      <Row className="mt-4">
+                        <Col className="d-flex justify-content-center">
                           <Button color="primary" type="submit">
                             Add Product
                           </Button>
