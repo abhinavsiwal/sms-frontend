@@ -45,6 +45,7 @@ const StudentView = () => {
   const [allPeriods, setAllPeriods] = useState([]);
   const [periods1, setPeriods1] = useState({});
   const [selectedClass, setSelectedClass] = useState({});
+  const [workingDays, setWorkingDays] = useState(0);
   const [searchData, setSearchData] = React.useState({
     class: "",
     section: "",
@@ -121,9 +122,16 @@ const StudentView = () => {
     );
     setSearchData({
       ...searchData,
-      session: defaultSession._id,
+      session: JSON.stringify(defaultSession),
     });
+    setWorkingDays(defaultSession.working_days);
   };
+  useEffect(() => {
+    if (searchData.session === "") return;
+    let session = JSON.parse(searchData.session);
+    console.log(session);
+    setWorkingDays(session.working_days);
+  }, [searchData.session]);
 
   async function getSchedulesForClass(sect) {
     const formData = new FormData();
@@ -202,7 +210,7 @@ const StudentView = () => {
                   {sessions &&
                     sessions.map((data) => {
                       return (
-                        <option key={data._id} value={data._id}>
+                        <option key={data._id} value={JSON.stringify(data)}>
                           {data.name}
                         </option>
                       );
@@ -280,16 +288,18 @@ const StudentView = () => {
                   <thead style={{ backgroundColor: "#d3d3d3" }}>
                     <tr>
                       <th style={{ backgroundColor: "#d3d3d3" }}>Schedule</th>
-                      {WorkingDaysList.map((day, index) => {
-                        return (
-                          <th
-                            key={index}
-                            style={{ backgroundColor: "#d3d3d3" }}
-                          >
-                            {day}
-                          </th>
-                        );
-                      })}
+                      {WorkingDaysList.slice(0, workingDays).map(
+                        (day, index) => {
+                          return (
+                            <th
+                              key={index}
+                              style={{ backgroundColor: "#d3d3d3" }}
+                            >
+                              {day}
+                            </th>
+                          );
+                        }
+                      )}
                     </tr>
                   </thead>
                   <tbody>
@@ -303,43 +313,66 @@ const StudentView = () => {
                                 "-" +
                                 period.end.substring(0, 5)}
                             </th>
-                            {WorkingDaysList.map((day, index) => {
-                              return (
-                                <td key={index}>
-                                  <p>
-                                    {periods1[day].find(
-                                      (d) =>
-                                        (d.subject !== null ||
-                                          d.subject !== "") &&
-                                        (d.subject_id !== null ||
-                                          d.subject_id === "") &&
-                                        period.start === d.start &&
-                                        period.end === d.end
-                                    )
-                                      ? periods1[day].find(
-                                          (d) =>
-                                            (d.subject !== null ||
-                                              d.subject !== "") &&
-                                            (d.subject_id !== null ||
-                                              d.subject_id !== "") &&
-                                            period.start === d.start &&
-                                            period.end === d.end
-                                        ).subject
-                                      : ""}
-                                  </p>
-                                  <p>
-                                    {
-                                      periods1[day].find(
+                            {WorkingDaysList.slice(0, workingDays).map(
+                              (day, index) => {
+                                return (
+                                  <td key={index}>
+                                    <p>
+                                      {periods1[day]?.find(
+                                        (d) =>
+                                          (d.subject !== null ||
+                                            d.subject !== "") &&
+                                          (d.subject_id !== null ||
+                                            d.subject_id === "") &&
+                                          period.start === d.start &&
+                                          period.end === d.end
+                                      )
+                                        ? periods1[day]?.find(
+                                            (d) =>
+                                              (d.subject !== null ||
+                                                d.subject !== "") &&
+                                              (d.subject_id !== null ||
+                                                d.subject_id !== "") &&
+                                              period.start === d.start &&
+                                              period.end === d.end
+                                          ).subject
+                                        : ""}
+                                    </p>
+                                    <p>
+                                      {periods1[day]?.find(
                                         (d) =>
                                           period.start === d.start &&
                                           period.end === d.end &&
                                           (d.staff !== null || d.staff !== {})
-                                      )?.staff?.firstname
-                                    }
-                                  </p>
-                                </td>
-                              );
-                            })}
+                                      )?.staff
+                                        ? periods1[day]?.find(
+                                            (d) =>
+                                              period.start === d.start &&
+                                              period.end === d.end &&
+                                              (d.staff !== null ||
+                                                d.staff !== {})
+                                          )?.staff?.firstname
+                                        : ""}  
+                                        {" "}
+                                      {periods1[day]?.find(
+                                        (d) =>
+                                          period.start === d.start &&
+                                          period.end === d.end &&
+                                          (d.staff !== null || d.staff !== {})
+                                      )?.staff
+                                        ? periods1[day]?.find(
+                                            (d) =>
+                                              period.start === d.start &&
+                                              period.end === d.end &&
+                                              (d.staff !== null ||
+                                                d.staff !== {})
+                                          )?.staff?.lastname
+                                        : ""}
+                                    </p>
+                                  </td>
+                                );
+                              }
+                            )}
                           </tr>
                         );
                       })}
