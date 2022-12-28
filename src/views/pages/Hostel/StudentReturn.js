@@ -28,7 +28,7 @@ import {
   vacantRoom,
   allocatedRoomList,
 } from "api/hostelManagement";
-const StudentReturn = () => {
+const StudentReturn = ({setLoading}) => {
   const { user, token } = isAuthenticated();
   const [returnData, setReturnData] = useState({
     class: "",
@@ -40,7 +40,7 @@ const StudentReturn = () => {
     collectedBy: "",
     building: "",
   });
-  const [loading, setLoading] = useState(false);
+
   const [returnDate, setReturnDate] = useState(new Date());
   const [classList, setClassList] = useState([]);
   const [selectedClass, setSelectedClass] = useState({});
@@ -223,10 +223,7 @@ const StudentReturn = () => {
 
   return (
     <>
-      {loading ? (
-        <Loader />
-      ) : (
-        <Form className="mt-3 " onSubmit={returnHandler}>
+           <Form className="mt-3 " onSubmit={returnHandler}>
           <Row>
             <Col md="6">
               <Label
@@ -427,7 +424,6 @@ const StudentReturn = () => {
             </Col>
           </Row>
         </Form>
-      )}
     </>
   );
 };

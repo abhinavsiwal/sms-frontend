@@ -286,6 +286,36 @@ const StaffView = () => {
                                       : ""}
                                   </p>
                            
+                                  <p>
+                                    {periods1[day].find(
+                                      (d) =>
+                                        (d.subject !== null ||
+                                          d.subject !== "") &&
+                                        (d.subject_id !== null ||
+                                          d.subject_id === "") &&
+                                        period.period_id.start === d.start &&
+                                        period.period_id.end === d.end
+                                    )
+                                      ? periods1[day].find(
+                                          (d) =>
+                                            (d.subject !== null ||
+                                              d.subject !== "") &&
+                                            (d.subject_id !== null ||
+                                              d.subject_id !== "") &&
+                                            period.period_id.start === d.start &&
+                                            period.period_id.end === d.end
+                                        ).class.name + "-"+ periods1[day].find(
+                                          (d) =>
+                                            (d.subject !== null ||
+                                              d.subject !== "") &&
+                                            (d.subject_id !== null ||
+                                              d.subject_id !== "") &&
+                                            period.period_id.start === d.start &&
+                                            period.period_id.end === d.end
+                                        ).section.name
+                                      : ""}
+                                  </p>
+                           
                                 </td>
                               );
                             })}

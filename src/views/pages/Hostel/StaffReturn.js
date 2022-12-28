@@ -26,9 +26,9 @@ import { getAllBooks, returnBook } from "../../../api/libraryManagement";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./style.css";
-const StaffReturn = () => {
+const StaffReturn = ({setLoading}) => {
   const { user, token } = isAuthenticated();
-  const [loading, setLoading] = useState(false);
+  
   const [returnData, setReturnData] = useState({
     department: "",
     staff: "",
@@ -215,10 +215,7 @@ const StaffReturn = () => {
         pauseOnHover
         theme="colored"
       />
-      {loading ? (
-        <Loader />
-      ) : (
-        <Form className="mt-3" onSubmit={returnHandler}>
+       <Form className="mt-3" onSubmit={returnHandler}>
           <Row>
             <Col md="6">
               <Label
@@ -389,7 +386,6 @@ const StaffReturn = () => {
             </Col>
           </Row>
         </Form>
-      )}
     </>
   );
 };

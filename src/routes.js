@@ -550,7 +550,7 @@ export const adminRoutes = [
         miniName: "V",
         component: StaffView,
         layout: "/admin",
-        permission: "view",
+        permission: "add",
       },
     ],
   },

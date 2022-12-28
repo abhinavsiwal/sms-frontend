@@ -32,6 +32,7 @@ import {
 } from "../../../api/hostelManagement";
 import { Popconfirm } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
+
 const AddBuilding = () => {
   const [buildingName, setBuildingName] = useState("");
   const [buildingAbv, setBuildingAbv] = useState("");
@@ -267,7 +268,7 @@ const AddBuilding = () => {
         setAddLoading(false);
         return;
       }
-      toast.success("Shelf Added Successfully");
+      toast.success("Floor Added Successfully");
       setChecked(!checked);
       setShelfName("");
       setShelfAbv("");
@@ -276,7 +277,7 @@ const AddBuilding = () => {
     } catch (err) {
       console.log(err);
       setAddLoading(false);
-      toast.error("Shelf Added Failed");
+      toast.error("Floor Added Failed");
     }
   };
 
@@ -325,7 +326,7 @@ const AddBuilding = () => {
         setEditLoading(false);
         return toast.error(data.err)
       }
-      toast.success("Building editied successfully");
+      toast.success("Floor editied successfully");
       setEditLoading(false);
       setFloorEditing(false);
       setChecked(!checked);
@@ -333,7 +334,7 @@ const AddBuilding = () => {
     } catch (err) {
       console.log(err);
       setEditLoading(false);
-      toast.error("Error in editing building");
+      toast.error("Error in editing floor");
     }
   };
 
@@ -471,14 +472,15 @@ const AddBuilding = () => {
         pauseOnHover
         theme="colored"
       />
-      <SimpleHeader name="Library" parentName="Add Shelf" />
+      
+      <SimpleHeader name="Hostel" parentName="Add Building and Floor" />
       <Container className="mt--6" fluid>
         {addLoading ? (
           <Loader />
         ) : (
           <>
-            <Row>
-              <Col lg="4">
+            <Row className="mb-4" >
+              <Col lg="6">
                 <div className="card-wrapper">
                   <Card>
                     <CardHeader>
@@ -540,7 +542,7 @@ const AddBuilding = () => {
                   </Card>
                 </div>
               </Col>
-              <Col lg="8">
+              <Col lg="6">
                 <div className="card-wrapper">
                   <Card>
                     <CardHeader>
@@ -675,7 +677,7 @@ const AddBuilding = () => {
               </Col>
             </Row>
             <Container
-              className="mt--6 shadow-lg"
+              className="mt-2 shadow-lg"
               fluid
               style={{ marginTop: "4rem" }}
             >
@@ -805,8 +807,8 @@ const AddBuilding = () => {
                   />
                 </Col>
               </Row>
-              <Row className="mt-4 float-right">
-                <Col>
+              <Row className="mt-4 ">
+                <Col  style={{display:"flex",justifyContent:"center"}}>
                   <Button color="primary" type="submit">
                     Save Changes
                   </Button>

@@ -16,7 +16,7 @@ import { isAuthenticated } from "api/auth";
 //React Datepicker
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import LoadingScreen from "react-loading-screen";
 //css
 import "./style.css";
 import { toast, ToastContainer } from "react-toastify";
@@ -32,6 +32,9 @@ const HostelAllocation = () => {
   const [allocateState, setAllocateState] = useState(0);
   const [returnRole, setReturnRole] = useState("");
   const [returnState, setReturnState] = useState(0);
+
+const [loading, setLoading] = useState(false);
+
   const [allocationStudentData, setAllocationStudentData] = useState({
     studentClass: "",
     studentSection: "",
@@ -83,6 +86,13 @@ const HostelAllocation = () => {
         pauseOnHover
         theme="colored"
       />
+        <LoadingScreen
+        loading={loading}
+        bgColor="#f1f1f1"
+        spinnerColor="#9ee5f8"
+        textColor="#676767"
+        text="Please Wait..."
+      ></LoadingScreen>
       <SimpleHeader name="Allocation Manager" parentName="Hostel Management" />
       <Container className="mt--6" fluid>
         <Row>
@@ -108,8 +118,8 @@ const HostelAllocation = () => {
                     </Col>
                   </Row>
                   <>
-                    {allocateState === 1 && <StudentAllocation />}
-                    {allocateState === 2 && <StaffAllocation />}
+                    {allocateState === 1 && <StudentAllocation setLoading={setLoading} />}
+                    {allocateState === 2 && <StaffAllocation setLoading={setLoading} />}
                   </>
                 </CardBody>
               </Card>
@@ -137,8 +147,8 @@ const HostelAllocation = () => {
                     </Col>
                   </Row>
                   <>
-                    {returnState === 1 && <StudentReturn />}
-                    {returnState === 2 && <StaffReturn />}
+                    {returnState === 1 && <StudentReturn setLoading={setLoading} />}
+                    {returnState === 2 && <StaffReturn setLoading={setLoading} />}
                   </>
                 </CardBody>
               </Card>

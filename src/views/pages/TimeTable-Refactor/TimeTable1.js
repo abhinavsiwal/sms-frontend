@@ -59,6 +59,7 @@ const TimeTable1 = () => {
   const [selectedClass, setSelectedClass] = useState({});
   const [timetableData, setTimetableData] = useState([]);
   const [periods1, setPeriods1] = useState({});
+  const [workingDays, setWorkingDays] = useState(0);
   const [searchData, setSearchData] = React.useState({
     class: "",
     section: "",
@@ -71,6 +72,7 @@ const TimeTable1 = () => {
     "Thursday",
     "Friday",
     "Saturday",
+    "Sunday",
   ];
   const [checked, setChecked] = useState(false);
   const [periodData, setPeriodData] = useState(false);
@@ -199,9 +201,17 @@ const TimeTable1 = () => {
     );
     setSearchData({
       ...searchData,
-      session: defaultSession._id,
+      session: JSON.stringify(defaultSession),
     });
+    setWorkingDays(defaultSession.working_days);
   };
+  useEffect(() => {
+    if(searchData.session === "") return;
+    let session = JSON.parse(searchData.session);
+    console.log(session);
+    setWorkingDays(session.working_days);
+  }, [searchData.session]);
+
   const filterPassedTime = (time) => {
     const currentDate = new Date(startDate);
     const selectedDate = new Date(time);
@@ -397,7 +407,7 @@ const TimeTable1 = () => {
                   {sessions &&
                     sessions.map((data) => {
                       return (
-                        <option key={data._id} value={data._id}>
+                        <option key={data._id} value={JSON.stringify(data)}>
                           {data.name}
                         </option>
                       );
@@ -611,7 +621,7 @@ const TimeTable1 = () => {
                   <thead style={{ backgroundColor: "#d3d3d3" }}>
                     <tr>
                       <th style={{ backgroundColor: "#d3d3d3" }}>Schedule</th>
-                      {WorkingDaysList.map((day, index) => {
+                      {WorkingDaysList.slice(0,workingDays).map((day, index) => {
                         return (
                           <th
                             key={index}
@@ -633,7 +643,8 @@ const TimeTable1 = () => {
                               "-" +
                               period.end.substring(0, 5)}
                           </th>
-                          {WorkingDaysList.map((day, index) => {
+                          {WorkingDaysList.slice(0,workingDays).map((day, index) => {
+                            console.log(day);
                             return (
                               <>
                                 {period.type === "P" ? (
@@ -650,14 +661,14 @@ const TimeTable1 = () => {
                                         )
                                       }
                                       value={
-                                        periods1[day].find(
+                                        periods1[day]?.find(
                                           (d) =>
                                             d.subject !== null &&
                                             d.subject_id !== null &&
                                             period.start === d.start &&
                                             period.end === d.end
                                         )
-                                          ? periods1[day].find(
+                                          ? periods1[day]?.find(
                                               (d) =>
                                                 d.subject !== null &&
                                                 d.subject_id !== null &&
@@ -665,7 +676,7 @@ const TimeTable1 = () => {
                                                 period.end === d.end
                                             ).subject +
                                             "-" +
-                                            periods1[day].find(
+                                            periods1[day]?.find(
                                               (d) =>
                                                 d.subject !== null &&
                                                 d.subject_id !== null &&
@@ -717,7 +728,7 @@ const TimeTable1 = () => {
                                     <Input
                                       type="select"
                                       value={
-                                        periods1[day].find(
+                                        periods1[day]?.find(
                                           (d) =>
                                             period.start === d.start &&
                                             period.end === d.end &&
@@ -749,8 +760,8 @@ const TimeTable1 = () => {
                                     </Input>
                                   </td>
                                 ) : (
-                                  <td key={index}  >
-                                    <p >{period.break_name}</p>
+                                  <td key={index}>
+                                    <p>{period.break_name}</p>
                                   </td>
                                 )}
                               </>

@@ -26,7 +26,7 @@ import {
 const ViewHostelAllocations = () => {
   const { user } = isAuthenticated();
   const [loading, setLoading] = useState(false);
-  const [type, setType] = useState("empty");
+  const [type, setType] = useState("allocation");
   const [typeValue, setTypeValue] = useState(0);
   const [view, setView] = useState(1);
   const [studentAllocations, setStudentAllocations] = useState([]);
@@ -1163,9 +1163,8 @@ const ViewHostelAllocations = () => {
                         <option value="return">Return</option>
                       </Input>
                     </Col>
-                  </Row>
-                  <Row className="mt-2">
-                    <Col>
+              
+                    <Col style={{display:"flex",justifyContent:"flex-end"}} >
                       <Button
                         color={`${view === 1 ? "warning" : "primary"}`}
                         type="button"
