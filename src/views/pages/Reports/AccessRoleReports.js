@@ -62,7 +62,7 @@ function AccessRoleReports() {
               accessType  = access_arr.join(" / ")
               acee.push({
                 module_name : arr[k],
-                access_type : response.data[i].assign_role.permissions[arr[k]].join(",")
+                access_type : response.data[i].assign_role.permissions[arr[k]].join(", ")
               })
             }
           }else{
@@ -78,6 +78,18 @@ function AccessRoleReports() {
               <Table 
                 columns={access}
                 dataSource={acee}
+                pagination={{
+                  pageSizeOptions: [
+                      "5",
+                      "10",
+                      "30",
+                      "60",
+                      "100",
+                      "1000",
+                    ],
+                    showSizeChanger: true,
+                  }}
+                  scroll={{x:true}}
               />
             ),
           });
@@ -133,61 +145,13 @@ function AccessRoleReports() {
         title: "MODULE NAME",
         dataIndex: "module_name",
         align: "left",
-        sorter: (a, b) => a.to > b.to,
-        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
-          return (
-            <>
-              <Input
-                autoFocus
-                placeholder="Type text here"
-                value={selectedKeys[0]}
-                onChange={(e) => {
-                  setSelectedKeys(e.target.value ? [e.target.value] : []);
-                  confirm({ closeDropdown: false });
-                }}
-                onBlur={() => {
-                  confirm();
-                }}
-              ></Input>
-            </>
-          );
-        },
-        filterIcon: () => {
-          return <SearchOutlined />;
-        },
-        onFilter: (value, record) => {
-          return record.to.toLowerCase().includes(value.toLowerCase());
-        },
+       
       },
       {
           title: "ACCESS TYPE",
           dataIndex: "access_type",
           align: "left",
-          sorter: (a, b) => a.to > b.to,
-          filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
-            return (
-              <>
-                <Input
-                  autoFocus
-                  placeholder="Type text here"
-                  value={selectedKeys[0]}
-                  onChange={(e) => {
-                    setSelectedKeys(e.target.value ? [e.target.value] : []);
-                    confirm({ closeDropdown: false });
-                  }}
-                  onBlur={() => {
-                    confirm();
-                  }}
-                ></Input>
-              </>
-            );
-          },
-          filterIcon: () => {
-            return <SearchOutlined />;
-          },
-          onFilter: (value, record) => {
-            return record.to.toLowerCase().includes(value.toLowerCase());
-          },
+          
       },    
     ]
 
@@ -290,32 +254,7 @@ function AccessRoleReports() {
           {
             title: "ACCESS ROLE",
             dataIndex: "access_role",
-            align: "center",
-            sorter: (a, b) => a.to > b.to,
-            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
-              return (
-                <>
-                  <Input
-                    autoFocus
-                    placeholder="Type text here"
-                    value={selectedKeys[0]}
-                    onChange={(e) => {
-                      setSelectedKeys(e.target.value ? [e.target.value] : []);
-                      confirm({ closeDropdown: false });
-                    }}
-                    onBlur={() => {
-                      confirm();
-                    }}
-                  ></Input>
-                </>
-              );
-            },
-            filterIcon: () => {
-              return <SearchOutlined />;
-            },
-            onFilter: (value, record) => {
-              return record.to.toLowerCase().includes(value.toLowerCase());
-            },
+            align: "center"
           },    
       ];
 
