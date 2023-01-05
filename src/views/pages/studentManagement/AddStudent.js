@@ -205,7 +205,10 @@ function AddStudent() {
   };
 
   const phoneBlurHandler = () => {
-    console.log("here");
+    if (studentData.phone === "") {
+      setPhoneError(false);
+      return;
+    }
     // console.log(studentData.phone);
     let regex = /^[5-9]{1}[0-9]{9}$/;
     if (regex.test(studentData.phone)) {
@@ -215,6 +218,10 @@ function AddStudent() {
     }
   };
   const altPhoneBlurHandler = () => {
+    if (studentData.alternate_phone === "") {
+      setAltPhoneError(false);
+      return;
+    }
     let regex = /^[5-9]{1}[0-9]{9}$/;
     if (regex.test(studentData.alternate_phone)) {
       setAltPhoneError(false);
@@ -223,6 +230,10 @@ function AddStudent() {
     }
   };
   const emailBlurHandler = () => {
+    if (studentData.email === "") {
+      setEmailError(false);
+      return;
+    }
     let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (regex.test(studentData.email)) {
       setEmailError(false);
@@ -231,6 +242,10 @@ function AddStudent() {
     }
   };
   const parentEmailBlurHandler = async () => {
+    if (studentData.parent_email === "") {
+      setParentEmailError(false);
+      return;
+    }
     let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (regex.test(studentData.parent_email)) {
       setParentEmailError(false);
@@ -239,10 +254,12 @@ function AddStudent() {
       setDisableButton(true);
       return setParentEmailError(true);
     }
-
-  
   };
   const guardianEmailBlurHandler = async () => {
+    if (studentData.guardian_email === "") {
+      setGuardianEmailError(false);
+      return;
+    }
     let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (regex.test(studentData.guardian_email)) {
       setGuardianEmailError(false);
@@ -251,10 +268,13 @@ function AddStudent() {
       setDisableButton(true);
       return setGuardianEmailError(true);
     }
-  
   };
 
   const guardianPhoneBlurHandler = () => {
+    if (studentData.guardian_phone === "") {
+      setGuardianPhoneError(false);
+      return;
+    }
     let regex = /^[5-9]{1}[0-9]{9}$/;
     if (regex.test(studentData.guardian_phone)) {
       setGuardianPhoneError(false);
@@ -266,6 +286,10 @@ function AddStudent() {
   };
 
   const fatherPhoneBlurHandler = () => {
+    if (studentData.father_phone === "") {
+      setFatherPhoneError(false);
+      return;
+    }
     let regex = /^[5-9]{1}[0-9]{9}$/;
     if (regex.test(studentData.father_phone)) {
       setFatherPhoneError(false);
@@ -277,6 +301,10 @@ function AddStudent() {
   };
 
   const motherPhoneBlurHandler = () => {
+    if (studentData.mother_phone === "") {
+      setMotherPhoneError(false);
+      return;
+    }
     let regex = /^[5-9]{2}[0-9]{8}$/;
     if (regex.test(studentData.mother_phone)) {
       setMotherPhoneError(false);
@@ -288,6 +316,10 @@ function AddStudent() {
   };
 
   const aadharBlurHandler = () => {
+    if (studentData.aadhar_number === "") {
+      setAadharError(false);
+      return;
+    }
     let regex = /^[0-9]{12}$/;
     if (regex.test(studentData.aadhar_number)) {
       setAadharError(false);
@@ -500,19 +532,19 @@ function AddStudent() {
     formData.set("date_of_birth", dateOfBirth);
     formData.set("joining_date", dateOfJoining);
     formData.set("session", studentData.session);
-    formData.set("nationality",studentData.nationality);
+    formData.set("nationality", studentData.nationality);
     if (guardianDOB) {
       formData.set("guardian_dob", guardianDOB);
     } else if (fatherDOB) {
       formData.set("father_dob", fatherDOB);
       formData.set("mother_dob", motherDOB);
     }
-   
-      formData.set("permananent_city", permanentCity);
-      formData.set("permananent_country", permanentCountry);
-      formData.set("permanent_state", permanentState);
-      formData.set("permanent_pincode", permanentPincode);
-      formData.set("permanent_address", studentData.permanent_address);
+
+    formData.set("permananent_city", permanentCity);
+    formData.set("permananent_country", permanentCountry);
+    formData.set("permanent_state", permanentState);
+    formData.set("permanent_pincode", permanentPincode);
+    formData.set("permanent_address", studentData.permanent_address);
     try {
       setLoading(true);
       const formData1 = new FormData();
@@ -755,7 +787,6 @@ function AddStudent() {
   useEffect(() => {
     console.log(checked);
 
-   
     if (checked) {
       setPermanentPincode(pincode);
       setPermanentCity(city);
@@ -784,7 +815,6 @@ function AddStudent() {
     });
   };
 
-  
   useEffect(() => {
     if (sessions.length !== 0) {
       defaultSession2();
@@ -874,7 +904,7 @@ function AddStudent() {
     { label: "Permanent Country (o)", key: "permanent_country" },
     { label: "Permanent City(o)", key: "permanent_city" },
     { label: "Pin Code (o)", key: "permanent_pincode" },
-  
+
     { label: "Parent/Guardian Flag", key: "" },
     { label: "Father Firstname(o)", key: "father_name" },
     { label: "Father Lastname(o)", key: "father_last_name" },
@@ -1035,9 +1065,8 @@ function AddStudent() {
                 <Col>
                   <CSVLink
                     data={discardedData}
-                    headers={headers} 
+                    headers={headers}
                     className="btn btn-danger"
-                   
                   >
                     Discarded CSV
                   </CSVLink>

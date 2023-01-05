@@ -16,11 +16,11 @@ import {
 } from "reactstrap";
 import axios from "axios";
 // core components
-import {uploadFile} from "api/upload"
+import { uploadFile } from "api/upload";
 import Loader from "components/Loader/Loader";
 import SimpleHeader from "components/Headers/SimpleHeader.js";
 import { useSelector, useDispatch } from "react-redux";
-import { updateStudent, allStudents,checkRollNo } from "api/student";
+import { updateStudent, allStudents, checkRollNo } from "api/student";
 import { setStudentEditing } from "store/reducers/student";
 import DatePicker from "react-datepicker";
 import { Stepper, Step } from "react-form-stepper";
@@ -92,10 +92,14 @@ function UpdateStudent({ studentDetails }) {
   const [fatherPincodeError, setFatherPincodeError] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
   const [permanentCountry, setPermanentCountry] = useState("India");
-  const [permanentState, setPermanentState] = useState(studentDetails.permanent_state);
+  const [permanentState, setPermanentState] = useState(
+    studentDetails.permanent_state
+  );
   const [permanentCity, setPermanentCity] = useState("");
   const [permanentPincodeError, setPermanentPincodeError] = useState(false);
-  const [permanentPincode, setPermanentPincode] = useState(studentDetails.permanent_pincode);
+  const [permanentPincode, setPermanentPincode] = useState(
+    studentDetails.permanent_pincode
+  );
   const [student, setStudent] = useState({
     _id: studentDetails._id,
     image: studentDetails.image,
@@ -162,59 +166,73 @@ function UpdateStudent({ studentDetails }) {
   });
 
   const phoneBlurHandler = () => {
+    if (student.phone === "") {
+      setPhoneError(false);
+      return;
+    }
     console.log("here");
     // console.log(studentData.phone);
     let regex = /^[5-9]{2}[0-9]{8}$/;
     if (regex.test(student.phone)) {
       setPhoneError(false);
-     
     } else {
       setPhoneError(true);
-     
     }
   };
   const altPhoneBlurHandler = () => {
+    if (student.alternate_phone === "") {
+      setAltPhoneError(false);
+      return;
+    }
     let regex = /^[5-9]{2}[0-9]{8}$/;
     if (regex.test(student.alternate_phone)) {
       setAltPhoneError(false);
-     
     } else {
       setAltPhoneError(true);
-      
     }
   };
   const emailBlurHandler = () => {
+    if (student.email === "") {
+      setEmailError(false);
+      return;
+    }
     let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (regex.test(student.email)) {
       setEmailError(false);
-      
     } else {
       setEmailError(true);
-     
     }
   };
   const parentEmailBlurHandler = async () => {
+    if (student.parent_email === "") {
+      setParentEmailError(false);
+      return;
+    }
     let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (regex.test(student.parent_email)) {
       setParentEmailError(false);
-      
     } else {
       setParentEmailError(true);
-      
     }
   };
   const guardianEmailBlurHandler = async () => {
+    if (student.guardian_email === "") {
+      setGuardianEmailError(false);
+      return;
+    }
     let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (regex.test(student.guardian_email)) {
       setGuardianEmailError(false);
-      
     } else {
       setGuardianEmailError(true);
-     
     }
   };
 
   const guardianPhoneBlurHandler = () => {
+    if (student.guardian_phone === "") {
+      setGuardianPhoneError(false);
+      return;
+    }
     let regex = /^[5-9]{1}[0-9]{9}$/;
     if (regex.test(student.guardian_phone)) {
       setGuardianPhoneError(false);
@@ -226,6 +244,10 @@ function UpdateStudent({ studentDetails }) {
   };
 
   const fatherPhoneBlurHandler = () => {
+    if (student.father_phone === "") {
+      setFatherPhoneError(false);
+      return;
+    }
     let regex = /^[5-9]{1}[0-9]{9}$/;
     if (regex.test(student.father_phone)) {
       setFatherPhoneError(false);
@@ -237,6 +259,10 @@ function UpdateStudent({ studentDetails }) {
   };
 
   const motherPhoneBlurHandler = () => {
+    if (student.mother_phone === "") {
+      setMotherPhoneError(false);
+      return;
+    }
     let regex = /^[5-9]{1}[0-9]{9}$/;
     if (regex.test(student.mother_phone)) {
       setMotherPhoneError(false);
@@ -248,13 +274,15 @@ function UpdateStudent({ studentDetails }) {
   };
 
   const aadharBlurHandler = () => {
+    if (student.aadhar_number === "") {
+      setAadharError(false);
+      return;
+    }
     let regex = /^[0-9]{12}$/;
     if (regex.test(student.aadhar_number)) {
       setAadharError(false);
-     
     } else {
       setAadharError(true);
-    ;
     }
   };
   const handleSubmitForm = async (e) => {
@@ -275,32 +303,32 @@ function UpdateStudent({ studentDetails }) {
       formData.set("father_dob", fatherDOB);
       formData.set("mother_dob", motherDOB);
     }
-    if(!checked){
+    if (!checked) {
       formData.set("permanent_city", permanentCity);
-      formData.set("permanent_state",permanentState);
-      formData.set("permanent_country",permanentCountry);
-      formData.set("permanent_pincode",permanentPincode);
-    }else{
+      formData.set("permanent_state", permanentState);
+      formData.set("permanent_country", permanentCountry);
+      formData.set("permanent_pincode", permanentPincode);
+    } else {
       formData.set("permanent_city", city);
-      formData.set("permanent_state",state); 
-      formData.set("permanent_country",country);
-      formData.set("permanent_pincode",pincode);
+      formData.set("permanent_state", state);
+      formData.set("permanent_country", country);
+      formData.set("permanent_pincode", pincode);
     }
     try {
       setLoading(true);
-      if(student.photo){
-        const formData1 = new FormData(); 
+      if (student.photo) {
+        const formData1 = new FormData();
         formData1.set("file", student.photo);
         const data1 = await uploadFile(formData1);
         console.log(data1);
         formData.set("photo", data1.data[0]);
       }
-      const data =  await updateStudent(student._id, user._id, formData);
+      const data = await updateStudent(student._id, user._id, formData);
       console.log(data);
-      if(data.err){
+      if (data.err) {
         toast.error(data.err);
         setLoading(false);
-        return
+        return;
       }
       toast.success("Student updated successfully");
       dispatch(setStudentEditing(false));
@@ -314,7 +342,7 @@ function UpdateStudent({ studentDetails }) {
 
   const [selectedClass, setSelectedClass] = useState({});
   useEffect(() => {
-    getAllClasses(); 
+    getAllClasses();
   }, []);
 
   const getAllClasses = async () => {
@@ -346,9 +374,9 @@ function UpdateStudent({ studentDetails }) {
   const [checked, setChecked] = useState(false);
   useEffect(() => {
     console.log(checked);
-    if(studentDetails.permanent_address===studentDetails.present_address){
+    if (studentDetails.permanent_address === studentDetails.present_address) {
       setChecked(true);
-    }else{
+    } else {
       setChecked(false);
     }
   }, []);
@@ -381,7 +409,7 @@ function UpdateStudent({ studentDetails }) {
         toast.error("Failed to fetch pin code.");
       }
     }
-  };  
+  };
 
   const handleChange = (name) => (event) => {
     formData.set(name, event.target.value);
@@ -438,7 +466,7 @@ function UpdateStudent({ studentDetails }) {
     reader.readAsDataURL(event.target.files[0]);
   };
 
-  const handleDeleteFields = (name) => { 
+  const handleDeleteFields = (name) => {
     setStudent({ ...student, [name]: "" });
     formData.delete(name);
   };
@@ -896,13 +924,13 @@ function UpdateStudent({ studentDetails }) {
                         required
                         value={student.caste}
                       >
-                          <option value="" disabled>
-                            Select Caste
-                          </option>
-                          <option value="General">General</option>
-                          <option value="SC">SC</option>
-                          <option value="ST">ST</option>
-                          <option value="OBC">OBC</option>
+                        <option value="" disabled>
+                          Select Caste
+                        </option>
+                        <option value="General">General</option>
+                        <option value="SC">SC</option>
+                        <option value="ST">ST</option>
+                        <option value="OBC">OBC</option>
                       </Input>
                     </Col>
                     <Col>
@@ -1073,7 +1101,6 @@ function UpdateStudent({ studentDetails }) {
                         placeholder="Previous School"
                         type="text"
                         onChange={handleChange("previous_school")}
-                        required
                         value={student.previous_school}
                       />
                     </Col>
@@ -1130,7 +1157,7 @@ function UpdateStudent({ studentDetails }) {
                       />
                     </Col>
                   </Row>
-             
+
                   <Row className="mb-4">
                     <Col md="3">
                       <label
@@ -1474,7 +1501,6 @@ function UpdateStudent({ studentDetails }) {
                               onChange={(date) => setFatherDOB(date)}
                               //  value={dateOfBirth}
                               selected={fatherDOB}
-                          
                               className="datePicker"
                             />
                           </Col>
@@ -1491,7 +1517,6 @@ function UpdateStudent({ studentDetails }) {
                               placeholder="Phone Number"
                               type="number"
                               onChange={handleChange("father_phone")}
-                       
                               value={student.father_phone}
                               onBlur={fatherPhoneBlurHandler}
                               invalid={fatherPhoneError}
@@ -1558,11 +1583,10 @@ function UpdateStudent({ studentDetails }) {
                               onChange={(date) => setMotherDOB(date)}
                               //  value={dateOfBirth}
                               selected={motherDOB}
-                        
                               className="datePicker"
                             />
                           </Col>
-                          
+
                           <Col>
                             <label
                               className="form-control-label"
@@ -1575,7 +1599,6 @@ function UpdateStudent({ studentDetails }) {
                               placeholder="Phone Number"
                               type="number"
                               onChange={handleChange("mother_phone")}
-                      
                               value={student.mother_phone}
                               onBlur={motherPhoneBlurHandler}
                               invalid={motherPhoneError}

@@ -824,7 +824,7 @@ export const adminRoutes = [
         miniName: "a",
         component: ApplyLeave,
         layout: "/admin",
-        permission: "staff",
+        permission: "add",
       },
       {
         path: "/view-leaves",
@@ -832,7 +832,7 @@ export const adminRoutes = [
         miniName: "a",
         component: ViewLeaves,
         layout: "/admin",
-        permission: "staff",
+        permission: "add",
       },
       {
         path: "/view-allleaves",
@@ -840,7 +840,7 @@ export const adminRoutes = [
         miniName: "a",
         component: ViewAllLeaves,
         layout: "/admin",
-        permission: "admin",
+        permission: "add",
       },
     ],
   },
