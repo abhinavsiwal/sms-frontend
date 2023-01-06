@@ -42,9 +42,6 @@ const FeesMaster1 = () => {
   const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
   const { user, token } = isAuthenticated();
 
-  
-
-
   useEffect(() => {
     getSession();
     getAllClasses();
@@ -137,7 +134,18 @@ const FeesMaster1 = () => {
             setFeesNumber([]);
             setType(1);
           } else {
-            setFeesNumber([]);
+            setFeesNumber([
+              {
+                name: "Hostel",
+              },
+              {
+                name: "Transportation",
+              },
+            ]);
+            let temp = feesData;
+            temp[0] = { ...feesData[0], name: "Hostel" };
+            temp[1] = { ...feesData[1], name: "Transportation" };
+            setFeesData(temp);
             setType(2);
           }
           setShowLoad(false);
@@ -239,12 +247,11 @@ const FeesMaster1 = () => {
       key: "name",
       title: "Name",
       dataIndex: "name",
-      align:"left",
-      
+      align: "left",
     },
     {
       key: "total",
-      align:"left",
+      align: "left",
       title: "Total",
       dataIndex: "total",
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
@@ -284,7 +291,7 @@ const FeesMaster1 = () => {
       key: "start_date",
       title: "Start Date",
       dataIndex: "start_date",
-      align:"left",
+      align: "left",
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
           <>
@@ -322,7 +329,7 @@ const FeesMaster1 = () => {
       key: "end_date",
       title: "End Date",
       dataIndex: "end_date",
-      align:"left",
+      align: "left",
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
           <>
@@ -421,10 +428,10 @@ const FeesMaster1 = () => {
         toast.error(data.err);
         return;
       }
-    
+
       toast.success("Fees Updated Successfully!");
       setShowLoad(false);
-      window.location.reload()
+      window.location.reload();
     } catch (err) {
       setShowLoad(false);
       console.log(err);
@@ -451,9 +458,7 @@ const FeesMaster1 = () => {
     return day + "/" + month + "/" + year;
   }
 
-  const deleteEntireFeesHandler = async () => {
-
-  }
+  const deleteEntireFeesHandler = async () => {};
 
   return (
     <>
@@ -688,6 +693,7 @@ const FeesMaster1 = () => {
                                   type="text"
                                   placeholder="Name"
                                   required
+                                  value={data["name"]}
                                   onChange={handleName("name", index)}
                                 />
                               </td>
@@ -696,6 +702,10 @@ const FeesMaster1 = () => {
                                   id="exampleFormControlTextarea1"
                                   type="date"
                                   required
+                                  value={
+                                    data["start_date"] &&
+                                    formatDate1(data["start_date"])
+                                  }
                                   onChange={handleDate("start_date", index)}
                                 />
                               </td>
@@ -704,6 +714,10 @@ const FeesMaster1 = () => {
                                   id="exampleFormControlTextarea1"
                                   type="date"
                                   required
+                                  value={
+                                    data["end_date"] &&
+                                    formatDate1(data["end_date"])
+                                  }
                                   onChange={handleDate("end_date", index)}
                                 />
                               </td>
@@ -713,6 +727,7 @@ const FeesMaster1 = () => {
                                   type="number"
                                   required
                                   placeholder="Total Amount"
+                                  value={data["total_amount"]}
                                   onChange={handleChange("total_amount", index)}
                                 />
                               </td>
@@ -746,7 +761,7 @@ const FeesMaster1 = () => {
             <CardHeader>
               <Row>
                 <Col>
-                  <h2>View OneTime Fees</h2>
+                  <h2>View Fees</h2>
                 </Col>
                 <Col>
                   <Button onClick={handleEditSelect} color="primary">
