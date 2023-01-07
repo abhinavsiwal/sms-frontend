@@ -316,7 +316,7 @@ const StudentView = () => {
                             {WorkingDaysList.slice(0, workingDays).map(
                               (day, index) => {
                                 return (
-                                  <td key={index}>
+                                  <td key={index} style={{}} > 
                                     <p>
                                       {periods1[day]?.find(
                                         (d) =>
@@ -367,6 +367,27 @@ const StudentView = () => {
                                               (d.staff !== null ||
                                                 d.staff !== {})
                                           )?.staff?.lastname
+                                        : ""}
+                                    </p>
+                                    <p style={{fontSize:"0.8rem"}} >
+                                      {periods1[day]?.find(
+                                        (d) =>
+                                          (d.subject !== null ||
+                                            d.subject !== "") &&
+                                          (d.subject_id !== null ||
+                                            d.subject_id === "") &&
+                                          period.start === d.start &&
+                                          period.end === d.end
+                                      )
+                                        ? periods1[day]?.find(
+                                            (d) =>
+                                              (d.subject !== null ||
+                                                d.subject !== "") &&
+                                              (d.subject_id !== null ||
+                                                d.subject_id !== "") &&
+                                              period.start === d.start &&
+                                              period.end === d.end
+                                          ).meet_link
                                         : ""}
                                     </p>
                                   </td>
