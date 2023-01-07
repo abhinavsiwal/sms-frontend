@@ -13,6 +13,7 @@ import {
   Table,
   Modal,
   ModalBody,
+  ModalFooter,
 } from "reactstrap";
 import "./style.css";
 import { SearchOutlined } from "@ant-design/icons";
@@ -76,6 +77,15 @@ const TimeTable1 = () => {
   ];
   const [checked, setChecked] = useState(false);
   const [periodData, setPeriodData] = useState(false);
+
+  const [meetLink, setMeetLink] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [meetData, setMeetData] = useState({
+    link: "",
+    periodId: "",
+    day: "",
+  });
+
   useEffect(() => {
     getClass();
     getSession();
@@ -206,7 +216,7 @@ const TimeTable1 = () => {
     setWorkingDays(defaultSession.working_days);
   };
   useEffect(() => {
-    if(searchData.session === "") return;
+    if (searchData.session === "") return;
     let session = JSON.parse(searchData.session);
     console.log(session);
     setWorkingDays(session.working_days);
@@ -358,6 +368,36 @@ const TimeTable1 = () => {
       setChecked(!checked);
     } catch (err) {
       console.log(err);
+      toast.error("Something Went Wrong!");
+      setLoading(false);
+    }
+  };
+
+  const handleMeetLinkSubmit = async (e) => {
+    e.preventDefault();
+    const formData = {
+      period_id: meetData.periodId,
+      staff: null,
+      subject: null,
+      subject_id: null,
+      day: meetData.day,
+      meet_link: meetData.link,
+    };
+
+    try {
+      setLoading(true);
+      const data = await updatePeriodV2(user.school, user._id, formData);
+      console.log(data);
+      if (data.err) {
+        toast.error(data.err);
+        return setLoading(false);
+      }
+      toast.success("Period Updated Successfully");
+      getSchedulesForClass(searchData.section);
+      setOpen(false);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
       toast.error("Something Went Wrong!");
       setLoading(false);
     }
@@ -621,16 +661,18 @@ const TimeTable1 = () => {
                   <thead style={{ backgroundColor: "#d3d3d3" }}>
                     <tr>
                       <th style={{ backgroundColor: "#d3d3d3" }}>Schedule</th>
-                      {WorkingDaysList.slice(0,workingDays).map((day, index) => {
-                        return (
-                          <th
-                            key={index}
-                            style={{ backgroundColor: "#d3d3d3" }}
-                          >
-                            {day}
-                          </th>
-                        );
-                      })}
+                      {WorkingDaysList.slice(0, workingDays).map(
+                        (day, index) => {
+                          return (
+                            <th
+                              key={index}
+                              style={{ backgroundColor: "#d3d3d3" }}
+                            >
+                              {day}
+                            </th>
+                          );
+                        }
+                      )}
                     </tr>
                   </thead>
                   <tbody>
@@ -643,130 +685,160 @@ const TimeTable1 = () => {
                               "-" +
                               period.end.substring(0, 5)}
                           </th>
-                          {WorkingDaysList.slice(0,workingDays).map((day, index) => {
-                            console.log(day);
-                            return (
-                              <>
-                                {period.type === "P" ? (
-                                  <td key={index}>
-                                    <Input
-                                      type="select"
-                                      defaultValue=""
-                                      onChange={(e) =>
-                                        handlePeriodChange(
-                                          period._id,
-                                          null,
-                                          e.target.value,
-                                          day
-                                        )
-                                      }
-                                      value={
-                                        periods1[day]?.find(
-                                          (d) =>
-                                            d.subject !== null &&
-                                            d.subject_id !== null &&
-                                            period.start === d.start &&
-                                            period.end === d.end
-                                        )
-                                          ? periods1[day]?.find(
-                                              (d) =>
-                                                d.subject !== null &&
-                                                d.subject_id !== null &&
-                                                period.start === d.start &&
-                                                period.end === d.end
-                                            ).subject +
-                                            "-" +
-                                            periods1[day]?.find(
-                                              (d) =>
-                                                d.subject !== null &&
-                                                d.subject_id !== null &&
-                                                period.start === d.start &&
-                                                period.end === d.end
-                                            ).subject_id
-                                          : ""
-                                      }
-                                    >
-                                      <option value="" selected>
-                                        Subject
-                                      </option>
-                                      {subjects.map((subject) => {
-                                        return (
-                                          <>
-                                            {subject.list.length > 0 ? (
-                                              <>
-                                                {subject.list.map((sub) => {
-                                                  return (
-                                                    <option
-                                                      value={
-                                                        sub + "-" + subject._id
-                                                      }
-                                                    >
-                                                      {subject.name +
-                                                        " - " +
-                                                        sub}
-                                                    </option>
-                                                  );
-                                                })}
-                                              </>
-                                            ) : (
-                                              <>
-                                                <option
-                                                  value={
-                                                    subject.name +
-                                                    "-" +
-                                                    subject._id
-                                                  }
-                                                >
-                                                  {subject.name}
-                                                </option>
-                                              </>
-                                            )}
-                                          </>
-                                        );
-                                      })}
-                                    </Input>
-                                    <Input
-                                      type="select"
-                                      value={
-                                        periods1[day]?.find(
-                                          (d) =>
-                                            period.start === d.start &&
-                                            period.end === d.end &&
-                                            d.staff != null
-                                        )?.staff || ""
-                                      }
-                                      onChange={(e) =>
-                                        handlePeriodChange(
-                                          period._id,
-                                          e.target.value,
-                                          null,
-                                          day
-                                        )
-                                      }
-                                      defaultValue=""
-                                    >
-                                      <option value="" disabled>
-                                        Teacher
-                                      </option>
-                                      {allStaff?.map((staff, i) => {
-                                        return (
-                                          <option value={staff._id}>
-                                            {staff.firstname +
-                                              " " +
-                                              staff.lastname}
-                                          </option>
-                                        );
-                                      })}
-                                    </Input>
-                                  </td>
-                                ) : (
-                                  <td key={index}>
-                                    <p>{period.break_name}</p>
-                                  </td>
-                                )}
-                              </>
-                            );
-                          })}
+                          {WorkingDaysList.slice(0, workingDays).map(
+                            (day, index) => {
+                              console.log(day);
+                              return (
+                                <>
+                                  {period.type === "P" ? (
+                                    <td key={index}>
+                                      <Input
+                                        type="select"
+                                        defaultValue=""
+                                        onChange={(e) =>
+                                          handlePeriodChange(
+                                            period._id,
+                                            null,
+                                            e.target.value,
+                                            day
+                                          )
+                                        }
+                                        value={
+                                          periods1[day]?.find(
+                                            (d) =>
+                                              d.subject !== null &&
+                                              d.subject_id !== null &&
+                                              period.start === d.start &&
+                                              period.end === d.end
+                                          )
+                                            ? periods1[day]?.find(
+                                                (d) =>
+                                                  d.subject !== null &&
+                                                  d.subject_id !== null &&
+                                                  period.start === d.start &&
+                                                  period.end === d.end
+                                              ).subject +
+                                              "-" +
+                                              periods1[day]?.find(
+                                                (d) =>
+                                                  d.subject !== null &&
+                                                  d.subject_id !== null &&
+                                                  period.start === d.start &&
+                                                  period.end === d.end
+                                              ).subject_id
+                                            : ""
+                                        }
+                                      >
+                                        <option value="" selected>
+                                          Subject
+                                        </option>
+                                        {subjects.map((subject) => {
+                                          return (
+                                            <>
+                                              {subject.list.length > 0 ? (
+                                                <>
+                                                  {subject.list.map((sub) => {
+                                                    return (
+                                                      <option
+                                                        value={
+                                                          sub +
+                                                          "-" +
+                                                          subject._id
+                                                        }
+                                                      >
+                                                        {subject.name +
+                                                          " - " +
+                                                          sub}
+                                                      </option>
+                                                    );
+                                                  })}
+                                                </>
+                                              ) : (
+                                                <>
+                                                  <option
+                                                    value={
+                                                      subject.name +
+                                                      "-" +
+                                                      subject._id
+                                                    }
+                                                  >
+                                                    {subject.name}
+                                                  </option>
+                                                </>
+                                              )}
+                                            </>
+                                          );
+                                        })}
+                                      </Input>
+                                      <Input
+                                        type="select"
+                                        value={
+                                          periods1[day]?.find(
+                                            (d) =>
+                                              period.start === d.start &&
+                                              period.end === d.end &&
+                                              d.staff != null
+                                          )?.staff || ""
+                                        }
+                                        onChange={(e) =>
+                                          handlePeriodChange(
+                                            period._id,
+                                            e.target.value,
+                                            null,
+                                            day
+                                          )
+                                        }
+                                        defaultValue=""
+                                      >
+                                        <option value="" disabled>
+                                          Teacher
+                                        </option>
+                                        {allStaff?.map((staff, i) => {
+                                          return (
+                                            <option value={staff._id}>
+                                              {staff.firstname +
+                                                " " +
+                                                staff.lastname}
+                                            </option>
+                                          );
+                                        })}
+                                      </Input>
+                                      <Input
+                                        type="text"
+                                        placeholder="Meet Link"
+                                        value={
+                                          periods1[day]?.find(
+                                            (d) =>
+                                              period.start === d.start &&
+                                              period.end === d.end &&
+                                              d.staff != null
+                                          )?.meet_link || ""
+                                        }
+                                        onClick={() => {
+                                          setOpen(true);
+                                          setMeetData({
+                                            periodId: period._id,
+                                            day: day,
+                                            link:
+                                              periods1[day]?.find(
+                                                (d) =>
+                                                  period.start === d.start &&
+                                                  period.end === d.end &&
+                                                  d.staff != null
+                                              )?.meet_link || "",
+                                          });
+                                        }}
+                                      />
+                                    </td>
+                                  ) : (
+                                    <td key={index}>
+                                      <p>{period.break_name}</p>
+                                    </td>
+                                  )}
+                                </>
+                              );
+                            }
+                          )}
                         </tr>
                       );
                     })}
@@ -777,6 +849,51 @@ const TimeTable1 = () => {
           </Card>
         </Container>
       )}
+      <Modal
+        className="modal-dialog-centered"
+        isOpen={open}
+        toggle={() => setOpen(false)}
+        size="sm"
+      >
+        <div className="modal-header">
+          <h2 className="modal-title" id="modal-title-default">
+            Meet Link
+          </h2>
+          <button
+            aria-label="Close"
+            className="close"
+            data-dismiss="modal"
+            type="button"
+            onClick={() => setOpen(false)}
+          >
+            <span aria-hidden={true}>×</span>
+          </button>
+        </div>
+        <form onSubmit={handleMeetLinkSubmit}>
+          <ModalBody>
+            <Row>
+              <Col>
+                <label className="form-control-label">Meet Link</label>
+                <Input
+                  id="form-class-name"
+                  value={meetData.link}
+                  onChange={(e) =>
+                    setMeetData({ ...meetData, link: e.target.value })
+                  }
+                  placeholder="Enter Link"
+                  type="text"
+                  required
+                />
+              </Col>
+            </Row>
+          </ModalBody>
+          <ModalFooter style={{ display:"flex",justifyContent:"center" }}>
+            <Button color="success" type="submit" >
+              Save changes
+            </Button>
+          </ModalFooter>
+        </form>
+      </Modal>
     </>
   );
 };
