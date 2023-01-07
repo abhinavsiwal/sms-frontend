@@ -540,18 +540,20 @@ function AddStudent() {
       formData.set("mother_dob", motherDOB);
     }
 
-    formData.set("permananent_city", permanentCity);
-    formData.set("permananent_country", permanentCountry);
+    formData.set("permanent_city", permanentCity);
+    formData.set("permanent_country", permanentCountry);
     formData.set("permanent_state", permanentState);
     formData.set("permanent_pincode", permanentPincode);
     formData.set("permanent_address", studentData.permanent_address);
     try {
       setLoading(true);
-      const formData1 = new FormData();
-      formData1.set("file", image);
-      const data = await uploadFile(formData1);
-      console.log(data);
-      formData.set("photo", data.data[0]);
+      if (image) {
+        const formData1 = new FormData();
+        formData1.set("file", image);
+        const data = await uploadFile(formData1);
+        console.log(data);
+        formData.set("photo", data.data[0]);
+      }
       const addStudents = await addStudent(user._id, token, formData);
       // console.log("addStudent", addStudents);
       if (addStudents.err) {

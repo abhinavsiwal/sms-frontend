@@ -95,7 +95,7 @@ function UpdateStudent({ studentDetails }) {
   const [permanentState, setPermanentState] = useState(
     studentDetails.permanent_state
   );
-  const [permanentCity, setPermanentCity] = useState("");
+  const [permanentCity, setPermanentCity] = useState(studentDetails.permanent_city);
   const [permanentPincodeError, setPermanentPincodeError] = useState(false);
   const [permanentPincode, setPermanentPincode] = useState(
     studentDetails.permanent_pincode
@@ -108,10 +108,10 @@ function UpdateStudent({ studentDetails }) {
     lastname: studentDetails.lastname,
     date_of_birth: studentDetails.date_of_birth,
     gender: studentDetails.gender,
-    aadhar_number: studentDetails.aadhar_number,
-    email: studentDetails.email,
-    phone: studentDetails.phone,
-    alternate_phone: studentDetails.alternate_phone,
+    aadhar_number: studentDetails.aadhar_number?studentDetails.aadhar_number:"",
+    email: studentDetails.email?studentDetails.email:"",
+    phone: studentDetails.phone?studentDetails.phone:"",
+    alternate_phone: studentDetails.alternate_phone?studentDetails.alternate_phone:"",
     birth_place: studentDetails.birth_place,
     caste: studentDetails.caste,
     religion: studentDetails.religion,
@@ -134,7 +134,7 @@ function UpdateStudent({ studentDetails }) {
     guardian_last_name: studentDetails.guardian_last_name,
     guardian_dob: studentDetails.guardian_dob,
     guardian_blood_group: studentDetails.guardian_blood_group,
-    guardian_phone: studentDetails.guardian_phone,
+    guardian_phone: studentDetails.guardian_phone?studentDetails.guardian_phone:"",
     guardian_address: studentDetails.guardian_address,
     guardian_permanent_address: studentDetails.guardian_permanent_address,
     guardian_pincode: studentDetails.guardian_pincode,
@@ -144,7 +144,7 @@ function UpdateStudent({ studentDetails }) {
     father_last_name: studentDetails.father_last_name,
     father_dob: studentDetails.father_dob,
     father_blood_group: studentDetails.father_blood_group,
-    father_phone: studentDetails.father_phone,
+    father_phone: studentDetails.father_phone?studentDetails.father_phone:"",
     father_address: studentDetails.father_address,
     father_permanent_address: studentDetails.father_permanent_address,
     father_pincode: studentDetails.father_pincode,
@@ -154,13 +154,13 @@ function UpdateStudent({ studentDetails }) {
     mother_last_name: studentDetails.mother_last_name,
     mother_dob: studentDetails.mother_dob,
     mother_blood_group: studentDetails.mother_blood_group,
-    mother_phone: studentDetails.mother_phone,
+    mother_phone: studentDetails.mother_phone?studentDetails.mother_phone:"",
     mother_address: studentDetails.mother_address,
     mother_permanent_address: studentDetails.mother_permanent_address,
     mother_pincode: studentDetails.mother_pincode,
     mother_nationality: studentDetails.mother_nationality,
     mother_mother_tongue: studentDetails.mother_mother_tongue,
-    parent_email: studentDetails.parent_email,
+    parent_email: studentDetails.parent_email?studentDetails.parent_email:"",
     parent_address: studentDetails.parent_address,
     tempPhoto: studentDetails.tempPhoto,
   });
@@ -313,6 +313,7 @@ function UpdateStudent({ studentDetails }) {
       formData.set("permanent_state", state);
       formData.set("permanent_country", country);
       formData.set("permanent_pincode", pincode);
+      formData.set("permanent_address",student.present_address);
     }
     try {
       setLoading(true);
@@ -640,7 +641,6 @@ function UpdateStudent({ studentDetails }) {
   const cancelHandler = () => {
     window.location.reload();
   };
-  useEffect(() => {}, [cscd]);
   return (
     <>
       <SimpleHeader name="Update Student" parentName="Student Management" />
@@ -1675,7 +1675,7 @@ function UpdateStudent({ studentDetails }) {
                               className="form-control-label"
                               htmlFor="example4cols3Input"
                             >
-                              Name
+                            First  Name
                             </label>
                             <Input
                               id="example4cols3Input"
@@ -1684,6 +1684,22 @@ function UpdateStudent({ studentDetails }) {
                               onChange={handleChange("guardian_name")}
                               required
                               value={student.guardian_name}
+                            />
+                          </Col>
+                          <Col>
+                            <label
+                              className="form-control-label"
+                              htmlFor="example4cols3Input"
+                            >
+                             Last Name
+                            </label>
+                            <Input
+                              id="example4cols3Input"
+                              placeholder="Last Name"
+                              type="text"
+                              onChange={handleChange("guardian_last_name")}
+                              required
+                              value={student.guardian_last_name}
                             />
                           </Col>
                         </Row>

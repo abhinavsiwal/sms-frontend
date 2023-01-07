@@ -400,7 +400,7 @@ const BudgetMaster = () => {
           session: data[i].session.name,
           allocated: data[i].allocated,
           used: data[i].used,
-          status: "Under Budget",
+          status: data[i].used>data[i].allocated?"Over Budget":"Under Budget",
           action: (
             <>
               <Button

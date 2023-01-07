@@ -264,6 +264,7 @@ function UpdateStaff({ staffDetails }) {
       formData.set("permanent_state",permanentState);
       formData.set("permanent_country",permanentCountry);
       formData.set("permanent_pincode",permanentPincode);
+      // formData.set("permanent_address",staffDetails.permanent_address);
     }else{
       formData.set("permanent_city", city);
       formData.set("permanent_state",state); 

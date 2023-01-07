@@ -1042,8 +1042,9 @@ const Calendar = () => {
         className="modal-dialog-centered"
         isOpen={viewModal}
         toggle={() => setViewModal(false)}
+        size="md"
       >
-        <div className="modal-header">
+        <div className="modal-header ">
           <h6 className="modal-title" id="modal-title-default">
             Event Details
           </h6>
@@ -1057,7 +1058,7 @@ const Calendar = () => {
             <span aria-hidden={true}>×</span>
           </button>
         </div>
-        <ModalBody>
+        <ModalBody className="mt--4" >
           <Row>
             <Col align="center">
               <h4 className="mt-3 mb-1">Event Name</h4>
@@ -1067,30 +1068,26 @@ const Calendar = () => {
               <h4 className="mt-3 mb-1">Event Detail</h4>
               <span className="text-md">{eventDetails.description}</span>
             </Col>
-            <Col align="center">
+          
+          </Row>
+          <Row>
+          <Col align="center">
               <h4 className="mt-3 mb-1">Event type</h4>
               <span className="text-md">{eventDetails.event_type}</span>
             </Col>
-          </Row>
-          <Row>
             <Col align="center">
               <h4 className="mt-3 mb-1">Event From</h4>
-              <span className="text-md">{eventDetails.event_from}</span>
+              <span className="text-md">{moment(eventDetails.event_from).format("DD/MM/YYYY")}</span>
             </Col>
+            </Row>
+          <Row>
             <Col align="center">
               <h4 className="mt-3 mb-1">Event to</h4>
-              <span className="text-md">{eventDetails.event_to}</span>
+              <span className="text-md">{moment(eventDetails.event_to).format("DD/MM/YYYY")}</span>
             </Col>
             <Col align="center">
               <h4 className="mt-3 mb-1">Event Teachers</h4>
-              {/* {eventDetails.assignTeachers &&
-                eventDetails.assignTeachers.map((teacher, i) => {
-                  return (
-                    <span className="text-md" key={i}>
-                      {teacher.firstname} {teacher.lastname}
-                    </span>
-                  );
-                })} */}
+             
               {eventDetails.assignTeachers &&
                 eventDetails.assignTeachers.firstname +
                   " " +

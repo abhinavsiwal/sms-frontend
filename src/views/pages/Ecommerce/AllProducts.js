@@ -650,7 +650,7 @@ const AllProducts = () => {
                             <Col md="4" key={index}>
                               <Card>
                                 {product.image_url !== "" && (
-                                  <div style={{ height: "10rem" }}>
+                                  <div>
                                     <CardImg
                                       alt="..."
                                       src={
@@ -658,6 +658,7 @@ const AllProducts = () => {
                                       }
                                       top
                                       className="p-4"
+                                      style={{height:"15rem"}}
                                     />
                                   </div>
                                 )}
