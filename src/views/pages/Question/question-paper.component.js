@@ -645,18 +645,6 @@ export default class QuestionPaper extends AbstractComponent {
                         <CardBody>
                             <div className="question-paper">
                                 <div className="page">
-                                    <div className="section-body">
-                                        <div className="container-fluid">
-                                            <div className="d-flex justify-content-between align-items-center ">
-                                                <div className="header-action">
-                                                    <ol className="breadcrumb page-breadcrumb align-items-center mt-4">
-                                                    <li className="breadcrumb-item">Question Paper Builder</li>
-                                                    <li className="breadcrumb-item text-dark">Question Paper</li>
-                                                    </ol>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div className="section-body my-4">
                                         <div className="container-fluid">
                                             {!this.state.showEditor ? this.state.load ? <Loader /> :

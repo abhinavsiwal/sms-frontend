@@ -366,19 +366,6 @@ export default class QuestionPaperList extends AbstractComponent {
             <Card>
               <CardBody>
                 <div className="page">
-                  {/* Start Page title and tab */}
-                  <div className="section-body">
-                    <div className="container-fluid">
-                      <div className="d-flex justify-content-between align-items-center ">
-                        <div className="header-action">
-                          <ol className="breadcrumb page-breadcrumb align-items-center mt-4">
-                            <li className="breadcrumb-item active" aria-current="page">List View</li>
-                            <li className="breadcrumb-item active text-dark" aria-current="page">Question Paper</li>
-                          </ol>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                   <div className="section-body mt-4">
                     <div className="container-fluid">
                       {
