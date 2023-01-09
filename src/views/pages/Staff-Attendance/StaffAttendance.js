@@ -436,39 +436,7 @@ const StaffAttendance = () => {
           <CardBody>
             <form onSubmit={handleSearch}>
               <Row>
-                <Col>
-                  <Label
-                    className="form-control-label"
-                    htmlFor="xample-date-input"
-                  >
-                    Name
-                  </Label>
-                  <Input
-                    className="form-control"
-                    id="example4cols2Input"
-                    placeholder="Name"
-                    onChange={handleChange("name")}
-                    value={searchData.name}
-                    type="text"
-                  />
-                </Col>
-
-                <Col>
-                  <Label
-                    className="form-control-label"
-                    htmlFor="xample-date-input"
-                  >
-                    staffID
-                  </Label>
-                  <Input
-                    className="form-control"
-                    id="example4cols2Input"
-                    placeholder="staffID"
-                    type="text"
-                    onChange={handleChange("staffId")}
-                    value={searchData.staffId}
-                  />
-                </Col>
+              
                 <Col>
                   <Label
                     className="form-control-label"
@@ -509,8 +477,7 @@ const StaffAttendance = () => {
                     className="datePicker"
                   />
                 </Col>
-              </Row>
-              <Row>
+          
                 <Col>
                   <label
                     className="form-control-label"

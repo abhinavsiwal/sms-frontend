@@ -383,6 +383,7 @@ function RolePermissions() {
                                   role.name !== "Accounts" &&
                                   role.name !== "Canteen" &&
                                   role.name !== "Library" &&
+                                  role.name !=="Hostel Management" &&
                                   role.name !== "Transportation" &&
                                   role.name !== "Teacher" && (
                                     <Button
@@ -401,6 +402,7 @@ function RolePermissions() {
                                   role.name !== "Accounts" &&
                                   role.name !== "Canteen" &&
                                   role.name !== "Library" &&
+                                  role.name !=="Hostel Management" &&
                                   role.name !== "Transportation" &&
                                   role.name !== "Teacher" && (
                                     <Button

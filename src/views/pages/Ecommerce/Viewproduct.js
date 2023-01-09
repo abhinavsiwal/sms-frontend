@@ -138,8 +138,8 @@ function Viewproduct() {
                               style={{ cursor: "pointer", padding: "0" }}
                             >
                               <CardImg
-                                alt="..."
-                                src={product.image_url && product.image_url}
+                                alt=""
+                                src={product.image_url ? product.image_url:"/img/product.png"}
                                 top
                                 className="p-4"
                                 style={{ width: "100%", height: "100%" }}

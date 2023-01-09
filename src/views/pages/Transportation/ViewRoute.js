@@ -122,12 +122,12 @@ function ViewRoute() {
     {
       title: "S No.",
       dataIndex: "s_no",
-      align:"left",
+      align: "left",
     },
     {
       title: "Route Name",
       dataIndex: "route_name",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.route_name > b.route_name,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -157,7 +157,7 @@ function ViewRoute() {
     {
       title: "Bus No.",
       dataIndex: "bus_no",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.bus_no > b.bus_no,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -188,7 +188,7 @@ function ViewRoute() {
     {
       title: "Start Time",
       dataIndex: "start_time",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.start_time > b.start_time,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -219,7 +219,7 @@ function ViewRoute() {
     {
       title: "End Time",
       dataIndex: "end_time",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.end_time > b.end_time,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -249,7 +249,7 @@ function ViewRoute() {
     {
       title: "Staff Members",
       dataIndex: "staff_members",
-      align:"left",
+      align: "left",
       sorter: (a, b) => a.staff_members > b.staff_members,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
         return (
@@ -282,7 +282,7 @@ function ViewRoute() {
       title: "Action",
       key: "action",
       dataIndex: "action",
-      align:"left",
+      align: "left",
       fixed: "right",
     },
   ];
@@ -449,6 +449,7 @@ function ViewRoute() {
       }
       setChecked(!checked);
       setModalState(false);
+      seteditStopModal(false)
       setStopLoading(false);
       toast.success("Stop Updated successfully");
     } catch (err) {
@@ -519,11 +520,11 @@ function ViewRoute() {
         className="modal-dialog-centered"
         isOpen={editStopModal}
         toggle={() => seteditStopModal(false)}
-        size="lg" 
+        size="lg"
       >
         <div className="modal-header">
           <h6 className="modal-title" id="modal-title-default">
-          Edit Stops
+            Edit Stops
           </h6>
           <button
             aria-label="Close"
@@ -541,9 +542,8 @@ function ViewRoute() {
           <ModalBody>
             <>
               <Container>
-                <Row>
+                <Row className="mb-4">
                   <Col>
-                    {" "}
                     <Label
                       className="form-control-label"
                       htmlFor="example4cols2Input"
@@ -600,13 +600,13 @@ function ViewRoute() {
                       required
                     />
                   </Col>
-                </Row>
-                <Row>
-                  <Col className="mt-4">
+
+                  <Col style={{ marginTop: "2rem" }}>
                     <Button
                       color="primary"
                       onClick={addStop}
                       disabled={disableButton}
+                      // size="sm"
                     >
                       Add
                     </Button>
@@ -657,9 +657,13 @@ function ViewRoute() {
                 )}
               </Table>
             </>
-            <Button color="primary" onClick={editStopHandler}>
-              Submit
-            </Button>
+            <Row>
+              <Col style={{display:"flex",justifyContent:"center"}} >
+                <Button color="primary" onClick={editStopHandler}>
+                  Submit
+                </Button>
+              </Col>
+            </Row>
           </ModalBody>
         )}
       </Modal>
@@ -678,7 +682,6 @@ function ViewRoute() {
             </Button>
           </CardHeader>
           <CardBody>
-          
             {!loading && viewRoute ? (
               <div ref={componentRef} style={{ overflowX: "auto" }}>
                 <AntTable
@@ -691,7 +694,7 @@ function ViewRoute() {
             ) : (
               <Loader />
             )}
-          </CardBody> 
+          </CardBody>
         </Card>
         <Modal
           // style={{ height: "50vh" }}
@@ -775,7 +778,7 @@ function ViewRoute() {
                         required
                       />
                     </Col>
-                 
+
                     <Col>
                       <Label
                         className="form-control-label"
@@ -819,12 +822,11 @@ function ViewRoute() {
                     </Col>
                   </Row>
                   <Row>
-                    <Col style={{display:"flex",justifyContent:"center"}} >
+                    <Col style={{ display: "flex", justifyContent: "center" }}>
                       <Button
                         className="primary mt-5"
                         color="primary"
                         onClick={editRouteHandler}
-                        
                       >
                         Save Changes
                       </Button>
@@ -872,7 +874,7 @@ function ViewRoute() {
                     onClick={() => {
                       editStopData(modalSupport);
                     }}
-                    style={{ float: "right",marginBottom:'1rem' }}
+                    style={{ float: "right", marginBottom: "1rem" }}
                   >
                     Edit
                   </Button>
@@ -897,7 +899,6 @@ function ViewRoute() {
                             <td>{stop.stopName}</td>
                             <td>{stop.pickupTime}</td>
                             <td>{stop.dropTime}</td>
-                         
                           </tr>
                         </tbody>
                       );

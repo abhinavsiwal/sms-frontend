@@ -75,15 +75,14 @@ const Attendance1 = () => {
   });
   const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
 
-  let permission=[]
+  let permission = [];
   useEffect(() => {
     if (user.permissions["Student Management"]) {
-      permission = user.permissions["Studet Management"];
+      permission = user.permissions["Student Management"];
       // console.log(permissions);
       setPermissions(permission);
     }
   }, [checked]);
-
 
   const getAllClass = async () => {
     const { user, token } = isAuthenticated();
@@ -156,8 +155,8 @@ const Attendance1 = () => {
 
     const formData = {
       session: searchData.session,
-      from_date: startDate.toISOString().split('T')[0],
-      to_date: endDate.toISOString().split('T')[0],
+      from_date: startDate.toISOString().split("T")[0],
+      to_date: endDate.toISOString().split("T")[0],
       class: searchData.selectClass,
       section: searchData.selectSection,
       name: searchData.name,
@@ -204,7 +203,7 @@ const Attendance1 = () => {
         );
         if (found) {
           attendanceList.push({
-            date: date,
+            date: date, 
             attendance_status: found.attendance_status,
           });
         } else if (!found) {
@@ -313,7 +312,7 @@ const Attendance1 = () => {
   };
   const changeAttendance = (studentIndex, dateIndex) => {
     console.log(permissions);
-    if(permissions && !permissions.includes("add".trim())){
+    if (permissions && !permissions.includes("add".trim())) {
       return;
     }
     console.log(studentIndex, dateIndex);
@@ -344,9 +343,11 @@ const Attendance1 = () => {
 
     let obj = {
       attendance_status: student.attandance[dateIndex].attendance_status,
-      date:formatDate1(student.attandance[dateIndex].date),
+      date: formatDate1(student.attandance[dateIndex].date),
       student: student._id,
     };
+    console.log(obj);
+    console.log(formData);
     setFormData([...formData, obj]);
   };
   useEffect(() => {
@@ -356,14 +357,14 @@ const Attendance1 = () => {
   const commitAttendance = async () => {
     console.log(formData);
     let attendanceData = formData.filter(
-      (v, i, a) => a.findLastIndex((v2) => v2.student === v.student) === i
+      (v, i, a) => a.findLastIndex((v2) => v2.student === v.student && v.date===v2.date) === i
     );
     console.log(attendanceData);
     const formD = {
       attandance_data: attendanceData,
       class: searchData.selectClass,
       section: searchData.selectSection,
-      from_date:formatDate1(searchData.dateFrom),
+      from_date: formatDate1(searchData.dateFrom),
       to_date: formatDate1(searchData.dateTo),
       session: searchData.session,
     };
@@ -383,7 +384,6 @@ const Attendance1 = () => {
       toast.success("Attendance Updated Successfully");
       setViewAttendance(false);
       setSearchData({
-        
         dateFrom: startDate,
         dateTo: endDate,
         session: "",
@@ -434,39 +434,6 @@ const Attendance1 = () => {
                     className="form-control-label"
                     htmlFor="xample-date-input"
                   >
-                    Name
-                  </Label>
-                  <Input
-                    className="form-control"
-                    id="example4cols2Input"
-                    placeholder="Name"
-                    onChange={handleChange("name")}
-                    value={searchData.name}
-                    type="text"
-                  />
-                </Col>
-
-                <Col>
-                  <Label
-                    className="form-control-label"
-                    htmlFor="xample-date-input"
-                  >
-                    StudentID
-                  </Label>
-                  <Input
-                    className="form-control"
-                    id="example4cols2Input"
-                    placeholder="StudentID"
-                    type="text"
-                    onChange={handleChange("studentId")}
-                    value={searchData.studentId}
-                  />
-                </Col>
-                <Col>
-                  <Label
-                    className="form-control-label"
-                    htmlFor="xample-date-input"
-                  >
                     From
                   </Label>
                   <DatePicker
@@ -502,8 +469,7 @@ const Attendance1 = () => {
                     className="datePicker"
                   />
                 </Col>
-              </Row>
-              <Row>
+
                 <Col>
                   <Label
                     className="form-control-label"
@@ -595,15 +561,13 @@ const Attendance1 = () => {
                       })}
                   </select>
                 </Col>
-                <Col style={{marginTop:"2rem"}} >
+                <Col style={{ marginTop: "2rem" }}>
                   <Button color="primary" type="submit">
                     Search
                   </Button>
                 </Col>
               </Row>
-              <Row className="mt-4 float-right">
-             
-              </Row>
+              <Row className="mt-4 float-right"></Row>
             </form>
           </CardBody>
         </Card>
@@ -653,7 +617,7 @@ const Attendance1 = () => {
                   </div>
                 </Col>
                 <Col className="buttons" md={3}>
-                {permissions && permissions.includes("add".trim()) && (
+                  {permissions && permissions.includes("add") && (
                     <div className="col-sm">
                       <Button
                         className="attendance-button"

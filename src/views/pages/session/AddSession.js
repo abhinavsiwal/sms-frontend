@@ -747,12 +747,13 @@ const AddSession = () => {
                     Print
                   </Button>
                   <Row className="ml-2">
-                    <div ref={componentRef} style={{ overflowX: "auto" }}>
+                    <div ref={componentRef}>
                       <AntTable
                         columns={columns}
                         data={sessionList}
                         pagination={true}
                         exportFileName="SessionDetails"
+                        // showOverFlow={true}
                       />
                     </div>
                   </Row>

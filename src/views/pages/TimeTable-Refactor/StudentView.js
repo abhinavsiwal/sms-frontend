@@ -338,7 +338,7 @@ const StudentView = () => {
                                           ).subject
                                         : ""}
                                     </p>
-                                    <p>
+                                    <p style={{wordWrap:"break-word"}} > 
                                       {periods1[day]?.find(
                                         (d) =>
                                           period.start === d.start &&

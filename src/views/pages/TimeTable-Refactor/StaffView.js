@@ -326,7 +326,7 @@ const StaffView = () => {
                                         ).section.name
                                       : ""}
                                   </p>
-                                  <p>
+                                  <p style={{fontSize:"0.8rem"}} >
                                     {periods1[day]?.find(
                                       (d) =>
                                         (d.subject !== null ||

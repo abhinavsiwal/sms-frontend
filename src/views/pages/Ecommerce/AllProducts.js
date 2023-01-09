@@ -649,19 +649,19 @@ const AllProducts = () => {
                           return (
                             <Col md="4" key={index}>
                               <Card>
-                                {product.image_url !== "" && (
+                             
                                   <div>
                                     <CardImg
                                       alt="..."
                                       src={
-                                        product.image_url && product.image_url
+                                        product.image_url ? product.image_url :"/img/product.png"
                                       }
                                       top
                                       className="p-4"
                                       style={{height:"15rem"}}
                                     />
                                   </div>
-                                )}
+                               
                                 <CardBody
                                   className="mt-0"
                                   style={{ height: "22rem" }}
