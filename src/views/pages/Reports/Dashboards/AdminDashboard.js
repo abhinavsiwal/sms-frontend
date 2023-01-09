@@ -4,9 +4,9 @@ import Loader from "components/Loader/Loader";
 import { SearchOutlined } from "@ant-design/icons";
 import { Line, Bar } from "react-chartjs-2";
 import { Chart } from "chart.js";
-import classnames from "classnames";
 import axios from 'axios';
 import { isAuthenticated } from "api/auth";
+import classnames from "classnames";
 
 import {
     Card,
@@ -36,36 +36,39 @@ import {
   import {
     chartOptions,
     parseOptions,
-    chartExample1,
-    chartExample2,
   } from "variables/charts.js";
 
 function AdminDashboard() {
-  const { user, token } = isAuthenticated();
+    const { user, token } = isAuthenticated();
     const [loading, setLoading] = useState(false);
-    const [activeNav, setActiveNav] = React.useState(1);
     const [reportData,setReportData] = useState({})
     const [leave,setLeave] = useState([])
     const [notice,setNotice] = useState([])
     const [birthDay,setBirthDay] = useState([])
     const [exam,setExam] = useState([])
     const [holiday,setHoliday] = useState([])
-    const [chartExample1Data, setChartExample1Data] = React.useState("data1");
-    const toggleNavs = (e, index) => {
-      e.preventDefault();
-      setActiveNav(index);
-      setChartExample1Data(chartExample1Data === "data1" ? "data2" : "data1");
-    };
-    if (window.Chart) {
-      parseOptions(Chart, chartOptions());
-    }
+    const [expense_graph,setExpense_graph] = useState([])
+    const [yearly_graph,setYearly_graph] = useState([])
+    const [weekly_graph,setWeekly_graph] = useState([])
+    const [yearly_weekly_graph_label,setYearly_weekly_graph_label] = useState([])
 
+    const [activeNav, setActiveNav] = React.useState(1);
+
+    const toggleNavs = (e, index) => {
+        e.preventDefault();
+        setActiveNav(index);
+      };
+
+  
+      if (window.Chart) {
+        parseOptions(Chart, chartOptions());
+      }
 
     const getData = () =>{
         setLoading(true)
         var config = {
           method: 'post',
-          url: `${process.env.REACT_APP_API_URL}/api/reports/dashboard/${user.school}/${user._id}`,
+          url: `http://localhost:8000/api/reports/dashboard/6288e6d464f724cdfad91d4b/6288e6d264f724cdfad91d47`,
           headers: { 
             'Authorization': 'Bearer ' + token
           }
@@ -73,13 +76,29 @@ function AdminDashboard() {
         
         axios(config)
         .then(function (response) {
-          console.log(response.data)
+          console.log(response)
           setReportData(response.data)
           setLeave([...response.data.student_leave,...response.data.staff_leave])
           setBirthDay([...response.data.today_birthday])
           setExam([...response.data.exam_list])
           setHoliday([...response.data.holiday_list])
           setNotice([...response.data.notice_board])
+
+          let expense_graph = {
+            labels: [...response.data.expense_graph.map((ele) => (ele.x_value))],
+            datasets: [{
+              data: [...response.data.expense_graph.map((ele) => (ele.total_amount))],
+            }],
+            options:{
+                tooltips:{
+                    enabled:true,
+                }
+            }
+          };
+          setYearly_weekly_graph_label([...response.data.yearly_income_graph.map((ele) => (ele.x_value))])
+          setWeekly_graph([...response.data.income_week_graph.map((ele) => (ele.total_amount))])
+          setYearly_graph([...response.data.yearly_income_graph.map((ele) => (ele.total_amount))])
+          setExpense_graph(expense_graph)
           setLoading(false)
         })
         .catch(function (error) {
@@ -90,9 +109,10 @@ function AdminDashboard() {
     useEffect(() => {
       getData()
     }, [])
+
+    console.log("week",weekly_graph)
+    console.log("year",yearly_graph)
     
-
-
     const columns = [
         {
           title: "Sr No.",
@@ -141,6 +161,7 @@ function AdminDashboard() {
         const formattedDate = dd + '-' + mm + '-' + yyyy;
         return formattedDate
       }
+
   return (
     <>
     <SimpleHeader name="Admin Dashboard" parentName="Dashboard" />   
@@ -149,34 +170,70 @@ function AdminDashboard() {
                 <CardBody>
                     <Row>
                         <Col md='3'>
-                            <Card style={{background:'#d8d8d8'}}>
-                                <CardBody className='d-flex justify-content-center align-items-center flex-column'>
-                                    <h2 style={{margin:"0"}}>{reportData.student_count}</h2>
-                                    <h3>Students</h3>
+                            <Card style={{background:'linear-gradient(87deg, #f5365c 0, #d8d8d8 100%)'}} >
+                                <CardBody>
+                                    <Row>
+                                        <Col>
+                                            <h5 class="text-uppercase mb-0 card-title" style={{color:"white"}}> Student</h5>
+                                            <span class="h2 font-weight-bold mb-0">{reportData.student_count}</span>
+                                        </Col>
+                                        <div className="col-auto col">
+                                            <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">
+                                            <i class="ni ni-hat-3"></i>
+                                            </div>
+                                        </div>
+                                    </Row>
                                 </CardBody>
                             </Card>
                         </Col>
                         <Col md='3'>
-                            <Card style={{background:'#9cc2e5'}}>
-                                <CardBody className='d-flex justify-content-center align-items-center flex-column'>
-                                    <h2 style={{margin:"0"}}>{reportData.staff_count}</h2>
-                                    <h3>Employees</h3>
+                            <Card style={{background:'linear-gradient(87deg, #f5365c 0, #9cc2e5 100%)'}} >
+                                <CardBody>
+                                    <Row>
+                                        <Col>
+                                            <h5 class="text-uppercase mb-0 card-title" style={{color:"#fff"}}>Employees</h5>
+                                            <span class="h2 font-weight-bold mb-0">{reportData.staff_count}</span>
+                                        </Col>
+                                        <div className="col-auto col">
+                                            <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
+                                            <i class="ni ni-hat-3"></i>
+                                            </div>
+                                        </div>
+                                    </Row>
                                 </CardBody>
                             </Card>
                         </Col>
                         <Col md='3'>
-                            <Card style={{background:'#f4b083'}}>
-                                <CardBody className='d-flex justify-content-center align-items-center flex-column'>
-                                    <h2 style={{margin:"0"}}>{reportData.budget_used}</h2>
-                                    <h3>Expenses</h3>
+                            <Card style={{background:'linear-gradient(87deg, #f5365c 0, #f4b083 100%)'}} >
+                                <CardBody>
+                                    <Row>
+                                        <Col>
+                                            <h5 class="text-uppercase mb-0 card-title" style={{color:"white"}}>Expenses</h5>
+                                            <span class="h2 font-weight-bold mb-0">{reportData.budget_used}</span>
+                                        </Col>
+                                        <div className="col-auto col">
+                                            <div class="icon icon-shape bg-gradient-green text-white rounded-circle shadow">
+                                            <i class="ni ni-chart-bar-32"></i>
+                                            </div>
+                                        </div>
+                                    </Row>
                                 </CardBody>
                             </Card>
                         </Col>
                         <Col md='3'>
-                            <Card style={{background:'#a8d08d'}}>
-                                <CardBody className='d-flex justify-content-center align-items-center flex-column'>
-                                    <h2 style={{margin:"0"}}>{reportData.revenue}</h2>
-                                    <h3>Revenue</h3>
+                            <Card style={{background:'linear-gradient(87deg, #f5365c 0, #a8d08d 100%)'}} >
+                                <CardBody>
+                                    <Row>
+                                        <Col>
+                                            <h5 class="text-uppercase mb-0 card-title" style={{color:"white"}}>Revenue</h5>
+                                            <span class="h2 font-weight-bold mb-0">{reportData.revenue}</span>
+                                        </Col>
+                                        <div className="col-auto col">
+                                            <div class="icon icon-shape bg-gradient-primary text-white rounded-circle shadow">
+                                            <i class="ni ni-credit-card"></i>
+                                            </div>
+                                        </div>
+                                    </Row>
                                 </CardBody>
                             </Card>
                         </Col>
@@ -193,49 +250,58 @@ function AdminDashboard() {
                         <Col xl="8">
                             <Card className="bg-default">
                             <CardHeader className="bg-transparent">
-                                <Row className="align-items-center">
-                                <div className="col">
-                                    <h6 className="text-light text-uppercase ls-1 mb-1">
-                                    Overview
-                                    </h6>
-                                    <h5 className="h3 text-white mb-0">Sales value</h5>
-                                </div>
-                                <div className="col">
-                                    <Nav className="justify-content-end" pills>
-                                    <NavItem className="mr-2 mr-md-0">
-                                        <NavLink
-                                        className={classnames("py-2 px-3", {
-                                            active: activeNav === 1,
-                                        })}
-                                        href="#pablo"
-                                        onClick={(e) => toggleNavs(e, 1)}
-                                        >
-                                        <span className="d-none d-md-block">Month</span>
-                                        <span className="d-md-none">M</span>
-                                        </NavLink>
-                                    </NavItem>
-                                    <NavItem>
-                                        <NavLink
-                                        className={classnames("py-2 px-3", {
-                                            active: activeNav === 2,
-                                        })}
-                                        data-toggle="tab"
-                                        href="#pablo"
-                                        onClick={(e) => toggleNavs(e, 2)}
-                                        >
-                                        <span className="d-none d-md-block">Week</span>
-                                        <span className="d-md-none">W</span>
-                                        </NavLink>
-                                    </NavItem>
-                                    </Nav>
-                                </div>
-                                </Row>
-                            </CardHeader>
+                <Row className="align-items-center">
+                  <div className="col">
+                    <h6 className="text-light text-uppercase ls-1 mb-1">
+                      Overview
+                    </h6>
+                    <h5 className="h3 text-white mb-0">Sales value</h5>
+                  </div>
+                  <div className="col">
+                    <Nav className="justify-content-end" pills>
+                      <NavItem className="mr-2 mr-md-0">
+                        <NavLink
+                          className={classnames("py-2 px-3", {
+                            active: activeNav === 1,
+                          })}
+                          href="#pablo"
+                          onClick={(e) => toggleNavs(e, 1)}
+                        >
+                          <span className="d-none d-md-block">Month</span>
+                          <span className="d-md-none">M</span>
+                        </NavLink>
+                      </NavItem>
+                      <NavItem>
+                        <NavLink
+                          className={classnames("py-2 px-3", {
+                            active: activeNav === 2,
+                          })}
+                          data-toggle="tab"
+                          href="#pablo"
+                          onClick={(e) => toggleNavs(e, 2)}
+                        >
+                          <span className="d-none d-md-block">Week</span>
+                          <span className="d-md-none">W</span>
+                        </NavLink>
+                      </NavItem>
+                    </Nav>
+                  </div>
+                </Row>
+                    </CardHeader>
                             <CardBody>
                                 <div className="chart">
                                 <Line
-                                    data={chartExample1[chartExample1Data]}
-                                    options={chartExample1.options}
+                                    data={ {
+                                        labels: [...yearly_weekly_graph_label],
+                                        datasets: [{
+                                          data: activeNav === 1 ? [...yearly_graph] : [...weekly_graph],
+                                        }],
+                                        options:{
+                                            tooltips:{
+                                                enabled:true,
+                                            },
+                                        }
+                                      }}
                                     id="chart-sales-dark"
                                     className="chart-canvas"
                                 />
@@ -245,26 +311,25 @@ function AdminDashboard() {
                         </Col>
                         <Col xl="4">
                             <Card>
-                            <CardHeader className="bg-transparent">
-                                <Row className="align-items-center">
-                                <div className="col">
-                                    <h6 className="text-uppercase text-muted ls-1 mb-1">
-                                    Performance
-                                    </h6>
-                                    <h5 className="h3 mb-0">Total orders</h5>
-                                </div>
-                                </Row>
-                            </CardHeader>
-                            <CardBody>
-                                <div className="chart">
-                                <Bar
-                                    data={chartExample2.data}
-                                    options={chartExample2.options}
-                                    className="chart-canvas"
-                                    id="chart-bars"
-                                />
-                                </div>
-                            </CardBody>
+                                <CardHeader className="bg-transparent">
+                                    <Row className="align-items-center">
+                                    <div className="col">
+                                        <h6 className="text-uppercase text-muted ls-1 mb-1">
+                                        Performance
+                                        </h6>
+                                        <h5 className="h3 mb-0">Total orders</h5>
+                                    </div>
+                                    </Row>
+                                </CardHeader>
+                                <CardBody>
+                                    <div className="chart">
+                                    <Bar
+                                        data={expense_graph}
+                                        className="chart-canvas"
+                                        id="chart-bars"
+                                    />
+                                    </div>
+                                </CardBody>
                             </Card>
                         </Col>
                     </Row>
@@ -612,7 +677,7 @@ function AdminDashboard() {
                                             <h3 style={{textAlign:"center",color:"white"}}>No data Found</h3>
                                             </div>
                                             :
-                                            <div style={{display:"grid",gridTemplateColumns:'1fr'}}>
+                                            <div style={{display:"grid",gridTemplateColumns:'1fr 1fr'}}>
                                                 {
                                                     notice.map((item) => (
                                                             <ListGroupItem style={{width:'100%'}} className="checklist-entry flex-column align-items-start py-4 px-4">

@@ -6,6 +6,7 @@ import { addItemsToCart } from "../../../store/reducers/cart";
 import ovaltick from "./assets/oval_tick.png";
 import { toast, ToastContainer } from "react-toastify";
 import discountBadge from "./assets/discount_badge_icon.png";
+
 const ProductDetails = ({ product,backHandle }) => {
   const dispatch = useDispatch();
   const addToCart = () => {

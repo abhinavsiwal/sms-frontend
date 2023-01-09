@@ -134,7 +134,6 @@ function Viewproduct() {
                         return (
                           <Card className="mt-4" key={index}>
                             <CardBody
-                              onClick={() => viewProductDetail(product)}
                               style={{ cursor: "pointer", padding: "0" }}
                             >
                               <CardImg

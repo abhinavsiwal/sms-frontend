@@ -386,7 +386,7 @@ function Addproduct() {
                     <h3>Add Category</h3>
                   </CardHeader>
                   <CardBody>
-                    <Form className="mb-4" onSubmit={addCategoryHandler}>
+                  <Form className="mb-4" onSubmit={addCategoryHandler}>
                       <Row>
                         <Col>
                           <label
@@ -478,14 +478,18 @@ function Addproduct() {
                         md="4"
                         className="d-flex justify-content-center mb-4"
                       >
-                        <img
-                          src={imagesPreview && imagesPreview}
-                          alt=""
-                          className="mt-3 me-2"
-                          width="80"
-                          height="80"
-                        />
-                        <Col md="6">
+                          <Col md="3">
+                              <img
+                                src={
+                                  imagesPreview ? imagesPreview : "/img/images.jpeg"
+                                }
+                                alt="Preview"
+                                className="me-2"
+                                width="80"
+                                height="80"
+                              />
+                        </Col>
+                        <Col md="9">
                           <label
                             className="form-control-label"
                             htmlFor="example3cols2Input"
