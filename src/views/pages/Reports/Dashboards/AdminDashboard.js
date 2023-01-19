@@ -76,7 +76,7 @@ function AdminDashboard() {
         
         axios(config)
         .then(function (response) {
-          console.log(response)
+          console.log(response.data)
           setReportData(response.data)
           setLeave([...response.data.student_leave,...response.data.staff_leave])
           setBirthDay([...response.data.today_birthday])

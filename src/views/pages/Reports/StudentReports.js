@@ -65,6 +65,7 @@ function StudentReports() {
       
       axios(config)
       .then(function (response) {
+        console.log(response.data)
         const data = [];
         for (let i = 0; i < response.data.length; i++) {
           data.push({
